@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'workspace/../db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -135,5 +135,5 @@ LOGGING = {
 
 STATIC_URL = '/static/'
 
-TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'workspace/../templates'),)
-STATIC_ROOT = os.path.join(BASE_DIR, 'workspace/../static')
+TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'templates'),)
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
