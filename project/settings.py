@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bankomat.apps.BankomatConfig',
+    'djangobower',
+    'pipeline',
 ]
 
 MIDDLEWARE = [
@@ -135,3 +137,19 @@ LOGGING = {
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'djangobower.finders.BowerFinder',
+    'pipeline.finders.PipelineFinder',
+]
+
+BOWER_COMPONENTS_ROOT = BASE_DIR
+
+BOWER_INSTALLED_APPS = []
+
+PIPELINE = {
+    'PIPELINE_ENABLED': False,
+}
