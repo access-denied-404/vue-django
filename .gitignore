@@ -1,4 +1,4 @@
-.idea/
-bower_components/
-static/
+.idea/**
+bower_components/**
+static/**
 db.sqlite3
