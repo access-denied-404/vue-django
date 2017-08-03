@@ -5,9 +5,288 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {# The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags #}
+    {% load staticfiles %}
     <title>Bankomat welcome</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static '/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+{#        <link href="{% static '/bootstrap/dist/css/bootstrap-theme.min.css' %}" rel="stylesheet">#}
+{#        <link href="{% static '/bootstrap/dist/bootstrap-theme-superhero.min.css' %}" rel="stylesheet">#}
+{#        <link href="{% static '/bootstrap/dist/bootstrap-theme-cyborg.min.css' %}" rel="stylesheet">#}
+{#        <link href="{% static '/bootstrap/dist/bootstrap-theme-solarized.min.css' %}" rel="stylesheet">#}
+    <link href="{% static '/bankomat/css/sticky-navbar.css' %}" rel="stylesheet">
+    <link href="{% static '/bankomat/css/sticky-footer.css' %}" rel="stylesheet">
+
 </head>
 <body>
 
+<header>
+    <div class="container">
+        <h1>
+            Bankomat
+            <small>все финансовые решения для бизнеса в одном портале</small>
+        </h1>
+    </div>
+</header>
+
+<!-- sticky navbar must go just next after header to proper offset -->
+<div id="container-nav-sticky">
+    <nav class="navbar navbar-default navbar-static-top" id="nav-sticky">
+        <div class="container">
+            <div class="row">
+            <div class="col-md-12">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Bankomat</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li><a href="#">Госконтракты</a></li>
+                    <li><a href="#">Кредитные организации</a></li>
+                    <li><a href="#">Лизинг</a></li>
+                    <li><a href="#">Факторинг</a></li>
+                    <li><a href="#">Страхование</a></li>
+                    <li><a href="#">Инвестиции</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            Dropdown <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Action</a></li>
+                            <li><a href="#">Another action</a></li>
+                            <li><a href="#">Something else here</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Separated link</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">One more separated link</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+            </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </nav>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 col-md-push-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="h4">Быстрая заявка</span>
+                </div>
+                <div class="panel-body">
+                    <form>
+                        <div class="form-group">
+                            <select class="form-control">
+                                <option>Банковская гарантия</option>
+                                <option>Тендерный займ</option>
+                                <option>Тендерный кредит</option>
+                                <option>Проектное финансирование</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><input name="org" class="form-control"/></div>
+                        <div class="form-group"><input name="person" class="form-control"/></div>
+                        <div class="form-group"><input name="phone" class="form-control"/></div>
+                        <div class="form-group"><input name="email" class="form-control"/></div>
+                        <button type="submit" class="btn btn-primary center-block">Отправить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8 col-md-pull-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="h4">Лучшие продукты для вашего бизнеса</span><br>
+                </div>
+                <div class="panel-body">
+                    <div class="col-sm-3">
+                        <div class="panel panel-default">
+                            <div class="panel-body" style="height: 120px;"></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="panel panel-default">
+                            <div class="panel-body" style="height: 120px;"></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="panel panel-default">
+                            <div class="panel-body" style="height: 120px;"></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="panel panel-default">
+                            <div class="panel-body" style="height: 120px;"></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="panel panel-default">
+                            <div class="panel-body" style="height: 120px;"></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="panel panel-default">
+                            <div class="panel-body" style="height: 120px;"></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="panel panel-default">
+                            <div class="panel-body" style="height: 120px;"></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="panel panel-default">
+                            <div class="panel-body" style="height: 120px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th colspan="2">Рейтинг кредитов</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Кредит МСБ до 2 млн. руб.</td>
+                            <td>от 12%</td>
+                        </tr>
+                        <tr>
+                            <td>Кредит МСБ до 2 млн. руб.</td>
+                            <td>от 12%</td>
+                        </tr>
+                        <tr>
+                            <td>Кредит МСБ до 2 млн. руб.</td>
+                            <td>от 12%</td>
+                        </tr>
+                        <tr>
+                            <td>Кредит МСБ до 2 млн. руб.</td>
+                            <td>от 12%</td>
+                        </tr>
+                        <tr>
+                            <td>Кредит МСБ до 2 млн. руб.</td>
+                            <td>от 12%</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th colspan="2">Рейтинг банковских гарантий</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Кредит МСБ до 2 млн. руб.</td>
+                            <td>от 12%</td>
+                        </tr>
+                        <tr>
+                            <td>Кредит МСБ до 2 млн. руб.</td>
+                            <td>от 12%</td>
+                        </tr>
+                        <tr>
+                            <td>Кредит МСБ до 2 млн. руб.</td>
+                            <td>от 12%</td>
+                        </tr>
+                        <tr>
+                            <td>Кредит МСБ до 2 млн. руб.</td>
+                            <td>от 12%</td>
+                        </tr>
+                        <tr>
+                            <td>Кредит МСБ до 2 млн. руб.</td>
+                            <td>от 12%</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th colspan="2">Рейтинг вкладов</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Кредит МСБ до 2 млн. руб.</td>
+                            <td>от 12%</td>
+                        </tr>
+                        <tr>
+                            <td>Кредит МСБ до 2 млн. руб.</td>
+                            <td>от 12%</td>
+                        </tr>
+                        <tr>
+                            <td>Кредит МСБ до 2 млн. руб.</td>
+                            <td>от 12%</td>
+                        </tr>
+                        <tr>
+                            <td>Кредит МСБ до 2 млн. руб.</td>
+                            <td>от 12%</td>
+                        </tr>
+                        <tr>
+                            <td>Кредит МСБ до 2 млн. руб.</td>
+                            <td>от 12%</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="col-md-12"><p>&copy; Bankomat, 2017</p></div>
+    </div>
+</footer>
+
+<!-- Bootstrap core JavaScript ================================ -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{% static '/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static '/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var headerHeight = $('header').height();
+        $('#nav-sticky').affix({
+            offset: {
+                top: headerHeight
+            }
+        });
+        $('#container-nav-sticky').css("margin-bottom", headerHeight + "px");
+    });
+</script>
 </body>
 </html>

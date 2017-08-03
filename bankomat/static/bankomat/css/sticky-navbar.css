@@ -1,0 +1,11 @@
+#nav-sticky.affix {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index:10;
+}
+
+#container-nav-sticky {
+    height: 0;
+    width: 100%;
+}
