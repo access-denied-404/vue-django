@@ -43,13 +43,23 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Bankomat</a>
+                <a class="navbar-brand hidden" id="scroll-fade-toggle-nav-brand" href="#">Bankomat</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li><a href="#">Госконтракты</a></li>
+                    <li class="dropdown dropdown-on-hover">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            Госконтракты
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Банковская гарантия на обеспечение заявки</a></li>
+                            <li><a href="#">Банковская гарантия на обеспечение контракта</a></li>
+                            <li><a href="#">Кредит на исполнение госконтракта</a></li>
+                            <li><a href="#">Банковская гарантия на возврат аванса</a></li>
+                        </ul>
+                    </li>
                     <li><a href="#">Кредитные организации</a></li>
                     <li><a href="#">Лизинг</a></li>
                     <li><a href="#">Факторинг</a></li>
@@ -57,7 +67,7 @@
                     <li><a href="#">Инвестиции</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li class="dropdown">
+                    <li class="dropdown dropdown-on-hover">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                             Dropdown <span class="caret"></span>
                         </a>
@@ -90,6 +100,7 @@
 <!-- Bootstrap core JavaScript ================================ -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="{% static '/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static '/jquery-ui/jquery-ui.min.js' %}"></script>
 <script src="{% static '/bootstrap/dist/js/bootstrap.min.js' %}"></script>
 <script type="text/javascript">
     $(document).ready(function() {
@@ -99,7 +110,25 @@
                 top: headerHeight
             }
         });
+
+        // fixme it need padding of navbar height, not a header height
         $('#container-nav-sticky').css("margin-bottom", headerHeight + "px");
+
+        $('.dropdown-on-hover').on('mouseenter mouseleave click tap', function() {
+            $(this).toggleClass("open");
+        });
+
+        var brandInNavBar = $('#scroll-fade-toggle-nav-brand');
+        brandInNavBar.hide();
+        brandInNavBar.removeClass('hidden');
+        $(window).scroll(function () {
+            // set distance user needs to scroll before we start fadeIn
+            if ($(this).scrollTop() > headerHeight) {
+                brandInNavBar.show("blind", { direction: "left" }, 500);
+            } else {
+                brandInNavBar.hide("blind", { direction: "left" }, 500);
+            }
+        });
     });
 </script>
 </body>

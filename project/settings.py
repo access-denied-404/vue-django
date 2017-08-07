@@ -142,6 +142,7 @@ BOWER_COMPONENTS_ROOT = BASE_DIR
 
 BOWER_INSTALLED_APPS = [
     'bootstrap#3.3.7',
+    'jquery-ui#1.12.1',
 ]
 
 PIPELINE = {
