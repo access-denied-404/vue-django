@@ -1,3 +1,5 @@
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from django.views.generic.base import TemplateView, RedirectView
 
 
@@ -8,9 +10,17 @@ class IndexView(TemplateView):
 class LoginView(TemplateView):
     template_name = 'bankomat/login.html'
 
+    def post(self, request, *args, **kwargs):
+        url = reverse('cabinet_requests', args=args, kwargs=kwargs)
+        return HttpResponseRedirect(url)
+
 
 class RegisterView(TemplateView):
     template_name = 'bankomat/register.html'
+
+    def post(self, request, *args, **kwargs):
+        url = reverse('cabinet_requests', args=args, kwargs=kwargs)
+        return HttpResponseRedirect(url)
 
 
 class PasswordResetRequestView(TemplateView):

@@ -1,9 +1,39 @@
 {% extends 'bankomat/layout.html' %}
 
+{% load staticfiles %}
+
+{% block head_additional %}
+    <link href="{% static '/bankomat/css/vertical-center.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">тут пока ничегошеньки.. :c</div>
+    <div class="jumbotron vertical-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-md-offset-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Вход</div>
+                        <div class="panel-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="form-row">
+                                    <div class="form-group col-md-12">
+                                        <label class="control-label" for="email">E-mail</label>
+                                        <input name="email" class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-12">
+                                        <label class="control-label" for="password">Пароль</label>
+                                        <input name="password" type="password" class="form-control"/>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary center-block">Войти</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
