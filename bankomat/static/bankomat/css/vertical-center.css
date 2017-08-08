@@ -6,3 +6,8 @@
   display: flex;
   align-items: center;
 }
+
+.jumbotron.vertical-center {
+  margin: 0;
+  padding: 0;
+}
