@@ -1,4 +1,12 @@
 {% extends 'bankomat/layout.html' %}
+
+{% load staticfiles %}
+
+{% block head_additional %}
+    <link href="{% static '/bankomat/css/sticky-navbar.css' %}" rel="stylesheet">
+    <link href="{% static '/bankomat/css/sticky-footer.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
 <header>
     <div class="container">
@@ -50,18 +58,8 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="{% url 'login' %}">Вход</a></li>
                     <li><a href="{% url 'register' %}">Регистрация</a></li>
-                    <li class="dropdown dropdown-on-hover">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                            Иван Иваныч <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="{% url 'cabinet' %}">Личный кабинет</a></li>
-                            <li><a href="{% url 'cabinet_requests_new' %}">Новая заявка</a></li>
-                            <li><a href="{% url 'cabinet_requests' %}">Поданные заявки</a></li>
-                            <li><a href="{% url 'cabinet_settings' %}">Настройки профиля</a></li>
-                            <li><a href="{% url 'logout' %}">Выход</a></li>
-                        </ul>
-                    </li>
+                    <li><a href="{% url 'cabinet_requests' %}">Иван Иваныч</a></li>
+                    <li><a href="{% url 'logout' %}">Выход</a></li>
                 </ul>
             </div><!-- /.navbar-collapse -->
             </div>
