@@ -10,10 +10,10 @@ urlpatterns = [
     url(r'^password_reset/request$', views.PasswordResetRequestView.as_view(), name='password_reset_request'),
     url(r'^password_reset/reset$', views.PasswordResetResetView.as_view(), name='password_reset_reset'),
 
-    url(r'^cabinet$', views.CabinetView.as_view(), name='cabinet'),
     url(r'^cabinet/requests$', views.CabinetRequestsView.as_view(), name='cabinet_requests'),
     url(r'^cabinet/requests/new$', views.CabinetRequestsNewView.as_view(), name='cabinet_requests_new'),
     url(r'^cabinet/requests/(?P<rid>\d+)$', views.CabinetRequestView.as_view(), name='cabinet_request'),
     url(r'^cabinet/requests/(?P<rid>\d+)/banks$', views.CabinetRequestBanksView.as_view(), name='cabinet_request_banks'),
-    url(r'^cabinet/settings$', views.CabinetSettingsView.as_view(), name='cabinet_settings'),
+    url(r'^cabinet/organizations$', views.CabinetOrganizationsView.as_view(), name='cabinet_organizations'),
+    url(r'^cabinet/profile$', views.CabinetProfileView.as_view(), name='cabinet_profile'),
 ]

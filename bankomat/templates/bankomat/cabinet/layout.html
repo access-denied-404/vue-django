@@ -1,0 +1,54 @@
+{% extends 'bankomat/layout.html' %}
+
+{% load staticfiles %}
+
+{% block head_additional %}
+    <link href="{% static '/bankomat/css/sticky-navbar.css' %}" rel="stylesheet">
+    <link href="{% static '/bankomat/css/sticky-footer.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{% url 'index' %}">
+                        Bankomat <small>все финансовые решения для бизнеса в одном портале</small>
+                </a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="{% url 'cabinet_requests' %}">Иван Иваныч</a></li>
+                    <li><a href="{% url 'logout' %}">Выход</a></li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <div class="list-group">
+                    <a href="{% url 'cabinet_requests' %}" class="list-group-item{% if request.resolver_match.url_name == 'cabinet_requests' %} active{% endif %}">Заявки</a>
+                    <a href="{% url 'cabinet_organizations' %}" class="list-group-item{% if request.resolver_match.url_name == 'cabinet_organizations' %} active{% endif %}">Организации</a>
+                    <a href="{% url 'cabinet_profile' %}" class="list-group-item{% if request.resolver_match.url_name == 'cabinet_profile' %} active{% endif %}">Профиль</a>
+                </div>
+            </div>
+
+            <div class="col-sm-9 col-md-10">
+                {% block cabinet_content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    {% include 'bankomat/footer.html' %}
+    {% include 'bankomat/boostrap_js_body_part.html' %}
+{% endblock %}

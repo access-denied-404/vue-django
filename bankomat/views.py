@@ -21,12 +21,8 @@ class PasswordResetResetView(TemplateView):
     template_name = 'bankomat/password_reset_reset.html'
 
 
-class CabinetView(TemplateView):
-    template_name = 'bankomat/cabinet.html'
-
-
 class CabinetRequestsView(TemplateView):
-    template_name = 'bankomat/cabinet_requests.html'
+    template_name = 'bankomat/cabinet/requests.html'
 
 
 class CabinetRequestsNewView(TemplateView):
@@ -41,8 +37,12 @@ class CabinetRequestBanksView(TemplateView):
     template_name = 'bankomat/cabinet_request_banks.html'
 
 
-class CabinetSettingsView(TemplateView):
-    template_name = 'bankomat/cabinet_settings.html'
+class CabinetOrganizationsView(TemplateView):
+    template_name = 'bankomat/cabinet/organizations.html'
+
+
+class CabinetProfileView(TemplateView):
+    template_name = 'bankomat/cabinet/profile.html'
 
 
 class LogoutView(RedirectView):

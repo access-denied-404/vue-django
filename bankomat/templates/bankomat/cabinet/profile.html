@@ -1,0 +1,52 @@
+{% extends 'bankomat/cabinet/layout.html' %}
+
+{% block cabinet_content %}
+<div class="panel panel-default">
+    <div class="panel-heading">Профиль пользователя</div>
+    <div class="panel-body">
+        <form>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label class="control-label" for="first_name">Имя</label>
+                    <input name="first_name" class="form-control"/>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label" for="last_name">Фамилия</label>
+                    <input name="last_name" class="form-control"/>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label class="control-label" for="phone">Контактный телефон</label>
+                    <input name="phone" class="form-control"/>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary center-block">Сохранить изменения</button>
+        </form>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">Сменить пароль</div>
+    <div class="panel-body">
+        <form>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label class="control-label" for="current_password">Текущий пароль</label>
+                    <input name="current_password" class="form-control"/>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label class="control-label" for="new_password">Новый пароль</label>
+                    <input name="new_password" class="form-control"/>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label" for="new_password_repeat">Новый пароль еще раз</label>
+                    <input name="new_password_repeat" class="form-control"/>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary center-block">Сохранить изменения</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
