@@ -1,5 +1,75 @@
 {% extends 'bankomat/layout.html' %}
 {% block content %}
+<header>
+    <div class="container">
+        <h1>
+            Bankomat
+            <small>все финансовые решения для бизнеса в одном портале</small>
+        </h1>
+    </div>
+</header>
+
+<!-- sticky navbar must go just next after header to proper offset -->
+<div id="container-nav-sticky">
+    <nav class="navbar navbar-default navbar-static-top" id="nav-sticky">
+        <div class="container">
+            <div class="row">
+            <div class="col-md-12">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand hidden" id="scroll-fade-toggle-nav-brand" href="#">Bankomat</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown dropdown-on-hover">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            Госконтракты
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Банковская гарантия на обеспечение заявки</a></li>
+                            <li><a href="#">Банковская гарантия на обеспечение контракта</a></li>
+                            <li><a href="#">Кредит на исполнение госконтракта</a></li>
+                            <li><a href="#">Банковская гарантия на возврат аванса</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Кредитные организации</a></li>
+                    <li><a href="#">Лизинг</a></li>
+                    <li><a href="#">Факторинг</a></li>
+                    <li><a href="#">Страхование</a></li>
+                    <li><a href="#">Инвестиции</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="{% url 'login' %}">Вход</a></li>
+                    <li><a href="{% url 'register' %}">Регистрация</a></li>
+                    <li class="dropdown dropdown-on-hover">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            Иван Иваныч <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url 'cabinet' %}">Личный кабинет</a></li>
+                            <li><a href="{% url 'cabinet_requests_new' %}">Новая заявка</a></li>
+                            <li><a href="{% url 'cabinet_requests' %}">Поданные заявки</a></li>
+                            <li><a href="{% url 'cabinet_settings' %}">Настройки профиля</a></li>
+                            <li><a href="{% url 'logout' %}">Выход</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+            </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </nav>
+</div>
+
 <div class="container">
     <div class="row">
         <div class="col-md-4 col-md-push-8">
@@ -186,4 +256,36 @@
     </div>
 
 </div>
+
+{% include 'bankomat/footer.html' %}
+{% include 'bankomat/boostrap_js_body_part.html' %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        var headerHeight = $('header').height();
+        $('#nav-sticky').affix({
+            offset: {
+                top: headerHeight
+            }
+        });
+
+        // fixme it need padding of navbar height, not a header height
+        $('#container-nav-sticky').css("margin-bottom", headerHeight + "px");
+
+        $('.dropdown-on-hover').on('mouseenter mouseleave click tap', function() {
+            $(this).toggleClass("open");
+        });
+
+        var brandInNavBar = $('#scroll-fade-toggle-nav-brand');
+        brandInNavBar.hide();
+        brandInNavBar.removeClass('hidden');
+        $(window).scroll(function () {
+            // set distance user needs to scroll before we start fadeIn
+            if ($(this).scrollTop() > headerHeight) {
+                brandInNavBar.show("blind", { direction: "left" }, 500);
+            } else {
+                brandInNavBar.hide("blind", { direction: "left" }, 500);
+            }
+        });
+    });
+</script>
 {% endblock %}
