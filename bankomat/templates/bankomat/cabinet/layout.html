@@ -34,21 +34,7 @@
         </div><!-- /.container-fluid -->
     </nav>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-3 col-md-2 sidebar">
-                <div class="list-group">
-                    <a href="{% url 'cabinet_requests' %}" class="list-group-item{% if request.resolver_match.url_name == 'cabinet_requests' %} active{% endif %}">Заявки</a>
-                    <a href="{% url 'cabinet_organizations' %}" class="list-group-item{% if request.resolver_match.url_name == 'cabinet_organizations' %} active{% endif %}">Организации</a>
-                    <a href="{% url 'cabinet_profile' %}" class="list-group-item{% if request.resolver_match.url_name == 'cabinet_profile' %} active{% endif %}">Профиль</a>
-                </div>
-            </div>
-
-            <div class="col-sm-9 col-md-10">
-                {% block cabinet_content %}{% endblock %}
-            </div>
-        </div>
-    </div>
+    {% block cabinet_content %}{% endblock %}
     {% include 'bankomat/footer.html' %}
     {% include 'bankomat/boostrap_js_body_part.html' %}
 {% endblock %}
