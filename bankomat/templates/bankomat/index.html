@@ -78,6 +78,7 @@
                 <div class="panel-body">
                     <form>
                         <div class="form-group">
+                            <label>Вид услуги</label>
                             <select class="form-control">
                                 <option>Банковская гарантия</option>
                                 <option>Тендерный займ</option>
@@ -85,10 +86,22 @@
                                 <option>Проектное финансирование</option>
                             </select>
                         </div>
-                        <div class="form-group"><input name="org" class="form-control"/></div>
-                        <div class="form-group"><input name="person" class="form-control"/></div>
-                        <div class="form-group"><input name="phone" class="form-control"/></div>
-                        <div class="form-group"><input name="email" class="form-control"/></div>
+                        <div class="form-group">
+                            <label>Название или ИНН органиазции</label>
+                            <input name="org" class="form-control"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Контактное лицо</label>
+                            <input name="person" class="form-control"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Телефон</label>
+                            <input name="phone" class="form-control"/>
+                        </div>
+                        <div class="form-group">
+                            <label>E-mail</label>
+                            <input name="email" class="form-control"/>
+                        </div>
                         <button type="submit" class="btn btn-primary center-block">Отправить</button>
                     </form>
                 </div>
