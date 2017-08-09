@@ -1,6 +1,53 @@
 {% extends 'bankomat/cabinet/layout.html' %}
 
 {% block cabinet_content %}
+<div class="pull-right">
+    <div class="btn-group" role="group">
+        <label>Вид заявки</label>
+    </div>
+    <div class="btn-group" role="group" aria-label="Вид заявки">
+        <div class="dropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                Госконтракты
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                <li><a href="#">Все</a></li>
+                <li><a href="#">Госконтракты</a></li>
+                <li><a href="#">Кредитные организации</a></li>
+                <li><a href="#">Лизинг</a></li>
+                <li><a href="#">Факторинг</a></li>
+                <li><a href="#">Страхование</a></li>
+                <li><a href="#">Инвестиции</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="btn-group" role="group">
+        <label>Статус заявки</label>
+    </div>
+    <div class="btn-group" role="group" aria-label="Статус заявки">
+        <div class="dropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                Оформление заявки
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">
+                <li><a href="#">Все</a></li>
+                <li><a href="#">Оформление заявки</a></li>
+                <li><a href="#">Запрос документов и заполнение форм</a></li>
+                <li><a href="#">Скоринг</a></li>
+                <li><a href="#">Выбор кредитных организаций</a></li>
+                <li><a href="#">Дозапрос документов банком</a></li>
+                <li><a href="#">Согласование итоговых документов</a></li>
+                <li><a href="#">Оплата услуг</a></li>
+                <li><a href="#">Завершение сделки</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="clearfix"></div>
+<br/>
+
 <div class="panel panel-primary">
     <table class="table">
         <tr class="bg-primary">
@@ -10,13 +57,25 @@
             <th>Сумма</th>
             <th>Статус</th>
         </tr>
-        <tr><td>1</td><td>ООО «ААА»</td><td>Тендерный кредит</td><td>100 500,00 руб.</td><td>Конь не валялся</td></tr>
-        <tr><td>2</td><td>ООО «ААА»</td><td>Тендерный кредит</td><td>100 500,00 руб.</td><td>Конь не валялся</td></tr>
-        <tr><td>3</td><td>ООО «ААА»</td><td>Тендерный кредит</td><td>100 500,00 руб.</td><td>Конь не валялся</td></tr>
-        <tr><td>4</td><td>ООО «ААА»</td><td>Тендерный кредит</td><td>100 500,00 руб.</td><td>Конь не валялся</td></tr>
-        <tr><td>5</td><td>ООО «ААА»</td><td>Тендерный кредит</td><td>100 500,00 руб.</td><td>Конь не валялся</td></tr>
-        <tr><td>6</td><td>ООО «ААА»</td><td>Тендерный кредит</td><td>100 500,00 руб.</td><td>Конь не валялся</td></tr>
-        <tr><td>7</td><td>ООО «ААА»</td><td>Тендерный кредит</td><td>100 500,00 руб.</td><td>Конь не валялся</td></tr>
+        <tr><td><a href="{% url 'cabinet_request' 0 %}">0000000001</a></td><td>ООО «ААА»</td><td>Тендерный кредит</td><td>100 500,00 руб.</td><td>Конь не валялся</td></tr>
+        <tr><td><a href="{% url 'cabinet_request' 0 %}">0000000002</a></td><td>ООО «ААА»</td><td>Тендерный кредит</td><td>100 500,00 руб.</td><td>Конь не валялся</td></tr>
+        <tr><td><a href="{% url 'cabinet_request' 0 %}">0000000003</a></td><td>ООО «ААА»</td><td>Тендерный кредит</td><td>100 500,00 руб.</td><td>Конь не валялся</td></tr>
+        <tr><td><a href="{% url 'cabinet_request' 0 %}">0000000004</a></td><td>ООО «ААА»</td><td>Тендерный кредит</td><td>100 500,00 руб.</td><td>Конь не валялся</td></tr>
+        <tr><td><a href="{% url 'cabinet_request' 0 %}">0000000005</a></td><td>ООО «ААА»</td><td>Тендерный кредит</td><td>100 500,00 руб.</td><td>Конь не валялся</td></tr>
+        <tr><td><a href="{% url 'cabinet_request' 0 %}">0000000006</a></td><td>ООО «ААА»</td><td>Тендерный кредит</td><td>100 500,00 руб.</td><td>Конь не валялся</td></tr>
+        <tr><td><a href="{% url 'cabinet_request' 0 %}">0000000007</a></td><td>ООО «ААА»</td><td>Тендерный кредит</td><td>100 500,00 руб.</td><td>Конь не валялся</td></tr>
     </table>
 </div>
+
+<nav aria-label="Page navigation" class="text-center">
+    <ul class="pagination">
+        <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+        <li><a href="#">1</a></li>
+        <li><a href="#">2</a></li>
+        <li><a href="#">3</a></li>
+        <li><a href="#">4</a></li>
+        <li><a href="#">5</a></li>
+        <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+    </ul>
+</nav>
 {% endblock %}
