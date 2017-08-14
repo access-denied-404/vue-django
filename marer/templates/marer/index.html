@@ -1,19 +1,19 @@
-{% extends 'bankomat/layout.html' %}
+{% extends 'marer/layout.html' %}
 
 {% load staticfiles %}
 
 {% block head_additional %}
-    <link href="{% static '/bankomat/css/sticky-navbar.css' %}" rel="stylesheet">
-    <link href="{% static '/bankomat/css/sticky-footer.css' %}" rel="stylesheet">
+    <link href="{% static '/marer/css/sticky-navbar.css' %}" rel="stylesheet">
+    <link href="{% static '/marer/css/sticky-footer.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
 <header>
     <div class="container">
         <h1>
-            <img src="{% static 'bankomat/img/logo.svg' %}" height="64"/>
-            <img src="{% static 'bankomat/img/marer.svg' %}" height="64"/>
-            <img src="{% static 'bankomat/img/marer_description.svg' %}" height="64"/>
+            <img src="{% static 'marer/img/logo.svg' %}" height="64"/>
+            <img src="{% static 'marer/img/marer.svg' %}" height="64"/>
+            <img src="{% static 'marer/img/marer_description.svg' %}" height="64"/>
         </h1>
     </div>
 </header>
@@ -34,7 +34,7 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand hidden" id="scroll-fade-toggle-nav-brand" href="{% url 'index' %}">
-                    <img src="{% static 'bankomat/img/logo.svg' %}" height="24"/>
+                    <img src="{% static 'marer/img/logo.svg' %}" height="24"/>
                 </a>
             </div>
 
@@ -202,8 +202,8 @@
 
 </div>
 
-{% include 'bankomat/footer.html' %}
-{% include 'bankomat/boostrap_js_body_part.html' %}
+{% include 'marer/footer.html' %}
+{% include 'marer/boostrap_js_body_part.html' %}
 <script type="text/javascript">
     $(document).ready(function() {
         var headerHeight = $('header').height();

@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bankomat.apps.BankomatConfig',
+    'marer.apps.MarerConfig',
     'djangobower',
     'pipeline',
 ]
@@ -149,4 +149,4 @@ PIPELINE = {
     'PIPELINE_ENABLED': False,
 }
 
-# AUTH_USER_MODEL = 'bankomat.User'
+# AUTH_USER_MODEL = 'marer.User'

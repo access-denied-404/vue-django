@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from bankomat import views
+from marer import views
 
 urlpatterns = [
     url(r'^$', views.IndexView.as_view(), name='index'),
