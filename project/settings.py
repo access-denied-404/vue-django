@@ -148,3 +148,5 @@ BOWER_INSTALLED_APPS = [
 PIPELINE = {
     'PIPELINE_ENABLED': False,
 }
+
+# AUTH_USER_MODEL = 'bankomat.User'
