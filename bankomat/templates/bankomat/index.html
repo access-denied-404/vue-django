@@ -11,8 +11,9 @@
 <header>
     <div class="container">
         <h1>
-            Bankomat
-            <small>все финансовые решения для бизнеса в одном портале</small>
+            <img src="{% static 'bankomat/img/logo.svg' %}" height="64"/>
+            <img src="{% static 'bankomat/img/marer.svg' %}" height="64"/>
+            <img src="{% static 'bankomat/img/marer_description.svg' %}" height="64"/>
         </h1>
     </div>
 </header>
@@ -32,7 +33,9 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand hidden" id="scroll-fade-toggle-nav-brand" href="#">Bankomat</a>
+                <a class="navbar-brand hidden" id="scroll-fade-toggle-nav-brand" href="{% url 'index' %}">
+                    <img src="{% static 'bankomat/img/logo.svg' %}" height="24"/>
+                </a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
