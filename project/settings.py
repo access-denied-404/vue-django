@@ -149,4 +149,4 @@ PIPELINE = {
     'PIPELINE_ENABLED': False,
 }
 
-# AUTH_USER_MODEL = 'marer.User'
+AUTH_USER_MODEL = 'marer.User'

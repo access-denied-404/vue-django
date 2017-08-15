@@ -28,8 +28,8 @@ class Issue(models.Model):
     status = None
 
 
-# class User(AbstractUser):
-#     phone = models.CharField(_('contact phone'), max_length=30, blank=True)
+class User(AbstractUser):
+    phone = models.CharField(_('contact phone'), max_length=30, blank=True)
 
 
 class FinanceOrganization(models.Model):
