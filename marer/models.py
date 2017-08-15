@@ -6,11 +6,11 @@ from mptt import models as mptt_models
 
 
 class Issuer(models.Model):
-    inn = None
-    kpp = None
-    ogrn = None
-    full_name = None
-    short_name = None
+    inn = models.CharField(max_length=32, blank=False, null=False)
+    kpp = models.CharField(max_length=32, blank=False, null=False)
+    ogrn = models.CharField(max_length=32, blank=False, null=False)
+    full_name = models.CharField(max_length=512, blank=False, null=False)
+    short_name = models.CharField(max_length=512, blank=False, null=False)
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
 
 
@@ -33,15 +33,15 @@ class Issue(models.Model):
 
 
 class FinanceOrganization(models.Model):
-    name = None
-    interest_rate = None
-    review_term_days = None
+    name = models.CharField(max_length=512, blank=False, null=False)
+    interest_rate = models.FloatField(blank=False, null=False, default=0)
+    review_term_days = models.PositiveIntegerField(blank=False, null=False, default=1)
 
 
 class OKVED2(mptt_models.MPTTModel):
-    name = None
-    code = None
+    name = models.CharField(max_length=512, blank=False, null=False)
+    code = models.CharField(max_length=32, blank=False, null=False)
 
 
 class Region(mptt_models.MPTTModel):
-    name = None
+    name = models.CharField(max_length=512, blank=False, null=False)
