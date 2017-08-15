@@ -150,3 +150,4 @@ PIPELINE = {
 }
 
 AUTH_USER_MODEL = 'marer.User'
+LOGIN_URL = 'login'

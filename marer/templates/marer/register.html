@@ -18,36 +18,37 @@
                                 {% csrf_token %}
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
-                                        <label class="control-label" for="first_name">Имя</label>
-                                        <input name="first_name" class="form-control"/>
+                                        <label class="control-label">{{ reg_form.first_name.label }}</label>
+                                        {{ reg_form.first_name }}
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="control-label" for="last_name">Фамилия</label>
-                                        <input name="last_name" class="form-control"/>
+                                        <label class="control-label">{{ reg_form.last_name.label }}</label>
+                                        {{ reg_form.last_name }}
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-12">
-                                        <label class="control-label" for="phone">Контактный телефон</label>
-                                        <input name="phone" class="form-control"/>
+                                        <label class="control-label">{{ reg_form.phone.label }}</label>
+                                        {{ reg_form.phone }}
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-12">
-                                        <label class="control-label" for="email">E-mail</label>
-                                        <input name="email" class="form-control"/>
+                                        <label class="control-label">{{ reg_form.email.label }}</label>
+                                        {{ reg_form.email }}
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
-                                        <label class="control-label" for="password">Пароль</label>
-                                        <input name="password" type="password" class="form-control"/>
+                                        <label class="control-label">{{ reg_form.password.label }}</label>
+                                        {{ reg_form.password }}
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="control-label" for="password">Пароль еще раз</label>
-                                        <input name="password_repeat" type="password" class="form-control"/>
+                                        <label class="control-label">{{ reg_form.password_repeat.label }}</label>
+                                        {{ reg_form.password_repeat }}
                                     </div>
                                 </div>
+                                {% include 'marer/form_errors.html' with form=reg_form %}
                                 <button type="submit" class="btn btn-primary center-block">Зарегистрироваться</button>
                             </form>
                         </div>
