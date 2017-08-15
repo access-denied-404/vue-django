@@ -99,7 +99,7 @@ class CabinetRequestsNewView(LoginRequiredMixin, TemplateView):
 
 
 class CabinetRequestView(LoginRequiredMixin, TemplateView):
-    template_name = 'marer/cabinet_request.html'
+    template_name = 'marer/cabinet/issue/scoring.html'
 
 
 class CabinetRequestBanksView(LoginRequiredMixin, TemplateView):
