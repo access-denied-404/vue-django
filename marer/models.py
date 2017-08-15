@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from mptt import models as mptt_models
 
 
 class Issuer(models.Model):
@@ -31,4 +32,16 @@ class Issue(models.Model):
 #     phone = models.CharField(_('contact phone'), max_length=30, blank=True)
 
 
+class FinanceOrganization(models.Model):
+    name = None
+    interest_rate = None
+    review_term_days = None
 
+
+class OKVED2(mptt_models.MPTTModel):
+    name = None
+    code = None
+
+
+class Region(mptt_models.MPTTModel):
+    name = None
