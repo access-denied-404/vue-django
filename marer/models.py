@@ -31,6 +31,11 @@ class Issue(models.Model):
 class User(AbstractUser):
     phone = models.CharField(_('contact phone'), max_length=30, blank=True)
 
+    @classmethod
+    def normalize_username(cls, username):
+        username = super().normalize_username(username)
+        return str(username).lower()
+
 
 class FinanceOrganization(models.Model):
     name = models.CharField(max_length=512, blank=False, null=False)
