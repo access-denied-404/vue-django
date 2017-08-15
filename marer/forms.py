@@ -52,3 +52,21 @@ class LoginForm(Form):
         widget=widgets.PasswordInput(attrs={'class': 'form-control'}),
         label='Пароль'
     )
+
+
+class ProfileForm(Form):
+    first_name = fields.CharField(
+        required=True,
+        widget=widgets.TextInput(attrs={'class': 'form-control'}),
+        label='Имя'
+    )
+    last_name = fields.CharField(
+        required=True,
+        widget=widgets.TextInput(attrs={'class': 'form-control'}),
+        label='Фамилия'
+    )
+    phone = fields.CharField(
+        required=True,
+        widget=widgets.TextInput(attrs={'class': 'form-control'}),
+        label='Контактный телефон'
+    )
