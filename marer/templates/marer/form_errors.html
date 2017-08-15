@@ -1,0 +1,17 @@
+{% if reg_form.errors or reg_form.non_field_errors %}
+<div class="form-row">
+    <div class="form-group col-md-12">
+        <div class="alert alert-danger">
+            {% for field in reg_form %}
+                {% if field.errors %}
+                    <strong>{{ field.label }}</strong>
+                    <small>{{ field.errors }}</small>
+                {% endif %}
+            {% endfor %}
+            <small>
+                {{ reg_form.non_field_errors }}
+            </small>
+        </div>
+    </div>
+</div>
+{% endif %}
