@@ -23,9 +23,21 @@ class Issue(models.Model):
     STATUS_PAYMENTS = 'payments'
     STATUS_FINAL_DOCUMENTS_APPROVAL = 'final_documents_approval'
     STATUS_FINISHED = 'finished'
+    STATUS_CANCELLED = 'cancelled'
 
     type = None
-    status = None
+    status = models.CharField(max_length=32, blank=False, null=False, choices=[
+        (STATUS_REGISTERING, 'Оформление заявки'),
+        (STATUS_COMMON_DOCUMENTS_REQUEST, 'Запрос документов'),
+        (STATUS_SURVEY, 'Анкетирование'),
+        (STATUS_SCORING, 'Скоринг'),
+        (STATUS_ADDITIONAL_DOCUMENTS_REQUEST, 'Дозапрос документов'),
+        (STATUS_PAYMENTS, 'Оплата услуг'),
+        (STATUS_FINAL_DOCUMENTS_APPROVAL, 'Согласование итоговых документов'),
+        (STATUS_FINISHED, 'Завершена'),
+        (STATUS_CANCELLED, 'Отменена'),
+    ])
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, null=False)
 
 
 class User(AbstractUser):
