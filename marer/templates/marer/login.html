@@ -18,16 +18,17 @@
                                 {% csrf_token %}
                                 <div class="form-row">
                                     <div class="form-group col-md-12">
-                                        <label class="control-label" for="email">E-mail</label>
-                                        <input name="email" class="form-control"/>
+                                        <label class="control-label">{{ login_form.email.label }}</label>
+                                        {{ login_form.email }}
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-12">
-                                        <label class="control-label" for="password">Пароль</label>
-                                        <input name="password" type="password" class="form-control"/>
+                                        <label class="control-label">{{ login_form.password.label }}</label>
+                                        {{ login_form.password }}
                                     </div>
                                 </div>
+                                {% include 'marer/form_errors.html' with form=login_form %}
                                 <button type="submit" class="btn btn-primary center-block">Войти</button>
                             </form>
                         </div>

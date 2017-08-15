@@ -59,10 +59,13 @@
                     <li><a href="#">Инвестиции</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
+                    {% if request.user.is_authenticated %}
+                    <li><a href="{% url 'cabinet_requests' %}"><b>{{ request.user.get_full_name }}</b></a></li>
+                    <li><a href="{% url 'logout' %}">Выход</a></li>
+                    {% else %}
                     <li><a href="{% url 'login' %}">Вход</a></li>
                     <li><a href="{% url 'register' %}">Регистрация</a></li>
-                    <li><a href="{% url 'cabinet_requests' %}">Иван Иваныч</a></li>
-                    <li><a href="{% url 'logout' %}">Выход</a></li>
+                    {% endif %}
                 </ul>
             </div><!-- /.navbar-collapse -->
             </div>

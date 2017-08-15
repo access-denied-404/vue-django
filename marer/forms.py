@@ -39,3 +39,16 @@ class RegisterForm(Form):
         if self.data['password'] != self.data['password_repeat']:
             self.add_error(None, 'Введенные пароли не совпадают')
         return super().is_valid()
+
+
+class LoginForm(Form):
+    email = fields.EmailField(
+        required=True,
+        widget=widgets.TextInput(attrs={'class': 'form-control'}),
+        label='E-mail'
+    )
+    password = fields.CharField(
+        required=True,
+        widget=widgets.PasswordInput(attrs={'class': 'form-control'}),
+        label='Пароль'
+    )
