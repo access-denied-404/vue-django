@@ -1,19 +1,14 @@
-from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.views.generic.base import TemplateView, RedirectView
+from django.views.generic import TemplateView, RedirectView
 
 from marer import forms
 from marer.models import User
 
 
-class IndexView(TemplateView):
-    template_name = 'marer/index.html'
-
-
 class LoginView(TemplateView):
-    template_name = 'marer/login.html'
+    template_name = 'marer/auth/login.html'
 
     def get(self, request, *args, **kwargs):
         login_form = forms.LoginForm()
@@ -49,7 +44,7 @@ class LoginView(TemplateView):
 
 
 class RegisterView(TemplateView):
-    template_name = 'marer/register.html'
+    template_name = 'marer/auth/register.html'
 
     def get(self, request, *args, **kwargs):
         reg_form = forms.RegisterForm()
@@ -83,60 +78,11 @@ class RegisterView(TemplateView):
 
 
 class PasswordResetRequestView(TemplateView):
-    template_name = 'marer/password_reset_request.html'
+    template_name = 'marer/auth/password_reset_request.html'
 
 
 class PasswordResetResetView(TemplateView):
-    template_name = 'marer/password_reset_reset.html'
-
-
-class CabinetRequestsView(LoginRequiredMixin, TemplateView):
-    template_name = 'marer/cabinet/requests.html'
-
-
-class CabinetRequestsNewView(LoginRequiredMixin, TemplateView):
-    template_name = 'marer/cabinet_requests_new.html'
-
-
-class CabinetRequestView(LoginRequiredMixin, TemplateView):
-    template_name = 'marer/cabinet/issue/scoring.html'
-
-
-class CabinetRequestBanksView(LoginRequiredMixin, TemplateView):
-    template_name = 'marer/cabinet_request_banks.html'
-
-
-class CabinetOrganizationsView(LoginRequiredMixin, TemplateView):
-    template_name = 'marer/cabinet/organizations.html'
-
-
-class CabinetProfileView(LoginRequiredMixin, TemplateView):
-    template_name = 'marer/cabinet/profile.html'
-
-    def get(self, request, *args, **kwargs):
-        profile_form = forms.ProfileForm(initial=dict(
-            first_name=request.user.first_name,
-            last_name=request.user.last_name,
-            phone=request.user.phone,
-        ))
-        if 'profile_form' not in kwargs:
-            kwargs.update(dict(profile_form=profile_form))
-        return super().get(request=request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        profile_form = forms.ProfileForm(request.POST)
-        if profile_form.is_valid():
-            user = request.user
-            user.first_name = profile_form.cleaned_data['first_name']
-            user.last_name = profile_form.cleaned_data['last_name']
-            user.phone = profile_form.cleaned_data['phone']
-            user.save()
-
-            url = reverse('cabinet_profile', args=args, kwargs=kwargs)
-            return HttpResponseRedirect(url)
-        else:
-            kwargs.update(dict(profile_form=profile_form))
-            return self.get(request=request, *args, **kwargs)
+    template_name = 'marer/auth/password_reset_reset.html'
 
 
 class LogoutView(RedirectView):
