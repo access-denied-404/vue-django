@@ -38,6 +38,8 @@ class Issue(models.Model):
         (STATUS_CANCELLED, 'Отменена'),
     ])
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, null=False)
+    sum = models.DecimalField(max_digits=12, decimal_places=2, null=True)
+    issuer = models.CharField(max_length=512, blank=True, null=False, default='')
 
 
 class User(AbstractUser):
@@ -62,3 +64,15 @@ class OKVED2(mptt_models.MPTTModel):
 
 class Region(mptt_models.MPTTModel):
     name = models.CharField(max_length=512, blank=False, null=False)
+
+
+class FinanceProduct(mptt_models.MPTTModel):
+    name = models.CharField(max_length=512, blank=False, null=False)
+
+
+class IssueDocument(models.Model):
+    pass
+
+
+class IssueDocumentRequest(models.Model):
+    pass
