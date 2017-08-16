@@ -9,13 +9,13 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="67.867218mm"
+   width="163.02591mm"
    height="16.23053mm"
-   viewBox="0 0 67.867218 16.23053"
+   viewBox="0 0 163.02591 16.23053"
    version="1.1"
    id="svg6353"
    inkscape:version="0.92.1 r"
-   sodipodi:docname="logo_marer_horizontal.svg"
+   sodipodi:docname="logo_marer_horizontal_wide.svg"
    inkscape:export-filename="/home/numega/Загрузки/marer_vc/full_logo.svg.png"
    inkscape:export-xdpi="300.20001"
    inkscape:export-ydpi="300.20001">
@@ -38,7 +38,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
-     inkscape:cx="210.52705"
+     inkscape:cx="210.52706"
      inkscape:cy="103.73813"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
@@ -134,6 +134,51 @@
          d="m 1091.5759,1091.4072 -26.9883,-26.9492 -26.7735,26.9804 5.2383,0.028 21.5352,-21.8282 21.7031,21.8008 5.2852,-0.031"
          style="fill:#78cce3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.99999994"
          inkscape:connector-curvature="0" />
+    </g>
+    <g
+       id="g4508"
+       transform="translate(0,8.3312443)">
+      <text
+         id="text3320-0"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.10285568px;font-family:DINCyr-Regular;-inkscape-font-specification:'DINCyr-Regular, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#28aae1;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.91444945"
+         transform="scale(0.96953338,1.031424)"
+         x="188.14343"
+         y="109.50954">
+        <tspan
+           y="109.50954"
+           x="188.14343"
+           id="tspan5504"
+           sodipodi:role="line"
+           style="stroke-width:0.91444945">РЕГИОНАЛЬНОГО ЭКОНОМИЧЕСКОГО РАЗВИТИЯ</tspan>
+      </text>
+      <text
+         id="text3316-6"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.60229588px;font-family:DINCyr-Regular;-inkscape-font-specification:'DINCyr-Regular, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#28aae1;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.92644012"
+         transform="scale(0.98224629,1.0180746)"
+         x="185.1732"
+         y="105.92764">
+        <tspan
+           y="105.92764"
+           x="185.1732"
+           id="tspan5502"
+           sodipodi:role="line"
+           style="stroke-width:0.92644012">МЕЖОТРАСЛЕВОЕ АГЕНТСТВО</tspan>
+      </text>
+    </g>
+    <g
+       id="g6315"
+       transform="matrix(0,-0.10606869,-0.35277777,0,543.15648,218.50446)"
+       style="opacity:1;fill:#28aae1;fill-opacity:1">
+      <g
+         clip-path="url(#clipPath3446)"
+         id="g6313"
+         style="fill:#28aae1;fill-opacity:1">
+        <path
+           inkscape:connector-curvature="0"
+           id="path6311"
+           style="fill:#28aae1;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           d="M 1011.261,1027.692 H 915.36 v 0.5 h 95.901 z" />
+      </g>
     </g>
   </g>
 </svg>
