@@ -25,7 +25,11 @@ SECRET_KEY = 'zftqc(-vdpruk@u2dd9zw9(-ic&wi0oer-e477!#ba@tw!u(y_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'marer.ru',
+    'new.marer.ru',
+    'localhost',
+]
 
 
 # Application definition
