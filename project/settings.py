@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'marer.apps.MarerConfig',
-    'djangobower',
     'pipeline',
 ]
 
@@ -138,15 +137,7 @@ STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'djangobower.finders.BowerFinder',
     'pipeline.finders.PipelineFinder',
-]
-
-BOWER_COMPONENTS_ROOT = BASE_DIR
-
-BOWER_INSTALLED_APPS = [
-    'bootstrap#3.3.7',
-    'jquery-ui#1.12.1',
 ]
 
 PIPELINE = {
