@@ -1,0 +1,49 @@
+{% extends 'marer/issue/layout.html' %}
+
+{% block issue_content %}
+<div class="panel panel-primary">
+    <div class="panel-heading">Оформление заявки</div>
+    <div class="panel-body">
+        <form method="post">
+            <div class="form-row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Тип заявки</label>
+                        <select class="form-control">
+                            <option>Тип 1</option>
+                            <option>Тип 2</option>
+                            <option>Тип 3</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Организация</label>
+                        <input class="form-control" type="text">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Сумма продукта</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-ruble"></span>
+                            </div>
+                            <input class="form-control text-right" value="0" type="number"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Комментарий к заявке</label>
+                        <textarea class="form-control"></textarea>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary center-block">Сохранить</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'marer/issue/layout.html' %}
+
+{% block issue_content %}
+<div class="panel panel-primary">
+    <div class="panel-heading">Общие документы для процедуры скоринга</div>
+    <div class="panel-body">
+        <form method="post">
+            <div class="form-row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Устав</label>
+                        <input type="file">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>ББ и ОПиУ за последний отчетный год &mdash; аналитический баланс</label>
+                        <input type="file">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Копия паспорта руководителя организации</label>
+                        <input type="file">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Решение/протокол о назначении руководителя</label>
+                        <input type="file">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Договор аренды/ Договор субаренды/ Cвидетельство о праве собственности по месту нахождения</label>
+                        <input type="file">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>УБ и отчет о фин. результатах за последний квартал</label>
+                        <input type="file">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary center-block">Сохранить</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

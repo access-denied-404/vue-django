@@ -14,18 +14,6 @@ class CabinetRequestsView(LoginRequiredMixin, TemplateView):
     template_name = 'marer/cabinet/requests.html'
 
 
-class CabinetRequestsNewView(LoginRequiredMixin, TemplateView):
-    template_name = 'marer/cabinet_requests_new.html'
-
-
-class CabinetRequestView(LoginRequiredMixin, TemplateView):
-    template_name = 'marer/cabinet/issue/scoring.html'
-
-
-class CabinetRequestBanksView(LoginRequiredMixin, TemplateView):
-    template_name = 'marer/cabinet_request_banks.html'
-
-
 class CabinetOrganizationsView(LoginRequiredMixin, TemplateView):
     template_name = 'marer/cabinet/organizations.html'
 
