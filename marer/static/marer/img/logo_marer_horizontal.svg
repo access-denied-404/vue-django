@@ -38,8 +38,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
-     inkscape:cx="210.52705"
-     inkscape:cy="103.73813"
+     inkscape:cx="212.54736"
+     inkscape:cy="99.69752"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -60,7 +60,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -69,18 +69,31 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-110.71344,-108.21211)">
-    <text
-       id="text1742"
+    <g
+       aria-label="МАРЭР"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.93375492px;font-family:'Elegant Line 7';-inkscape-font-specification:'Elegant Line 7, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#0c2957;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.48047429"
-       x="132.31624"
-       y="121.43007">
-      <tspan
+       id="text1742">
+      <path
+         d="m 132.9966,121.43007 h -0.68036 v -10.20539 h 0.68036 l 3.40179,4.57882 3.4018,-4.57882 h 0.68036 v 10.20539 h -0.68036 v -9.06919 l -3.4018,4.52439 -3.40179,-4.5448 z"
          style="stroke-width:0.48047429"
-         sodipodi:role="line"
-         id="tspan1744"
-         x="132.31624"
-         y="121.43007">МАРЭР</tspan>
-    </text>
+         id="path50" />
+      <path
+         d="m 142.52163,121.43007 h -0.68036 v -6.12323 q 0,-4.08216 4.08215,-4.08216 4.08216,0 4.08216,4.08216 v 6.12323 h -0.68036 v -4.08216 h -6.80359 z m 6.80359,-4.76251 v -1.36072 q 0,-3.4018 -3.4018,-3.4018 -3.40179,0 -3.40179,3.4018 v 1.36072 z"
+         style="stroke-width:0.48047429"
+         id="path52" />
+      <path
+         d="m 151.36629,121.43007 v -10.20539 h 4.08216 q 4.08215,0 4.08215,4.08216 0,4.08215 -4.08215,4.08215 h -3.4018 v 2.04108 z m 4.08216,-2.72144 q 3.4018,0 3.4018,-3.40179 0,-3.4018 -3.4018,-3.4018 h -3.4018 v 6.80359 z"
+         style="stroke-width:0.48047429"
+         id="path54" />
+      <path
+         d="m 164.97348,115.9872 h 3.40179 v -0.68036 q 0,-3.4018 -3.40179,-3.4018 -2.72144,0 -3.19769,2.04108 h -0.68036 q 0.47625,-2.72144 3.87805,-2.72144 4.08215,0 4.08215,4.08216 v 2.04107 q 0,4.08216 -4.08215,4.08216 -3.4018,0 -3.87805,-2.72144 h 0.68036 q 0.47625,2.04108 3.19769,2.04108 3.40179,0 3.40179,-3.4018 v -0.68035 h -3.40179 z"
+         style="stroke-width:0.48047429"
+         id="path56" />
+      <path
+         d="m 170.41635,121.43007 v -10.20539 h 4.08216 q 4.08215,0 4.08215,4.08216 0,4.08215 -4.08215,4.08215 h -3.4018 v 2.04108 z m 4.08216,-2.72144 q 3.40179,0 3.40179,-3.40179 0,-3.4018 -3.40179,-3.4018 h -3.4018 v 6.80359 z"
+         style="stroke-width:0.48047429"
+         id="path58" />
+    </g>
     <g
        id="g5464"
        transform="matrix(0.35277777,0,0,-0.35277777,-255.4043,499.95976)">
