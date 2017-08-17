@@ -1,0 +1,62 @@
+
+- hosts: all
+  tasks:
+    - name: Update APT cache
+      apt: update_cache=yes
+      become: true
+
+    - name: Install software
+      apt: name={{ item }} state=present
+      with_items:
+        - python
+        - python3
+        - python-pip
+        - git
+        - virtualenv
+        - nodejs-legacy
+        - npm
+      become: true
+
+    - name: Install bower to manage static files packages
+      npm:
+        name: "{{ item }}"
+        global: yes
+        state: present
+      with_items:
+        - bower
+        - grunt
+
+    - name: Prepare project directory tree
+      file: state=directory path=/srv/marer/
+      become: true
+
+    - name: Clone repository
+      git:
+        dest=/srv/marer/
+        force=no
+        repo=git@bitbucket.org:inspectrum_su/bankomat.git
+        accept_hostkey=true
+        version=master
+      become: true
+
+    - name: Install requirements
+      pip:
+        requirements: /srv/marer/requirements.txt
+        virtualenv: /srv/virtualenv/
+        virtualenv_python: python3.5
+
+    - name: Primary build static files - npm requirements install
+      command: npm install chdir=/srv/marer/marer/static/{{ item }}
+      with_items:
+        - bootstrap
+      become: true
+
+    - name: Primary build static files - grunt dist build
+      command: grunt dist chdir=/srv/marer/marer/static/{{ item }}
+      with_items:
+        - bootstrap
+      become: true
+
+    - name: Cleaning installation mostly after static files patches
+      command: git reset --hard chdir=/srv/marer/
+      become: true

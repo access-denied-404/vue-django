@@ -1,4 +1,5 @@
 .idea/**
+ansible/*.retry
 bower_components/**
 static/**
 db.sqlite3
