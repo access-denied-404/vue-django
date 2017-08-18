@@ -61,17 +61,17 @@ class FinanceOrganization(models.Model):
 class OKVED2(mptt_models.MPTTModel):
     name = models.CharField(max_length=512, blank=False, null=False)
     code = models.CharField(max_length=32, blank=False, null=False)
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='childrens')
 
 
 class Region(mptt_models.MPTTModel):
     name = models.CharField(max_length=512, blank=False, null=False)
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='childrens')
 
 
 class FinanceProduct(mptt_models.MPTTModel):
     name = models.CharField(max_length=512, blank=False, null=False)
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='childrens')
 
 
 class IssueDocument(models.Model):
