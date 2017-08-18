@@ -73,6 +73,9 @@ class FinanceProduct(mptt_models.MPTTModel):
     name = models.CharField(max_length=512, blank=False, null=False)
     parent = TreeForeignKey('self', null=True, blank=True, related_name='childrens')
 
+    def __str__(self):
+        return self.name
+
 
 class IssueDocument(models.Model):
     pass
