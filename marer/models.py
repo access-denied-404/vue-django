@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from mptt import models as mptt_models
+from mptt.fields import TreeForeignKey
 
 
 class Issuer(models.Model):
@@ -60,14 +61,17 @@ class FinanceOrganization(models.Model):
 class OKVED2(mptt_models.MPTTModel):
     name = models.CharField(max_length=512, blank=False, null=False)
     code = models.CharField(max_length=32, blank=False, null=False)
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
 
 
 class Region(mptt_models.MPTTModel):
     name = models.CharField(max_length=512, blank=False, null=False)
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
 
 
 class FinanceProduct(mptt_models.MPTTModel):
     name = models.CharField(max_length=512, blank=False, null=False)
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
 
 
 class IssueDocument(models.Model):
