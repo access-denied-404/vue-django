@@ -43,22 +43,20 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li class="dropdown dropdown-on-hover">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                            Госконтракты
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Банковская гарантия на обеспечение заявки</a></li>
-                            <li><a href="#">Банковская гарантия на обеспечение контракта</a></li>
-                            <li><a href="#">Кредит на исполнение госконтракта</a></li>
-                            <li><a href="#">Банковская гарантия на возврат аванса</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="#">Кредитные организации</a></li>
-                    <li><a href="#">Лизинг</a></li>
-                    <li><a href="#">Факторинг</a></li>
-                    <li><a href="#">Страхование</a></li>
-                    <li><a href="#">Инвестиции</a></li>
+                    {% for product in finance_product_roots %}
+                        <li class="dropdown dropdown-on-hover">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                {{ product.name }}
+                            </a>
+                            {% if product.childrens.exists %}
+                                <ul class="dropdown-menu">
+                                    {% for subproduct in product.childrens.all %}
+                                        <li><a href="#">{{ subproduct.name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if request.user.is_authenticated %}
@@ -90,10 +88,17 @@
                                 <div class="form-group form-group-sm">
                                     <label>Вид услуги</label>
                                     <select class="form-control">
-                                        <option>Банковская гарантия</option>
-                                        <option>Тендерный займ</option>
-                                        <option>Тендерный кредит</option>
-                                        <option>Проектное финансирование</option>
+                                        {% for product in finance_product_roots %}
+                                            {% if product.childrens.exists %}
+                                                <optgroup label="{{ product.name }}">
+                                                    {% for subproduct in product.childrens.all %}
+                                                        <option value="{{ subproduct.id }}">{{ subproduct.name }}</option>
+                                                    {% endfor %}
+                                                </optgroup>
+                                            {% else %}
+                                                <option value="{{ product.id }}">{{ product.name }}</option>
+                                            {% endif %}
+                                        {% endfor %}
                                     </select>
                                 </div>
                             </div>

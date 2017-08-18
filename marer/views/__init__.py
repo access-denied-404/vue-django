@@ -4,10 +4,17 @@ from django.urls import reverse
 from django.views.generic.base import TemplateView
 
 from marer import forms
+from marer.models import FinanceProduct
 
 
 class IndexView(TemplateView):
     template_name = 'marer/index.html'
+
+    def get(self, request, *args, **kwargs):
+        finance_product_roots = FinanceProduct.objects.root_nodes()
+        context_part = dict(finance_product_roots=finance_product_roots)
+        kwargs.update(context_part)
+        return super().get(request, *args, **kwargs)
 
 
 class CabinetRequestsView(LoginRequiredMixin, TemplateView):
