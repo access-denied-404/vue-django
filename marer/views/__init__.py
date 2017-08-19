@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views.generic.base import TemplateView
 
@@ -13,6 +14,22 @@ class IndexView(TemplateView):
     def get(self, request, *args, **kwargs):
         finance_product_roots = FinanceProduct.objects.root_nodes()
         context_part = dict(finance_product_roots=finance_product_roots)
+        kwargs.update(context_part)
+        return super().get(request, *args, **kwargs)
+
+
+class FinanceProductView(TemplateView):
+    template_name = 'marer/product.html'
+
+    def get(self, request, *args, **kwargs):
+        product = get_object_or_404(FinanceProduct, id=kwargs.get('pid', 0))
+        if product.childrens.exists():
+            raise Http404()
+        finance_product_roots = FinanceProduct.objects.root_nodes()
+        context_part = dict(
+            finance_product_roots=finance_product_roots,
+            product=product,
+        )
         kwargs.update(context_part)
         return super().get(request, *args, **kwargs)
 

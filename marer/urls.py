@@ -6,6 +6,7 @@ from marer.views import issue
 
 urlpatterns = [
     url(r'^$', views.IndexView.as_view(), name='index'),
+    url(r'^product/(?P<pid>\d+)', views.FinanceProductView.as_view(), name='finance_product'),
 
     url(r'^login$', auth.LoginView.as_view(), name='login'),
     url(r'^logout$', auth.LogoutView.as_view(), name='logout'),

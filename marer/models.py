@@ -72,9 +72,20 @@ class Region(mptt_models.MPTTModel):
 class FinanceProduct(mptt_models.MPTTModel):
     name = models.CharField(max_length=512, blank=False, null=False)
     parent = TreeForeignKey('self', null=True, blank=True, related_name='childrens')
+    _seo_h1 = models.CharField(max_length=512, blank=True, null=False, default='')
+    _seo_title = models.CharField(max_length=512, blank=True, null=False, default='')
+    _seo_description = models.CharField(max_length=512, blank=True, null=False, default='')
+    _seo_keywords = models.CharField(max_length=512, blank=True, null=False, default='')
+    page_content = models.TextField(blank=True, null=False, default='')
 
     def __str__(self):
         return self.name
+
+    def get_seo_h1(self):
+        return self._seo_h1 if self._seo_h1 != '' else self.name
+
+    def get_seo_title(self):
+        return self._seo_title if self._seo_title != '' else self.name
 
 
 class IssueDocument(models.Model):

@@ -62,11 +62,16 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=512)),
+                ('_seo_h1', models.CharField(blank=True, default='', max_length=512)),
+                ('_seo_title', models.CharField(blank=True, default='', max_length=512)),
+                ('_seo_description', models.CharField(blank=True, default='', max_length=512)),
+                ('_seo_keywords', models.CharField(blank=True, default='', max_length=512)),
+                ('page_content', models.TextField(blank=True, default='')),
                 ('lft', models.PositiveIntegerField(db_index=True, editable=False)),
                 ('rght', models.PositiveIntegerField(db_index=True, editable=False)),
                 ('tree_id', models.PositiveIntegerField(db_index=True, editable=False)),
                 ('level', models.PositiveIntegerField(db_index=True, editable=False)),
-                ('parent', mptt.fields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='marer.FinanceProduct')),
+                ('parent', mptt.fields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='childrens', to='marer.FinanceProduct')),
             ],
             options={
                 'abstract': False,
