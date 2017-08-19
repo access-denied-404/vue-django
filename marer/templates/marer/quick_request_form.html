@@ -1,22 +1,57 @@
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <span class="h4">Быстрая заявка</span>
-    </div>
-    <div class="panel-body">
-        <form>
-            <div class="form-group">
+<form>
+    <div class="form-row">
+        <div class="col-sm-12">
+            <div class="form-group form-group-sm">
+                <label>Вид услуги</label>
                 <select class="form-control">
-                    <option>Банковская гарантия</option>
-                    <option>Тендерный займ</option>
-                    <option>Тендерный кредит</option>
-                    <option>Проектное финансирование</option>
+                    {% for product in finance_product_roots %}
+                        {% if product.childrens.exists %}
+                            <optgroup label="{{ product.name }}">
+                                {% for subproduct in product.childrens.all %}
+                                    <option value="{{ subproduct.id }}">{{ subproduct.name }}</option>
+                                {% endfor %}
+                            </optgroup>
+                        {% else %}
+                            <option value="{{ product.id }}">{{ product.name }}</option>
+                        {% endif %}
+                    {% endfor %}
                 </select>
             </div>
-            <div class="form-group"><input name="org" class="form-control"/></div>
-            <div class="form-group"><input name="person" class="form-control"/></div>
-            <div class="form-group"><input name="phone" class="form-control"/></div>
-            <div class="form-group"><input name="email" class="form-control"/></div>
-            <button type="submit" class="btn btn-primary center-block">Отправить</button>
-        </form>
+        </div>
     </div>
-</div>
+    <div class="form-row">
+        <div class="col-sm-12">
+            <div class="form-group form-group-sm">
+                <label>Название или ИНН органиазции</label>
+                <input name="org" class="form-control"/>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-sm-12">
+            <div class="form-group form-group-sm">
+                <label>Контактное лицо</label>
+                <input name="person" class="form-control"/>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-sm-6">
+            <div class="form-group form-group-sm">
+                <label>Телефон</label>
+                <input name="phone" class="form-control"/>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group form-group-sm">
+                <label>E-mail</label>
+                <input name="email" class="form-control"/>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-sm-12">
+            <button type="submit" class="btn btn-primary center-block">Отправить</button>
+        </div>
+    </div>
+</form>
