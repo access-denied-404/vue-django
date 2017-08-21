@@ -15,6 +15,8 @@
         - virtualenv
         - nodejs-legacy
         - npm
+        - nginx
+        - uwsgi
       become: true
 
     - name: Install bower to manage static files packages
@@ -44,6 +46,34 @@
         requirements: /srv/marer/requirements.txt
         virtualenv: /srv/virtualenv/
         virtualenv_python: python3.5
+
+    - name: Configure Web Server - part 1
+      copy:
+        src=nginx.conf
+        dest=/etc/nginx/sites-available/marer.ru.conf
+
+    - name: Configure Web Server - part 2
+      file:
+        src=/etc/nginx/sites-available/marer.ru.conf
+        dest=/etc/nginx/sites-enabled/marer.ru
+        state=link
+
+    - name: Reload nginx
+      service: name=nginx state=reloaded
+
+    - name: Configure Web Server - part 3
+      copy:
+        src=uwsgi.ini
+        dest=/etc/uwsgi/apps-available/marer.ru.ini
+
+    - name: Configure Web Server - part 4
+      file:
+        src=/etc/uwsgi/apps-available/marer.ru.ini
+        dest=/etc/uwsgi/apps-enabled/marer.ru.ini
+        state=link
+
+    - name: Reload uWSGI
+      service: name=uwsgi state=reloaded
 
     - name: Primary build static files - npm requirements install
       command: npm install chdir=/srv/marer/marer/static/{{ item }}
