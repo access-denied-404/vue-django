@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.views.generic.base import TemplateView
 
 from marer import forms
+from marer.forms import QuickRequestForm
 from marer.models import FinanceProduct
 
 
@@ -12,8 +13,12 @@ class IndexView(TemplateView):
     template_name = 'marer/index.html'
 
     def get(self, request, *args, **kwargs):
+        quick_request_form = QuickRequestForm()
         finance_product_roots = FinanceProduct.objects.root_nodes()
-        context_part = dict(finance_product_roots=finance_product_roots)
+        context_part = dict(
+            finance_product_roots=finance_product_roots,
+            quick_request_form=quick_request_form,
+        )
         kwargs.update(context_part)
         return super().get(request, *args, **kwargs)
 
@@ -22,6 +27,7 @@ class FinanceProductView(TemplateView):
     template_name = 'marer/product.html'
 
     def get(self, request, *args, **kwargs):
+        quick_request_form = QuickRequestForm()
         product = get_object_or_404(FinanceProduct, id=kwargs.get('pid', 0))
         if product.childrens.exists():
             raise Http404()
@@ -29,6 +35,7 @@ class FinanceProductView(TemplateView):
         context_part = dict(
             finance_product_roots=finance_product_roots,
             product=product,
+            quick_request_form=quick_request_form,
         )
         kwargs.update(context_part)
         return super().get(request, *args, **kwargs)

@@ -1,54 +1,44 @@
-<form>
+<form method="post">
+    {% csrf_token %}
     <div class="form-row">
         <div class="col-sm-12">
             <div class="form-group form-group-sm">
-                <label>Вид услуги</label>
-                <select class="form-control">
-                    {% for product in finance_product_roots %}
-                        {% if product.childrens.exists %}
-                            <optgroup label="{{ product.name }}">
-                                {% for subproduct in product.childrens.all %}
-                                    <option value="{{ subproduct.id }}">{{ subproduct.name }}</option>
-                                {% endfor %}
-                            </optgroup>
-                        {% else %}
-                            <option value="{{ product.id }}">{{ product.name }}</option>
-                        {% endif %}
-                    {% endfor %}
-                </select>
+                <label>{{ quick_request_form.finance_product.label }}</label>
+                {{ quick_request_form.finance_product }}
             </div>
         </div>
     </div>
     <div class="form-row">
         <div class="col-sm-12">
             <div class="form-group form-group-sm">
-                <label>Название или ИНН органиазции</label>
-                <input name="org" class="form-control"/>
+                <label>{{ quick_request_form.issuer.label }}</label>
+                {{ quick_request_form.issuer }}
             </div>
         </div>
     </div>
     <div class="form-row">
         <div class="col-sm-12">
             <div class="form-group form-group-sm">
-                <label>Контактное лицо</label>
-                <input name="person" class="form-control"/>
+                <label>{{ quick_request_form.contact_person_name.label }}</label>
+                {{ quick_request_form.contact_person_name }}
             </div>
         </div>
     </div>
     <div class="form-row">
         <div class="col-sm-6">
             <div class="form-group form-group-sm">
-                <label>Телефон</label>
-                <input name="phone" class="form-control"/>
+                <label>{{ quick_request_form.contact_phone.label }}</label>
+                {{ quick_request_form.contact_phone }}
             </div>
         </div>
         <div class="col-sm-6">
             <div class="form-group form-group-sm">
-                <label>E-mail</label>
-                <input name="email" class="form-control"/>
+                <label>{{ quick_request_form.contact_email.label }}</label>
+                {{ quick_request_form.contact_email }}
             </div>
         </div>
     </div>
+    {% include 'marer/form_errors.html' with form=quick_request_form %}
     <div class="form-row">
         <div class="col-sm-12">
             <button type="submit" class="btn btn-primary center-block">Отправить</button>

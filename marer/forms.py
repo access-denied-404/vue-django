@@ -70,3 +70,35 @@ class ProfileForm(Form):
         widget=widgets.TextInput(attrs={'class': 'form-control'}),
         label='Контактный телефон'
     )
+
+
+class QuickRequestForm(Form):
+
+    finance_product = fields.CharField(
+        required=True,
+        widget=widgets.Select(
+            choices=[],
+            attrs={'class': 'form-control'}
+        ),
+        label='Вид услуги'
+    )
+    issuer = fields.CharField(
+        required=True,
+        widget=widgets.TextInput(attrs={'class': 'form-control'}),
+        label='Название или ИНН органиазции'
+    )
+    contact_person_name = fields.CharField(
+        required=True,
+        widget=widgets.TextInput(attrs={'class': 'form-control'}),
+        label='Контактное лицо'
+    )
+    contact_phone = fields.CharField(
+        required=True,
+        widget=widgets.TextInput(attrs={'class': 'form-control'}),
+        label='Телефон'
+    )
+    contact_email = fields.EmailField(
+        required=True,
+        widget=widgets.EmailInput(attrs={'class': 'form-control'}),
+        label='E-mail'
+    )
