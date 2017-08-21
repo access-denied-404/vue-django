@@ -5,17 +5,20 @@
 {% block head_additional %}
     <link href="{% static '/marer/css/sticky-navbar.css' %}" rel="stylesheet">
     <link href="{% static '/marer/css/sticky-footer.css' %}" rel="stylesheet">
+    <link href="{% static '/marer/css/no-text-decoration.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
 <header>
     <div class="container">
         <h1>
-            <img src="{% static 'marer/img/logo_marer_horizontal.svg' %}" height="64"/>
-            <span class="visible-md-inline visible-lg-inline">
-                <img src="{% static 'marer/img/logo_marer_vert_line.svg' %}" height="64"/>
-                <img src="{% static 'marer/img/logo_marer_descr.svg' %}" height="64"/>
-            </span>
+            <a href="{% url 'index' %}" class="no-text-decoration">
+                <img src="{% static 'marer/img/logo_marer_horizontal.svg' %}" height="64"/>
+                <span class="visible-md-inline visible-lg-inline">
+                    <img src="{% static 'marer/img/logo_marer_vert_line.svg' %}" height="64"/>
+                    <img src="{% static 'marer/img/logo_marer_descr.svg' %}" height="64"/>
+                </span>
+            </a>
         </h1>
     </div>
 </header>
