@@ -2,6 +2,7 @@ from django.conf.urls import url
 
 from marer import views
 from marer.views import auth
+from marer.views import cabinet
 from marer.views import issue
 
 urlpatterns = [
@@ -14,9 +15,9 @@ urlpatterns = [
     url(r'^password_reset/request$', auth.PasswordResetRequestView.as_view(), name='password_reset_request'),
     url(r'^password_reset/reset$', auth.PasswordResetResetView.as_view(), name='password_reset_reset'),
 
-    url(r'^cabinet/requests$', views.CabinetRequestsView.as_view(), name='cabinet_requests'),
-    url(r'^cabinet/organizations$', views.CabinetOrganizationsView.as_view(), name='cabinet_organizations'),
-    url(r'^cabinet/profile$', views.CabinetProfileView.as_view(), name='cabinet_profile'),
+    url(r'^cabinet/requests$', cabinet.CabinetRequestsView.as_view(), name='cabinet_requests'),
+    url(r'^cabinet/organizations$', cabinet.CabinetOrganizationsView.as_view(), name='cabinet_organizations'),
+    url(r'^cabinet/profile$', cabinet.CabinetProfileView.as_view(), name='cabinet_profile'),
 
     url(r'^cabinet/requests/new$', issue.IssueCancelledView.as_view(), name='cabinet_requests_new'),
     url(r'^cabinet/requests/(?P<rid>\d+)$', issue.IssueRegisteringView.as_view(), name='cabinet_request'),
