@@ -30,6 +30,14 @@ class IndexView(TemplateView):
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        quick_request_form = QuickRequestForm(request.POST)
+        # todo check if user logged in or user already exists
+        if quick_request_form.is_valid():
+            if not request.user.id:
+                # todo create new user an log in
+                pass
+            # todo create new issue, redirect to issue page
+            pass
         return self.get(request, *args, **kwargs)
 
 
