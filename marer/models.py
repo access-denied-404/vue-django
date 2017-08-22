@@ -1,3 +1,4 @@
+from ckeditor.fields import RichTextField
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -76,7 +77,7 @@ class FinanceProduct(mptt_models.MPTTModel):
     _seo_title = models.CharField(max_length=512, blank=True, null=False, default='')
     _seo_description = models.CharField(max_length=512, blank=True, null=False, default='')
     _seo_keywords = models.CharField(max_length=512, blank=True, null=False, default='')
-    page_content = models.TextField(blank=True, null=False, default='')
+    page_content = RichTextField(blank=True, null=False, default='')
 
     def __str__(self):
         return self.name

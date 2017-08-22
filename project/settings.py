@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'marer.apps.MarerConfig',
     # 'pipeline',
     'mptt',
+    'ckeditor',
 ]
 
 MIDDLEWARE = [
