@@ -1,4 +1,5 @@
 .idea/**
+locale/*/LC_MESSAGES/*.mo
 ansible/*.retry
 bower_components/**
 static/**
