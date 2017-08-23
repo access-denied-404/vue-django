@@ -3,7 +3,7 @@ from django.forms import fields
 from django.forms.widgets import TextInput, PasswordInput, EmailInput
 
 from marer.forms.widgets import CallableChoicesSelect
-from marer.models import FinanceProduct
+from marer.models import FinanceProduct, User
 
 
 class RegisterForm(Form):
@@ -118,3 +118,15 @@ class QuickRequestForm(Form):
         widget=EmailInput(attrs={'class': 'form-control'}),
         label='E-mail'
     )
+
+    def __init__(self, *args, user: User = None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user is not None:
+            self.initial.update(dict(
+                contact_person_name=user.get_full_name(),
+                contact_email=user.email,
+                contact_phone=user.phone,
+            ))
+            self.fields['contact_person_name'].disabled = True
+            self.fields['contact_email'].disabled = True
+            self.fields['contact_phone'].disabled = True
