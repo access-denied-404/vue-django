@@ -17,6 +17,7 @@
         - npm
         - nginx
         - uwsgi
+        - gettext
       become: true
 
     - name: Install bower to manage static files packages
