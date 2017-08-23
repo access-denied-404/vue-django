@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-23 12:45+0300\n"
+"POT-Creation-Date: 2017-08-23 13:34+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,9 +20,49 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
+#: marer/apps.py:7
+msgid "marer"
+msgstr "МАРЭР"
+
 #: marer/models.py:48
 msgid "contact phone"
 msgstr "контактный телефон"
+
+#: marer/models.py:76
+msgid "finance product"
+msgstr "финансовый продукт"
+
+#: marer/models.py:77
+msgid "finance products"
+msgstr "финансовые продукты"
+
+#: marer/models.py:79
+msgid "finance product name"
+msgstr "название финансового продукта"
+
+#: marer/models.py:80
+msgid "parent product"
+msgstr "родительский финансовый продукт"
+
+#: marer/models.py:81
+msgid "name on page"
+msgstr "название на странице"
+
+#: marer/models.py:82
+msgid "browser title"
+msgstr "заголовок браузера"
+
+#: marer/models.py:84
+msgid "page desctiption"
+msgstr "описание страницы"
+
+#: marer/models.py:91
+msgid "page keywords"
+msgstr "ключевые слова страницы"
+
+#: marer/models.py:97
+msgid "page content"
+msgstr "содержание страницы"
 
 #: project/settings.py:155
 msgid "Russian"

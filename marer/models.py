@@ -71,13 +71,30 @@ class Region(mptt_models.MPTTModel):
 
 
 class FinanceProduct(mptt_models.MPTTModel):
-    name = models.CharField(max_length=512, blank=False, null=False)
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='childrens')
-    _seo_h1 = models.CharField(max_length=512, blank=True, null=False, default='')
-    _seo_title = models.CharField(max_length=512, blank=True, null=False, default='')
-    _seo_description = models.CharField(max_length=512, blank=True, null=False, default='')
-    _seo_keywords = models.CharField(max_length=512, blank=True, null=False, default='')
-    page_content = RichTextField(blank=True, null=False, default='')
+
+    class Meta:
+        verbose_name = _('finance product')
+        verbose_name_plural = _('finance products')
+
+    name = models.CharField(verbose_name=_('finance product name'), max_length=512, blank=False, null=False)
+    parent = TreeForeignKey('self', verbose_name=_('parent product'), null=True, blank=True, related_name='childrens')
+    _seo_h1 = models.CharField(verbose_name=_('name on page'), max_length=512, blank=True, null=False, default='')
+    _seo_title = models.CharField(verbose_name=_('browser title'), max_length=512, blank=True, null=False, default='')
+    _seo_description = models.CharField(
+        verbose_name=_('page desctiption'),
+        max_length=512,
+        blank=True,
+        null=False,
+        default=''
+    )
+    _seo_keywords = models.CharField(
+        verbose_name=_('page keywords'),
+        max_length=512,
+        blank=True,
+        null=False,
+        default=''
+    )
+    page_content = RichTextField(verbose_name=_('page content'), blank=True, null=False, default='')
 
     def __str__(self):
         return self.name
