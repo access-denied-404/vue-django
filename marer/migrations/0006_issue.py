@@ -19,6 +19,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('status', models.CharField(choices=[('registering', 'Оформление заявки'), ('common_documents_request', 'Запрос документов'), ('survey', 'Анкетирование'), ('scoring', 'Скоринг'), ('additional_documents_request', 'Дозапрос документов'), ('payments', 'Оплата услуг'), ('final_documents_approval', 'Согласование итоговых документов'), ('finished', 'Завершена'), ('cancelled', 'Отменена')], max_length=32)),
+                ('sum', models.DecimalField(decimal_places=2, max_digits=12, null=True)),
+                ('issuer', models.CharField(blank=True, default='', max_length=512)),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to=settings.AUTH_USER_MODEL)),
             ],
         ),
