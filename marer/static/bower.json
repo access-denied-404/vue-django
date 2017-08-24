@@ -16,6 +16,7 @@
     "tests"
   ],
   "dependencies": {
+    "angularjs": "^1.6.6",
     "bootstrap": "^3.3.7",
     "jquery-ui": "^1.12.1"
   }
