@@ -11,7 +11,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Этапы прохождения заявки</div>
                 <div class="list-group">
-                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_registering' %} active{% endif %}" href="{% url 'issue_registering' 0 %}">Оформление заявки</a>
+                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_registering' or request.resolver_match.url_name == 'issue_new' %} active{% endif %}" href="{% url 'issue_registering' 0 %}">Оформление заявки</a>
                     <a class="list-group-item{% if request.resolver_match.url_name == 'issue_common_documents_request' %} active{% endif %}" href="{% url 'issue_common_documents_request' 0 %}">Запрос документов</a>
                     <a class="list-group-item{% if request.resolver_match.url_name == 'issue_survey' %} active{% endif %}" href="{% url 'issue_survey' 0 %}">Анкетирование</a>
                     <a class="list-group-item{% if request.resolver_match.url_name == 'issue_scoring' %} active{% endif %}" href="{% url 'issue_scoring' 0 %}">Выбор кредитных организаций</a>
