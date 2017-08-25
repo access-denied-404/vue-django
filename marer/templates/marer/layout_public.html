@@ -28,50 +28,39 @@
     <nav class="navbar navbar-default navbar-static-top" id="nav-sticky">
         <div class="container">
             <div class="row">
-            <div class="col-md-12">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand hidden" id="scroll-fade-toggle-nav-brand" href="{% url 'index' %}">
-                    <img src="{% static 'marer/img/logo.svg' %}" height="24"/>
-                </a>
-            </div>
+                <div class="col-md-12">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                                data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand hidden" id="scroll-fade-toggle-nav-brand" href="{% url 'index' %}">
+                            <img src="{% static 'marer/img/logo.svg' %}" height="24"/>
+                        </a>
+                    </div>
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    {% for product in finance_product_roots %}
-                        <li class="dropdown dropdown-on-hover">
-                            <a href="{% url 'finance_product' product.id %}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                {{ product.name }}
-                            </a>
-                            {% if product.childrens.exists %}
-                                <ul class="dropdown-menu">
-                                    {% for subproduct in product.childrens.all %}
-                                        <li><a href="{% url 'finance_product' subproduct.id %}">{{ subproduct.name }}</a></li>
-                                    {% endfor %}
-                                </ul>
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            {% for product in finance_product_roots %}
+                                <li><a href="{% url 'finance_product' product.id %}">{{ product.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            {% if request.user.is_authenticated %}
+                            <li><a href="{% url 'cabinet_requests' %}"><b>{{ request.user.get_full_name }}</b></a></li>
+                            <li><a href="{% url 'logout' %}">Выход</a></li>
+                            {% else %}
+                            <li><a href="{% url 'login' %}">Вход</a></li>
+                            <li><a href="{% url 'register' %}">Регистрация</a></li>
                             {% endif %}
-                        </li>
-                    {% endfor %}
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    {% if request.user.is_authenticated %}
-                    <li><a href="{% url 'cabinet_requests' %}"><b>{{ request.user.get_full_name }}</b></a></li>
-                    <li><a href="{% url 'logout' %}">Выход</a></li>
-                    {% else %}
-                    <li><a href="{% url 'login' %}">Вход</a></li>
-                    <li><a href="{% url 'register' %}">Регистрация</a></li>
-                    {% endif %}
-                </ul>
-            </div><!-- /.navbar-collapse -->
-            </div>
+                        </ul>
+                    </div><!-- /.navbar-collapse -->
+                </div>
             </div>
         </div><!-- /.container-fluid -->
     </nav>
