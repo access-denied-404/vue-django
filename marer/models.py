@@ -16,34 +16,6 @@ class Issuer(models.Model):
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
 
 
-class Issue(models.Model):
-    STATUS_REGISTERING = 'registering'
-    STATUS_COMMON_DOCUMENTS_REQUEST = 'common_documents_request'
-    STATUS_SURVEY = 'survey'
-    STATUS_SCORING = 'scoring'
-    STATUS_ADDITIONAL_DOCUMENTS_REQUEST = 'additional_documents_request'
-    STATUS_PAYMENTS = 'payments'
-    STATUS_FINAL_DOCUMENTS_APPROVAL = 'final_documents_approval'
-    STATUS_FINISHED = 'finished'
-    STATUS_CANCELLED = 'cancelled'
-
-    type = None
-    status = models.CharField(max_length=32, blank=False, null=False, choices=[
-        (STATUS_REGISTERING, 'Оформление заявки'),
-        (STATUS_COMMON_DOCUMENTS_REQUEST, 'Запрос документов'),
-        (STATUS_SURVEY, 'Анкетирование'),
-        (STATUS_SCORING, 'Скоринг'),
-        (STATUS_ADDITIONAL_DOCUMENTS_REQUEST, 'Дозапрос документов'),
-        (STATUS_PAYMENTS, 'Оплата услуг'),
-        (STATUS_FINAL_DOCUMENTS_APPROVAL, 'Согласование итоговых документов'),
-        (STATUS_FINISHED, 'Завершена'),
-        (STATUS_CANCELLED, 'Отменена'),
-    ])
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, null=False)
-    sum = models.DecimalField(max_digits=12, decimal_places=2, null=True)
-    issuer = models.CharField(max_length=512, blank=True, null=False, default='')
-
-
 class User(AbstractUser):
     phone = models.CharField(_('contact phone'), max_length=30, blank=True)
 
@@ -112,3 +84,31 @@ class IssueDocument(models.Model):
 
 class IssueDocumentRequest(models.Model):
     pass
+
+
+class Issue(models.Model):
+    STATUS_REGISTERING = 'registering'
+    STATUS_COMMON_DOCUMENTS_REQUEST = 'common_documents_request'
+    STATUS_SURVEY = 'survey'
+    STATUS_SCORING = 'scoring'
+    STATUS_ADDITIONAL_DOCUMENTS_REQUEST = 'additional_documents_request'
+    STATUS_PAYMENTS = 'payments'
+    STATUS_FINAL_DOCUMENTS_APPROVAL = 'final_documents_approval'
+    STATUS_FINISHED = 'finished'
+    STATUS_CANCELLED = 'cancelled'
+
+    type = models.ForeignKey(FinanceProduct, on_delete=models.DO_NOTHING, null=False)
+    status = models.CharField(max_length=32, blank=False, null=False, choices=[
+        (STATUS_REGISTERING, 'Оформление заявки'),
+        (STATUS_COMMON_DOCUMENTS_REQUEST, 'Запрос документов'),
+        (STATUS_SURVEY, 'Анкетирование'),
+        (STATUS_SCORING, 'Скоринг'),
+        (STATUS_ADDITIONAL_DOCUMENTS_REQUEST, 'Дозапрос документов'),
+        (STATUS_PAYMENTS, 'Оплата услуг'),
+        (STATUS_FINAL_DOCUMENTS_APPROVAL, 'Согласование итоговых документов'),
+        (STATUS_FINISHED, 'Завершена'),
+        (STATUS_CANCELLED, 'Отменена'),
+    ])
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, null=False)
+    sum = models.DecimalField(max_digits=12, decimal_places=2, null=True)
+    issuer = models.CharField(max_length=512, blank=True, null=False, default='')

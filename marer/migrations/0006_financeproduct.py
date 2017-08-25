@@ -61,7 +61,7 @@ def fill_finance_products(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('marer', '0006_issue'),
+        ('marer', '0005_region'),
     ]
 
     operations = [

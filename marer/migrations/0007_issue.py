@@ -10,7 +10,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('marer', '0005_region'),
+        ('marer', '0006_financeproduct'),
     ]
 
     operations = [
@@ -21,6 +21,7 @@ class Migration(migrations.Migration):
                 ('status', models.CharField(choices=[('registering', 'Оформление заявки'), ('common_documents_request', 'Запрос документов'), ('survey', 'Анкетирование'), ('scoring', 'Скоринг'), ('additional_documents_request', 'Дозапрос документов'), ('payments', 'Оплата услуг'), ('final_documents_approval', 'Согласование итоговых документов'), ('finished', 'Завершена'), ('cancelled', 'Отменена')], max_length=32)),
                 ('sum', models.DecimalField(decimal_places=2, max_digits=12, null=True)),
                 ('issuer', models.CharField(blank=True, default='', max_length=512)),
+                ('type', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='marer.FinanceProduct')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to=settings.AUTH_USER_MODEL)),
             ],
         ),
