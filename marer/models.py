@@ -2,6 +2,7 @@ from ckeditor.fields import RichTextField
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils.formats import number_format
 from django.utils.translation import ugettext_lazy as _
 from mptt import models as mptt_models
 from mptt.fields import TreeForeignKey
@@ -112,3 +113,23 @@ class Issue(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, null=False)
     sum = models.DecimalField(max_digits=12, decimal_places=2, null=True)
     issuer = models.CharField(max_length=512, blank=True, null=False, default='')
+
+    @property
+    def humanized_id(self):
+        if self.id:
+            return str(self.id).zfill(10)
+        else:
+            return 'БЕЗ НОМЕРА'
+
+    @property
+    def humanized_sum(self):
+        if self.sum:
+            fmt_sum = number_format(self.sum)
+            currency = 'руб.'
+            return fmt_sum + ' ' + currency
+        else:
+            return '—'
+
+    @property
+    def humanized_status(self):
+        return self.get_status_display()
