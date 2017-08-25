@@ -3,7 +3,7 @@ from django.forms import fields
 from django.forms.widgets import TextInput, PasswordInput, EmailInput
 
 from marer.forms.widgets import CallableChoicesSelect
-from marer.models import FinanceProduct, User
+from marer.models import FinanceProduct, User, Issue
 
 
 class RegisterForm(Form):
@@ -130,3 +130,33 @@ class QuickRequestForm(Form):
             self.fields['contact_person_name'].disabled = True
             self.fields['contact_email'].disabled = True
             self.fields['contact_phone'].disabled = True
+
+
+class CabinetIssueListFilterForm(Form):
+    fpgrp = fields.CharField(
+        required=False,
+        widget=CallableChoicesSelect(
+            choices=get_finance_products_tree_for_select,
+            attrs={'class': 'form-control', 'style': 'max-width: 300px;'}
+        ),
+        label='Вид заявки'
+    )
+    status = fields.CharField(
+        required=False,
+        widget=CallableChoicesSelect(
+            choices=[
+                (None, 'Все'),
+                (Issue.STATUS_REGISTERING, 'Оформление заявки'),
+                (Issue.STATUS_COMMON_DOCUMENTS_REQUEST, 'Запрос документов'),
+                (Issue.STATUS_SURVEY, 'Анкетирование'),
+                (Issue.STATUS_SCORING, 'Скоринг'),
+                (Issue.STATUS_ADDITIONAL_DOCUMENTS_REQUEST, 'Дозапрос документов'),
+                (Issue.STATUS_PAYMENTS, 'Оплата услуг'),
+                (Issue.STATUS_FINAL_DOCUMENTS_APPROVAL, 'Согласование итоговых документов'),
+                (Issue.STATUS_FINISHED, 'Завершена'),
+                (Issue.STATUS_CANCELLED, 'Отменена'),
+            ],
+            attrs={'class': 'form-control'}
+        ),
+        label='Статус заявки'
+    )

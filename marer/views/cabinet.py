@@ -1,13 +1,34 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 
 from marer import forms
+from marer.models import Issue
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class CabinetRequestsView(LoginRequiredMixin, TemplateView):
     template_name = 'marer/cabinet/requests.html'
+
+    def get(self, request, *args, **kwargs):
+        filtered_issues_qs = Issue.objects.filter(user=request.user)
+        filter_form = forms.CabinetIssueListFilterForm(request.GET)
+        if filter_form.is_valid():
+            filter_fgrp = filter_form.cleaned_data.get('fpgrp', None)
+            filter_status = filter_form.cleaned_data.get('status', None)
+            if filter_fgrp is not None and filter_fgrp != '':
+                filtered_issues_qs = filtered_issues_qs.filter(type=filter_fgrp)
+            if filter_status is not None and filter_status != '':
+                filtered_issues_qs = filtered_issues_qs.filter(status=filter_status)
+        paged_filtered_issues_qs = filtered_issues_qs  # fixme make pageable
+        kwargs.update(dict(
+            filter_form=filter_form,
+            issues=paged_filtered_issues_qs
+        ))
+        return super().get(request, *args, **kwargs)
 
 
 class CabinetOrganizationsView(LoginRequiredMixin, TemplateView):

@@ -2,48 +2,20 @@
 
 {% block cabinet_dashboard_content %}
 <div class="pull-right">
-    <div class="btn-group" role="group">
-        <label>Вид заявки</label>
-    </div>
-    <div class="btn-group" role="group" aria-label="Вид заявки">
-        <div class="dropdown">
-            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                Госконтракты
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
-                <li><a href="#">Все</a></li>
-                <li><a href="#">Госконтракты</a></li>
-                <li><a href="#">Кредитные организации</a></li>
-                <li><a href="#">Лизинг</a></li>
-                <li><a href="#">Факторинг</a></li>
-                <li><a href="#">Страхование</a></li>
-                <li><a href="#">Инвестиции</a></li>
-            </ul>
+    <form style="display: inline">
+        <div class="btn-group" role="group">
+            <label>{{ filter_form.fpgrp.label }}</label>
         </div>
-    </div>
-    <div class="btn-group" role="group">
-        <label>Статус заявки</label>
-    </div>
-    <div class="btn-group" role="group" aria-label="Статус заявки">
-        <div class="dropdown">
-            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                Оформление заявки
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">
-                <li><a href="#">Все</a></li>
-                <li><a href="#">Оформление заявки</a></li>
-                <li><a href="#">Запрос документов и заполнение форм</a></li>
-                <li><a href="#">Скоринг</a></li>
-                <li><a href="#">Выбор кредитных организаций</a></li>
-                <li><a href="#">Дозапрос документов банком</a></li>
-                <li><a href="#">Согласование итоговых документов</a></li>
-                <li><a href="#">Оплата услуг</a></li>
-                <li><a href="#">Завершение сделки</a></li>
-            </ul>
+        <div class="btn-group" role="group" aria-label="{{ filter_form.fpgrp.label }}">
+            {{ filter_form.fpgrp }}
         </div>
-    </div>
+        <div class="btn-group" role="group">
+            <label>{{ filter_form.status.label }}</label>
+        </div>
+        <div class="btn-group" role="group" aria-label="{{ filter_form.status.label }}">
+            {{ filter_form.status }}
+        </div>
+    </form>
     <div class="btn-group" role="group" aria-label="Статус заявки">
         <a class="btn btn-primary" href="{% url 'issue_new' %}" role="button">Создать заявку</a>
     </div>
@@ -60,13 +32,18 @@
             <th>Сумма</th>
             <th>Статус</th>
         </tr>
-        <tr><td><a href="{% url 'cabinet_request' 0 %}">0000000001</a></td><td>ООО «ААА»</td><td>Тендерный кредит</td><td>100 500,00 руб.</td><td>Конь не валялся</td></tr>
-        <tr><td><a href="{% url 'cabinet_request' 0 %}">0000000002</a></td><td>ООО «ААА»</td><td>Тендерный кредит</td><td>100 500,00 руб.</td><td>Конь не валялся</td></tr>
-        <tr><td><a href="{% url 'cabinet_request' 0 %}">0000000003</a></td><td>ООО «ААА»</td><td>Тендерный кредит</td><td>100 500,00 руб.</td><td>Конь не валялся</td></tr>
-        <tr><td><a href="{% url 'cabinet_request' 0 %}">0000000004</a></td><td>ООО «ААА»</td><td>Тендерный кредит</td><td>100 500,00 руб.</td><td>Конь не валялся</td></tr>
-        <tr><td><a href="{% url 'cabinet_request' 0 %}">0000000005</a></td><td>ООО «ААА»</td><td>Тендерный кредит</td><td>100 500,00 руб.</td><td>Конь не валялся</td></tr>
-        <tr><td><a href="{% url 'cabinet_request' 0 %}">0000000006</a></td><td>ООО «ААА»</td><td>Тендерный кредит</td><td>100 500,00 руб.</td><td>Конь не валялся</td></tr>
-        <tr><td><a href="{% url 'cabinet_request' 0 %}">0000000007</a></td><td>ООО «ААА»</td><td>Тендерный кредит</td><td>100 500,00 руб.</td><td>Конь не валялся</td></tr>
+
+        {% for issue in issues %}
+        <tr>
+            <td>
+                <a href="{% url 'cabinet_request' issue.id %}">{{ issue.humanized_id }}</a>
+            </td>
+            <td>{{ issue.issuer }}</td>
+            <td>{{ issue.type }}</td>
+            <td>{{ issue.humanized_sum }}</td>
+            <td>{{ issue.humanized_status }}</td>
+        </tr>
+        {% endfor %}
     </table>
 </div>
 
