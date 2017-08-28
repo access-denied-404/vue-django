@@ -11,7 +11,8 @@ class IssueView(LoginRequiredMixin, TemplateView):
     def get(self, request, *args, **kwargs):
         iid = kwargs.get('iid', None)
         if iid is not None:
-            issue = get_object_or_404(Issue, id=iid)
+            # fixme maybe make error 403?
+            issue = get_object_or_404(Issue, id=iid, user_id=request.user.id)
             kwargs.update(issue=issue)
         return super().get(request, *args, **kwargs)
 
