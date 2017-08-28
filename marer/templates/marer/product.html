@@ -14,6 +14,40 @@
             </div>
         </div>
         <div class="col-md-8 col-md-pull-4">
+            {% if product.get_root.childrens.exists %}
+            <nav class="navbar navbar-inverse">
+                <div class="container-fluid">
+                    <ul class="nav navbar-nav">
+                        {% for subproduct in product.get_root.childrens.all %}
+                            {% if subproduct.childrens.exists %}
+                                <li class="dropdown dropdown-on-hover">
+                                    <a href="{% url 'finance_product' subproduct.id %}"
+                                       class="dropdown-toggle"
+                                       data-toggle="dropdown"
+                                       role="button"
+                                       aria-haspopup="true"
+                                       aria-expanded="false">
+                                        {{ subproduct.name }}
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        {% for subsubproduct in subproduct.childrens.all %}
+                                            <li>
+                                                <a href="{% url 'finance_product' subsubproduct.id %}">
+                                                    {{ subsubproduct.name }}
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                            {% else %}
+                                <li><a href="{% url 'finance_product' subproduct.id %}">{{ subproduct.name }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div><!-- /.container-fluid -->
+            </nav>
+            {% endif %}
             <h1>{{ product.get_seo_h1 }}</h1>
             <p>{{ product.page_content |safe }}</p>
         </div>
