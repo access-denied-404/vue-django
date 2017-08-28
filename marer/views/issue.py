@@ -9,9 +9,10 @@ class IssueView(LoginRequiredMixin, TemplateView):
     template_name = ''
 
     def get(self, request, *args, **kwargs):
-        iid = kwargs.get('iid', 0)
-        issue = get_object_or_404(Issue, id=iid)
-        kwargs.update(issue=issue)
+        iid = kwargs.get('iid', None)
+        if iid is not None:
+            issue = get_object_or_404(Issue, id=iid)
+            kwargs.update(issue=issue)
         return super().get(request, *args, **kwargs)
 
 
