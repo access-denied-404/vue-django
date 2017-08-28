@@ -133,3 +133,8 @@ class Issue(models.Model):
     @property
     def humanized_status(self):
         return self.get_status_display()
+
+    @property
+    def max_state_available(self):
+        # fixme implement issue validation for each status
+        return self.STATUS_REGISTERING
