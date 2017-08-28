@@ -1,16 +1,56 @@
 {% extends 'marer/issue/layout.html' %}
 
 {% block issue_content %}
-<div class="panel panel-primary">
-    <div class="panel-heading">Выбор кредитных организаций</div>
-    <ul class="list-group">
-        <li class="list-group-item"><a href="#">Сбербанк России</a></li>
-        <li class="list-group-item"><a href="#">ВТБ Банк Москвы</a></li>
-        <li class="list-group-item"><a href="#">Газпромбанк</a></li>
-        <li class="list-group-item"><a href="#">Альфа-Банк</a></li>
-        <li class="list-group-item"><a href="#">Промсвязьбанк</a></li>
-    </ul>
-</div>
+<table class="table table-hover">
+    <tr>
+        <th class="bg-primary">&nbsp;</th>
+        <th class="bg-primary">Процентная ставка</th>
+        <th class="bg-primary">Обеспечение</th>
+        <th class="bg-primary">Срок рассмотрения</th>
+        <th class="bg-primary">Открытие р/с</th>
+        <th class="bg-primary">Личное присутствие</th>
+    </tr>
+    <tr>
+        <td>Сбербанк России</td>
+        <td>10%</td>
+        <td>Залог 10%</td>
+        <td>10 дней</td>
+        <td>Не требуется</td>
+        <td>Не требуется</td>
+    </tr>
+    <tr>
+        <td>ВТБ Банк Москвы</td>
+        <td>11%</td>
+        <td>Залог 12%</td>
+        <td>8 дней</td>
+        <td>Не требуется</td>
+        <td>Не требуется</td>
+    </tr>
+    <tr>
+        <td>Газпромбанк</td>
+        <td>12%</td>
+        <td>Недвижимость</td>
+        <td>15 дней</td>
+        <td>Требуется</td>
+        <td>Не требуется</td>
+    </tr>
+    <tr>
+        <td>Альфа-Банк</td>
+        <td>12%</td>
+        <td>Залог 12%</td>
+        <td>15 дней</td>
+        <td>Требуется</td>
+        <td>Не требуется</td>
+    </tr>
+    <tr>
+        <td>Промсвязьбанк</td>
+        <td>12%</td>
+        <td>Залог 12%</td>
+        <td>15 дней</td>
+        <td>Требуется</td>
+        <td>Не требуется</td>
+    </tr>
+</table>
 
 <nav aria-label="Page navigation" class="text-center">
     <ul class="pagination">
