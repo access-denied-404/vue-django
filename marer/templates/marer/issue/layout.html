@@ -3,7 +3,7 @@
 {% block cabinet_content %}
 <div class="container">
     <div class="row">
-        <h1 class="text-center">Заявка №0000000000</h1>
+        <h1 class="text-center">Заявка №{{ issue.humanized_id }}</h1>
         <div class="h4 text-center">Получение <b>тендерного кредита</b> для <b>ООО «ААА»</b></div>
     </div>
     <div class="row">
@@ -11,14 +11,14 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Этапы прохождения заявки</div>
                 <div class="list-group">
-                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_registering' or request.resolver_match.url_name == 'issue_new' %} active{% endif %}" href="{% url 'issue_registering' 0 %}">Оформление заявки</a>
-                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_common_documents_request' %} active{% endif %}" href="{% url 'issue_common_documents_request' 0 %}">Запрос документов</a>
-                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_survey' %} active{% endif %}" href="{% url 'issue_survey' 0 %}">Анкетирование</a>
-                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_scoring' %} active{% endif %}" href="{% url 'issue_scoring' 0 %}">Выбор кредитных организаций</a>
-                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_additional_documents_request' %} active{% endif %}" href="{% url 'issue_additional_documents_request' 0 %}">Дозапрос документов</a>
-                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_payments' %} active{% endif %}" href="{% url 'issue_payments' 0 %}">Оплата услуг</a>
-                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_final_documents_approval' %} active{% endif %}" href="{% url 'issue_final_documents_approval' 0 %}">Согласование итоговых документов</a>
-                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_finished' %} active{% endif %}" href="{% url 'issue_finished' 0 %}">Завершение сделки</a>
+                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_registering' or request.resolver_match.url_name == 'issue_new' %} active{% endif %}" href="{% url 'issue_registering' issue.id %}">Оформление заявки</a>
+                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_common_documents_request' %} active{% endif %}" href="{% url 'issue_common_documents_request' issue.id %}">Запрос документов</a>
+                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_survey' %} active{% endif %}" href="{% url 'issue_survey' issue.id %}">Анкетирование</a>
+                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_scoring' %} active{% endif %}" href="{% url 'issue_scoring' issue.id %}">Выбор кредитных организаций</a>
+                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_additional_documents_request' %} active{% endif %}" href="{% url 'issue_additional_documents_request' issue.id %}">Дозапрос документов</a>
+                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_payments' %} active{% endif %}" href="{% url 'issue_payments' issue.id %}">Оплата услуг</a>
+                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_final_documents_approval' %} active{% endif %}" href="{% url 'issue_final_documents_approval' issue.id %}">Согласование итоговых документов</a>
+                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_finished' %} active{% endif %}" href="{% url 'issue_finished' issue.id %}">Завершение сделки</a>
                 </div>
             </div>
         </div>
