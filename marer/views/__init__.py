@@ -87,8 +87,6 @@ class FinanceProductView(TemplateView):
             quick_request_form = QuickRequestForm(initial=dict(
                 finance_product=product.id,
             ))
-        if product.childrens.exists():
-            raise Http404()
         finance_product_roots = FinanceProduct.objects.root_nodes()
         context_part = dict(
             finance_product_roots=finance_product_roots,
