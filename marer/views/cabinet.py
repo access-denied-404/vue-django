@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -38,6 +39,16 @@ class CabinetOrganizationsView(LoginRequiredMixin, TemplateView):
         issuers = Issuer.objects.filter(user_id=request.user.id)
         kwargs.update(dict(issuers=issuers))
         return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        try:
+            iid = request.POST.get('iid', 0)
+            issuer = Issuer.objects.get(id=iid, user_id=request.user.id)
+            issuer.delete()
+        except ObjectDoesNotExist:
+            pass  # todo make a warning
+        url = reverse('cabinet_organizations', args=args, kwargs=kwargs)
+        return HttpResponseRedirect(url)
 
 
 class CabinetProfileView(LoginRequiredMixin, TemplateView):
