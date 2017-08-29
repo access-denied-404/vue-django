@@ -16,6 +16,14 @@ class Issuer(models.Model):
     short_name = models.CharField(max_length=512, blank=False, null=False)
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
 
+    def get_name(self):
+        if self.short_name != '':
+            return self.short_name
+        elif self.full_name != '':
+            return self.full_name
+        else:
+            return 'Без названия'
+
 
 class User(AbstractUser):
     phone = models.CharField(_('contact phone'), max_length=30, blank=True)

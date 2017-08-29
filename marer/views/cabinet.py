@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 
 from marer import forms
-from marer.models import Issue
+from marer.models import Issue, Issuer
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -33,6 +33,11 @@ class CabinetRequestsView(LoginRequiredMixin, TemplateView):
 
 class CabinetOrganizationsView(LoginRequiredMixin, TemplateView):
     template_name = 'marer/cabinet/organizations.html'
+
+    def get(self, request, *args, **kwargs):
+        issuers = Issuer.objects.filter(user_id=request.user.id)
+        kwargs.update(dict(issuers=issuers))
+        return super().get(request, *args, **kwargs)
 
 
 class CabinetProfileView(LoginRequiredMixin, TemplateView):
