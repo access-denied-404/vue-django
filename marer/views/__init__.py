@@ -1,11 +1,13 @@
 from django.contrib.auth import login
+from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views.generic.base import TemplateView
 
 from marer.forms import QuickRequestForm
-from marer.models import FinanceProduct, User, Issue
+from marer.models import FinanceProduct, User, Issue, Issuer
 
 
 class IndexView(TemplateView):
@@ -56,7 +58,24 @@ class IndexView(TemplateView):
                 new_user.save()
                 login(request, new_user)
             # todo create new issue, redirect to issue page
+            issuer_name = quick_request_form.cleaned_data['issuer']
+
+            issuer = None
+            try:
+                issuer = Issuer.objects.get(Q(Q(full_name__iexact=issuer_name) | Q(short_name__iexact=issuer_name)))
+            except ObjectDoesNotExist:
+                issuer = Issuer(
+                    full_name=issuer_name,
+                    short_name=issuer_name,
+                    inn='0000000000',
+                    kpp='000000000',
+                    ogrn='0000000000000',
+                    user=request.user,
+                )
+                issuer.save()
+
             new_issue = Issue()
+            new_issue.fill_from_issuer(issuer)
             new_issue.status = Issue.STATUS_REGISTERING
             new_issue.user = request.user  # fixme it's naive when new user, check it
             new_issue.type_id = quick_request_form.cleaned_data['finance_product']

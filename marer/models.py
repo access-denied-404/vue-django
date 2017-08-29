@@ -112,7 +112,12 @@ class Issue(models.Model):
     ])
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, null=False)
     sum = models.DecimalField(max_digits=12, decimal_places=2, null=True)
-    issuer = models.CharField(max_length=512, blank=True, null=False, default='')
+
+    issuer_inn = models.CharField(max_length=32, blank=False, null=False)
+    issuer_kpp = models.CharField(max_length=32, blank=False, null=False)
+    issuer_ogrn = models.CharField(max_length=32, blank=False, null=False)
+    issuer_full_name = models.CharField(max_length=512, blank=False, null=False)
+    issuer_short_name = models.CharField(max_length=512, blank=False, null=False)
 
     @property
     def humanized_id(self):
@@ -138,3 +143,10 @@ class Issue(models.Model):
     def max_state_available(self):
         # fixme implement issue validation for each status
         return self.STATUS_REGISTERING
+
+    def fill_from_issuer(self, issuer: Issuer):
+        self.issuer_inn = issuer.inn
+        self.issuer_kpp = issuer.kpp
+        self.issuer_ogrn = issuer.ogrn
+        self.issuer_full_name = issuer.full_name
+        self.issuer_short_name = issuer.short_name
