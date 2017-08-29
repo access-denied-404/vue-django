@@ -78,5 +78,5 @@ class Migration(migrations.Migration):
                 'abstract': False,
             },
         ),
-        # migrations.RunPython(fill_finance_products, migrations.RunPython.noop)
+        migrations.RunPython(fill_finance_products, migrations.RunPython.noop)
     ]
