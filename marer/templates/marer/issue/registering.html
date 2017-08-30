@@ -5,40 +5,26 @@
     <div class="panel-heading">Оформление заявки</div>
     <div class="panel-body">
         <form method="post">
+            {% csrf_token %}
             <div class="form-row">
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="form-group">
-                        <label>Тип заявки</label>
-                        <select class="form-control">
-                            <option>Тип 1</option>
-                            <option>Тип 2</option>
-                            <option>Тип 3</option>
-                        </select>
+                        <label>{{ base_form.product.label }}</label>
+                        {{ base_form.product }}
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="form-group">
-                        <label>Организация</label>
-                        <input class="form-control" type="text">
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>Сумма продукта</label>
-                        <div class="input-group">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-ruble"></span>
-                            </div>
-                            <input class="form-control text-right" value="0" type="number"/>
-                        </div>
+                        <label>{{ base_form.org_search_name.label }}</label>
+                        {{ base_form.org_search_name }}
                     </div>
                 </div>
             </div>
             <div class="form-row">
                 <div class="col-md-12">
                     <div class="form-group">
-                        <label>Комментарий к заявке</label>
-                        <textarea class="form-control"></textarea>
+                        <label>{{ base_form.comment.label }}</label>
+                        {{ base_form.comment }}
                     </div>
                 </div>
             </div>

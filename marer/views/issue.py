@@ -2,19 +2,28 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView, RedirectView
 
+from marer.forms import IssueRegisteringForm
 from marer.models import Issue
 
 
 class IssueView(LoginRequiredMixin, TemplateView):
     template_name = ''
+    _issue = None
 
-    def get(self, request, *args, **kwargs):
-        iid = kwargs.get('iid', None)
+    def get_issue(self):
+        if self._issue is not None:
+            return self._issue
+
+        iid = self.kwargs.get('iid', None)
         if iid is not None:
             # fixme maybe make error 403?
-            issue = get_object_or_404(Issue, id=iid, user_id=request.user.id)
-            kwargs.update(issue=issue)
-        return super().get(request, *args, **kwargs)
+            issue = get_object_or_404(Issue, id=iid, user_id=self.request.user.id)
+            self._issue = issue
+            return issue
+
+    def get_context_data(self, **kwargs):
+        kwargs.update(dict(issue=self.get_issue()))
+        return super().get_context_data(**kwargs)
 
 
 class IssueRedirectView(RedirectView):
@@ -51,6 +60,28 @@ class IssueRedirectView(RedirectView):
 
 class IssueRegisteringView(IssueView):
     template_name = 'marer/issue/registering.html'
+
+    def get(self, request, *args, **kwargs):
+        if 'base_form' not in kwargs:
+            base_form = IssueRegisteringForm(
+                initial=dict(
+                    product=self.get_issue().product,
+                    org_search_name=self.get_issue().get_issuer_name(),
+                    comment=self.get_issue().comment,
+                )
+            )
+            kwargs.update(dict(base_form=base_form))
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        base_form = IssueRegisteringForm(request.POST)
+        if base_form.is_valid():
+            # todo go to next stage if we can
+            issue = self.get_issue()
+            issue.comment = base_form.cleaned_data['comment']
+            issue.save()
+        kwargs.update(dict(base_form=base_form))
+        return self.get(request, *args, **kwargs)
 
 
 class IssueCommonDocumentsRequestView(IssueView):

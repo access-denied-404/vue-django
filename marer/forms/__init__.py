@@ -1,6 +1,6 @@
 from django.forms import Form
 from django.forms import fields
-from django.forms.widgets import TextInput, PasswordInput, EmailInput, Select
+from django.forms.widgets import TextInput, PasswordInput, EmailInput, Select, Textarea
 
 from marer.forms.widgets import CallableChoicesSelect
 from marer.models import User, Issue
@@ -147,4 +147,25 @@ class CabinetIssueListFilterForm(Form):
             attrs={'class': 'form-control'}
         ),
         label='Статус заявки'
+    )
+
+
+class IssueRegisteringForm(Form):
+    product = fields.CharField(
+        required=True,
+        widget=Select(
+            choices=get_finance_products_as_choices(),
+            attrs={'class': 'form-control'}
+        ),
+        label='Вид заявки',
+    )
+    org_search_name = fields.CharField(
+        required=False,
+        widget=TextInput(attrs={'class': 'form-control'}),
+        label='Организация',
+    )
+    comment = fields.CharField(
+        required=False,
+        widget=Textarea(attrs={'class': 'form-control', 'rows': 4}),
+        label='Комментарий к заявке',
     )
