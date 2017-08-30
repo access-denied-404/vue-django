@@ -7,6 +7,8 @@ from django.utils.translation import ugettext_lazy as _
 from mptt import models as mptt_models
 from mptt.fields import TreeForeignKey
 
+from marer.products import get_finance_products_as_choices, get_finance_products
+
 
 class Issuer(models.Model):
     inn = models.CharField(max_length=32, blank=False, null=False)
@@ -106,7 +108,7 @@ class Issue(models.Model):
     STATUS_FINISHED = 'finished'
     STATUS_CANCELLED = 'cancelled'
 
-    type = models.ForeignKey(FinanceProduct, on_delete=models.DO_NOTHING, null=False)
+    product = models.CharField(max_length=32, blank=False, null=False, choices=get_finance_products_as_choices())
     status = models.CharField(max_length=32, blank=False, null=False, choices=[
         (STATUS_REGISTERING, 'Оформление заявки'),
         (STATUS_COMMON_DOCUMENTS_REQUEST, 'Запрос документов'),
@@ -158,3 +160,9 @@ class Issue(models.Model):
         self.issuer_ogrn = issuer.ogrn
         self.issuer_full_name = issuer.full_name
         self.issuer_short_name = issuer.short_name
+
+    def get_product(self) -> FinanceProduct:
+        for fp in get_finance_products():
+            if fp.name == self.product:
+                return fp
+        raise ValueError('No finance products matched')
