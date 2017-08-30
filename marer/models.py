@@ -122,6 +122,7 @@ class Issue(models.Model):
     ])
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, null=False)
     sum = models.DecimalField(max_digits=12, decimal_places=2, null=True)
+    comment = models.TextField(blank=False, null=False, default='')
 
     issuer_inn = models.CharField(max_length=32, blank=False, null=False)
     issuer_kpp = models.CharField(max_length=32, blank=False, null=False)

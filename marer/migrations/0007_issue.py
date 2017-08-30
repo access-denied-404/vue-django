@@ -21,6 +21,7 @@ class Migration(migrations.Migration):
                 ('product', models.CharField(choices=[('BankGuaranteeProduct', 'Банковская гарантия'), ('CreditProduct', 'Кредит'), ('LeasingProduct', 'Лизинг')], max_length=32)),
                 ('status', models.CharField(choices=[('registering', 'Оформление заявки'), ('common_documents_request', 'Запрос документов'), ('survey', 'Анкетирование'), ('scoring', 'Скоринг'), ('additional_documents_request', 'Дозапрос документов'), ('payments', 'Оплата услуг'), ('final_documents_approval', 'Согласование итоговых документов'), ('finished', 'Завершена'), ('cancelled', 'Отменена')], max_length=32)),
                 ('sum', models.DecimalField(decimal_places=2, max_digits=12, null=True)),
+                ('comment', models.TextField(default='')),
                 ('issuer_inn', models.CharField(max_length=32)),
                 ('issuer_kpp', models.CharField(max_length=32)),
                 ('issuer_ogrn', models.CharField(max_length=32)),
