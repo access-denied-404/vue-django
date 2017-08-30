@@ -166,3 +166,11 @@ class Issue(models.Model):
             if fp.name == self.product:
                 return fp
         raise ValueError('No finance products matched')
+
+    def get_issuer_name(self):
+        if self.issuer_short_name != '':
+            return self.issuer_short_name
+        elif self.issuer_full_name != '':
+            return self.issuer_full_name
+        else:
+            return '—'

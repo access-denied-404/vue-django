@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row">
         <h1 class="text-center">Заявка №{{ issue.humanized_id }}</h1>
-        <div class="h4 text-center">Получение <b>тендерного кредита</b> для <b>ООО «ААА»</b></div>
+        <div class="h4 text-center"><b>{{ issue.get_product.humanized_name }}</b> для <b>{{ issue.get_issuer_name }}</b></div>
     </div>
     <div class="row">
         <div class="col-md-3">
