@@ -1,9 +1,10 @@
 from django.forms import Form
 from django.forms import fields
-from django.forms.widgets import TextInput, PasswordInput, EmailInput
+from django.forms.widgets import TextInput, PasswordInput, EmailInput, Select
 
 from marer.forms.widgets import CallableChoicesSelect
-from marer.models import FinanceProduct, User, Issue
+from marer.models import User, Issue
+from marer.products import get_finance_products_as_choices
 
 
 class RegisterForm(Form):
@@ -75,25 +76,12 @@ class ProfileForm(Form):
     )
 
 
-def get_finance_products_tree_for_select():
-    fp_roots_list = FinanceProduct.objects.root_nodes()
-    fp_tree = []
-    for fp in fp_roots_list:
-        if fp.childrens.exists():
-            # fp_tree.append((fp.id, fp.name))
-            fp_childs = fp.childrens.all()
-            fp_tree.append((fp.name, [(fpc.id, fpc.name) for fpc in fp_childs]))
-        else:
-            fp_tree.append((fp.id, fp.name))
-    return fp_tree
-
-
 class QuickRequestForm(Form):
 
-    finance_product = fields.CharField(
+    product = fields.CharField(
         required=True,
-        widget=CallableChoicesSelect(
-            choices=get_finance_products_tree_for_select,
+        widget=Select(
+            choices=get_finance_products_as_choices(),
             attrs={'class': 'form-control'}
         ),
         label='Вид услуги'
@@ -135,8 +123,8 @@ class QuickRequestForm(Form):
 class CabinetIssueListFilterForm(Form):
     fpgrp = fields.CharField(
         required=False,
-        widget=CallableChoicesSelect(
-            choices=get_finance_products_tree_for_select,
+        widget=Select(
+            choices=get_finance_products_as_choices(),
             attrs={'class': 'form-control', 'style': 'max-width: 300px;'}
         ),
         label='Вид заявки'

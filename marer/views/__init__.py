@@ -78,7 +78,7 @@ class IndexView(TemplateView):
             new_issue.fill_from_issuer(issuer)
             new_issue.status = Issue.STATUS_REGISTERING
             new_issue.user = request.user  # fixme it's naive when new user, check it
-            new_issue.type_id = quick_request_form.cleaned_data['finance_product']
+            new_issue.product = quick_request_form.cleaned_data['product']
             new_issue.save()
             url = reverse('cabinet_request', args=[new_issue.id])
             return HttpResponseRedirect(url)
