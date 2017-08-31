@@ -10,7 +10,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('marer', '0006_financeproduct'),
+        ('marer', '0006_financeproductpage'),
     ]
 
     operations = [

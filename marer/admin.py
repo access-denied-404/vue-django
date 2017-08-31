@@ -4,7 +4,7 @@ from marer import models
 from mptt.admin import MPTTModelAdmin
 
 
-@register(models.FinanceProduct)
+@register(models.FinanceProductPage)
 class FinanceProductAdmin(MPTTModelAdmin):
     fieldsets = (
         (None, dict(fields=(

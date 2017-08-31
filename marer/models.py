@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from mptt import models as mptt_models
 from mptt.fields import TreeForeignKey
 
-from marer.products import get_finance_products_as_choices, get_finance_products
+from marer.products import get_finance_products_as_choices, get_finance_products, FinanceProduct
 
 
 class Issuer(models.Model):
@@ -53,7 +53,7 @@ class Region(mptt_models.MPTTModel):
     parent = TreeForeignKey('self', null=True, blank=True, related_name='childrens')
 
 
-class FinanceProduct(mptt_models.MPTTModel):
+class FinanceProductPage(mptt_models.MPTTModel):
 
     class Meta:
         verbose_name = _('finance product')
