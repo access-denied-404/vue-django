@@ -1,6 +1,6 @@
 from django.forms import Form, CharField, DecimalField
 
-from marer.products.base import FinanceProduct
+from marer.products.base import FinanceProduct, FinanceProductDocumentItem
 
 
 def _get_subclasses_recursive(cls: type) -> list:
@@ -37,12 +37,31 @@ class BankGuaranteeProduct(FinanceProduct):
 
     def get_documents_list(self):
         return [
-            'Устав',
-            'ББ и ОПиУ за последний отчетный год — аналитический баланс',
-            'Копия паспорта руководителя организации',
-            'Решение/протокол о назначении руководителя',
-            'Договор аренды/ Договор субаренды/ Cвидетельство о праве собственности по месту нахождения',
-            'УБ и отчет о фин. результатах за последний квартал',
+            FinanceProductDocumentItem(
+                code='company_charter',
+                name='Устав'
+            ),
+            FinanceProductDocumentItem(
+                code='accounting_balance_',
+                name='Бухгалтерский баланс и отчет о фин. результатах',
+                description='ББ и ОПиУ за отчетный период',
+            ),
+            FinanceProductDocumentItem(
+                code='passport_copy_of_org_head',
+                name='Копия паспорта руководителя организации',
+            ),
+            FinanceProductDocumentItem(
+                code='manager_appointment_decision',
+                name='Решение/протокол о назначении руководителя',
+            ),
+            FinanceProductDocumentItem(
+                code='location_ownership_document',
+                name='Договор аренды, субаренды, или свидетельство о праве собственности по месту нахождения',
+            ),
+            FinanceProductDocumentItem(
+                code='org_financical_result_',
+                name='УБ и отчет о фин. результатах за последний квартал',
+            ),
         ]
 
     def get_registering_form_class(self):
