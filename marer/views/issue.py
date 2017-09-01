@@ -87,6 +87,25 @@ class IssueRegisteringView(IssueView):
 class IssueCommonDocumentsRequestView(IssueView):
     template_name = 'marer/issue/common_documents_request.html'
 
+    def get(self, request, *args, **kwargs):
+        fp_documents = self.get_issue().get_product().get_documents_list()
+        fp_docs_codes = [fpd.code for fpd in fp_documents]
+        issue_documents = self.get_issue().common_documents.filter(code__in=fp_docs_codes)
+        for idoc in issue_documents:
+            for fp in fp_documents:
+                if idoc.code == fp.code:
+                    fp.set_document(idoc.document)
+        kwargs.update(dict(documents=fp_documents))
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        fp_documents = self.get_issue().get_product().get_documents_list()
+        for fpdoc in fp_documents:
+            post_file = request.FILES.get(fpdoc.code, None)
+            if post_file is not None:
+                self.get_issue().update_common_issue_doc(fpdoc.code, post_file)
+        return self.get(request, *args, **kwargs)
+
 
 class IssueSurveyView(IssueView):
     template_name = 'marer/issue/survey.html'

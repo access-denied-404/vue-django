@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.formats import number_format
 
 from marer.models.base import Document
-from marer.models.issuer import Issuer
+from marer.models.issuer import Issuer, IssuerDocument
 from marer.products import get_finance_products_as_choices, FinanceProduct, get_finance_products
 
 
@@ -37,6 +37,7 @@ class Issue(models.Model):
     sum = models.DecimalField(max_digits=12, decimal_places=2, null=True)
     comment = models.TextField(blank=False, null=False, default='')
 
+    issuer = models.ForeignKey(Issuer, on_delete=models.SET_NULL, blank=True, null=True)
     issuer_inn = models.CharField(max_length=32, blank=False, null=False)
     issuer_kpp = models.CharField(max_length=32, blank=False, null=False)
     issuer_ogrn = models.CharField(max_length=32, blank=False, null=False)
@@ -68,12 +69,12 @@ class Issue(models.Model):
         # fixme implement issue validation for each status
         return self.STATUS_REGISTERING
 
-    def fill_from_issuer(self, issuer: Issuer):
-        self.issuer_inn = issuer.inn
-        self.issuer_kpp = issuer.kpp
-        self.issuer_ogrn = issuer.ogrn
-        self.issuer_full_name = issuer.full_name
-        self.issuer_short_name = issuer.short_name
+    def fill_from_issuer(self):
+        self.issuer_inn = self.issuer.inn
+        self.issuer_kpp = self.issuer.kpp
+        self.issuer_ogrn = self.issuer.ogrn
+        self.issuer_full_name = self.issuer.full_name
+        self.issuer_short_name = self.issuer.short_name
 
     def get_product(self) -> FinanceProduct:
         for fp in get_finance_products():
@@ -88,6 +89,37 @@ class Issue(models.Model):
             return self.issuer_full_name
         else:
             return '—'
+
+    def update_common_issue_doc(self, code, file):
+        """
+        Saves a document, adds coded document
+        record to issue and it's issuer if exist.
+
+        :param code: document identification code
+        :param file: file object for saving
+        """
+        doc_file = Document()
+        doc_file.file = file
+        doc_file.save()
+
+        code_issue_docs = self.common_documents.filter(code=code)
+        for ci_doc in code_issue_docs:
+            ci_doc.delete()
+
+        issue_doc = IssueDocument()
+        issue_doc.code = code
+        issue_doc.document = doc_file
+        issue_doc.issue = self
+        issue_doc.save()
+
+        if self.issuer is not None:
+            code_issuer_docs_qs = self.issuer.issuer_documents.filter(code=code)
+            if not code_issuer_docs_qs.exists():
+                issuer_doc = IssuerDocument()
+                issuer_doc.code = code
+                issuer_doc.document = doc_file
+                issuer_doc.issuer = self.issuer
+                issuer_doc.save()
 
 
 class IssueDocument(models.Model):
