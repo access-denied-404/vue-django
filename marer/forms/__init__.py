@@ -3,7 +3,8 @@ from django.forms import fields
 from django.forms.widgets import TextInput, PasswordInput, EmailInput, Select, Textarea
 
 from marer.forms.widgets import CallableChoicesSelect
-from marer.models import User, Issue
+from marer.models.issue import Issue
+from marer.models.user import User
 from marer.products import get_finance_products_as_choices
 
 

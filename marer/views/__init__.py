@@ -7,7 +7,10 @@ from django.urls import reverse
 from django.views.generic.base import TemplateView
 
 from marer.forms import QuickRequestForm
-from marer.models import FinanceProductPage, User, Issue, Issuer
+from marer.models import FinanceProductPage
+from marer.models.issue import Issue
+from marer.models.issuer import Issuer
+from marer.models.user import User
 
 
 class IndexView(TemplateView):

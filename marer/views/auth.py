@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.views.generic import TemplateView, RedirectView
 
 from marer import forms
-from marer.models import User
+from marer.models.user import User
 
 
 class LoginView(TemplateView):
