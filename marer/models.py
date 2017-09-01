@@ -1,3 +1,5 @@
+import uuid
+
 from ckeditor.fields import RichTextField
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
@@ -90,7 +92,61 @@ class FinanceProductPage(mptt_models.MPTTModel):
 
 
 class IssueDocument(models.Model):
-    pass
+    issue = models.ForeignKey(
+        Issue,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        related_name='common_documents'
+    )
+    document = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='common_issue_links'
+    )
+    code = models.CharField(
+        max_length=32,
+        null=False,
+        blank=False,
+    )
+
+
+class IssuerDocument(models.Model):
+    issuer = models.ForeignKey(
+        Issuer,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        related_name='issuer_documents'
+    )
+    document = models.ForeignKey(
+        Document,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        related_name='issuer_links'
+    )
+    code = models.CharField(
+        max_length=32,
+        null=False,
+        blank=False,
+    )
+
+
+class Document(models.Model):
+
+    @staticmethod
+    def documents_upload_path(instance, filename):
+        filename_arr = str(filename).split('.')
+        ext = filename_arr[:-1]
+        return 'documents/%Y/%m/%d/{file_name}.{file_ext}'.format(
+            file_name=uuid.uuid4(),
+            file_ext=ext,
+        )
+
+    file = models.FileField(upload_to=documents_upload_path)
 
 
 class IssueDocumentRequest(models.Model):
