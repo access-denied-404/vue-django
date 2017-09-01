@@ -51,3 +51,9 @@ class FinanceProductDocumentItem(object):
     @property
     def document(self):
         return self._document
+
+    @property
+    def url(self):
+        if self.document and self.document.file:
+            return self.document.file.url
+        return None
