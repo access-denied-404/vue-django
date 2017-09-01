@@ -6,23 +6,36 @@
     <div class="panel-body">
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <div class="form-row">
+            <div class="container-fluid">
                 {% for document in documents %}
-                    <div class="col-md-12">
-                        <div class="form-group">
+                    <div class="row{% if not document.url %} bg-danger{% endif %}">
+                        <div class="col-md-6">
                             <label>{{ document.name }}</label>
-                            <input type="file" name="{{ document.code }}">
-                            {% if document.url %}
-                                <div><a href="{{ document.url }}">Скачать</a></div>
+                            {% if document.description %}
+                                <br/>
+                                <small>{{ document.description }}</small>
                             {% endif %}
-                            {% if document.description %}<small>{{ document.description }}</small>{% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <input type="file" name="{{ document.code }}" class="input-lg"/>
+                                </div>
+                                <div class="col-sm-2">
+                                    {% if document.url %}
+                                        <a href="{{ document.url }}" class="btn btn-link btn-lg">
+                                            <span class="glyphicon glyphicon-file"></span>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 {% endfor %}
-            </div>
-            <div class="form-row">
-                <div class="col-md-12">
-                    <button type="submit" class="btn btn-primary center-block">Сохранить</button>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-primary center-block">Сохранить</button>
+                    </div>
                 </div>
             </div>
         </form>
