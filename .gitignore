@@ -3,4 +3,5 @@ locale/*/LC_MESSAGES/*.mo
 ansible/*.retry
 bower_components/**
 static/**
+media/**
 db.sqlite3
