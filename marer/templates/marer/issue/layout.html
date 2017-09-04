@@ -20,11 +20,11 @@
                     <a class="list-group-item{% if request.resolver_match.url_name == 'issue_scoring' %} active{% endif %}{% if not issue %} disabled{% endif %}"
                        href="{% if issue %}{% url 'issue_scoring' issue.id %}{% endif %}">Выбор кредитных организаций</a>
                     <a class="list-group-item{% if request.resolver_match.url_name == 'issue_additional_documents_request' %} active{% endif %}{% if not issue %} disabled{% endif %}"
-                       href="{% if issue %}{% url 'issue_additional_documents_request' issue.id %}{% endif %}">Дозапрос документов</a>
+                       href="{% if issue %}{% url 'issue_additional_documents_request' issue.id %}{% endif %}">Дозапрос документов и разъяснений</a>
                     <a class="list-group-item{% if request.resolver_match.url_name == 'issue_final_documents_approval' %} active{% endif %}{% if not issue %} disabled{% endif %}"
-                       href="{% if issue %}{% url 'issue_final_documents_approval' issue.id %}{% endif %}">Согласование итоговых документов</a>
+                       href="{% if issue %}{% url 'issue_final_documents_approval' issue.id %}{% endif %}">Согласование условий</a>
                     <a class="list-group-item{% if request.resolver_match.url_name == 'issue_payments' %} active{% endif %}{% if not issue %} disabled{% endif %}"
-                       href="{% if issue %}{% url 'issue_payments' issue.id %}{% endif %}">Оплата услуг</a>
+                       href="{% if issue %}{% url 'issue_payments' issue.id %}{% endif %}">Оформление документов</a>
                     <a class="list-group-item{% if request.resolver_match.url_name == 'issue_finished' %} active{% endif %}{% if not issue %} disabled{% endif %}"
                        href="{% if issue %}{% url 'issue_finished' issue.id %}{% endif %}">Завершение сделки</a>
                 </div>
