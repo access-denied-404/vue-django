@@ -37,7 +37,7 @@
       git:
         dest=/srv/marer/
         force=no
-        repo=git@bitbucket.org:inspectrum_su/bankomat.git
+        repo=git@bitbucket.org:vladi-z/marer.git
         accept_hostkey=true
         version=master
       become: true
