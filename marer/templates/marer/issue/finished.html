@@ -1,3 +1,43 @@
 {% extends 'marer/issue/layout.html' %}
 
-{% block issue_content %}чот тут ничего пока{% endblock %}
+{% block issue_content %}
+    <div class="panel panel-success">
+        <div class="panel-heading" data-toggle="collapse" data-target="#panel1">Сбербанк</div>
+        <div class="panel-body collapse in" id="panel1">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="alert alert-info text-center">
+                            <span class="h1">Банковская гарантия выдана</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="h4">Документы</div>
+                        <table class="table">
+                            <tr><td><a href="#">Печатная форма банковской гарантии</a></td></tr>
+                            <tr><td><a href="#">Договор на выдачу банковской гарантии</a></td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-danger">
+        <div class="panel-heading" data-toggle="collapse" data-target="#panel2">Газпромбанк</div>
+        <div class="panel-body collapse" id="panel2">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="alert alert-danger text-center">
+                            <span class="h1">Банковская гарантия не выдана</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="h2 text-muted">Документы отсутствуют</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
