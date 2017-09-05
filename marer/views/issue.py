@@ -123,10 +123,6 @@ class IssuePaymentsView(IssueView):
     template_name = 'marer/issue/payments.html'
 
 
-class IssueFinalDocumentsApprovalView(IssueView):
-    template_name = 'marer/issue/final_documents_approval.html'
-
-
 class IssueFinishedView(IssueView):
     template_name = 'marer/issue/finished.html'
 

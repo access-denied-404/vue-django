@@ -28,7 +28,6 @@ urlpatterns = [
     url(r'^cabinet/requests/(?P<iid>\d+)/scr$', issue.IssueScoringView.as_view(), name='issue_scoring'),
     url(r'^cabinet/requests/(?P<iid>\d+)/adr$', issue.IssueAdditionalDocumentsRequestViews.as_view(), name='issue_additional_documents_requests'),
     url(r'^cabinet/requests/(?P<iid>\d+)/pay$', issue.IssuePaymentsView.as_view(), name='issue_payments'),
-    url(r'^cabinet/requests/(?P<iid>\d+)/fda$', issue.IssueFinalDocumentsApprovalView.as_view(), name='issue_final_documents_approval'),
     url(r'^cabinet/requests/(?P<iid>\d+)/finished$', issue.IssueFinishedView.as_view(), name='issue_finished'),
     url(r'^cabinet/requests/(?P<iid>\d+)/cancelled$', issue.IssueCancelledView.as_view(), name='issue_cancelled'),
 ]

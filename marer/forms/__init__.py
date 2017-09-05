@@ -140,7 +140,6 @@ class CabinetIssueListFilterForm(Form):
                 (Issue.STATUS_SURVEY, 'Анкетирование'),
                 (Issue.STATUS_SCORING, 'Скоринг'),
                 (Issue.STATUS_ADDITIONAL_DOCUMENTS_REQUEST, 'Дозапрос документов и разъяснений'),
-                (Issue.STATUS_FINAL_DOCUMENTS_APPROVAL, 'Согласование условий'),
                 (Issue.STATUS_PAYMENTS, 'Оформление документов'),
                 (Issue.STATUS_FINISHED, 'Завершена'),
                 (Issue.STATUS_CANCELLED, 'Отменена'),
