@@ -115,8 +115,8 @@ class IssueScoringView(IssueView):
     template_name = 'marer/issue/scoring.html'
 
 
-class IssueAdditionalDocumentsRequestView(IssueView):
-    template_name = 'marer/issue/additional_documents_request.html'
+class IssueAdditionalDocumentsRequestViews(IssueView):
+    template_name = 'marer/issue/additional_documents_requests.html'
 
 
 class IssuePaymentsView(IssueView):
