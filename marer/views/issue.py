@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView, RedirectView
 
 from marer.forms import IssueRegisteringForm
-from marer.models import Issue
+from marer.models import Issue, Issuer
 
 
 class IssueView(LoginRequiredMixin, TemplateView):
@@ -63,13 +63,15 @@ class IssueRegisteringView(IssueView):
 
     def get(self, request, *args, **kwargs):
         if 'base_form' not in kwargs:
-            base_form = IssueRegisteringForm(
-                initial=dict(
+            if self.get_issue():
+                initial = dict(
                     product=self.get_issue().product,
                     org_search_name=self.get_issue().get_issuer_name(),
                     comment=self.get_issue().comment,
                 )
-            )
+            else:
+                initial = dict()
+            base_form = IssueRegisteringForm(initial=initial)
             kwargs.update(dict(base_form=base_form))
         return super().get(request, *args, **kwargs)
 
@@ -77,6 +79,26 @@ class IssueRegisteringView(IssueView):
         base_form = IssueRegisteringForm(request.POST)
         if base_form.is_valid():
             # todo go to next stage if we can
+            if not self.get_issue():
+                issuer_name = base_form.cleaned_data['org_search_name']
+                issuer = Issuer(
+                    full_name=issuer_name,
+                    short_name=issuer_name,
+                    inn='0000000000',
+                    kpp='000000000',
+                    ogrn='0000000000000',
+                    user=request.user,
+                )
+                issuer.save()
+
+                new_issue = Issue(
+                    issuer=issuer,
+                    product=base_form.cleaned_data['product'],
+                    status=Issue.STATUS_REGISTERING,
+                    user=request.user,
+                )  # todo set values
+                new_issue.fill_from_issuer()
+                self._issue = new_issue
             issue = self.get_issue()
             issue.comment = base_form.cleaned_data['comment']
             issue.save()
