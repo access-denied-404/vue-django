@@ -24,8 +24,15 @@ class IndexView(TemplateView):
         else:
             quick_request_form = QuickRequestForm()
         finance_product_roots = FinanceProductPage.objects.root_nodes()
+
+        best_finance_products = FinanceProductPage.objects.filter(
+            product_icon__isnull=False
+        ).exclude(
+            product_icon=''
+        ).order_by('?')[:8]
         context_part = dict(
             finance_product_roots=finance_product_roots,
+            best_finance_products=best_finance_products,
             quick_request_form=quick_request_form,
         )
         kwargs.update(context_part)

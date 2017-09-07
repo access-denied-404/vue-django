@@ -20,46 +20,17 @@
                     <span class="h4">Лучшие продукты для вашего бизнеса</span><br>
                 </div>
                 <div class="panel-body">
-                    <div class="col-sm-3">
-                        <div class="panel panel-default">
-                            <div class="panel-body" style="height: 135px;"></div>
+                    {% for product in best_finance_products %}
+                        <div class="col-sm-3">
+                            <a href="{% url 'finance_product' product.id %}">
+                                <div class="panel panel-default">
+                                    <div class="panel-body" style="height: 135px; position: relative; background-image: url({{ product.product_icon.url }});">
+                                        <span class="text-center">{{ product.name }}</span>
+                                    </div>
+                                </div>
+                            </a>
                         </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="panel panel-default">
-                            <div class="panel-body" style="height: 135px;"></div>
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="panel panel-default">
-                            <div class="panel-body" style="height: 135px;"></div>
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="panel panel-default">
-                            <div class="panel-body" style="height: 135px;"></div>
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="panel panel-default">
-                            <div class="panel-body" style="height: 135px;"></div>
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="panel panel-default">
-                            <div class="panel-body" style="height: 135px;"></div>
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="panel panel-default">
-                            <div class="panel-body" style="height: 135px;"></div>
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="panel panel-default">
-                            <div class="panel-body" style="height: 135px;"></div>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
