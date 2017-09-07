@@ -11,6 +11,7 @@ class FinanceProductAdmin(MPTTModelAdmin):
             'name',
             'parent',
             '_finance_product',
+            'product_icon',
             'page_content',
         ))),
         (_('SEO'), dict(classes='collapse', fields=(

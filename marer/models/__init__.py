@@ -6,6 +6,7 @@ from mptt import models as mptt_models
 from mptt.fields import TreeForeignKey
 
 from marer.models.base import *
+from marer.models.base import finance_products_page_images_upload_path
 from marer.models.issue import *
 from marer.models.issuer import *
 from marer.models.user import *
@@ -49,6 +50,7 @@ class FinanceProductPage(mptt_models.MPTTModel):
         default=''
     )
     page_content = RichTextField(verbose_name=_('page content'), blank=True, null=False, default='')
+    product_icon = models.ImageField(upload_to=finance_products_page_images_upload_path)
 
     def __str__(self):
         return self.name
