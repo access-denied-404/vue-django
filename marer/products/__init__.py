@@ -1,4 +1,7 @@
+from dateutil.relativedelta import relativedelta
+
 from django.forms import Form, CharField, DecimalField
+from django.utils import timezone
 
 from marer.products.base import FinanceProduct, FinanceProductDocumentItem
 
@@ -36,33 +39,56 @@ class BankGuaranteeProduct(FinanceProduct):
     _humanized_name = 'Банковская гарантия'
 
     def get_documents_list(self):
-        return [
+        docs = []
+
+        # here we getting a list with ends of year quarters
+        curr_localized_datetime = timezone.localtime(timezone.now(), timezone.get_current_timezone())
+        curr_date = curr_localized_datetime.date()
+
+        prev_month_start_date = (curr_date - relativedelta(months=1)).replace(day=1)
+        yr_quartals_start_months = [1, 4, 7, 10]
+        curr_quartal_start_date = prev_month_start_date
+        while curr_quartal_start_date.month not in yr_quartals_start_months:
+            curr_quartal_start_date -= relativedelta(months=1)
+        yr_quarters_cnt = 5
+        quarters_start_date = curr_quartal_start_date - relativedelta(months=yr_quarters_cnt*3)
+        quarters_curr_date = quarters_start_date
+
+        while quarters_curr_date <= curr_date:
+
+            quarter_number = int((quarters_curr_date - relativedelta(days=1)).month / 3)
+
+            if quarter_number == 4:
+                fpdi_code = 'accounting_report_forms_1_2_for_{}'.format(quarters_curr_date.strftime('y%Y'))
+            else:
+                fpdi_code = 'accounting_report_forms_1_2_for_{}'.format(quarters_curr_date.strftime('y%Y'))
+
+            if quarter_number in [1, 3]:
+                fpdi_name = 'Бухгалтерская отчетность за {} квартал {} года'.format(
+                    quarter_number,
+                    quarters_curr_date.strftime('%Y'))
+            elif quarter_number == 2:
+                fpdi_name = 'Бухгалтерская отчетность за первое полугодие {} года'.format(
+                    quarters_curr_date.strftime('%Y'))
+            elif quarter_number == 4:
+                fpdi_name = 'Бухгалтерская отчетность за {} год'.format(
+                    (quarters_curr_date - relativedelta(days=1)).strftime('%Y'))
+
+            docs.append(FinanceProductDocumentItem(code=fpdi_code, name=fpdi_name, description='Формы 1 и 2'))
+            quarters_curr_date += relativedelta(months=3)
+
+        docs.extend([
             FinanceProductDocumentItem(
-                code='company_charter',
-                name='Устав'
+                code='loans_description_yr{}_m{}'.format(curr_date.year, curr_date.month),
+                name='Расшифровка кредитов и займов',
+                description='По состоянию на текущую дату',
             ),
             FinanceProductDocumentItem(
-                code='accounting_balance_',
-                name='Бухгалтерский баланс и отчет о фин. результатах',
-                description='ББ и ОПиУ за отчетный период',
+                code='contracts_registry_yr{}_m{}'.format(curr_date.year, curr_date.month),
+                name='Реестр контрактов',
             ),
-            FinanceProductDocumentItem(
-                code='passport_copy_of_org_head',
-                name='Копия паспорта руководителя организации',
-            ),
-            FinanceProductDocumentItem(
-                code='manager_appointment_decision',
-                name='Решение/протокол о назначении руководителя',
-            ),
-            FinanceProductDocumentItem(
-                code='location_ownership_document',
-                name='Договор аренды, субаренды, или свидетельство о праве собственности по месту нахождения',
-            ),
-            FinanceProductDocumentItem(
-                code='org_financical_result_',
-                name='УБ и отчет о фин. результатах за последний квартал',
-            ),
-        ]
+        ])
+        return docs
 
     def get_registering_form_class(self):
         return BGFinProdRegForm
