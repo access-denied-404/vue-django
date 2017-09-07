@@ -8,7 +8,9 @@ from mptt.admin import MPTTModelAdmin
 class FinanceProductAdmin(MPTTModelAdmin):
     fieldsets = (
         (None, dict(fields=(
-            ('name', 'parent'),
+            'name',
+            'parent',
+            '_finance_product',
             'page_content',
         ))),
         (_('SEO'), dict(classes='collapse', fields=(

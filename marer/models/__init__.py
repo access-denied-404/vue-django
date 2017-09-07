@@ -9,6 +9,7 @@ from marer.models.base import *
 from marer.models.issue import *
 from marer.models.issuer import *
 from marer.models.user import *
+from marer.products import get_finance_products_as_choices, get_finance_products
 
 
 class OKVED2(mptt_models.MPTTModel):
@@ -30,6 +31,7 @@ class FinanceProductPage(mptt_models.MPTTModel):
 
     name = models.CharField(verbose_name=_('finance product name'), max_length=512, blank=False, null=False)
     parent = TreeForeignKey('self', verbose_name=_('parent product'), null=True, blank=True, related_name='childrens')
+    _finance_product = models.CharField(choices=get_finance_products_as_choices(), max_length=32, blank=True, null=True)
     _seo_h1 = models.CharField(verbose_name=_('name on page'), max_length=512, blank=True, null=False, default='')
     _seo_title = models.CharField(verbose_name=_('browser title'), max_length=512, blank=True, null=False, default='')
     _seo_description = models.CharField(
@@ -57,4 +59,13 @@ class FinanceProductPage(mptt_models.MPTTModel):
     def get_seo_title(self):
         return self._seo_title if self._seo_title != '' else self.name
 
+    def get_finance_product(self):
+        if self._finance_product is not None:
+            for fp in get_finance_products():
+                if self._finance_product == fp.name:
+                    return fp
 
+        if self.parent is not None:
+            return self.parent.get_finance_product()
+
+        return None
