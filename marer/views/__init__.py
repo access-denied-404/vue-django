@@ -96,9 +96,14 @@ class FinanceProductView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         product = get_object_or_404(FinanceProductPage, id=kwargs.get('pid', 0))
+        finance_product = product.get_finance_product()
+        if finance_product is not None:
+            finance_product_name = finance_product.name
+        else:
+            finance_product_name = None
         if request.user.id:
             quick_request_form = QuickRequestForm(initial=dict(
-                finance_product=product.id,
+                product=finance_product_name,
                 contact_person_name=request.user.get_full_name(),
                 contact_email=request.user.email,
                 contact_phone=request.user.phone,
@@ -108,7 +113,7 @@ class FinanceProductView(TemplateView):
             quick_request_form.fields['contact_phone'].disabled = True
         else:
             quick_request_form = QuickRequestForm(initial=dict(
-                finance_product=product.id,
+                product=finance_product_name,
             ))
         finance_product_roots = FinanceProductPage.objects.root_nodes()
         context_part = dict(
