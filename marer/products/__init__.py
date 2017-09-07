@@ -59,9 +59,14 @@ class BankGuaranteeProduct(FinanceProduct):
             quarter_number = int((quarters_curr_date - relativedelta(days=1)).month / 3)
 
             if quarter_number == 4:
-                fpdi_code = 'accounting_report_forms_1_2_for_{}'.format(quarters_curr_date.strftime('y%Y'))
+                fpdi_code = 'accounting_report_forms_1_2_for_y{}'.format(
+                    (quarters_curr_date - relativedelta(days=1)).strftime('%Y')
+                )
             else:
-                fpdi_code = 'accounting_report_forms_1_2_for_{}'.format(quarters_curr_date.strftime('y%Y'))
+                fpdi_code = 'accounting_report_forms_1_2_for_y{}q{}'.format(
+                    (quarters_curr_date - relativedelta(days=1)).strftime('%Y'),
+                    quarter_number,
+                )
 
             if quarter_number in [1, 3]:
                 fpdi_name = 'Бухгалтерская отчетность за {} квартал {} года'.format(
