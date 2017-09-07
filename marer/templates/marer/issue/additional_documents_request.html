@@ -1,0 +1,88 @@
+{% extends 'marer/issue/layout.html' %}
+
+{% block issue_content %}
+    <div class="text-center h3">
+        Запрос №<b>123</b> к <b>Сбербанк</b> от 05 сентября 2017, 10:38
+    </div>
+
+    <div class="panel panel-primary">
+        <div class="panel-body">
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="h4">05 сентября 2017, 10:38</div>
+                        <div class="h3">Сбербанк</div>
+                    </div>
+                    <div class="col-md-8">
+                        Текст сообщения от банка,
+                        просьба предоставить
+                        какие-то документы.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-body">
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="h4">05 сентября 2017, 11:38</div>
+                        <div class="h3">Клиент</div>
+                    </div>
+                    <div class="col-md-8">
+                        <div>Текст ответа, предоставление документов.</div>
+                        <br/>
+                        <div>
+                            <table class="table table-condensed">
+                                <tr><td><a href="#">Документ1 <span class="glyphicon glyphicon-download-alt pull-right"></span></a></td></tr>
+                                <tr><td><a href="#">Документ1 <span class="glyphicon glyphicon-download-alt pull-right"></span></a></td></tr>
+                                <tr><td><a href="#">Документ1 <span class="glyphicon glyphicon-download-alt pull-right"></span></a></td></tr>
+                                <tr><td><a href="#">Документ1 <span class="glyphicon glyphicon-download-alt pull-right"></span></a></td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            Новое сообщение
+        </div>
+        <div class="panel-body">
+            <div class="container-fluid">
+
+{#                <div class="row">#}
+{#                    <div class="col-md-12">#}
+{#                        <div class="h3 text-center">Новое сообщение</div>#}
+{#                    </div>#}
+{#                </div>#}
+                <div class="row">
+                    <div class="col-md-12">
+                        <textarea style="width: 100%;" rows="4"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="h4 text-center">Прикрепить документы</div>
+                        <table class="table table-condensed">
+                            <tr><td><input type="file"/></td><td><input type="file"/></td></tr>
+                            <tr><td><input type="file"/></td><td><input type="file"/></td></tr>
+                            <tr><td><input type="file"/></td><td><input type="file"/></td></tr>
+                            <tr><td><input type="file"/></td><td><input type="file"/></td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row text-center">
+                    <a href="#" class="btn btn-primary">Отправить</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

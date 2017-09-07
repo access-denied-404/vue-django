@@ -141,6 +141,10 @@ class IssueAdditionalDocumentsRequestsView(IssueView):
     template_name = 'marer/issue/additional_documents_requests.html'
 
 
+class IssueAdditionalDocumentsRequestView(IssueView):
+    template_name = 'marer/issue/additional_documents_request.html'
+
+
 class IssuePaymentsView(IssueView):
     template_name = 'marer/issue/payments.html'
 
