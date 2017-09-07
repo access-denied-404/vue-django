@@ -7,6 +7,8 @@ from django.db import migrations, models
 import django.db.models.deletion
 import mptt.fields
 
+import marer.models.base
+
 
 class Migration(migrations.Migration):
 
@@ -20,11 +22,13 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=512)),
+                ('_finance_product', models.CharField(blank=True, choices=[('BankGuaranteeProduct', 'Банковская гарантия'), ('CreditProduct', 'Кредит'), ('LeasingProduct', 'Лизинг')], max_length=32, null=True)),
                 ('_seo_h1', models.CharField(blank=True, default='', max_length=512)),
                 ('_seo_title', models.CharField(blank=True, default='', max_length=512)),
                 ('_seo_description', models.CharField(blank=True, default='', max_length=512)),
                 ('_seo_keywords', models.CharField(blank=True, default='', max_length=512)),
                 ('page_content', ckeditor.fields.RichTextField(blank=True, default='')),
+                ('product_icon', models.ImageField(upload_to=marer.models.base.finance_products_page_images_upload_path)),
                 ('lft', models.PositiveIntegerField(db_index=True, editable=False)),
                 ('rght', models.PositiveIntegerField(db_index=True, editable=False)),
                 ('tree_id', models.PositiveIntegerField(db_index=True, editable=False)),
