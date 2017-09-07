@@ -11,12 +11,6 @@ from marer.models.issuer import *
 from marer.models.user import *
 
 
-class FinanceOrganization(models.Model):
-    name = models.CharField(max_length=512, blank=False, null=False)
-    interest_rate = models.FloatField(blank=False, null=False, default=0)
-    review_term_days = models.PositiveIntegerField(blank=False, null=False, default=1)
-
-
 class OKVED2(mptt_models.MPTTModel):
     name = models.CharField(max_length=512, blank=False, null=False)
     code = models.CharField(max_length=32, blank=False, null=False)
