@@ -25,3 +25,17 @@ class FinanceProductAdmin(MPTTModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+
+@register(models.StaticPage)
+class StaticPageAdmin(ModelAdmin):
+    fieldsets = (
+        (None, dict(fields=(
+            ('name', 'order'),
+            'page_content',
+        ))),
+        (_('SEO'), dict(classes='collapse', fields=(
+            ('_seo_h1', '_seo_title'),
+            ('_seo_description', '_seo_keywords'),
+        ))),
+    )
