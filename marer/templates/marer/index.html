@@ -24,8 +24,19 @@
                         <div class="col-sm-3">
                             <a href="{% url 'finance_product' product.id %}">
                                 <div class="panel panel-default">
-                                    <div class="panel-body" style="height: 135px; position: relative; background-image: url({{ product.product_icon.url }}); background-repeat: no-repeat; -webkit-background-size: cover; background-size: cover;">
-                                        <span style="background-color: rgba(255, 255, 255, 0.5);" class="text-center">{{ product.name }}</span>
+                                    <div class="panel-body" style="height: 135px;position: relative;">
+                                        <span
+                                                style="
+                                                    background-color: rgba(255, 255, 255, 0.9);
+                                                    position: relative;
+                                                    padding: 0 2px;
+                                                    border-radius: 2px;
+                                                    z-index: 5;"
+                                                class="text-center"
+                                        >{{ product.name }}</span>
+                                        <img
+                                                src="{{ product.product_icon.url }}"
+                                                style="position: absolute;height: 66%;bottom: 0;right: 0; z-index: 0;">
                                     </div>
                                 </div>
                             </a>
