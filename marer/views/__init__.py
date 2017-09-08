@@ -7,13 +7,14 @@ from django.urls import reverse
 from django.views.generic.base import TemplateView
 
 from marer.forms import QuickRequestForm
-from marer.models import FinanceProductPage
+from marer.models import FinanceProductPage, StaticPage
 from marer.models.issue import Issue
 from marer.models.issuer import Issuer
 from marer.models.user import User
+from marer.views.mixins import StaticPagesContextMixin
 
 
-class IndexView(TemplateView):
+class IndexView(TemplateView, StaticPagesContextMixin):
     template_name = 'marer/index.html'
 
     def get(self, request, *args, **kwargs):
@@ -98,7 +99,7 @@ class IndexView(TemplateView):
             return self.get(request, *args, **kwargs)
 
 
-class FinanceProductView(TemplateView):
+class FinanceProductView(TemplateView, StaticPagesContextMixin):
     template_name = 'marer/product.html'
 
     def get(self, request, *args, **kwargs):
@@ -127,6 +128,33 @@ class FinanceProductView(TemplateView):
             finance_product_roots=finance_product_roots,
             product=product,
             quick_request_form=quick_request_form,
+        )
+        kwargs.update(context_part)
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.get(request, *args, **kwargs)
+
+
+class StaticPageView(TemplateView, StaticPagesContextMixin):
+    template_name = 'marer/static_page.html'
+
+    def get(self, request, *args, **kwargs):
+        static_page_id = kwargs.get('spid', 0)
+        static_page = get_object_or_404(StaticPage, id=static_page_id)
+
+        if 'quick_request_form' in kwargs:
+            quick_request_form = kwargs.get('quick_request_form')
+        elif request.user.id:
+            quick_request_form = QuickRequestForm(user=request.user)
+        else:
+            quick_request_form = QuickRequestForm()
+        finance_product_roots = FinanceProductPage.objects.root_nodes()
+
+        context_part = dict(
+            finance_product_roots=finance_product_roots,
+            quick_request_form=quick_request_form,
+            static_page=static_page,
         )
         kwargs.update(context_part)
         return super().get(request, *args, **kwargs)

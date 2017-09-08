@@ -5,9 +5,10 @@ from django.views.generic import TemplateView, RedirectView
 
 from marer import forms
 from marer.models.user import User
+from marer.views import StaticPagesContextMixin
 
 
-class LoginView(TemplateView):
+class LoginView(TemplateView, StaticPagesContextMixin):
     template_name = 'marer/auth/login.html'
 
     def get(self, request, *args, **kwargs):
@@ -43,7 +44,7 @@ class LoginView(TemplateView):
             return self.get(request=request, *args, **kwargs)
 
 
-class RegisterView(TemplateView):
+class RegisterView(TemplateView, StaticPagesContextMixin):
     template_name = 'marer/auth/register.html'
 
     def get(self, request, *args, **kwargs):

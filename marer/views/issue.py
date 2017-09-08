@@ -4,9 +4,10 @@ from django.views.generic import TemplateView, RedirectView
 
 from marer.forms import IssueRegisteringForm
 from marer.models import Issue, Issuer
+from marer.views import StaticPagesContextMixin
 
 
-class IssueView(LoginRequiredMixin, TemplateView):
+class IssueView(LoginRequiredMixin, TemplateView, StaticPagesContextMixin):
     template_name = ''
     _issue = None
 

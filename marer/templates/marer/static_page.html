@@ -1,0 +1,22 @@
+{% extends 'marer/layout_public.html' %}
+
+{% block public_content %}
+
+    <div class="row">
+        <div class="col-md-4 col-md-push-8">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <span class="h4">Быстрая заявка</span>
+                </div>
+                <div class="panel-body">
+                    {% include 'marer/quick_request_form.html' %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8 col-md-pull-4">
+            <h1>{{ static_page.get_seo_h1 }}</h1>
+            <p>{{ static_page.page_content |safe }}</p>
+        </div>
+    </div>
+
+{% endblock %}

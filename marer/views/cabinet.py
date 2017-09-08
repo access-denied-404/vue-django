@@ -8,10 +8,11 @@ from django.views.generic import TemplateView
 
 from marer import forms
 from marer.models import Issue, Issuer
+from marer.views import StaticPagesContextMixin
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class CabinetRequestsView(LoginRequiredMixin, TemplateView):
+class CabinetRequestsView(LoginRequiredMixin, TemplateView, StaticPagesContextMixin):
     template_name = 'marer/cabinet/requests.html'
 
     def get(self, request, *args, **kwargs):
