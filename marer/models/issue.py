@@ -148,5 +148,5 @@ class IssueDocumentRequest(models.Model):
     pass
 
 
-class IssueFinanceOrgPropose:
+class IssueFinanceOrgPropose(models.Model):
     pass
