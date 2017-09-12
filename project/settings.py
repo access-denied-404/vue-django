@@ -27,6 +27,7 @@ SECRET_KEY = 'zftqc(-vdpruk@u2dd9zw9(-ic&wi0oer-e477!#ba@tw!u(y_'
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    'www.marer.ru',
     'marer.ru',
     'new.marer.ru',
     'localhost',
