@@ -169,3 +169,7 @@ class IssueRegisteringForm(Form):
         widget=Textarea(attrs={'class': 'form-control', 'rows': 4}),
         label='Комментарий к заявке',
     )
+
+
+class RestTenderForm(Form):
+    gos_number = fields.CharField(required=True, max_length=512)

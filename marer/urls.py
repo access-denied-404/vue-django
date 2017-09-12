@@ -4,6 +4,7 @@ from marer import views
 from marer.views import auth
 from marer.views import cabinet
 from marer.views import issue
+from marer.views import rest
 
 urlpatterns = [
     url(r'^$', views.IndexView.as_view(), name='index'),
@@ -32,4 +33,6 @@ urlpatterns = [
     url(r'^cabinet/requests/(?P<iid>\d+)/pay$', issue.IssuePaymentsView.as_view(), name='issue_payments'),
     url(r'^cabinet/requests/(?P<iid>\d+)/finished$', issue.IssueFinishedView.as_view(), name='issue_finished'),
     url(r'^cabinet/requests/(?P<iid>\d+)/cancelled$', issue.IssueCancelledView.as_view(), name='issue_cancelled'),
+
+    url(r'^rest/tender$', rest.TenderDataView.as_view(), name='rest_tender')
 ]
