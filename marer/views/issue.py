@@ -1,10 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from django.views.generic import TemplateView, RedirectView
 
 from marer.forms import IssueRegisteringForm
 from marer.models import Issue, Issuer
 from marer.models.finance_org import FinanceOrgProductConditions
+from marer.models.issue import IssueFinanceOrgPropose
 from marer.views import StaticPagesContextMixin
 
 
@@ -154,7 +157,54 @@ class IssueScoringView(IssueView):
                 fo_ids_used.append(foc.finance_org_id)
 
         kwargs['foc_list'] = distinctized_foc_list
+        kwargs['proposed_fo_ids'] = IssueFinanceOrgPropose.objects.filter(
+            issue=self.get_issue()).values_list('finance_org_id', flat=True)
         return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+
+        send_to_all = request.POST.get('send_to_all', None)
+        foid = request.POST.get('foid', None)
+        if send_to_all:
+            foc_list = FinanceOrgProductConditions.objects.filter(
+                bg_44_contract_exec_interest_rate__isnull=False,
+                bg_review_term_days__gt=0,
+            )
+
+            # distinctize by finance org
+            foc_list = [x for x in foc_list]
+            fo_ids_used = []
+            distinctized_foc_list = []
+            for foc in foc_list:
+                if foc.finance_org_id not in fo_ids_used:
+                    distinctized_foc_list.append(foc)
+                    fo_ids_used.append(foc.finance_org_id)
+
+            for foc in distinctized_foc_list:
+                propose_qs = IssueFinanceOrgPropose.objects.filter(
+                    finance_org_id=foc.finance_org_id, issue=self.get_issue())
+                if not propose_qs.exists():
+                    new_propose = IssueFinanceOrgPropose()
+                    new_propose.finance_org = foc.finance_org
+                    new_propose.issue = self.get_issue()
+                    new_propose.save()
+
+        elif foid:
+            propose_qs = IssueFinanceOrgPropose.objects.filter(
+                finance_org_id=foid, issue=self.get_issue())
+            if not propose_qs.exists():
+                new_propose = IssueFinanceOrgPropose()
+                new_propose.finance_org_id = foid
+                new_propose.issue = self.get_issue()
+                new_propose.save()
+
+        url = reverse('issue_scoring', args=args, kwargs=kwargs)
+        get_params = request.GET.urlencode()
+        if get_params:
+            response = HttpResponseRedirect(url + '?' + get_params)
+        else:
+            response = HttpResponseRedirect(url)
+        return response
 
 
 class IssueAdditionalDocumentsRequestsView(IssueView):
