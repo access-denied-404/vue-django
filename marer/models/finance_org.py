@@ -1,6 +1,6 @@
 from django.db import models
 
-from marer.models import Region, OKVED2
+from marer.models.base import OKVED2, Region
 from marer.products import get_finance_products_as_choices
 
 

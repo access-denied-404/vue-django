@@ -13,20 +13,6 @@ from marer.models.user import *
 from marer.products import get_finance_products_as_choices, get_finance_products
 
 
-class OKVED2(mptt_models.MPTTModel):
-    name = models.CharField(max_length=512, blank=False, null=False)
-    code = models.CharField(max_length=32, blank=False, null=False)
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='childrens')
-
-
-class Region(mptt_models.MPTTModel):
-    name = models.CharField(max_length=512, blank=False, null=False)
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='childrens')
-
-    def __str__(self):
-        return self.name
-
-
 class FinanceProductPage(mptt_models.MPTTModel):
 
     class Meta:

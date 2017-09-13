@@ -4,6 +4,8 @@ import uuid
 
 from django.db import models
 from django.utils.encoding import force_str, force_text
+from mptt import models as mptt_models
+from mptt.fields import TreeForeignKey
 
 __all__ = ['Document']
 
@@ -37,3 +39,17 @@ def finance_products_page_images_upload_path(instance, filename):
 
 class Document(models.Model):
     file = models.FileField(upload_to=documents_upload_path)
+
+
+class OKVED2(mptt_models.MPTTModel):
+    name = models.CharField(max_length=512, blank=False, null=False)
+    code = models.CharField(max_length=32, blank=False, null=False)
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='childrens')
+
+
+class Region(mptt_models.MPTTModel):
+    name = models.CharField(max_length=512, blank=False, null=False)
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='childrens')
+
+    def __str__(self):
+        return self.name
