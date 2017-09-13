@@ -12,17 +12,27 @@ logger = logging.getLogger('django')
 
 
 class Command(BaseCommand):
+
+    def add_arguments(self, parser):
+        parser.add_argument('filename', nargs=1, type=str)
+        parser.add_argument('sheet', nargs='?', type=str)
+
     def handle(self, *args, **options):
 
         product = BankGuaranteeProduct()  # todo set product from params
+        filename = options.get('filename')[0]
+        sheet_name = options.get('sheet', None)
+
         foc_list = FinanceOrgProductConditions.objects.filter(finance_product=product.name)
         for foc in foc_list:
             foc.delete()
 
-        filename = 'banks_conditions.xlsx'  # todo get filename from params
         wb = load_workbook(filename)
-        sheets = wb.get_sheet_names()
-        sh = wb.get_sheet_by_name(sheets[0])  # todo get sheet by name from param
+        if sheet_name is not None:
+            sh = wb.get_sheet_by_name(sheet_name)
+        else:
+            sheets = wb.get_sheet_names()
+            sh = wb.get_sheet_by_name(sheets[0])
 
         """
         HEADERS
@@ -214,7 +224,7 @@ class Command(BaseCommand):
     def _get_cell_bool(self, cell_data):
 
         if cell_data.value is None or cell_data.value == '':
-            return None, None
+            return False
 
         # variants
         #   ' да '
@@ -241,12 +251,12 @@ class Command(BaseCommand):
             if matches:
                 return False
 
-        return None
+        return False
 
     def _get_cell_review_term_days(self, cell_data):
 
         if cell_data.value is None or cell_data.value == '':
-            return None, None
+            return 0
 
         # variants
         #   ' 10 '
@@ -261,9 +271,9 @@ class Command(BaseCommand):
         matches = pattern.fullmatch(str(cell_data.value).lower())
         if matches:
             days_data = matches.groupdict().get('days', None)
-            return int(days_data) if days_data else None
+            return int(days_data) if days_data else 0
 
-        return None
+        return 0
 
     def _get_cell_ensure_condition(self, cell_data):
 
