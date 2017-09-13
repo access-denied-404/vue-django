@@ -4,58 +4,25 @@
 <table class="table table-hover">
     <tr>
         <th class="bg-primary">&nbsp;</th>
-        <th class="bg-primary">Процентная ставка</th>
+        <th class="bg-primary">Процентная<br/>ставка</th>
         <th class="bg-primary">Обеспечение</th>
-        <th class="bg-primary">Срок рассмотрения</th>
+        <th class="bg-primary">Срок<br/>рассмотрения</th>
         <th class="bg-primary">Открытие<br/>р/с</th>
-        <th class="bg-primary">Личное присутствие</th>
+        <th class="bg-primary">Личное<br/>присутствие</th>
         <th class="bg-primary text-center">Заявка</th>
     </tr>
-    <tr>
-        <td>Сбербанк России</td>
-        <td>10%</td>
-        <td>Залог 10%</td>
-        <td>10 дней</td>
-        <td>Не нужно</td>
-        <td>Не нужно</td>
-        <td><a href="#" class="btn btn-primary btn-sm pull-right">Отправить</a></td>
-    </tr>
-    <tr>
-        <td>ВТБ Банк Москвы</td>
-        <td>11%</td>
-        <td>Залог 12%</td>
-        <td>8 дней</td>
-        <td>Не нужно</td>
-        <td>Не нужно</td>
-        <td><a href="#" class="btn btn-primary btn-sm pull-right">Отправить</a></td>
-    </tr>
-    <tr class="bg-success">
-        <td>Газпромбанк</td>
-        <td>12%</td>
-        <td>Недвижимость</td>
-        <td>15 дней</td>
-        <td>Нужно</td>
-        <td>Не нужно</td>
-        <td><a href="#" class="btn btn-primary btn-sm pull-right" disabled>Отправлена</a></td>
-    </tr>
-    <tr>
-        <td>Альфа-Банк</td>
-        <td>12%</td>
-        <td>Залог 12%</td>
-        <td>15 дней</td>
-        <td>Нужно</td>
-        <td>Не нужно</td>
-        <td><a href="#" class="btn btn-primary btn-sm pull-right">Отправить</a></td>
-    </tr>
-    <tr>
-        <td>Промсвязьбанк</td>
-        <td>12%</td>
-        <td>Залог 12%</td>
-        <td>15 дней</td>
-        <td>Нужно</td>
-        <td>Не нужно</td>
-        <td><a href="#" class="btn btn-primary btn-sm pull-right">Отправить</a></td>
-    </tr>
+    {% for foc in foc_list %}
+        <tr>
+            <td>{{ foc.finance_org.name }}</td>
+            {# using bg_44_contract_exec_ as prefix for stub list #}
+            <td>{{ foc.bg_44_contract_exec_interest_rate }}%</td>
+            <td>{{ foc.humanized_bg_insurance }}</td>
+            <td>{{ foc.humanized_bg_review_tern_days }}</td>
+            <td>{{ foc.humanized_bg_bank_account_opening_required }}</td>
+            <td>{{ foc.humanized_bg_personal_presence_required }}</td>
+            <td><a href="#" class="btn btn-primary btn-sm pull-right">Отправить</a></td>
+        </tr>
+    {% endfor %}
     <tr>
         <td colspan="6">&nbsp;</td>
         <td><a href="#" class="btn btn-primary btn-sm pull-right">Отправить<br/>во все</a></td>

@@ -4,6 +4,7 @@ from django.views.generic import TemplateView, RedirectView
 
 from marer.forms import IssueRegisteringForm
 from marer.models import Issue, Issuer
+from marer.models.finance_org import FinanceOrgProductConditions
 from marer.views import StaticPagesContextMixin
 
 
@@ -136,6 +137,24 @@ class IssueSurveyView(IssueView):
 
 class IssueScoringView(IssueView):
     template_name = 'marer/issue/scoring.html'
+
+    def get(self, request, *args, **kwargs):
+        foc_list = FinanceOrgProductConditions.objects.filter(
+            bg_44_contract_exec_interest_rate__isnull=False,
+            bg_review_term_days__gt=0,
+        ).order_by('bg_44_contract_exec_interest_rate')
+
+        # distinctize by finance org
+        foc_list = [x for x in foc_list]
+        fo_ids_used = []
+        distinctized_foc_list = []
+        for foc in foc_list:
+            if foc.finance_org_id not in fo_ids_used:
+                distinctized_foc_list.append(foc)
+                fo_ids_used.append(foc.finance_org_id)
+
+        kwargs['foc_list'] = distinctized_foc_list
+        return super().get(request, *args, **kwargs)
 
 
 class IssueAdditionalDocumentsRequestsView(IssueView):
