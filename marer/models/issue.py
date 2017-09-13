@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.formats import number_format
 
 from marer.models.base import Document
+from marer.models.finance_org import FinanceOrganization
 from marer.models.issuer import Issuer, IssuerDocument
 from marer.products import get_finance_products_as_choices, FinanceProduct, get_finance_products
 
@@ -149,4 +150,8 @@ class IssueDocumentRequest(models.Model):
 
 
 class IssueFinanceOrgPropose(models.Model):
-    pass
+    class Meta:
+        unique_together = (('issue', 'finance_org'),)
+
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False)
+    finance_org = models.ForeignKey(FinanceOrganization, on_delete=models.CASCADE, blank=False, null=False)
