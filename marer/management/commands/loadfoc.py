@@ -69,16 +69,55 @@ class Command(BaseCommand):
 
             new_foc = FinanceOrgProductConditions()
 
+            # Subtypes conditions
+            # 44-FZ
             min_sum, max_sum = self._get_cell_summ_range(self._get_cell_data(sh, 'b', idx))
-            new_foc.bg_44_app_ensure_max_sum = max_sum
             new_foc.bg_44_app_ensure_min_sum = min_sum
+            new_foc.bg_44_app_ensure_max_sum = max_sum
             new_foc.bg_44_app_ensure_interest_rate = self._get_cell_percentage(self._get_cell_data(sh, 'c', idx))
 
             min_sum, max_sum = self._get_cell_summ_range(self._get_cell_data(sh, 'd', idx))
-            new_foc.bg_44_contract_exec_max_sum = max_sum
             new_foc.bg_44_contract_exec_min_sum = min_sum
+            new_foc.bg_44_contract_exec_max_sum = max_sum
             new_foc.bg_44_contract_exec_interest_rate = self._get_cell_percentage(self._get_cell_data(sh, 'e', idx))
 
+            # 223-FZ
+            min_sum, max_sum = self._get_cell_summ_range(self._get_cell_data(sh, 'f', idx))
+            new_foc.bg_223_app_ensure_min_sum = min_sum
+            new_foc.bg_223_app_ensure_max_sum = max_sum
+            new_foc.bg_223_app_ensure_interest_rate = self._get_cell_percentage(self._get_cell_data(sh, 'g', idx))
+
+            min_sum, max_sum = self._get_cell_summ_range(self._get_cell_data(sh, 'h', idx))
+            new_foc.bg_223_contract_exec_min_sum = min_sum
+            new_foc.bg_223_contract_exec_max_sum = max_sum
+            new_foc.bg_223_contract_exec_interest_rate = self._get_cell_percentage(self._get_cell_data(sh, 'i', idx))
+
+
+            # 185-FZ
+            min_sum, max_sum = self._get_cell_summ_range(self._get_cell_data(sh, 'j', idx))
+            new_foc.bg_185_min_sum = min_sum
+            new_foc.bg_185_max_sum = max_sum
+            new_foc.bg_185_interest_rate = self._get_cell_percentage(self._get_cell_data(sh, 'k', idx))
+
+            # Commercial
+            min_sum, max_sum = self._get_cell_summ_range(self._get_cell_data(sh, 'l', idx))
+            new_foc.bg_ct_min_sum = min_sum
+            new_foc.bg_ct_max_sum = max_sum
+            new_foc.bg_ct_interest_rate = self._get_cell_percentage(self._get_cell_data(sh, 'm', idx))
+
+            # VAT
+            min_sum, max_sum = self._get_cell_summ_range(self._get_cell_data(sh, 'n', idx))
+            new_foc.bg_vat_min_sum = min_sum
+            new_foc.bg_vat_max_sum = max_sum
+            new_foc.bg_vat_interest_rate = self._get_cell_percentage(self._get_cell_data(sh, 'o', idx))
+
+            # Customs
+            min_sum, max_sum = self._get_cell_summ_range(self._get_cell_data(sh, 'p', idx))
+            new_foc.bg_customs_min_sum = min_sum
+            new_foc.bg_customs_max_sum = max_sum
+            new_foc.bg_customs_interest_rate = self._get_cell_percentage(self._get_cell_data(sh, 'q', idx))
+
+            # Base conditions
             new_foc.personal_presence_required = self._get_cell_bool(self._get_cell_data(sh, 'r', idx))
             new_foc.bg_review_term_days = self._get_cell_review_term_days(self._get_cell_data(sh, 's', idx))
 
@@ -94,10 +133,10 @@ class Command(BaseCommand):
                 finance_org.save()
 
             new_foc.finance_org = finance_org
+            new_foc.finance_product = product.name
             new_foc.save()
             idx += 1
             bank_name = self._get_cell_data(sh, 'a', idx).value
-
 
     def _get_cell_summ_range(self, cell_data):
 
@@ -231,12 +270,41 @@ class Command(BaseCommand):
         if cell_data.value is None or cell_data.value == '':
             return None, 0
 
-        logger.warning('Getting ensuring conditions for BankGuarantee is not implemented yet!')
+        # variants
+        #   ' залог 10 % '
+        #   ' 10 % '
+        #   ' недвижимость '
+        #   ' нет '
 
-        ensure_type = None
-        ensure_value = 0
+        patterns_pledge = [
+            re.compile('\s*залог\s*(?P<percentage>\d+)\s*%\s*'),
+            re.compile('\s*(?P<percentage>\d+)\s*%\s*'),
+        ]
+        patterns_estate = [
+            re.compile('\s*недвижимость\s*'),
+            re.compile('\s*-\s*'),
+        ]
+        patterns_none = [
+            re.compile('\s*нет\s*'),
+        ]
 
-        return ensure_type, ensure_value
+        for pattern in patterns_pledge:
+            matches = pattern.fullmatch(str(cell_data.value).lower())
+            if matches:
+                ens_data = matches.groupdict()
+                ensure_type = FinanceOrgProductConditions.INSURANCE_TYPE_PLEDGE
+                ensure_value = int(ens_data.get('percentage'))
+                return ensure_type, ensure_value
+
+        for pattern in patterns_estate:
+            matches = pattern.fullmatch(str(cell_data.value).lower())
+            if matches:
+                return FinanceOrgProductConditions.INSURANCE_TYPE_REAL_ESTATE, 100
+
+        for pattern in patterns_none:
+            matches = pattern.fullmatch(str(cell_data.value).lower())
+            if matches:
+                return None, 0
 
     def _get_cell_data(self, sheet, col, row):
         sheet_idx = '{col}{row}'.format(col=str(col).upper(), row=row)
