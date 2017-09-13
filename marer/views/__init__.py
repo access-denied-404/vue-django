@@ -8,6 +8,7 @@ from django.views.generic.base import TemplateView
 
 from marer.forms import QuickRequestForm
 from marer.models import FinanceProductPage, StaticPage
+from marer.models.finance_org import FinanceOrgProductConditions
 from marer.models.issue import Issue
 from marer.models.issuer import Issuer
 from marer.models.user import User
@@ -31,10 +32,26 @@ class IndexView(TemplateView, StaticPagesContextMixin):
         ).exclude(
             product_icon=''
         ).order_by('?')[:8]
+
+        bg_rated_foc_list = FinanceOrgProductConditions.objects.filter(
+            bg_44_contract_exec_interest_rate__isnull=False,
+            bg_review_term_days__gt=0,
+        ).order_by('bg_44_contract_exec_interest_rate')[:5]
+
+        # distinctize by finance org
+        bg_rated_foc_list = [x for x in bg_rated_foc_list]
+        fo_ids_used = []
+        distinctized_bg_rated_foc_list = []
+        for foc in bg_rated_foc_list:
+            if foc.finance_org_id not in fo_ids_used:
+                distinctized_bg_rated_foc_list.append(foc)
+                fo_ids_used.append(foc.finance_org_id)
+
         context_part = dict(
             finance_product_roots=finance_product_roots,
             best_finance_products=best_finance_products,
             quick_request_form=quick_request_form,
+            bg_rated_foc_list=distinctized_bg_rated_foc_list,
         )
         kwargs.update(context_part)
         return super().get(request, *args, **kwargs)

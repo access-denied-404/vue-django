@@ -52,11 +52,11 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">Рейтинг кредитов</div>
                 <table class="table">
-                    <tr><td>Кредит МСБ до 2 млн. руб.</td><td>от 12%</td></tr>
-                    <tr><td>Кредит МСБ до 2 млн. руб.</td><td>от 12%</td></tr>
-                    <tr><td>Кредит МСБ до 2 млн. руб.</td><td>от 12%</td></tr>
-                    <tr><td>Кредит МСБ до 2 млн. руб.</td><td>от 12%</td></tr>
-                    <tr><td>Кредит МСБ до 2 млн. руб.</td><td>от 12%</td></tr>
+                    <tr><td>ВТБ Банк Москвы</td><td>от 11%</td></tr>
+                    <tr><td>Центр-инвест до 500 млн</td><td>от 11%</td></tr>
+                    <tr><td>Сбербанк России</td><td>от 12%</td></tr>
+                    <tr><td>Авангард</td><td>от 12%</td></tr>
+                    <tr><td>Московский Областной Банк</td><td>от 13,5%</td></tr>
                 </table>
             </div>
         </div>
@@ -64,23 +64,24 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">Рейтинг банковских гарантий</div>
                 <table class="table">
-                    <tr><td>Кредит МСБ до 2 млн. руб.</td><td>от 12%</td></tr>
-                    <tr><td>Кредит МСБ до 2 млн. руб.</td><td>от 12%</td></tr>
-                    <tr><td>Кредит МСБ до 2 млн. руб.</td><td>от 12%</td></tr>
-                    <tr><td>Кредит МСБ до 2 млн. руб.</td><td>от 12%</td></tr>
-                    <tr><td>Кредит МСБ до 2 млн. руб.</td><td>от 12%</td></tr>
+                    {% for bgrfoc in bg_rated_foc_list %}
+                        <tr>
+                            <td>{{ bgrfoc.finance_org.name }}</td>
+                            <td>от {{ bgrfoc.bg_44_contract_exec_interest_rate | floatformat }}%</td>
+                        </tr>
+                    {% endfor %}
                 </table>
             </div>
         </div>
         <div class="col-md-4">
             <div class="panel panel-primary">
-                <div class="panel-heading">Рейтинг вкладов</div>
+                <div class="panel-heading">Рейтинг лизинговых условий</div>
                 <table class="table">
-                    <tr><td>Кредит МСБ до 2 млн. руб.</td><td>от 12%</td></tr>
-                    <tr><td>Кредит МСБ до 2 млн. руб.</td><td>от 12%</td></tr>
-                    <tr><td>Кредит МСБ до 2 млн. руб.</td><td>от 12%</td></tr>
-                    <tr><td>Кредит МСБ до 2 млн. руб.</td><td>от 12%</td></tr>
-                    <tr><td>Кредит МСБ до 2 млн. руб.</td><td>от 12%</td></tr>
+                    <tr><td>Бизнес Альянс от 100 млн</td></tr>
+                    <tr><td>Альянс-Лизинг (ЗАО) от 50 тыс до 50 млн</td></tr>
+                    <tr><td>Тяжпромлизинг (СМП банк) от 100 млн</td></tr>
+                    <tr><td>ЛФ Финанс до 50 млн</td></tr>
+                    <tr><td>Энергоинвест от 500 тыс до 5 млн</td></tr>
                 </table>
             </div>
         </div>
