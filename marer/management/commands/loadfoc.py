@@ -79,62 +79,65 @@ class Command(BaseCommand):
 
             new_foc = FinanceOrgProductConditions()
 
-            # Subtypes conditions
-            # 44-FZ
-            min_sum, max_sum = self._get_cell_summ_range(self._get_cell_data(sh, 'b', idx))
-            new_foc.bg_44_app_ensure_min_sum = min_sum
-            new_foc.bg_44_app_ensure_max_sum = max_sum
-            new_foc.bg_44_app_ensure_interest_rate = self._get_cell_percentage(self._get_cell_data(sh, 'c', idx))
+            try:
+                # Subtypes conditions
+                # 44-FZ
+                min_sum, max_sum = self._get_cell_summ_range(self._get_cell_data(sh, 'b', idx))
+                new_foc.bg_44_app_ensure_min_sum = min_sum
+                new_foc.bg_44_app_ensure_max_sum = max_sum
+                new_foc.bg_44_app_ensure_interest_rate = self._get_cell_percentage(self._get_cell_data(sh, 'c', idx))
 
-            min_sum, max_sum = self._get_cell_summ_range(self._get_cell_data(sh, 'd', idx))
-            new_foc.bg_44_contract_exec_min_sum = min_sum
-            new_foc.bg_44_contract_exec_max_sum = max_sum
-            new_foc.bg_44_contract_exec_interest_rate = self._get_cell_percentage(self._get_cell_data(sh, 'e', idx))
+                min_sum, max_sum = self._get_cell_summ_range(self._get_cell_data(sh, 'd', idx))
+                new_foc.bg_44_contract_exec_min_sum = min_sum
+                new_foc.bg_44_contract_exec_max_sum = max_sum
+                new_foc.bg_44_contract_exec_interest_rate = self._get_cell_percentage(self._get_cell_data(sh, 'e', idx))
 
-            # 223-FZ
-            min_sum, max_sum = self._get_cell_summ_range(self._get_cell_data(sh, 'f', idx))
-            new_foc.bg_223_app_ensure_min_sum = min_sum
-            new_foc.bg_223_app_ensure_max_sum = max_sum
-            new_foc.bg_223_app_ensure_interest_rate = self._get_cell_percentage(self._get_cell_data(sh, 'g', idx))
+                # 223-FZ
+                min_sum, max_sum = self._get_cell_summ_range(self._get_cell_data(sh, 'f', idx))
+                new_foc.bg_223_app_ensure_min_sum = min_sum
+                new_foc.bg_223_app_ensure_max_sum = max_sum
+                new_foc.bg_223_app_ensure_interest_rate = self._get_cell_percentage(self._get_cell_data(sh, 'g', idx))
 
-            min_sum, max_sum = self._get_cell_summ_range(self._get_cell_data(sh, 'h', idx))
-            new_foc.bg_223_contract_exec_min_sum = min_sum
-            new_foc.bg_223_contract_exec_max_sum = max_sum
-            new_foc.bg_223_contract_exec_interest_rate = self._get_cell_percentage(self._get_cell_data(sh, 'i', idx))
+                min_sum, max_sum = self._get_cell_summ_range(self._get_cell_data(sh, 'h', idx))
+                new_foc.bg_223_contract_exec_min_sum = min_sum
+                new_foc.bg_223_contract_exec_max_sum = max_sum
+                new_foc.bg_223_contract_exec_interest_rate = self._get_cell_percentage(self._get_cell_data(sh, 'i', idx))
 
 
-            # 185-FZ
-            min_sum, max_sum = self._get_cell_summ_range(self._get_cell_data(sh, 'j', idx))
-            new_foc.bg_185_min_sum = min_sum
-            new_foc.bg_185_max_sum = max_sum
-            new_foc.bg_185_interest_rate = self._get_cell_percentage(self._get_cell_data(sh, 'k', idx))
+                # 185-FZ
+                min_sum, max_sum = self._get_cell_summ_range(self._get_cell_data(sh, 'j', idx))
+                new_foc.bg_185_min_sum = min_sum
+                new_foc.bg_185_max_sum = max_sum
+                new_foc.bg_185_interest_rate = self._get_cell_percentage(self._get_cell_data(sh, 'k', idx))
 
-            # Commercial
-            min_sum, max_sum = self._get_cell_summ_range(self._get_cell_data(sh, 'l', idx))
-            new_foc.bg_ct_min_sum = min_sum
-            new_foc.bg_ct_max_sum = max_sum
-            new_foc.bg_ct_interest_rate = self._get_cell_percentage(self._get_cell_data(sh, 'm', idx))
+                # Commercial
+                min_sum, max_sum = self._get_cell_summ_range(self._get_cell_data(sh, 'l', idx))
+                new_foc.bg_ct_min_sum = min_sum
+                new_foc.bg_ct_max_sum = max_sum
+                new_foc.bg_ct_interest_rate = self._get_cell_percentage(self._get_cell_data(sh, 'm', idx))
 
-            # VAT
-            min_sum, max_sum = self._get_cell_summ_range(self._get_cell_data(sh, 'n', idx))
-            new_foc.bg_vat_min_sum = min_sum
-            new_foc.bg_vat_max_sum = max_sum
-            new_foc.bg_vat_interest_rate = self._get_cell_percentage(self._get_cell_data(sh, 'o', idx))
+                # VAT
+                min_sum, max_sum = self._get_cell_summ_range(self._get_cell_data(sh, 'n', idx))
+                new_foc.bg_vat_min_sum = min_sum
+                new_foc.bg_vat_max_sum = max_sum
+                new_foc.bg_vat_interest_rate = self._get_cell_percentage(self._get_cell_data(sh, 'o', idx))
 
-            # Customs
-            min_sum, max_sum = self._get_cell_summ_range(self._get_cell_data(sh, 'p', idx))
-            new_foc.bg_customs_min_sum = min_sum
-            new_foc.bg_customs_max_sum = max_sum
-            new_foc.bg_customs_interest_rate = self._get_cell_percentage(self._get_cell_data(sh, 'q', idx))
+                # Customs
+                min_sum, max_sum = self._get_cell_summ_range(self._get_cell_data(sh, 'p', idx))
+                new_foc.bg_customs_min_sum = min_sum
+                new_foc.bg_customs_max_sum = max_sum
+                new_foc.bg_customs_interest_rate = self._get_cell_percentage(self._get_cell_data(sh, 'q', idx))
 
-            # Base conditions
-            new_foc.personal_presence_required = self._get_cell_bool(self._get_cell_data(sh, 'r', idx))
-            new_foc.bg_review_term_days = self._get_cell_review_term_days(self._get_cell_data(sh, 's', idx))
+                # Base conditions
+                new_foc.personal_presence_required = self._get_cell_bool(self._get_cell_data(sh, 'r', idx))
+                new_foc.bg_review_term_days = self._get_cell_review_term_days(self._get_cell_data(sh, 's', idx))
 
-            ensure_type, ensure_value = self._get_cell_ensure_condition(self._get_cell_data(sh, 't', idx))
-            new_foc.bg_insurance_type = ensure_type
-            new_foc.bg_insurance_value = ensure_value
-            new_foc.bg_bank_account_opening_required = self._get_cell_bool(self._get_cell_data(sh, 'u', idx))
+                ensure_type, ensure_value = self._get_cell_ensure_condition(self._get_cell_data(sh, 't', idx))
+                new_foc.bg_insurance_type = ensure_type
+                new_foc.bg_insurance_value = ensure_value
+                new_foc.bg_bank_account_opening_required = self._get_cell_bool(self._get_cell_data(sh, 'u', idx))
+            except Exception:
+                logger.warning("Error on parsing line {}, finance organization {}".format(idx, bank_name))
 
             try:
                 finance_org = FinanceOrganization.objects.get(name__iexact=bank_name)
