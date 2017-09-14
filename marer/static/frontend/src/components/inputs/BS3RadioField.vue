@@ -8,7 +8,7 @@
         v-model="selected"
         :name="name"
         :selected-value="option.value"
-        type="success"
+        type="primary"
       >{{ option.text }}</radio>
     </div>
   </div>
