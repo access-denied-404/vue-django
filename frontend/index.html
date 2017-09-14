@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>frontend-application</title>
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="http://localhost:8000/static/marer/fonts/DINPro-Regular.css">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="http://localhost:8000/static/bootstrap/dist/css/bootstrap.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+          integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+          crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 text-center">
+      <h1>
+        <a href="/" class="no-text-decoration">
+          <img src="http://new.marer.ru/static/marer/img/logo_marer_horizontal.svg" height="64">
+          <span class="visible-md-inline visible-lg-inline">
+                    <img src="http://localhost:8000/static/marer/img/logo_marer_vert_line.svg" height="64">
+                    <img src="http://localhost:8000/static/marer/img/logo_marer_descr.svg" height="64">
+                </span>
+        </a>
+      </h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">Этапы прохождения заявки</div>
+    <div class="col-md-9">
+      <div id="app" csrf="csrf-csrf-csrf" products='[
+                      {"value":"", "text":""},
+                      {"value":"bank-guarantee", "text":"Банковская гарантия"},
+                      {"value":"credit", "text":"Кредит"},
+                      {"value":"leasing", "text":"Лизинг"}
+                      ]'></div>
+      <!-- built files will be auto injected -->
+    </div>
+  </div>
+</div>
+</body>
+</html>
