@@ -39,7 +39,7 @@ class FinanceProductPage(mptt_models.MPTTModel):
         default=''
     )
     page_content = RichTextField(verbose_name=_('page content'), blank=True, null=False, default='')
-    product_icon = models.ImageField(upload_to=finance_products_page_images_upload_path)
+    product_icon = models.ImageField(upload_to=finance_products_page_images_upload_path, blank=True, null=True)
 
     def __str__(self):
         return self.name
