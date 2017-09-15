@@ -80,12 +80,19 @@
       command: npm install chdir=/srv/marer/marer/static/{{ item }}
       with_items:
         - bootstrap
+        - frontend
       become: true
 
     - name: Primary build static files - grunt dist build
       command: grunt dist chdir=/srv/marer/marer/static/{{ item }}
       with_items:
         - bootstrap
+      become: true
+
+    - name: Build frontend static part with npm
+      command: npm run build chdir=/srv/marer/marer/static/{{ item }}
+      with_items:
+        - frontend
       become: true
 
     - name: Cleaning installation mostly after static files patches
