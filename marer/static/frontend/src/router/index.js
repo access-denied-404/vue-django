@@ -13,7 +13,7 @@ export default new Router({
       component: Hello
     },
     {
-      path: '/bank-guarantee',
+      path: '/BankGuaranteeProduct',
       name: 'FormBankGuarantee',
       component: FormBankGuarantee
     }
