@@ -50,7 +50,7 @@ class BankGuaranteeProduct(FinanceProduct):
         curr_quartal_start_date = prev_month_start_date
         while curr_quartal_start_date.month not in yr_quartals_start_months:
             curr_quartal_start_date -= relativedelta(months=1)
-        yr_quarters_cnt = 5
+        yr_quarters_cnt = 4  # first quarter will catch as finished quarter on start
         quarters_start_date = curr_quartal_start_date - relativedelta(months=yr_quarters_cnt*3)
         quarters_curr_date = quarters_start_date
 
