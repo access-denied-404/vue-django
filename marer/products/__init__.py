@@ -56,28 +56,7 @@ class BankGuaranteeProduct(FinanceProduct):
 
         while quarters_curr_date <= curr_date:
 
-            quarter_number = int((quarters_curr_date - relativedelta(days=1)).month / 3)
-
-            if quarter_number == 4:
-                fpdi_code = 'accounting_report_forms_1_2_for_y{}'.format(
-                    (quarters_curr_date - relativedelta(days=1)).strftime('%Y')
-                )
-            else:
-                fpdi_code = 'accounting_report_forms_1_2_for_y{}q{}'.format(
-                    (quarters_curr_date - relativedelta(days=1)).strftime('%Y'),
-                    quarter_number,
-                )
-
-            if quarter_number in [1, 3]:
-                fpdi_name = 'Бухгалтерская отчетность за {} квартал {} года'.format(
-                    quarter_number,
-                    quarters_curr_date.strftime('%Y'))
-            elif quarter_number == 2:
-                fpdi_name = 'Бухгалтерская отчетность за первое полугодие {} года'.format(
-                    quarters_curr_date.strftime('%Y'))
-            elif quarter_number == 4:
-                fpdi_name = 'Бухгалтерская отчетность за {} год'.format(
-                    (quarters_curr_date - relativedelta(days=1)).strftime('%Y'))
+            fpdi_code, fpdi_name = self._build_accounting_report_common_doc_code_and_name_by_next_quarter_start_date(quarters_curr_date)
 
             docs.append(FinanceProductDocumentItem(code=fpdi_code, name=fpdi_name, description='Формы 1 и 2'))
             quarters_curr_date += relativedelta(months=3)
@@ -94,6 +73,32 @@ class BankGuaranteeProduct(FinanceProduct):
             ),
         ])
         return docs
+
+    def _build_accounting_report_common_doc_code_and_name_by_next_quarter_start_date(self, next_quarter_start_date):
+        quarter_number = int((next_quarter_start_date - relativedelta(days=1)).month / 3)
+
+        if quarter_number == 4:
+            fpdi_code = 'accounting_report_forms_1_2_for_y{}'.format(
+                (next_quarter_start_date - relativedelta(days=1)).strftime('%Y')
+            )
+        else:
+            fpdi_code = 'accounting_report_forms_1_2_for_y{}q{}'.format(
+                (next_quarter_start_date - relativedelta(days=1)).strftime('%Y'),
+                quarter_number,
+            )
+
+        if quarter_number in [1, 3]:
+            fpdi_name = 'Бухгалтерская отчетность за {} квартал {} года'.format(
+                quarter_number,
+                next_quarter_start_date.strftime('%Y'))
+        elif quarter_number == 2:
+            fpdi_name = 'Бухгалтерская отчетность за первое полугодие {} года'.format(
+                next_quarter_start_date.strftime('%Y'))
+        elif quarter_number == 4:
+            fpdi_name = 'Бухгалтерская отчетность за {} год'.format(
+                (next_quarter_start_date - relativedelta(days=1)).strftime('%Y'))
+
+        return fpdi_code, fpdi_name
 
     def get_registering_form_class(self):
         return BGFinProdRegForm
