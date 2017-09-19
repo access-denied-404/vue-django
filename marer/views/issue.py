@@ -8,6 +8,7 @@ from marer.forms import IssueRegisteringForm
 from marer.models import Issue, Issuer
 from marer.models.finance_org import FinanceOrgProductConditions
 from marer.models.issue import IssueFinanceOrgPropose
+from marer.products import get_finance_products
 from marer.views import StaticPagesContextMixin
 
 
@@ -77,7 +78,11 @@ class IssueRegisteringView(IssueView):
             else:
                 initial = dict()
             base_form = IssueRegisteringForm(initial=initial)
-            kwargs.update(dict(base_form=base_form))
+            kwargs.update(dict(
+                base_form=base_form,
+                issue=self.get_issue(),
+                products=get_finance_products()
+            ))
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):

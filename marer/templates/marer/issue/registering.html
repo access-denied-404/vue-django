@@ -1,9 +1,13 @@
 {% extends 'marer/issue/layout.html' %}
 
 {% block issue_content %}
-    <div id=app csrf="{{ csrf_token }}" products='[
-                      {"value":"BankGuaranteeProduct", "text":"Банковская гарантия"},
-                      {"value":"CreditProduct", "text":"Кредит"},
-                      {"value":"LeasingProduct", "text":"Лизинг"}
-                      ]'></div>
+    <div
+            id=app
+            csrf="{{ csrf_token }}"
+            products='[{% for product in products %}{"value":"{{ product.name }}", "text":"{{ product.humanized_name }}"}{% if not forloop.last %},{% endif %}{% endfor %}]'
+            {% if issue %}
+                data-issue-id="{{ issue.id }}"
+                product="{{ issue.get_product.name }}"
+            {% endif %}
+    ></div>
 {% endblock %}

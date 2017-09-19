@@ -44,7 +44,7 @@
     },
     data () {
       return {
-        product: window.location.hash.substr(2),
+        product: document.getElementById('app').getAttribute('product'),
         org_search_name: ''
       }
     },
@@ -52,6 +52,9 @@
       product (e) {
         window.location.hash = '/' + this.product
       }
+    },
+    created () {
+      window.location.hash = '/' + this.product
     }
   }
 </script>
