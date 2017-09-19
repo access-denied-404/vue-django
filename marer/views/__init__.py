@@ -62,9 +62,12 @@ class IndexView(TemplateView, StaticPagesContextMixin):
             quick_request_form = QuickRequestForm(request.POST, user=request.user)
         else:
             quick_request_form = QuickRequestForm(request.POST)
-            username = User.normalize_username(quick_request_form.cleaned_data['contact_email'])
-            if User.objects.filter(username=username).exists():
-                quick_request_form.add_error('contact_email', 'Пользователь с таким email уже существует')
+            quick_request_form.full_clean()
+            username = quick_request_form.cleaned_data.get('contact_email', None)
+            if username is not None:
+                username = User.normalize_username(username)
+                if User.objects.filter(username=username).exists():
+                    quick_request_form.add_error('contact_email', 'Пользователь с таким email уже существует')
         if quick_request_form.is_valid():
             if not request.user.id:
                 # todo create new user an log in
