@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views.generic.base import TemplateView
 
+from marer import consts
 from marer.forms import QuickRequestForm
 from marer.models import FinanceProductPage, StaticPage
 from marer.models.finance_org import FinanceOrgProductConditions
@@ -108,7 +109,7 @@ class IndexView(TemplateView, StaticPagesContextMixin):
             new_issue = Issue()
             new_issue.issuer = issuer
             new_issue.fill_from_issuer()
-            new_issue.status = Issue.STATUS_REGISTERING
+            new_issue.status = consts.ISSUE_STATUS_REGISTERING
             new_issue.user = request.user  # fixme it's naive when new user, check it
             new_issue.product = quick_request_form.cleaned_data['product']
             new_issue.save()

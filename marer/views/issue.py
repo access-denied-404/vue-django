@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views.generic import TemplateView, RedirectView
 
+from marer import consts
 from marer.forms import IssueRegisteringForm
 from marer.models import Issue, Issuer
 from marer.models.finance_org import FinanceOrgProductConditions
@@ -42,23 +43,23 @@ class IssueRedirectView(RedirectView):
             # fixme maybe make error 403?
             issue = get_object_or_404(Issue, id=iid, user_id=request.user.id)
 
-        if issue.status == Issue.STATUS_REGISTERING:
+        if issue.status == consts.ISSUE_STATUS_REGISTERING:
             self.pattern_name = 'issue_registering'
-        elif issue.status == Issue.STATUS_COMMON_DOCUMENTS_REQUEST:
+        elif issue.status == consts.ISSUE_STATUS_COMMON_DOCUMENTS_REQUEST:
             self.pattern_name = 'issue_common_documents_request'
-        elif issue.status == Issue.STATUS_SURVEY:
+        elif issue.status == consts.ISSUE_STATUS_SURVEY:
             self.pattern_name = 'issue_survey'
-        elif issue.status == Issue.STATUS_SCORING:
+        elif issue.status == consts.ISSUE_STATUS_SCORING:
             self.pattern_name = 'issue_scoring'
-        elif issue.status == Issue.STATUS_ADDITIONAL_DOCUMENTS_REQUEST:
+        elif issue.status == consts.ISSUE_STATUS_ADDITIONAL_DOCUMENTS_REQUEST:
             self.pattern_name = 'issue_additional_documents_request'
-        elif issue.status == Issue.STATUS_PAYMENTS:
+        elif issue.status == consts.ISSUE_STATUS_PAYMENTS:
             self.pattern_name = 'issue_payments'
-        elif issue.status == Issue.STATUS_FINAL_DOCUMENTS_APPROVAL:
+        elif issue.status == consts.ISSUE_STATUS_FINAL_DOCUMENTS_APPROVAL:
             self.pattern_name = 'issue_final_documents_approval'
-        elif issue.status == Issue.STATUS_FINISHED:
+        elif issue.status == consts.ISSUE_STATUS_FINISHED:
             self.pattern_name = 'issue_finished'
-        elif issue.status == Issue.STATUS_CANCELLED:
+        elif issue.status == consts.ISSUE_STATUS_CANCELLED:
             self.pattern_name = 'issue_cancelled'
 
         return super().get(request, *args, **kwargs)
@@ -104,7 +105,7 @@ class IssueRegisteringView(IssueView):
                 new_issue = Issue(
                     issuer=issuer,
                     product=base_form.cleaned_data['product'],
-                    status=Issue.STATUS_REGISTERING,
+                    status=consts.ISSUE_STATUS_REGISTERING,
                     user=request.user,
                 )  # todo set values
                 new_issue.fill_from_issuer()
