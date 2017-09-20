@@ -10,6 +10,7 @@ from marer.models import Issue, Issuer
 from marer.models.finance_org import FinanceOrgProductConditions
 from marer.models.issue import IssueFinanceOrgPropose
 from marer.products import get_finance_products
+from marer.stub import create_stub_issuer
 from marer.views import StaticPagesContextMixin
 
 
@@ -91,16 +92,10 @@ class IssueRegisteringView(IssueView):
         if base_form.is_valid():
             # todo go to next stage if we can
             if not self.get_issue():
-                issuer_name = base_form.cleaned_data['org_search_name']
-                issuer = Issuer(
-                    full_name=issuer_name,
-                    short_name=issuer_name,
-                    inn='0000000000',
-                    kpp='000000000',
-                    ogrn='0000000000000',
-                    user=request.user,
+                issuer = create_stub_issuer(
+                    user_owner=request.user,
+                    issuer_name=base_form.cleaned_data['org_search_name'],
                 )
-                issuer.save()
 
                 new_issue = Issue(
                     issuer=issuer,
