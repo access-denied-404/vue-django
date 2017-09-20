@@ -2,8 +2,8 @@ from django.forms import Form
 from django.forms import fields
 from django.forms.widgets import TextInput, PasswordInput, EmailInput, Select, Textarea
 
+from marer import consts
 from marer.forms.widgets import CallableChoicesSelect
-from marer.models.issue import Issue
 from marer.models.user import User
 from marer.products import get_finance_products_as_choices
 
@@ -135,14 +135,14 @@ class CabinetIssueListFilterForm(Form):
         widget=CallableChoicesSelect(
             choices=[
                 (None, 'Все'),
-                (Issue.STATUS_REGISTERING, 'Оформление заявки'),
-                (Issue.STATUS_COMMON_DOCUMENTS_REQUEST, 'Запрос документов'),
-                (Issue.STATUS_SURVEY, 'Анкетирование'),
-                (Issue.STATUS_SCORING, 'Скоринг'),
-                (Issue.STATUS_ADDITIONAL_DOCUMENTS_REQUEST, 'Дозапрос документов и разъяснений'),
-                (Issue.STATUS_PAYMENTS, 'Оформление документов'),
-                (Issue.STATUS_FINISHED, 'Завершена'),
-                (Issue.STATUS_CANCELLED, 'Отменена'),
+                (consts.ISSUE_STATUS_REGISTERING, 'Оформление заявки'),
+                (consts.ISSUE_STATUS_COMMON_DOCUMENTS_REQUEST, 'Запрос документов'),
+                (consts.ISSUE_STATUS_SURVEY, 'Анкетирование'),
+                (consts.ISSUE_STATUS_SCORING, 'Скоринг'),
+                (consts.ISSUE_STATUS_ADDITIONAL_DOCUMENTS_REQUEST, 'Дозапрос документов и разъяснений'),
+                (consts.ISSUE_STATUS_PAYMENTS, 'Оформление документов'),
+                (consts.ISSUE_STATUS_FINISHED, 'Завершена'),
+                (consts.ISSUE_STATUS_CANCELLED, 'Отменена'),
             ],
             attrs={'class': 'form-control'}
         ),
