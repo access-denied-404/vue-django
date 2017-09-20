@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.formats import number_format
 
+from marer import consts
 from marer.models.base import Document
 from marer.models.finance_org import FinanceOrganization
 from marer.models.issuer import Issuer, IssuerDocument
@@ -12,30 +13,19 @@ __all__ = ['Issue', 'IssueDocument', 'IssueDocumentRequest']
 
 
 class Issue(models.Model):
-    STATUS_REGISTERING = 'registering'
-    STATUS_COMMON_DOCUMENTS_REQUEST = 'common_documents_request'
-    STATUS_SURVEY = 'survey'
-    STATUS_SCORING = 'scoring'
-    STATUS_ADDITIONAL_DOCUMENTS_REQUEST = 'additional_documents_request'
-    STATUS_PAYMENTS = 'payments'
-    STATUS_FINAL_DOCUMENTS_APPROVAL = 'final_documents_approval'
-    STATUS_FINISHED = 'finished'
-    STATUS_CANCELLED = 'cancelled'
-
     product = models.CharField(max_length=32, blank=False, null=False, choices=get_finance_products_as_choices())
     status = models.CharField(max_length=32, blank=False, null=False, choices=[
-        (STATUS_REGISTERING, 'Оформление заявки'),
-        (STATUS_COMMON_DOCUMENTS_REQUEST, 'Запрос документов'),
-        (STATUS_SURVEY, 'Анкетирование'),
-        (STATUS_SCORING, 'Скоринг'),
-        (STATUS_ADDITIONAL_DOCUMENTS_REQUEST, 'Дозапрос документов'),
-        (STATUS_PAYMENTS, 'Оплата услуг'),
-        (STATUS_FINAL_DOCUMENTS_APPROVAL, 'Согласование итоговых документов'),
-        (STATUS_FINISHED, 'Завершена'),
-        (STATUS_CANCELLED, 'Отменена'),
+        (consts.ISSUE_STATUS_REGISTERING, 'Оформление заявки'),
+        (consts.ISSUE_STATUS_COMMON_DOCUMENTS_REQUEST, 'Запрос документов'),
+        (consts.ISSUE_STATUS_SURVEY, 'Анкетирование'),
+        (consts.ISSUE_STATUS_SCORING, 'Скоринг'),
+        (consts.ISSUE_STATUS_ADDITIONAL_DOCUMENTS_REQUEST, 'Дозапрос документов'),
+        (consts.ISSUE_STATUS_PAYMENTS, 'Оплата услуг'),
+        (consts.ISSUE_STATUS_FINAL_DOCUMENTS_APPROVAL, 'Согласование итоговых документов'),
+        (consts.ISSUE_STATUS_FINISHED, 'Завершена'),
+        (consts.ISSUE_STATUS_CANCELLED, 'Отменена'),
     ])
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, null=False)
-    sum = models.DecimalField(max_digits=12, decimal_places=2, null=True)
     comment = models.TextField(blank=False, null=False, default='')
 
     issuer = models.ForeignKey(Issuer, on_delete=models.SET_NULL, blank=True, null=True)
@@ -44,6 +34,69 @@ class Issue(models.Model):
     issuer_ogrn = models.CharField(max_length=32, blank=False, null=False)
     issuer_full_name = models.CharField(max_length=512, blank=False, null=False)
     issuer_short_name = models.CharField(max_length=512, blank=False, null=False)
+
+    issuer_foreign_name = models.CharField(max_length=512, null=True)
+    issuer_legal_address = models.CharField(max_length=512, null=True)
+    issuer_fact_address = models.CharField(max_length=512, null=True)
+    issuer_okpo = models.CharField(max_length=32, null=True)
+    issuer_registration_date = models.CharField(max_length=32, null=True)
+    issuer_ifns_reg_date = models.DateField(null=True)
+    issuer_ifns_reg_cert_number = models.CharField(max_length=32, null=True)
+    issuer_okopf = models.CharField(max_length=32, null=True)
+    issuer_okved = models.CharField(max_length=32, null=True)
+
+    issuer_head_first_name = models.CharField(max_length=512, null=True)
+    issuer_head_last_name = models.CharField(max_length=512, null=True)
+    issuer_head_middle_name = models.CharField(max_length=512, null=True)
+    issuer_head_birthday = models.DateField(null=True)
+    issuer_head_org_position_and_permissions = models.CharField(max_length=512, null=True)
+    issuer_head_phone = models.CharField(max_length=512, null=True)
+    issuer_head_passport_series = models.CharField(max_length=32, null=True)
+    issuer_head_passport_number = models.CharField(max_length=32, null=True)
+    issuer_head_passport_issue_date = models.DateField(null=True)
+    issuer_head_passport_issued_by = models.CharField(max_length=512, null=True)
+    issuer_head_residence_address = models.CharField(max_length=512, null=True)
+    issuer_head_education_level = models.CharField(max_length=512, null=True)
+    issuer_head_org_work_experience = models.CharField(max_length=512, null=True)
+    issuer_head_share_in_authorized_capital = models.CharField(max_length=512, null=True)
+    issuer_head_industry_work_experience = models.CharField(max_length=512, null=True)
+    issuer_prev_org_info = models.CharField(max_length=512, null=True)
+
+    tender_gos_number = models.CharField(max_length=32, null=True)
+    tender_placement_type = models.CharField(max_length=512, null=True)
+    tender_exec_law = models.CharField(max_length=32, null=True, choices=[
+        (consts.TENDER_EXEC_LAW_44_FZ, '44-ФЗ'),
+        (consts.TENDER_EXEC_LAW_223_FZ, '223-ФЗ'),
+    ])
+    tender_publish_date = models.DateField(null=True)
+    tender_start_cost = models.DecimalField(max_digits=12, decimal_places=2, null=True)
+
+    tender_contract_type = models.CharField(max_length=32, null=True, choices=[
+        (consts.TENDER_CONTRACT_TYPE_SUPPLY_CONTRACT, 'Поставка товара'),
+        (consts.TENDER_CONTRACT_TYPE_SERVICE_CONTRACT, 'Оказание услуг'),
+        (consts.TENDER_CONTRACT_TYPE_WORKS_CONTRACT, 'Выполнение работ'),
+    ])
+    tender_has_prepayment = models.NullBooleanField(null=True)
+
+    tender_responsible_full_name = models.CharField(max_length=512, null=True)
+    tender_responsible_legal_address = models.CharField(max_length=512, null=True)
+    tender_responsible_inn = models.CharField(max_length=32, null=True)
+    tender_responsible_kpp = models.CharField(max_length=32, null=True)
+    tender_responsible_ogrn = models.CharField(max_length=32, null=True)
+
+    bg_sum = models.DecimalField(max_digits=12, decimal_places=2, null=True)
+    bg_currency = models.CharField(max_length=32, null=True, choices=[
+        (consts.CURRENCY_RUR, 'Рубль'),
+        (consts.CURRENCY_USD, 'Доллар'),
+        (consts.CURRENCY_EUR, 'Евро'),
+    ])
+    bg_start_date = models.DateField(null=True)
+    bg_end_date = models.DateField(null=True)
+    bg_deadline_date = models.DateField(null=True)
+    bg_type = models.CharField(max_length=32, null=True, choices=[
+        (consts.BG_TYPE_APPLICATION_ENSURE, 'Обеспечение заявки'),
+        (consts.BG_TYPE_CONTRACT_EXECUTION, 'Исполнение контракта'),
+    ])
 
     @property
     def humanized_id(self):
@@ -68,7 +121,7 @@ class Issue(models.Model):
     @property
     def max_state_available(self):
         # fixme implement issue validation for each status
-        return self.STATUS_REGISTERING
+        return consts.ISSUE_STATUS_REGISTERING
 
     def fill_from_issuer(self):
         self.issuer_inn = self.issuer.inn

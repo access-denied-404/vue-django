@@ -1,8 +1,9 @@
 from dateutil.relativedelta import relativedelta
 
-from django.forms import Form, CharField, DecimalField
+from django.forms import Form, CharField, DecimalField, DateField, ChoiceField, BooleanField
 from django.utils import timezone
 
+from marer import consts
 from marer.products.base import FinanceProduct, FinanceProductDocumentItem
 
 
@@ -31,8 +32,41 @@ def get_finance_products_as_choices():
 
 class BGFinProdRegForm(Form):
     tender_gos_number = CharField(required=True)
-    bg_sum = DecimalField(required=True)
-    # term = None  # fixme define a field and determine it's meaning
+    tender_placement_type = CharField(required=False)
+    tender_exec_law = ChoiceField(required=False, choices=[
+        (consts.TENDER_EXEC_LAW_44_FZ, '44-ФЗ'),
+        (consts.TENDER_EXEC_LAW_223_FZ, '223-ФЗ'),
+    ])
+    tender_publish_date = DateField(required=False)
+    tender_start_cost = DecimalField(decimal_places=2, required=True)
+
+    tender_responsible_full_name = CharField(required=False)
+    tender_responsible_legal_address = CharField(required=False)
+    tender_responsible_inn = CharField(required=False)
+    tender_responsible_kpp = CharField(required=False)
+    tender_responsible_ogrn = CharField(required=False)
+
+    bg_sum = DecimalField(decimal_places=2, required=True)
+    bg_currency = ChoiceField(required=False, choices=[
+        (consts.CURRENCY_RUR, 'Рубль'),
+        (consts.CURRENCY_USD, 'Доллар'),
+        (consts.CURRENCY_EUR, 'Евро'),
+    ])
+    bg_start_date = DateField(required=False)
+    bg_end_date = DateField(required=False)
+    bg_deadline_date = DateField(required=False)
+    bg_type = ChoiceField(required=False, choices=[
+        (consts.BG_TYPE_APPLICATION_ENSURE, 'Обеспечение заявки'),
+        (consts.BG_TYPE_CONTRACT_EXECUTION, 'Исполнение контракта'),
+    ])
+
+    tender_contract_type = ChoiceField(required=False, choices=[
+        (consts.TENDER_CONTRACT_TYPE_SUPPLY_CONTRACT, 'Поставка товара'),
+        (consts.TENDER_CONTRACT_TYPE_SERVICE_CONTRACT, 'Оказание услуг'),
+        (consts.TENDER_CONTRACT_TYPE_WORKS_CONTRACT, 'Выполнение работ'),
+    ])
+
+    tender_has_prepayment = BooleanField(required=False)
 
 
 class BankGuaranteeProduct(FinanceProduct):
