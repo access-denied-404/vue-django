@@ -71,6 +71,7 @@ class BGFinProdRegForm(Form):
 
 class BankGuaranteeProduct(FinanceProduct):
     _humanized_name = 'Банковская гарантия'
+    _survey_template_name = 'marer/products/BankGuarantee/form_survey.html'
 
     def get_documents_list(self):
         docs = []
@@ -136,6 +137,12 @@ class BankGuaranteeProduct(FinanceProduct):
 
     def get_registering_form_class(self):
         return BGFinProdRegForm
+
+    def get_survey_context_part(self):
+        return dict()
+
+    def process_survey_post_data(self, request):
+        pass
 
 
 class CreditProduct(FinanceProduct):

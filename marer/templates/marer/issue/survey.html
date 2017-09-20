@@ -2,19 +2,16 @@
 
 {% block issue_content %}
 
-    <form method="post">
-
-        {% include 'marer/products/BankGuarantee/form_org_common.html' %}
-        {% include 'marer/products/BankGuarantee/form_org_head.html' %}
-        {% include 'marer/products/BankGuarantee/form_org_founders.html' %}
-        {% include 'marer/products/BankGuarantee/form_org_affiliates.html' %}
-
-        <div class="row">
-            <div class="col-md-12 text-center">
-                <button class="btn btn-primary" type="submit">Сохранить</button>
+    {% if survey_template %}
+        <form method="post">
+            {% csrf_token %}
+            {% include survey_template %}
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <button class="btn btn-primary" type="submit">Сохранить</button>
+                </div>
             </div>
-        </div>
-    </form>
-
+        </form>
+    {% endif %}
 
 {% endblock %}

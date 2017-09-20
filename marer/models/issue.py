@@ -133,6 +133,7 @@ class Issue(models.Model):
     def get_product(self) -> FinanceProduct:
         for fp in get_finance_products():
             if fp.name == self.product:
+                fp.set_issue(self)
                 return fp
         raise ValueError('No finance products matched')
 

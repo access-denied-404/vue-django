@@ -138,6 +138,15 @@ class IssueCommonDocumentsRequestView(IssueView):
 class IssueSurveyView(IssueView):
     template_name = 'marer/issue/survey.html'
 
+    def get(self, request, *args, **kwargs):
+        kwargs['survey_template'] = self.get_issue().get_product().survey_template_name
+        kwargs.update(self.get_issue().get_product().get_survey_context_part())
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.get_issue().get_product().process_survey_post_data(request)
+        return self.get(request, *args, **kwargs)
+
 
 class IssueScoringView(IssueView):
     template_name = 'marer/issue/scoring.html'

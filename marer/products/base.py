@@ -4,6 +4,11 @@ from abc import abstractmethod
 
 class FinanceProduct(object):
     _humanized_name = ''
+    _survey_template_name = ''
+    _issue = None
+
+    def set_issue(self, issue):
+        self._issue = issue
 
     @abstractmethod
     def get_registering_form_class(self):
@@ -20,6 +25,18 @@ class FinanceProduct(object):
     @property
     def humanized_name(self):
         return self._humanized_name
+
+    @property
+    def survey_template_name(self):
+        return self._survey_template_name
+
+    @abstractmethod
+    def get_survey_context_part(self):
+        warnings.warn("Method is not implemented", NotImplementedError)
+
+    @abstractmethod
+    def process_survey_post_data(self, request):
+        warnings.warn("Method is not implemented", NotImplementedError)
 
 
 class FinanceProductDocumentItem(object):
