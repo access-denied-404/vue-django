@@ -5,34 +5,120 @@
             <div class="row">
 
                 <div class="row">
-                    <div class="col-md-3"><div class="form-group"><label>Фамилия</label><input name="field" class="form-control"/></div></div>
-                    <div class="col-md-3"><div class="form-group"><label>Имя</label><input name="field" class="form-control"/></div></div>
-                    <div class="col-md-3"><div class="form-group"><label>Отчество</label><input name="field" class="form-control"/></div></div>
-                    <div class="col-md-3"><div class="form-group"><label>Дата рождения</label><input name="field" class="form-control"/></div></div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Фамилия</label>
+                            {{ form.issuer_head_last_name }}
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Имя</label>
+                            {{ form.issuer_head_first_name }}
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Отчество</label>
+                            {{ form.issuer_head_middle_name }}
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Дата рождения</label>
+                            {{ form.issuer_head_birthday }}
+                        </div>
+                    </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-9"><div class="form-group"><label>Должность, полномочия</label><input name="field" class="form-control"/></div></div>
-                    <div class="col-md-3"><div class="form-group"><label>Телефон</label><input name="field" class="form-control"/></div></div>
+                    <div class="col-md-9">
+                        <div class="form-group">
+                            <label>Должность, полномочия</label>
+                            {{ form.issuer_head_org_position_and_permissions }}
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Телефон</label>
+                            {{ form.issuer_head_phone }}
+                        </div>
+                    </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-2"><div class="form-group"><label>Серия паспорта</label><input name="field" class="form-control"/></div></div>
-                    <div class="col-md-2"><div class="form-group"><label>Номер паспорта</label><input name="field" class="form-control"/></div></div>
-                    <div class="col-md-2"><div class="form-group"><label>Дата выдачи</label><input name="field" class="form-control"/></div></div>
-                    <div class="col-md-6"><div class="form-group"><label>Кем выдан паспорт</label><input name="field" class="form-control"/></div></div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Серия паспорта</label>
+                            {{ form.issuer_head_passport_series }}
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Номер паспорта</label>
+                            {{ form.issuer_head_passport_number }}
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Дата выдачи</label>
+                            {{ form.issuer_head_passport_issue_date }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Кем выдан паспорт</label>
+                            {{ form.issuer_head_passport_issued_by }}
+                        </div>
+                    </div>
                 </div>
-
-                <div class="row"><div class="col-md-12"><div class="form-group"><label>Адрес прописки</label><input name="field" class="form-control"/></div></div></div>
-                <div class="row"><div class="col-md-12"><div class="form-group"><label>Образование</label><input name="field" class="form-control"/></div></div></div>
 
                 <div class="row">
-                    <div class="col-md-4"><div class="form-group"><label>Стаж работы в компании</label><input name="field" class="form-control"/></div></div>
-                    <div class="col-md-4"><div class="form-group"><label>Доля в капитале</label><input name="field" class="form-control"/></div></div>
-                    <div class="col-md-4"><div class="form-group"><label>Стаж работы в отрасли</label><input name="field" class="form-control"/></div></div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Адрес прописки</label>
+                            {{ form.issuer_head_residence_address }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Образование</label>
+                            {{ form.issuer_head_education_level }}
+                        </div>
+                    </div>
                 </div>
 
-                <div class="row"><div class="col-md-12"><div class="form-group"><label>Предыдущее место работы, отрасль, должность</label><input name="field" class="form-control"/></div></div></div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Стаж работы в компании</label>
+                            {{ form.issuer_head_org_work_experience }}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Доля в капитале</label>
+                            {{ form.issuer_head_share_in_authorized_capital }}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Стаж работы в отрасли</label>
+                            {{ form.issuer_head_industry_work_experience }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Предыдущее место работы, отрасль, должность</label>
+                            {{ form.issuer_prev_org_info }}
+                        </div>
+                    </div>
+                </div>
 
             </div>
         </div>

@@ -1,6 +1,8 @@
 from dateutil.relativedelta import relativedelta
 
-from django.forms import Form, CharField, DecimalField, DateField, ChoiceField, BooleanField
+from django.forms.forms import Form
+from django.forms.fields import CharField, DecimalField, DateField, ChoiceField, BooleanField
+from django.forms.widgets import TextInput, DateInput
 from django.utils import timezone
 
 from marer import consts
@@ -67,6 +69,37 @@ class BGFinProdRegForm(Form):
     ])
 
     tender_has_prepayment = BooleanField(required=False)
+
+
+class BGFinProdSurveyOrgCommonForm(Form):
+    issuer_foreign_name = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_legal_address = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_fact_address = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_okpo = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_registration_date = DateField(required=False, widget=DateInput(attrs={'class': 'form-control'}))
+    issuer_ifns_reg_date = DateField(required=False, widget=DateInput(attrs={'class': 'form-control'}))
+    issuer_ifns_reg_cert_number = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_okopf = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_okved = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+
+
+class BGFinProdSurveyOrgHeadForm(Form):
+    issuer_head_first_name = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_head_last_name = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_head_middle_name = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_head_birthday = DateField(required=False, widget=DateInput(attrs={'class': 'form-control'}))
+    issuer_head_org_position_and_permissions = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_head_phone = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_head_passport_series = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_head_passport_number = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_head_passport_issue_date = DateField(required=False, widget=DateInput(attrs={'class': 'form-control'}))
+    issuer_head_passport_issued_by = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_head_residence_address = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_head_education_level = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_head_org_work_experience = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_head_share_in_authorized_capital = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_head_industry_work_experience = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_prev_org_info = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
 
 
 class BankGuaranteeProduct(FinanceProduct):
@@ -139,9 +172,49 @@ class BankGuaranteeProduct(FinanceProduct):
         return BGFinProdRegForm
 
     def get_survey_context_part(self):
-        return dict()
+        return dict(
+            form_org_common=BGFinProdSurveyOrgCommonForm(initial=self._issue.__dict__),
+            form_org_head=BGFinProdSurveyOrgHeadForm(initial=self._issue.__dict__),
+        )
 
     def process_survey_post_data(self, request):
+        form_org_common = BGFinProdSurveyOrgCommonForm(request.POST)
+        if form_org_common.is_valid():
+            self._issue.issuer_foreign_name = form_org_common.cleaned_data['issuer_foreign_name']
+            self._issue.issuer_legal_address = form_org_common.cleaned_data['issuer_legal_address']
+            self._issue.issuer_fact_address = form_org_common.cleaned_data['issuer_fact_address']
+            self._issue.issuer_okpo = form_org_common.cleaned_data['issuer_okpo']
+            self._issue.issuer_registration_date = form_org_common.cleaned_data['issuer_registration_date']
+            self._issue.issuer_ifns_reg_date = form_org_common.cleaned_data['issuer_ifns_reg_date']
+            self._issue.issuer_ifns_reg_cert_number = form_org_common.cleaned_data['issuer_ifns_reg_cert_number']
+            self._issue.issuer_okopf = form_org_common.cleaned_data['issuer_okopf']
+            self._issue.issuer_okved = form_org_common.cleaned_data['issuer_okved']
+
+        form_org_head = BGFinProdSurveyOrgHeadForm(request.POST)
+        if form_org_head.is_valid():
+            self._issue.issuer_head_first_name = form_org_head.cleaned_data['issuer_head_first_name']
+            self._issue.issuer_head_last_name = form_org_head.cleaned_data['issuer_head_last_name']
+            self._issue.issuer_head_middle_name = form_org_head.cleaned_data['issuer_head_middle_name']
+            self._issue.issuer_head_birthday = form_org_head.cleaned_data['issuer_head_birthday']
+
+            self._issue.issuer_head_org_position_and_permissions = form_org_head.cleaned_data['issuer_head_org_position_and_permissions']
+            self._issue.issuer_head_phone = form_org_head.cleaned_data['issuer_head_phone']
+
+            self._issue.issuer_head_passport_series = form_org_head.cleaned_data['issuer_head_passport_series']
+            self._issue.issuer_head_passport_number = form_org_head.cleaned_data['issuer_head_passport_number']
+            self._issue.issuer_head_passport_issue_date = form_org_head.cleaned_data['issuer_head_passport_issue_date']
+            self._issue.issuer_head_passport_issued_by = form_org_head.cleaned_data['issuer_head_passport_issued_by']
+            self._issue.issuer_head_residence_address = form_org_head.cleaned_data['issuer_head_residence_address']
+
+            self._issue.issuer_head_education_level = form_org_head.cleaned_data['issuer_head_education_level']
+            self._issue.issuer_head_org_work_experience = form_org_head.cleaned_data['issuer_head_org_work_experience']
+            self._issue.issuer_head_share_in_authorized_capital = form_org_head.cleaned_data['issuer_head_share_in_authorized_capital']
+            self._issue.issuer_head_industry_work_experience = form_org_head.cleaned_data['issuer_head_industry_work_experience']
+            self._issue.issuer_prev_org_info = form_org_head.cleaned_data['issuer_prev_org_info']
+
+        self._issue.save()
+        # todo process founders
+        # todo process affiliates
         pass
 
 
