@@ -107,8 +107,8 @@ class Issue(models.Model):
 
     @property
     def humanized_sum(self):
-        if self.sum:
-            fmt_sum = number_format(self.sum)
+        if self.bg_sum:
+            fmt_sum = number_format(self.bg_sum)
             currency = 'руб.'
             return fmt_sum + ' ' + currency
         else:
