@@ -1,96 +1,40 @@
 {% extends 'marer/issue/layout.html' %}
 
 {% block issue_content %}
-    <div class="panel panel-primary">
-        <div class="panel-heading" data-toggle="collapse" data-target="#panel1">Сбербанк</div>
-        <div class="panel-body collapse in" id="panel1">
-            <table class="table">
-                <tr>
-                    <th>Номер</th>
-                    <th>Инициатор</th>
-                    <th>Дата изменения</th>
-                </tr>
-                <tr>
-                    <td class="col-md-1"><a href="{% url 'issue_additional_documents_request' issue.id 0 %}">121</a></td>
-                    <td class="col-md-8">Сбербанк</td>
-                    <td class="col-md-3">05 сентября 2017, 10:38</td>
-                </tr>
-                <tr>
-                    <td class="col-md-1"><a href="{% url 'issue_additional_documents_request' issue.id 0 %}">122</a></td>
-                    <td class="col-md-8">Клиент</td>
-                    <td class="col-md-3">05 сентября 2017, 10:38</td>
-                </tr>
-                <tr>
-                    <td class="col-md-1"><a href="{% url 'issue_additional_documents_request' issue.id 0 %}">123</a></td>
-                    <td class="col-md-8">Менеджер</td>
-                    <td class="col-md-3">05 сентября 2017, 10:38</td>
-                </tr>
-            </table>
-            <div class="row text-center">
-                <a href="#" class="btn btn-primary">Добавить запрос</a>
-            </div>
-        </div>
-    </div>
 
-    <div class="panel panel-primary">
-        <div class="panel-heading" data-toggle="collapse" data-target="#panel2">Альфа-банк</div>
-        <div class="panel-body collapse" id="panel2">
-            <table class="table">
-                <tr>
-                    <th>Номер</th>
-                    <th>Инициатор</th>
-                    <th>Дата изменения</th>
-                </tr>
-                <tr>
-                    <td class="col-md-1"><a href="{% url 'issue_additional_documents_request' issue.id 0 %}">121</a></td>
-                    <td class="col-md-8">Альфа-банк</td>
-                    <td class="col-md-3">05 сентября 2017, 10:38</td>
-                </tr>
-                <tr>
-                    <td class="col-md-1"><a href="{% url 'issue_additional_documents_request' issue.id 0 %}">122</a></td>
-                    <td class="col-md-8">Клиент</td>
-                    <td class="col-md-3">05 сентября 2017, 10:38</td>
-                </tr>
-                <tr>
-                    <td class="col-md-1"><a href="{% url 'issue_additional_documents_request' issue.id 0 %}">123</a></td>
-                    <td class="col-md-8">Менеджер</td>
-                    <td class="col-md-3">05 сентября 2017, 10:38</td>
-                </tr>
-            </table>
-            <div class="row text-center">
-                <a href="#" class="btn btn-primary">Добавить запрос</a>
+    {% for propose in proposes %}
+        <div class="panel panel-primary">
+            <div class="panel-heading" data-toggle="collapse" data-target="#panel{{ propose.finance_org.id }}">
+                {{ propose.finance_org.name }}
+            </div>
+            <div class="panel-body collapse" id="panel{{ propose.finance_org.id }}">
+                <table class="table">
+                    <tr>
+                        <th>Номер</th>
+                        <th>Инициатор</th>
+                        <th>Дата изменения</th>
+                    </tr>
+                    <tr>
+                        <td class="col-md-1"><a href="{% url 'issue_additional_documents_request' issue.id 0 %}">121</a></td>
+                        <td class="col-md-8">Сбербанк</td>
+                        <td class="col-md-3">05 сентября 2017, 10:38</td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-1"><a href="{% url 'issue_additional_documents_request' issue.id 0 %}">122</a></td>
+                        <td class="col-md-8">Клиент</td>
+                        <td class="col-md-3">05 сентября 2017, 10:38</td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-1"><a href="{% url 'issue_additional_documents_request' issue.id 0 %}">123</a></td>
+                        <td class="col-md-8">Менеджер</td>
+                        <td class="col-md-3">05 сентября 2017, 10:38</td>
+                    </tr>
+                </table>
+                <div class="row text-center">
+                    <a href="#" class="btn btn-primary">Добавить запрос</a>
+                </div>
             </div>
         </div>
-    </div>
+    {% endfor %}
 
-    <div class="panel panel-primary">
-        <div class="panel-heading" data-toggle="collapse" data-target="#panel3">Газпромбанк</div>
-        <div class="panel-body collapse" id="panel3">
-            <table class="table">
-                <tr>
-                    <th>Номер</th>
-                    <th>Инициатор</th>
-                    <th>Дата изменения</th>
-                </tr>
-                <tr>
-                    <td class="col-md-1"><a href="{% url 'issue_additional_documents_request' issue.id 0 %}">121</a></td>
-                    <td class="col-md-8">Газпромбанк</td>
-                    <td class="col-md-3">05 сентября 2017, 10:38</td>
-                </tr>
-                <tr>
-                    <td class="col-md-1"><a href="{% url 'issue_additional_documents_request' issue.id 0 %}">122</a></td>
-                    <td class="col-md-8">Клиент</td>
-                    <td class="col-md-3">05 сентября 2017, 10:38</td>
-                </tr>
-                <tr>
-                    <td class="col-md-1"><a href="{% url 'issue_additional_documents_request' issue.id 0 %}">123</a></td>
-                    <td class="col-md-8">Менеджер</td>
-                    <td class="col-md-3">05 сентября 2017, 10:38</td>
-                </tr>
-            </table>
-            <div class="row text-center">
-                <a href="#" class="btn btn-primary">Добавить запрос</a>
-            </div>
-        </div>
-    </div>
 {% endblock %}

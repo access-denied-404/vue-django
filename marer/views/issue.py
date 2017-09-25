@@ -226,6 +226,11 @@ class IssueScoringView(IssueView):
 class IssueAdditionalDocumentsRequestsView(IssueView):
     template_name = 'marer/issue/additional_documents_requests.html'
 
+    def get(self, request, *args, **kwargs):
+        proposes = IssueFinanceOrgPropose.objects.filter(issue=self.get_issue())
+        kwargs['proposes'] = proposes
+        return super().get(request, *args, **kwargs)
+
 
 class IssueAdditionalDocumentsRequestView(IssueView):
     template_name = 'marer/issue/additional_documents_request.html'
