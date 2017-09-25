@@ -12,7 +12,7 @@ def create_stub_issuer(user_owner, issuer_name):
         inn='0000000000',
         kpp='000000000',
         ogrn='0000000000000',
-        user=user_owner.user,
+        user=user_owner,
     )
     issuer.save()
     return issuer
