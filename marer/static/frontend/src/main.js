@@ -7,6 +7,7 @@ import router from './router'
 Vue.config.productionTip = false
 
 var products = JSON.parse(document.getElementById('app').getAttribute('products'))
+window.regdata = document.getElementById('app').getAttribute('regdata')
 
 /* eslint-disable no-new */
 new Vue({

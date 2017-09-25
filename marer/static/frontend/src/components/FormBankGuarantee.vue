@@ -5,7 +5,7 @@
       <div class="panel-heading">Сведения о тендере</div>
       <div class="panel-body">
         <div class="row">
-          <div class="col-md-6"><bs-input :name="'gos_number'" v-model="gos_number" label="Госномер тендера" required></bs-input></div>
+          <div class="col-md-6"><bs-input :name="'tender_gos_number'" v-model="tender_gos_number" label="Госномер тендера" required></bs-input></div>
           <div class="col-md-6"><div class="form-group"><bs-input :name="'placement_type'" v-model="placement_type" label="Способ определения поставщика"></bs-input></div></div>
         </div>
         <div class="row">
@@ -20,7 +20,7 @@
       <div class="panel-heading">Сведения об организаторе тендера</div>
       <div class="panel-body">
         <div class="row">
-          <div class="col-md-12"><bs-input :name="'publisher.full_name'" v-model="publisher.full_name" label="Наименование — полное наименование организации"></bs-input></div>
+          <div class="col-md-12"><bs-input :name="'tender_responsible_full_name'" v-model="tender_responsible_full_name" label="Наименование — полное наименование организации"></bs-input></div>
         </div>
         <div class="row">
           <div class="col-md-12"><bs-input :name="'publisher.legal_address'" v-model="publisher.legal_address" label="Адрес — юридический адрес организации"></bs-input></div>
@@ -90,14 +90,16 @@
       'date-time-picker': DateTimePicker
     },
     data () {
+      var regData = JSON.parse(window.regdata)
+
       return {
-        gos_number: '',
+        tender_gos_number: regData.formdata.tender_gos_number,
         law: '',
         placement_type: '',
         publish_datetime: '',
         start_cost: '',
+        tender_responsible_full_name: regData.formdata.tender_responsible_full_name,
         publisher: {
-          full_name: '',
           legal_address: '',
           inn: '',
           kpp: '',
@@ -140,7 +142,7 @@
       }
     },
     watch: {
-      gos_number: _.debounce(function () {
+      tender_gos_number: _.debounce(function () {
         jQuery.getJSON('/rest/tender?format=json&gos_number=' + this.gos_number, (data, status, xhr) => {
           this.law = data.law
           this.placement_type = data.placement_type

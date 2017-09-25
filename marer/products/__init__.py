@@ -40,7 +40,7 @@ class BGFinProdRegForm(Form):
         (consts.TENDER_EXEC_LAW_223_FZ, '223-ФЗ'),
     ])
     tender_publish_date = DateField(required=False)
-    tender_start_cost = DecimalField(decimal_places=2, required=True)
+    tender_start_cost = DecimalField(decimal_places=2, required=False)
 
     tender_responsible_full_name = CharField(required=False)
     tender_responsible_legal_address = CharField(required=False)
@@ -48,7 +48,7 @@ class BGFinProdRegForm(Form):
     tender_responsible_kpp = CharField(required=False)
     tender_responsible_ogrn = CharField(required=False)
 
-    bg_sum = DecimalField(decimal_places=2, required=True)
+    bg_sum = DecimalField(decimal_places=2, required=False)
     bg_currency = ChoiceField(required=False, choices=[
         (consts.CURRENCY_RUR, 'Рубль'),
         (consts.CURRENCY_USD, 'Доллар'),
@@ -216,6 +216,15 @@ class BankGuaranteeProduct(FinanceProduct):
         # todo process founders
         # todo process affiliates
         pass
+
+    def process_registering_form(self, request):
+        self._issue.refresh_from_db()
+        form_class = self.get_registering_form_class()
+        form = form_class(request.POST)
+        form.full_clean()
+        for field in form.cleaned_data:
+            setattr(self._issue, field, form.cleaned_data[field])
+        self._issue.save()
 
 
 class CreditProduct(FinanceProduct):

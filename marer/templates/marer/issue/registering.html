@@ -6,8 +6,8 @@
             csrf="{{ csrf_token }}"
             products='[{% for product in products %}{"value":"{{ product.name }}", "text":"{{ product.humanized_name }}"}{% if not forloop.last %},{% endif %}{% endfor %}]'
             {% if issue %}
-                data-issue-id="{{ issue.id }}"
                 product="{{ issue.get_product.name }}"
+                regdata="{{ issue.serialize_registering_data }}"
             {% endif %}
     ></div>
 {% endblock %}

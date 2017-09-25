@@ -1,4 +1,7 @@
+import json
+
 from django.conf import settings
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.utils.formats import number_format
 
@@ -175,6 +178,16 @@ class Issue(models.Model):
                 issuer_doc.document = doc_file
                 issuer_doc.issuer = self.issuer
                 issuer_doc.save()
+
+    def serialize_registering_data(self):
+        reg_form_class = self.get_product().get_registering_form_class()
+        reg_form = reg_form_class(self.__dict__)
+        reg_form.full_clean()
+        json_data = json.dumps(dict(
+            formdata=reg_form.cleaned_data,
+            errors=reg_form.errors,
+        ), cls=DjangoJSONEncoder)
+        return json_data
 
 
 class IssueDocument(models.Model):

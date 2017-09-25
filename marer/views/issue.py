@@ -108,6 +108,12 @@ class IssueRegisteringView(IssueView):
             issue = self.get_issue()
             issue.comment = base_form.cleaned_data['comment']
             issue.save()
+
+            # todo issue process registering form
+            product = issue.get_product()
+            product.set_issue(issue)
+            product.process_registering_form(request)
+
         kwargs.update(dict(base_form=base_form))
         return self.get(request, *args, **kwargs)
 
