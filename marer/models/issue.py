@@ -12,7 +12,10 @@ from marer.models.issuer import Issuer, IssuerDocument
 from marer.products import get_finance_products_as_choices, FinanceProduct, get_finance_products
 
 
-__all__ = ['Issue', 'IssueDocument', 'IssueDocumentRequest']
+__all__ = [
+    'Issue', 'IssueDocument', 'IssueFinanceOrgPropose', 'IssueFinanceOrgProposeClarification',
+    'IssueFinanceOrgProposeClarificationMessage', 'IssueFinanceOrgProposeClarificationMessageDocument'
+]
 
 
 class Issue(models.Model):
@@ -212,13 +215,56 @@ class IssueDocument(models.Model):
     )
 
 
-class IssueDocumentRequest(models.Model):
-    pass
-
-
 class IssueFinanceOrgPropose(models.Model):
     class Meta:
         unique_together = (('issue', 'finance_org'),)
 
-    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False)
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False, related_name='proposes')
     finance_org = models.ForeignKey(FinanceOrganization, on_delete=models.CASCADE, blank=False, null=False)
+
+
+class IssueFinanceOrgProposeClarification(models.Model):
+    propose = models.ForeignKey(
+        IssueFinanceOrgPropose,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+        related_name='clarifications'
+    )
+    initiator = models.CharField(max_length=32, blank=False, null=False, choices=[
+        (consts.IFOPC_INITIATOR_FINANCE_ORG, 'Финансовая организация'),
+        (consts.IFOPC_INITIATOR_ISSUER, 'Заявитель'),
+    ])
+    updated_at = models.DateTimeField(auto_now=True, null=False)
+    created_at = models.DateTimeField(auto_now=True, null=False)
+
+
+class IssueFinanceOrgProposeClarificationMessage(models.Model):
+    clarification = models.ForeignKey(
+        IssueFinanceOrgProposeClarification,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+        related_name='clarification_messages'
+    )
+    message = models.TextField(blank=False, null=False, default='')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, null=False)
+    created_at = models.DateTimeField(auto_now=True, null=False)
+
+
+class IssueFinanceOrgProposeClarificationMessageDocument(models.Model):
+    clarification_message = models.ForeignKey(
+        IssueFinanceOrgProposeClarificationMessage,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+        related_name='documents_links'
+    )
+    name = models.CharField(max_length=512, blank=False, null=False, default='')
+    document = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='clarification_messages_links'
+    )
