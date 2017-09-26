@@ -22,3 +22,6 @@ BG_TYPE_CONTRACT_EXECUTION = 'contract_execution'
 CURRENCY_RUR = 'rur'
 CURRENCY_USD = 'usd'
 CURRENCY_EUR = 'eur'
+
+IFOPC_INITIATOR_FINANCE_ORG = 'finance_org'
+IFOPC_INITIATOR_ISSUER = 'issuer'

@@ -5,10 +5,11 @@ from django.urls import reverse
 from django.views.generic import TemplateView, RedirectView
 
 from marer import consts
-from marer.forms import IssueRegisteringForm
-from marer.models import Issue, Issuer
-from marer.models.finance_org import FinanceOrgProductConditions
-from marer.models.issue import IssueFinanceOrgPropose
+from marer.forms import IssueRegisteringForm, IFOPCMessageForm
+from marer.models import Issue, Issuer, Document
+from marer.models.finance_org import FinanceOrgProductConditions, FinanceOrganization
+from marer.models.issue import IssueFinanceOrgPropose, IssueFinanceOrgProposeClarificationMessage, \
+    IssueFinanceOrgProposeClarificationMessageDocument, IssueFinanceOrgProposeClarification
 from marer.products import get_finance_products
 from marer.stub import create_stub_issuer
 from marer.views import StaticPagesContextMixin
@@ -234,6 +235,67 @@ class IssueAdditionalDocumentsRequestsView(IssueView):
 
 class IssueAdditionalDocumentsRequestView(IssueView):
     template_name = 'marer/issue/additional_documents_request.html'
+
+    def _get_clarification(self):
+        clarif_id = self.kwargs.get('adrid', None)
+        if clarif_id:
+            clarification = get_object_or_404(IssueFinanceOrgProposeClarification, id=clarif_id)
+            return clarification
+        return None
+
+    def get(self, request, *args, **kwargs):
+        clarification = self._get_clarification()
+        if clarification:
+            kwargs['clarification'] = clarification
+        else:
+            propose_id = request.GET.get('pid', 0)
+            kwargs['propose'] = get_object_or_404(IssueFinanceOrgPropose, id=propose_id)
+        kwargs['consts'] = consts
+        if 'comment_form' not in kwargs:
+            kwargs['comment_form'] = IFOPCMessageForm()
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        comment_form = IFOPCMessageForm(request.POST, request.FILES)
+
+        if comment_form.is_valid():
+            clarification = self._get_clarification()
+            if not clarification:
+                propose_id = request.GET.get('pid', 0)
+                propose = get_object_or_404(IssueFinanceOrgPropose, id=propose_id)
+
+                clarification = IssueFinanceOrgProposeClarification()
+                clarification.initiator = consts.IFOPC_INITIATOR_ISSUER
+                clarification.propose = propose
+                clarification.save()
+
+            new_msg = IssueFinanceOrgProposeClarificationMessage()
+            new_msg.clarification = clarification
+            new_msg.message = comment_form.cleaned_data['message']
+            new_msg.user = request.user
+            new_msg.save()
+
+            for ffield in ['doc%s' % dnum for dnum in range(1, 9)]:
+                ffile = comment_form.cleaned_data[ffield]
+                if ffile:
+                    new_doc = Document()
+                    new_doc.file = ffile
+                    new_doc.save()
+
+                    new_clarif_doc_link = IssueFinanceOrgProposeClarificationMessageDocument()
+                    new_clarif_doc_link.clarification_message = new_msg
+                    new_clarif_doc_link.name = ffile.name
+                    new_clarif_doc_link.document = new_doc
+                    new_clarif_doc_link.save()
+
+            url = reverse(
+                'issue_additional_documents_request',
+                args=[self.get_issue().id, clarification.id]
+            )
+            return HttpResponseRedirect(url)
+        else:
+            kwargs['comment_form'] = comment_form
+        return self.get(request, *args, **kwargs)
 
 
 class IssuePaymentsView(IssueView):

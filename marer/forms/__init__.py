@@ -173,3 +173,18 @@ class IssueRegisteringForm(Form):
 
 class RestTenderForm(Form):
     gos_number = fields.CharField(required=True, max_length=512)
+
+
+class IFOPCMessageForm(Form):
+    message = fields.CharField(
+        required=True,
+        widget=Textarea(attrs={'class': 'form-control', 'rows': 4}),
+    )
+    doc1 = fields.FileField(required=False)
+    doc2 = fields.FileField(required=False)
+    doc3 = fields.FileField(required=False)
+    doc4 = fields.FileField(required=False)
+    doc5 = fields.FileField(required=False)
+    doc6 = fields.FileField(required=False)
+    doc7 = fields.FileField(required=False)
+    doc8 = fields.FileField(required=False)

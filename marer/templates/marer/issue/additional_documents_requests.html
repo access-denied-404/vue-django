@@ -7,31 +7,34 @@
             <div class="panel-heading" data-toggle="collapse" data-target="#panel{{ propose.finance_org.id }}">
                 {{ propose.finance_org.name }}
             </div>
-            <div class="panel-body collapse" id="panel{{ propose.finance_org.id }}">
+            <div class="panel-body collapse {% if propose.clarifications.exists %}in{% endif %}" id="panel{{ propose.finance_org.id }}">
+                {% if propose.clarifications.exists %}
                 <table class="table">
                     <tr>
                         <th>Номер</th>
                         <th>Инициатор</th>
                         <th>Дата изменения</th>
                     </tr>
-                    <tr>
-                        <td class="col-md-1"><a href="{% url 'issue_additional_documents_request' issue.id 0 %}">121</a></td>
-                        <td class="col-md-8">Сбербанк</td>
-                        <td class="col-md-3">05 сентября 2017, 10:38</td>
-                    </tr>
-                    <tr>
-                        <td class="col-md-1"><a href="{% url 'issue_additional_documents_request' issue.id 0 %}">122</a></td>
-                        <td class="col-md-8">Клиент</td>
-                        <td class="col-md-3">05 сентября 2017, 10:38</td>
-                    </tr>
-                    <tr>
-                        <td class="col-md-1"><a href="{% url 'issue_additional_documents_request' issue.id 0 %}">123</a></td>
-                        <td class="col-md-8">Менеджер</td>
-                        <td class="col-md-3">05 сентября 2017, 10:38</td>
-                    </tr>
+                    {% for clarification in propose.clarifications.all %}
+                        <tr>
+                            <td class="col-md-1">
+                                <a href="{% url 'issue_additional_documents_request' issue.id clarification.id %}">
+                                    {{ clarification.id }}
+                                </a>
+                            </td>
+                            <td class="col-md-8">{{ clarification.get_initiator_display }}</td>
+                            <td class="col-md-3">{{ clarification.updated_at }}</td>
+                        </tr>
+                    {% endfor %}
                 </table>
+                {% else %}
+                    <p class="text-center">Нет запросов</p>
+                {% endif %}
                 <div class="row text-center">
-                    <a href="#" class="btn btn-primary">Добавить запрос</a>
+                    <form action="{% url 'issue_additional_documents_request_new' issue.id %}">
+                        <input type="hidden" name="pid" value="{{ propose.id }}" />
+                        <button type="submit" class="btn btn-primary">Добавить запрос</button>
+                    </form>
                 </div>
             </div>
         </div>
