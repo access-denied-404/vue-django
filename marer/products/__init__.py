@@ -72,9 +72,14 @@ class BGFinProdRegForm(Form):
 
 
 class BGFinProdSurveyOrgCommonForm(Form):
+    issuer_full_name = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_short_name = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
     issuer_foreign_name = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
     issuer_legal_address = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
     issuer_fact_address = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_ogrn = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_inn = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_kpp = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
     issuer_okpo = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
     issuer_registration_date = DateField(required=False, widget=DateInput(attrs={'class': 'form-control'}))
     issuer_ifns_reg_date = DateField(required=False, widget=DateInput(attrs={'class': 'form-control'}))
@@ -180,6 +185,13 @@ class BankGuaranteeProduct(FinanceProduct):
     def process_survey_post_data(self, request):
         form_org_common = BGFinProdSurveyOrgCommonForm(request.POST)
         if form_org_common.is_valid():
+            self._issue.issuer_full_name = form_org_common.cleaned_data['issuer_full_name']
+            self._issue.issuer_short_name = form_org_common.cleaned_data['issuer_short_name']
+
+            self._issue.issuer_ogrn = form_org_common.cleaned_data['issuer_ogrn']
+            self._issue.issuer_inn = form_org_common.cleaned_data['issuer_inn']
+            self._issue.issuer_kpp = form_org_common.cleaned_data['issuer_kpp']
+
             self._issue.issuer_foreign_name = form_org_common.cleaned_data['issuer_foreign_name']
             self._issue.issuer_legal_address = form_org_common.cleaned_data['issuer_legal_address']
             self._issue.issuer_fact_address = form_org_common.cleaned_data['issuer_fact_address']

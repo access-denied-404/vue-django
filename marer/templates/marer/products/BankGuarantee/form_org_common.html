@@ -6,7 +6,7 @@
                 <div class="col-md-12">
                     <div class="form-group">
                         <label>Полное наименование</label>
-                        <input type="text" class="form-control"/>
+                        {{ form.issuer_full_name }}
                     </div>
                 </div>
             </div>
@@ -14,7 +14,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Краткое наименование</label>
-                        <input type="text" class="form-control"/>
+                        {{ form.issuer_short_name }}
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -44,19 +44,19 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>ОГРН</label>
-                        <input type="text" class="form-control"/>
+                        {{ form.issuer_ogrn }}
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>ИНН</label>
-                        <input type="text" class="form-control"/>
+                        {{ form.issuer_inn }}
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>КПП</label>
-                        <input type="text" class="form-control"/>
+                        {{ form.issuer_kpp }}
                     </div>
                 </div>
                 <div class="col-md-3">
