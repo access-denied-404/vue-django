@@ -6,12 +6,12 @@
       <div class="panel-body">
         <div class="row">
           <div class="col-md-6"><bs-input :name="'tender_gos_number'" v-model="tender_gos_number" label="Госномер тендера" required></bs-input></div>
-          <div class="col-md-6"><div class="form-group"><bs-input :name="'placement_type'" v-model="placement_type" label="Способ определения поставщика"></bs-input></div></div>
+          <div class="col-md-6"><div class="form-group"><bs-input :name="'tender_placement_type'" v-model="tender_placement_type" label="Способ определения поставщика"></bs-input></div></div>
         </div>
         <div class="row">
-          <div class="col-md-4"><bs3-radio-field :name="'law'" v-model="law" label="Закон исполнения торгов" :options="[{value: '44_fz', text:'44-ФЗ'}, {value: '223_fz', text:'223-ФЗ'}]"></bs3-radio-field></div>
-          <div class="col-md-4"><label>Дата публикации</label><date-time-picker v-model="publish_datetime" :config="{'sideBySide':true,'locale':'ru'}"></date-time-picker></div>
-          <div class="col-md-4"><bs-input :name="'start_cost'" v-model="start_cost" label="Начальная цена контракта" :mask="currency"></bs-input></div>
+          <div class="col-md-4"><bs3-radio-field :name="'tender_exec_law'" v-model="tender_exec_law" label="Закон исполнения торгов" :options="[{value: '44-fz', text:'44-ФЗ'}, {value: '223-fz', text:'223-ФЗ'}]"></bs3-radio-field></div>
+          <div class="col-md-4"><label>Дата публикации</label><date-time-picker :name="'tender_publish_date'" v-model="tender_publish_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div>
+          <div class="col-md-4"><bs-input :name="'tender_start_cost'" v-model="tender_start_cost" label="Начальная цена контракта" :mask="currency"></bs-input></div>
         </div>
       </div>
     </div>
@@ -23,12 +23,12 @@
           <div class="col-md-12"><bs-input :name="'tender_responsible_full_name'" v-model="tender_responsible_full_name" label="Наименование — полное наименование организации"></bs-input></div>
         </div>
         <div class="row">
-          <div class="col-md-12"><bs-input :name="'publisher.legal_address'" v-model="publisher.legal_address" label="Адрес — юридический адрес организации"></bs-input></div>
+          <div class="col-md-12"><bs-input :name="'tender_responsible_legal_address'" v-model="tender_responsible_legal_address" label="Адрес — юридический адрес организации"></bs-input></div>
         </div>
         <div class="row">
-          <div class="col-md-4"><bs-input :name="'publisher.inn'" v-model="publisher.inn" label="ИНН"></bs-input></div>
-          <div class="col-md-4"><bs-input :name="'publisher.kpp'" v-model="publisher.kpp" label="КПП"></bs-input></div>
-          <div class="col-md-4"><bs-input :name="'publisher.ogrn'" v-model="publisher.ogrn" label="ОГРН"></bs-input></div>
+          <div class="col-md-4"><bs-input :name="'tender_responsible_inn'" v-model="tender_responsible_inn" label="ИНН"></bs-input></div>
+          <div class="col-md-4"><bs-input :name="'tender_responsible_kpp'" v-model="tender_responsible_kpp" label="КПП"></bs-input></div>
+          <div class="col-md-4"><bs-input :name="'tender_responsible_ogrn'" v-model="tender_responsible_ogrn" label="ОГРН"></bs-input></div>
         </div>
       </div>
     </div>
@@ -41,26 +41,26 @@
           <div class="col-md-8">
 
             <div class="row">
-              <div class="col-md-6"><bs-input :name="'ensure_cost'" v-model="ensure_cost" label="Требуемая сумма БГ" :mask="currency"></bs-input></div>
-              <div class="col-md-6"><bs3-select-field v-model="currency_code" :name="'currency_code'" :label="'Валюта'" :options="[{value: 'rur', text:'Рубль'},{value: 'usd', text:'Доллар'},{value: 'eur', text:'Евро'}]"></bs3-select-field></div>
+              <div class="col-md-6"><bs-input :name="'bg_sum'" v-model="bg_sum" label="Требуемая сумма БГ" :mask="currency"></bs-input></div>
+              <div class="col-md-6"><bs3-select-field v-model="bg_currency" :name="'bg_currency'" :label="'Валюта'" :options="[{value: 'rur', text:'Рубль'},{value: 'usd', text:'Доллар'},{value: 'eur', text:'Евро'}]"></bs3-select-field></div>
             </div>
 
             <div class="row">
-              <div class="col-md-6"><div class="form-group"><label>Сроки БГ с</label><date-time-picker v-model="date_from" :config="{'sideBySide':true,'locale':'ru'}"></date-time-picker></div></div>
-              <div class="col-md-6"><div class="form-group"><label>Сроки БГ по</label><date-time-picker v-model="date_to" :config="{'sideBySide':true,'locale':'ru'}"></date-time-picker></div></div>
+              <div class="col-md-6"><div class="form-group"><label>Сроки БГ с</label><date-time-picker :name="'bg_start_date'" v-model="bg_start_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div></div>
+              <div class="col-md-6"><div class="form-group"><label>Сроки БГ по</label><date-time-picker :name="'bg_end_date'" v-model="bg_end_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div></div>
             </div>
 
             <div class="row">
-              <div class="col-md-6"><bs-input :name="'deadline'" v-model="deadline" label="Крайний срок выдачи"></bs-input></div>
+              <div class="col-md-6"><bs-input :name="'bg_deadline_date'" v-model="bg_deadline_date" label="Крайний срок выдачи"></bs-input></div>
               <div class="col-md-6"><bs-input :name="'date_range'" v-model="date_range" label="Срок БГ, дней" readonly></bs-input></div>
             </div>
 
           </div>
 
           <div class="col-md-4">
-            <bs3-radio-field :name="'ensure_type'" v-model="ensure_type" label="Тип БГ" :options="[{value: 'contract', text:'Исполнение контракта'}, {value:'application', text:'Обеспечение заявки'}]"></bs3-radio-field>
-            <bs3-radio-field :name="'contract_type'" v-model="contract_type" label="Тип контракта" :options="[{value: 'product', text:'поставка товара'},{value: 'service', text:'оказание услуг'},{value: 'work', text:'выполнение работ'}]"></bs3-radio-field>
-            <checkbox v-model="prepaid" true-value="1" type="primary">Наличие аванса</checkbox>
+            <bs3-radio-field :name="'bg_type'" v-model="bg_type" label="Тип БГ" :options="[{value: 'contract_execution', text:'Исполнение контракта'}, {value:'application_ensure', text:'Обеспечение заявки'}]"></bs3-radio-field>
+            <bs3-radio-field :name="'tender_contract_type'" v-model="tender_contract_type" label="Тип контракта" :options="[{value: 'supply', text:'поставка товара'},{value: 'service', text:'оказание услуг'},{value: 'works', text:'выполнение работ'}]"></bs3-radio-field>
+            <checkbox :name="'tender_has_prepayment'" v-model="tender_has_prepayment" type="primary">Наличие аванса</checkbox>
           </div>
 
         </div>
@@ -73,12 +73,16 @@
 
 <script>
   import jQuery from 'jquery'
+  import moment from 'moment'
   import _ from 'lodash'
   import {input, checkbox} from 'vue-strap'
   import DateTimePicker from 'vue-bootstrap-datetimepicker'
   import BS3SelectField from '@/components/inputs/BS3SelectField'
   import BS3RadioField from '@/components/inputs/BS3RadioField'
   import 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css'
+
+  moment.locale = 'ru'
+  let dateformat = 'DD.MM.YYYY'
 
   export default {
     name: 'form-bank-guarantee',
@@ -94,36 +98,39 @@
 
       return {
         tender_gos_number: regData.formdata.tender_gos_number,
-        law: '',
-        placement_type: '',
-        publish_datetime: '',
-        start_cost: '',
+        tender_exec_law: regData.formdata.tender_exec_law,
+        tender_placement_type: regData.formdata.tender_placement_type,
+        tender_publish_date: regData.formdata.tender_publish_date,
+        tender_start_cost: regData.formdata.tender_start_cost,
+
+        tender_application_ensure_cost: regData.formdata.tender_application_ensure_cost,
+        tender_contract_execution_ensure_cost: regData.formdata.tender_contract_execution_ensure_cost,
+
+        tender_has_prepayment: regData.formdata.tender_has_prepayment,
+        tender_contract_type: regData.formdata.tender_contract_type,
+
         tender_responsible_full_name: regData.formdata.tender_responsible_full_name,
-        publisher: {
-          legal_address: '',
-          inn: '',
-          kpp: '',
-          ogrn: ''
-        },
-        ensure_type: '',
-        application_ensure_cost: '',
-        contract_execution_ensure_cost: '',
-        currency_code: '',
-        prepaid: '',
-        contract_type: '',
-        date_from: '',
-        date_to: '',
-        deadline: ''
+        tender_responsible_legal_address: regData.formdata.tender_responsible_legal_address,
+        tender_responsible_inn: regData.formdata.tender_responsible_inn,
+        tender_responsible_kpp: regData.formdata.tender_responsible_kpp,
+        tender_responsible_ogrn: regData.formdata.tender_responsible_ogrn,
+
+        bg_sum: regData.formdata.bg_sum,
+        bg_type: regData.formdata.bg_type,
+        bg_currency: regData.formdata.bg_currency,
+        bg_start_date: moment(regData.formdata.bg_start_date, dateformat),
+        bg_end_date: moment(regData.formdata.bg_end_date, dateformat),
+        bg_deadline_date: regData.formdata.bg_deadline_date
       }
     },
     computed: {
-      ensure_cost: {
+      bg_sum: {
         get () {
-          if (this.ensure_type === 'contract') {
-            return this.contract_execution_ensure_cost
+          if (this.bg_type === 'contract') {
+            return this.tender_contract_execution_ensure_cost
           }
-          if (this.ensure_type === 'application') {
-            return this.application_ensure_cost
+          if (this.bg_type === 'application') {
+            return this.tender_application_ensure_cost
           }
           return ''
         },
@@ -132,8 +139,8 @@
       },
       date_range: {
         get () {
-          if (this.date_from && this.date_to) {
-            return Math.ceil((this.date_to - this.date_from) / 3600 / 24 / 1000)
+          if (this.bg_start_date && this.bg_end_date) {
+            return Math.ceil((this.bg_end_date - this.bg_start_date) / 3600 / 24 / 1000)
           }
           return ''
         },
@@ -143,24 +150,24 @@
     },
     watch: {
       tender_gos_number: _.debounce(function () {
-        jQuery.getJSON('/rest/tender?format=json&gos_number=' + this.gos_number, (data, status, xhr) => {
-          this.law = data.law
-          this.placement_type = data.placement_type
-          this.publish_datetime = data.publish_datetime
-          this.start_cost = data.start_cost
-          this.publisher.full_name = data.publisher.full_name
-          this.publisher.legal_address = data.publisher.legal_address
-          this.publisher.inn = data.publisher.inn
-          this.publisher.kpp = data.publisher.kpp
-          this.publisher.ogrn = data.publisher.ogrn
-          this.application_ensure_cost = data.application_ensure_cost
-          this.contract_execution_ensure_cost = data.contract_execution_ensure_cost
-          this.currency_code = data.currency_code
+        jQuery.getJSON('/rest/tender?format=json&gos_number=' + this.tender_gos_number, (data, status, xhr) => {
+          this.tender_exec_law = data.law
+          this.tender_placement_type = data.placement_type
+          this.tender_publish_date = data.publish_datetime
+          this.tender_start_cost = data.start_cost
+          this.tender_responsible_full_name = data.publisher.full_name
+          this.tender_responsible_legal_address = data.publisher.legal_address
+          this.tender_responsible_inn = data.publisher.inn
+          this.tender_responsible_kpp = data.publisher.kpp
+          this.tender_responsible_ogrn = data.publisher.ogrn
+          this.tender_application_ensure_cost = data.application_ensure_cost
+          this.tender_contract_execution_ensure_cost = data.contract_execution_ensure_cost
+          this.bg_currency = data.currency_code
         })
       }, 1000)
     },
     methods: {
-      currency (value) {
+      bg_currency (value) {
         return value
           .trim()
           .slice(
