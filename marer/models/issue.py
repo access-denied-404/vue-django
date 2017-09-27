@@ -1,7 +1,6 @@
 import json
 
 from django.conf import settings
-from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.utils.formats import number_format
 
@@ -10,7 +9,7 @@ from marer.models.base import Document
 from marer.models.finance_org import FinanceOrganization
 from marer.models.issuer import Issuer, IssuerDocument
 from marer.products import get_finance_products_as_choices, FinanceProduct, get_finance_products
-
+from marer.utils import CustomJSONEncoder
 
 __all__ = [
     'Issue', 'IssueDocument', 'IssueFinanceOrgPropose', 'IssueFinanceOrgProposeClarification',
@@ -189,7 +188,7 @@ class Issue(models.Model):
         json_data = json.dumps(dict(
             formdata=reg_form.cleaned_data,
             errors=reg_form.errors,
-        ), cls=DjangoJSONEncoder)
+        ), cls=CustomJSONEncoder)
         return json_data
 
 
