@@ -96,31 +96,60 @@
     data () {
       var regData = JSON.parse(window.regdata)
 
-      return {
-        tender_gos_number: regData.formdata.tender_gos_number,
-        tender_exec_law: regData.formdata.tender_exec_law,
-        tender_placement_type: regData.formdata.tender_placement_type,
-        tender_publish_date: regData.formdata.tender_publish_date,
-        tender_start_cost: regData.formdata.tender_start_cost,
+      if (regData !== null && regData.formdata !== null) {
+        return {
+          tender_gos_number: regData.formdata.tender_gos_number,
+          tender_exec_law: regData.formdata.tender_exec_law,
+          tender_placement_type: regData.formdata.tender_placement_type,
+          tender_publish_date: regData.formdata.tender_publish_date,
+          tender_start_cost: regData.formdata.tender_start_cost,
 
-        tender_application_ensure_cost: regData.formdata.tender_application_ensure_cost,
-        tender_contract_execution_ensure_cost: regData.formdata.tender_contract_execution_ensure_cost,
+          tender_application_ensure_cost: regData.formdata.tender_application_ensure_cost,
+          tender_contract_execution_ensure_cost: regData.formdata.tender_contract_execution_ensure_cost,
 
-        tender_has_prepayment: regData.formdata.tender_has_prepayment,
-        tender_contract_type: regData.formdata.tender_contract_type,
+          tender_has_prepayment: regData.formdata.tender_has_prepayment,
+          tender_contract_type: regData.formdata.tender_contract_type,
 
-        tender_responsible_full_name: regData.formdata.tender_responsible_full_name,
-        tender_responsible_legal_address: regData.formdata.tender_responsible_legal_address,
-        tender_responsible_inn: regData.formdata.tender_responsible_inn,
-        tender_responsible_kpp: regData.formdata.tender_responsible_kpp,
-        tender_responsible_ogrn: regData.formdata.tender_responsible_ogrn,
+          tender_responsible_full_name: regData.formdata.tender_responsible_full_name,
+          tender_responsible_legal_address: regData.formdata.tender_responsible_legal_address,
+          tender_responsible_inn: regData.formdata.tender_responsible_inn,
+          tender_responsible_kpp: regData.formdata.tender_responsible_kpp,
+          tender_responsible_ogrn: regData.formdata.tender_responsible_ogrn,
 
-        bg_sum: regData.formdata.bg_sum,
-        bg_type: regData.formdata.bg_type,
-        bg_currency: regData.formdata.bg_currency,
-        bg_start_date: moment(regData.formdata.bg_start_date, dateformat),
-        bg_end_date: moment(regData.formdata.bg_end_date, dateformat),
-        bg_deadline_date: regData.formdata.bg_deadline_date
+          bg_sum: regData.formdata.bg_sum,
+          bg_type: regData.formdata.bg_type,
+          bg_currency: regData.formdata.bg_currency,
+          bg_start_date: moment(regData.formdata.bg_start_date, dateformat),
+          bg_end_date: moment(regData.formdata.bg_end_date, dateformat),
+          bg_deadline_date: regData.formdata.bg_deadline_date
+        }
+      } else {
+        return {
+          tender_gos_number: '',
+          tender_exec_law: '',
+          tender_placement_type: '',
+          tender_publish_date: '',
+          tender_start_cost: '',
+
+          tender_application_ensure_cost: '',
+          tender_contract_execution_ensure_cost: '',
+
+          tender_has_prepayment: '',
+          tender_contract_type: '',
+
+          tender_responsible_full_name: '',
+          tender_responsible_legal_address: '',
+          tender_responsible_inn: '',
+          tender_responsible_kpp: '',
+          tender_responsible_ogrn: '',
+
+          bg_sum: '',
+          bg_type: '',
+          bg_currency: '',
+          bg_start_date: '',
+          bg_end_date: '',
+          bg_deadline_date: ''
+        }
       }
     },
     computed: {
