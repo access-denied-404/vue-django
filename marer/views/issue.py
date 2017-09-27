@@ -80,12 +80,9 @@ class IssueRegisteringView(IssueView):
                 )
             else:
                 initial = dict()
-            base_form = IssueRegisteringForm(initial=initial)
-            kwargs.update(dict(
-                base_form=base_form,
-                issue=self.get_issue(),
-                products=get_finance_products()
-            ))
+            kwargs['base_form'] = IssueRegisteringForm(initial=initial)
+        kwargs['issue'] = self.get_issue()
+        kwargs['products'] = get_finance_products()
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
