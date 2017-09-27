@@ -16,9 +16,9 @@
             </div>
             <div class="col-md-6">
               <bs-input
-                :name="'org_name'"
+                :name="'issuer_short_name'"
                 label="Организация"
-                v-model="org_search_name"
+                v-model="issuer_short_name"
               ></bs-input>
             </div>
           </div>
@@ -43,9 +43,15 @@
       'bs3-select-field': BS3SelectField
     },
     data () {
+      var regData = JSON.parse(window.regdata)
+      var issuerShortName = ''
+      if (regData !== null && regData.formdata !== null) {
+        issuerShortName = regData.formdata.issuer_short_name
+      }
+
       return {
         product: document.getElementById('app').getAttribute('product'),
-        org_search_name: ''
+        issuer_short_name: issuerShortName
       }
     },
     watch: {

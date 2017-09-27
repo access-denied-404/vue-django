@@ -33,6 +33,8 @@ def get_finance_products_as_choices():
 
 
 class BGFinProdRegForm(Form):
+    issuer_short_name = CharField(required=True)
+
     tender_gos_number = CharField(required=True)
     tender_placement_type = CharField(required=False)
     tender_exec_law = ChoiceField(required=False, choices=[
