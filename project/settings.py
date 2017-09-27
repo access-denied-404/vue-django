@@ -170,3 +170,5 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated'
     ]
 }
+
+DADATA_TOKEN = '47c4fdece03003595040e4db2f4fd325fb66c93e'

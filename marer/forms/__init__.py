@@ -1,6 +1,6 @@
 from django.forms import Form
 from django.forms import fields
-from django.forms.widgets import TextInput, PasswordInput, EmailInput, Select, Textarea
+from django.forms.widgets import TextInput, PasswordInput, EmailInput, Select, Textarea, HiddenInput
 
 from marer import consts
 from marer.forms.widgets import CallableChoicesSelect
@@ -87,11 +87,30 @@ class QuickRequestForm(Form):
         ),
         label='Вид услуги'
     )
-    issuer = fields.CharField(
+
+    party = fields.CharField(
         required=True,
-        widget=TextInput(attrs={'class': 'form-control'}),
-        label='Название или ИНН органиазции'
+        widget=TextInput(attrs={
+            'class': 'party form-control',
+            'placeholder': 'Введите название, ИНН, ОГРН или адрес',
+        }),
+        label='Организация'
     )
+
+    party_ogrn = fields.CharField(required=False, widget=HiddenInput())
+    party_inn = fields.CharField(required=False, widget=HiddenInput())
+    party_kpp = fields.CharField(required=False, widget=HiddenInput())
+    party_okved = fields.CharField(required=False, widget=HiddenInput())
+    party_okopf = fields.CharField(required=False, widget=HiddenInput())
+
+    party_full_name = fields.CharField(required=False, widget=HiddenInput())
+    party_short_name = fields.CharField(required=False, widget=HiddenInput())
+    party_foreign_name = fields.CharField(required=False, widget=HiddenInput())
+    party_legal_address = fields.CharField(required=False, widget=HiddenInput())
+
+    party_head_fio = fields.CharField(required=False, widget=HiddenInput())
+    party_head_position = fields.CharField(required=False, widget=HiddenInput())
+
     contact_person_name = fields.CharField(
         required=True,
         widget=TextInput(attrs={'class': 'form-control'}),

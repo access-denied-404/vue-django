@@ -6,6 +6,7 @@
     <link href="{% static '/marer/css/sticky-navbar.css' %}" rel="stylesheet">
     <link href="{% static '/marer/css/sticky-footer.css' %}" rel="stylesheet">
     <link href="{% static '/marer/css/no-text-decoration.css' %}" rel="stylesheet">
+    <link href="{% static '/marer/css/suggestions.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -77,6 +78,9 @@
 
 {% include 'marer/footer.html' %}
 {% include 'marer/boostrap_js_body_part.html' %}
+<!--[if lt IE 10]><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajaxtransport-xdomainrequest/1.0.1/jquery.xdomainrequest.min.js"></script><![endif]-->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery.suggestions/16.8/js/jquery.suggestions.min.js"></script>
+
 <script type="text/javascript">
     $(document).ready(function() {
         var headerHeight = $('header').height();
@@ -103,6 +107,30 @@
             } else {
                 brandInNavBar.hide("blind", { direction: "left" }, 500);
             }
+        });
+
+        // dadata
+        $('.party').suggestions({
+            serviceUrl: 'https://suggestions.dadata.ru/suggestions/api/4_1/rs',
+            token:      '{{ dadata_token }}',
+            type:       'PARTY',
+            count:      7,
+
+            onSelect: function (suggestion) {
+                $("input[name='party_ogrn']").val(suggestion.data.ogrn);
+                $("input[name='party_inn']").val(suggestion.data.inn);
+                $("input[name='party_kpp']").val(suggestion.data.kpp);
+                $("input[name='party_okved']").val(suggestion.data.okved);
+                $("input[name='party_okopf']").val(suggestion.data.okopf);
+
+                $("input[name='party_full_name']").val(suggestion.data.name.full_with_opf);
+                $("input[name='party_short_name']").val(suggestion.data.name.short_with_opf);
+                $("input[name='party_foreign_name']").val(suggestion.data.name.latin);
+
+                $("input[name='party_legal_address']").val(suggestion.data.address.value);
+                $("input[name='party_head_fio']").val(suggestion.data.management.name);
+                $("input[name='party_head_position']").val(suggestion.data.management.post);
+            },
         });
     });
 </script>

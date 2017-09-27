@@ -11,8 +11,22 @@
     <div class="form-row">
         <div class="col-sm-12">
             <div class="form-group form-group-sm">
-                <label>{{ quick_request_form.issuer.label }}</label>
-                {{ quick_request_form.issuer }}
+                <label>{{ quick_request_form.party.label }}</label>
+                {{ quick_request_form.party }}
+
+                {{ quick_request_form.party_ogrn }}
+                {{ quick_request_form.party_inn }}
+                {{ quick_request_form.party_kpp }}
+                {{ quick_request_form.party_okved }}
+                {{ quick_request_form.party_okopf }}
+
+                {{ quick_request_form.party_full_name }}
+                {{ quick_request_form.party_short_name }}
+                {{ quick_request_form.party_foreign_name }}
+                {{ quick_request_form.party_legal_address }}
+
+                {{ quick_request_form.party_head_fio }}
+                {{ quick_request_form.party_head_position }}
             </div>
         </div>
     </div>

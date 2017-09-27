@@ -1,6 +1,6 @@
+from django.conf import settings
 from django.contrib.auth import login
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Q
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -13,7 +13,6 @@ from marer.models.finance_org import FinanceOrgProductConditions
 from marer.models.issue import Issue
 from marer.models.issuer import Issuer
 from marer.models.user import User
-from marer.stub import create_stub_issuer
 from marer.views.mixins import StaticPagesContextMixin
 
 
@@ -54,6 +53,7 @@ class IndexView(TemplateView, StaticPagesContextMixin):
             best_finance_products=best_finance_products,
             quick_request_form=quick_request_form,
             bg_rated_foc_list=distinctized_bg_rated_foc_list,
+            dadata_token=settings.DADATA_TOKEN,
         )
         kwargs.update(context_part)
         return super().get(request, *args, **kwargs)
@@ -90,17 +90,30 @@ class IndexView(TemplateView, StaticPagesContextMixin):
                 # todo generate and send password
                 new_user.save()
                 login(request, new_user)
-            # todo create new issue, redirect to issue page
-            issuer_name = quick_request_form.cleaned_data['issuer']
+
+            issuer_full_name = quick_request_form.cleaned_data['party_full_name']
+            issuer_short_name = quick_request_form.cleaned_data['party_short_name']
+            issuer_ogrn = quick_request_form.cleaned_data['party_ogrn']
+            issuer_inn = quick_request_form.cleaned_data['party_inn']
+            issuer_kpp = quick_request_form.cleaned_data['party_kpp']
 
             issuer = None
             try:
-                issuer = Issuer.objects.get(Q(Q(full_name__iexact=issuer_name) | Q(short_name__iexact=issuer_name)))
-            except ObjectDoesNotExist:
-                issuer = create_stub_issuer(
-                    user_owner=request.user,
-                    issuer_name=issuer_name,
+                issuer = Issuer.objects.get(
+                    # Q(Q(full_name__iexact=issuer_name) | Q(short_name__iexact=issuer_name))
+                    ogrn=issuer_ogrn,
+                    inn=issuer_inn,
+                    kpp=issuer_kpp,
                 )
+            except ObjectDoesNotExist:
+                issuer = Issuer()
+                issuer.user = request.user
+                issuer.full_name = issuer_full_name
+                issuer.short_name = issuer_short_name
+                issuer.ogrn = issuer_ogrn
+                issuer.inn = issuer_inn
+                issuer.kpp = issuer_kpp
+                issuer.save()
 
             new_issue = Issue()
             new_issue.issuer = issuer
@@ -108,6 +121,35 @@ class IndexView(TemplateView, StaticPagesContextMixin):
             new_issue.status = consts.ISSUE_STATUS_REGISTERING
             new_issue.user = request.user  # fixme it's naive when new user, check it
             new_issue.product = quick_request_form.cleaned_data['product']
+
+            # new_issue.issuer_ogrn = quick_request_form.cleaned_data['party_ogrn']
+            # new_issue.issuer_inn = quick_request_form.cleaned_data['party_inn']
+            # new_issue.issuer_kpp = quick_request_form.cleaned_data['party_kpp']
+            new_issue.issuer_okved = quick_request_form.cleaned_data['party_okved']
+            new_issue.issuer_okopf = quick_request_form.cleaned_data['party_okopf']
+
+            # new_issue.issuer_full_name = quick_request_form.cleaned_data['party_full_name']
+            # new_issue.issuer_short_name = quick_request_form.cleaned_data['party_short_name']
+            new_issue.issuer_foreign_name = quick_request_form.cleaned_data['party_foreign_name']
+            new_issue.issuer_legal_address = quick_request_form.cleaned_data['party_legal_address']
+
+            head_fio = quick_request_form.cleaned_data['party_head_fio']
+            fio_arr = head_fio.split(' ')
+            if len(fio_arr) == 1:
+                # only name
+                new_issue.issuer_head_first_name = fio_arr[0]
+            elif len(fio_arr) == 2:
+                # last and first names
+                new_issue.issuer_head_last_name = fio_arr[0]
+                new_issue.issuer_head_first_name = fio_arr[1]
+            elif len(fio_arr) == 3:
+                # last, first, middle names
+                new_issue.issuer_head_last_name = fio_arr[0]
+                new_issue.issuer_head_first_name = fio_arr[1]
+                new_issue.issuer_head_middle_name = fio_arr[2]
+
+            new_issue.issuer_head_org_position_and_permissions = quick_request_form.cleaned_data['party_head_position']
+
             new_issue.save()
             url = reverse('cabinet_request', args=[new_issue.id])
             return HttpResponseRedirect(url)
@@ -145,6 +187,7 @@ class FinanceProductView(TemplateView, StaticPagesContextMixin):
             finance_product_roots=finance_product_roots,
             product=product,
             quick_request_form=quick_request_form,
+            dadata_token=settings.DADATA_TOKEN,
         )
         kwargs.update(context_part)
         return super().get(request, *args, **kwargs)
