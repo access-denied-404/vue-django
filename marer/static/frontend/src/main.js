@@ -7,6 +7,7 @@ import router from './router'
 Vue.config.productionTip = false
 
 var products = JSON.parse(document.getElementById('app').getAttribute('products'))
+var dadataToken = document.getElementById('app').getAttribute('dadata_token')
 window.regdata = document.getElementById('app').getAttribute('regdata')
 
 /* eslint-disable no-new */
@@ -15,8 +16,9 @@ new Vue({
   router,
   data: {
     csrf: document.getElementById('app').getAttribute('csrf'),
-    products: products
+    products: products,
+    token: dadataToken
   },
-  template: '<App :csrf="csrf" :products="products"/>',
+  template: '<App :csrf="csrf" :products="products" :token="token"/>',
   components: { App }
 })

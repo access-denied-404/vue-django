@@ -188,6 +188,13 @@ class IssueRegisteringForm(Form):
         widget=Textarea(attrs={'class': 'form-control', 'rows': 4}),
         label='Комментарий к заявке',
     )
+    issuer_full_name = fields.CharField(required=False)
+    issuer_short_name = fields.CharField(required=False)
+    issuer_legal_address = fields.CharField(required=False)
+
+    issuer_ogrn = fields.CharField(required=False)
+    issuer_inn = fields.CharField(required=False)
+    issuer_kpp = fields.CharField(required=False)
 
 
 class RestTenderForm(Form):

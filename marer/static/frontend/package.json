@@ -14,8 +14,10 @@
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs"
   },
   "dependencies": {
+    "jquery": "^1.9",
     "lodash": "^4.17.4",
     "moment": "^2.10",
+    "suggestions-jquery": "^17.10",
     "vue": "^2.4.2",
     "vue-bootstrap-datetimepicker": "^3.0.0",
     "vue-router": "^2.7.0",

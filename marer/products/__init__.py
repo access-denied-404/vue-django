@@ -33,7 +33,13 @@ def get_finance_products_as_choices():
 
 
 class BGFinProdRegForm(Form):
-    issuer_short_name = CharField(required=True)
+    issuer_full_name = CharField(required=False)
+    issuer_short_name = CharField(required=False)
+    issuer_legal_address = CharField(required=False)
+
+    issuer_ogrn = CharField(required=False)
+    issuer_inn = CharField(required=False)
+    issuer_kpp = CharField(required=False)
 
     tender_gos_number = CharField(required=True)
     tender_placement_type = CharField(required=False)

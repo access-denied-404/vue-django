@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -83,6 +84,7 @@ class IssueRegisteringView(IssueView):
             kwargs['base_form'] = IssueRegisteringForm(initial=initial)
         kwargs['issue'] = self.get_issue()
         kwargs['products'] = get_finance_products()
+        kwargs['dadata_token'] = settings.DADATA_TOKEN
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):

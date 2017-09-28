@@ -1,5 +1,12 @@
 {% extends 'marer/issue/layout.html' %}
 
+{% load staticfiles %}
+
+{% block head_additional %}
+    <link href="{% static '/marer/css/suggestions.css' %}" rel="stylesheet">
+{% endblock %}
+
+
 {% block issue_content %}
     <div
             id=app
@@ -9,5 +16,6 @@
                 product="{{ issue.get_product.name }}"
                 regdata="{{ issue.serialize_registering_data }}"
             {% endif %}
+            dadata_token="{{ dadata_token }}"
     ></div>
 {% endblock %}
