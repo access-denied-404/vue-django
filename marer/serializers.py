@@ -12,8 +12,8 @@ class ReadOnlySerializer(serializers.Serializer):
 
 
 class TenderPublisherSerializer(ReadOnlySerializer):
-    # full_name = serializers.CharField(max_length=512)
-    # legal_address = serializers.CharField(max_length=512)
+    full_name = serializers.CharField(max_length=512)
+    legal_address = serializers.CharField(max_length=512)
     inn = serializers.CharField()
     ogrn = serializers.CharField()
     kpp = serializers.CharField()
