@@ -267,3 +267,34 @@ class IssueFinanceOrgProposeClarificationMessageDocument(models.Model):
         blank=True,
         related_name='clarification_messages_links'
     )
+
+
+class IssueBGProdAffiliate(models.Model):
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False, related_name='issuer_affiliates')
+    name = models.CharField(max_length=512, blank=False, null=False, default='')
+    legal_address = models.CharField(max_length=512, blank=False, null=False, default='')
+    inn = models.CharField(max_length=512, blank=False, null=False, default='')
+    activity_type = models.CharField(max_length=512, blank=False, null=False, default='')
+    aff_percentage = models.CharField(max_length=512, blank=False, null=False, default='')
+    aff_type = models.CharField(max_length=512, blank=False, null=False, default='')
+
+
+class IssueBGProdFounderLegal(models.Model):
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False, related_name='issuer_founders_legal')
+    name = models.CharField(max_length=512, blank=False, null=False, default='')
+    add_date = models.CharField(max_length=512, blank=False, null=False, default='')
+    additional_business = models.CharField(max_length=512, blank=False, null=False, default='')
+    country = models.CharField(max_length=512, blank=False, null=False, default='')
+    auth_capital_percentage = models.CharField(max_length=512, blank=False, null=False, default='')
+    legal_address = models.CharField(max_length=512, blank=False, null=False, default='')
+
+
+class IssueBGProdFounderPhysical(models.Model):
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False, related_name='issuer_founders_physical')
+    fio = models.CharField(max_length=512, blank=False, null=False, default='')
+    add_date = models.CharField(max_length=512, blank=False, null=False, default='')
+    additional_business = models.CharField(max_length=512, blank=False, null=False, default='')
+    country = models.CharField(max_length=512, blank=False, null=False, default='')
+    auth_capital_percentage = models.CharField(max_length=512, blank=False, null=False, default='')
+    address = models.CharField(max_length=512, blank=False, null=False, default='')
+    passport_data = models.CharField(max_length=512, blank=False, null=False, default='')
