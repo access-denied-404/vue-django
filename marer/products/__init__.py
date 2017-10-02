@@ -1,9 +1,12 @@
 from dateutil.relativedelta import relativedelta
+from django.core.exceptions import ObjectDoesNotExist
+from django.forms import formset_factory
 
 from django.forms.forms import Form
-from django.forms.fields import CharField, DecimalField, DateField, ChoiceField, BooleanField
-from django.forms.widgets import TextInput, DateInput
+from django.forms.fields import CharField, DecimalField, DateField, ChoiceField, BooleanField, IntegerField
+from django.forms.widgets import TextInput, DateInput, HiddenInput, CheckboxInput
 from django.utils import timezone
+from djangoformsetjs.utils import formset_media_js
 
 from marer import consts
 from marer.products.base import FinanceProduct, FinanceProductDocumentItem
@@ -115,6 +118,49 @@ class BGFinProdSurveyOrgHeadForm(Form):
     issuer_prev_org_info = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
 
 
+class AffiliatesForm(Form):
+    id = IntegerField(required=False, widget=HiddenInput())
+    name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    legal_address = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    inn = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    activity_type = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    aff_percentage = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    aff_type = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden1'}))
+
+    class Media(object):
+        js = formset_media_js
+
+
+class FounderLegalForm(Form):
+    id = IntegerField(required=False, widget=HiddenInput())
+    name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    add_date = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    additional_business = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    country = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    auth_capital_percentage = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    legal_address = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden1'}))
+
+    class Media(object):
+        js = formset_media_js
+
+
+class FounderPhysicalForm(Form):
+    id = IntegerField(required=False, widget=HiddenInput())
+    fio = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    add_date = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    additional_business = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    country = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    auth_capital_percentage = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    address = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    passport_data = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden1'}))
+
+    class Media(object):
+        js = formset_media_js
+
+
 class BankGuaranteeProduct(FinanceProduct):
     _humanized_name = 'Банковская гарантия'
     _survey_template_name = 'marer/products/BankGuarantee/form_survey.html'
@@ -185,9 +231,27 @@ class BankGuaranteeProduct(FinanceProduct):
         return BGFinProdRegForm
 
     def get_survey_context_part(self):
+        affiliates_formset = formset_factory(AffiliatesForm, extra=0)
+        from marer.models.issue import IssueBGProdAffiliate
+        affiliates = IssueBGProdAffiliate.objects.filter(issue=self._issue)
+        affiliates_formset = affiliates_formset(initial=[aff.__dict__ for aff in affiliates], prefix='aff')
+
+        formset_founders_legal = formset_factory(FounderLegalForm, extra=0)
+        from marer.models.issue import IssueBGProdFounderLegal
+        founders_legal = IssueBGProdFounderLegal.objects.filter(issue=self._issue)
+        formset_founders_legal = formset_founders_legal(initial=[fl.__dict__ for fl in founders_legal], prefix='founders_legal')
+
+        formset_founders_physical = formset_factory(FounderPhysicalForm, extra=0)
+        from marer.models.issue import IssueBGProdFounderPhysical
+        founders_physical = IssueBGProdFounderPhysical.objects.filter(issue=self._issue)
+        formset_founders_physical = formset_founders_physical(initial=[fp.__dict__ for fp in founders_physical], prefix='founders_physical')
+
         return dict(
             form_org_common=BGFinProdSurveyOrgCommonForm(initial=self._issue.__dict__),
             form_org_head=BGFinProdSurveyOrgHeadForm(initial=self._issue.__dict__),
+            affiliates_formset=affiliates_formset,
+            formset_founders_legal=formset_founders_legal,
+            formset_founders_physical=formset_founders_physical,
         )
 
     def process_survey_post_data(self, request):
@@ -233,9 +297,85 @@ class BankGuaranteeProduct(FinanceProduct):
             self._issue.issuer_prev_org_info = form_org_head.cleaned_data['issuer_prev_org_info']
 
         self._issue.save()
-        # todo process founders
-        # todo process affiliates
-        pass
+
+        # processing legal founders
+        formset_founders_legal = formset_factory(FounderLegalForm, extra=0)
+        formset_founders_legal = formset_founders_legal(request.POST, prefix='founders_legal')
+        from marer.models.issue import IssueBGProdFounderLegal
+        if formset_founders_legal.is_valid():
+            for afdata in formset_founders_legal.cleaned_data:
+                afdata_id = afdata.get('id', None)
+                afdata_name = str(afdata.get('name', '')).strip()
+                if afdata_id and afdata.get('DELETE', False):
+                    try:
+                        lf = IssueBGProdFounderLegal.objects.get(id=afdata['id'], issue=self._issue)
+                        lf.delete()
+                    except ObjectDoesNotExist:
+                        pass  # nothing to do
+
+                elif not afdata_id and afdata_name != '':
+                    new_lf = IssueBGProdFounderLegal()
+                    new_lf.name = afdata_name
+                    new_lf.add_date = afdata.get('add_date', '')
+                    new_lf.additional_business = afdata.get('additional_business', '')
+                    new_lf.country = afdata.get('country', '')
+                    new_lf.auth_capital_percentage = afdata.get('auth_capital_percentage', '')
+                    new_lf.legal_address = afdata.get('legal_address', '')
+                    new_lf.issue = self._issue
+                    new_lf.save()
+
+        # processing physical founders
+        formset_founders_physical = formset_factory(FounderPhysicalForm, extra=0)
+        formset_founders_physical = formset_founders_physical(request.POST, prefix='founders_physical')
+        from marer.models.issue import IssueBGProdFounderPhysical
+        if formset_founders_physical.is_valid():
+            for afdata in formset_founders_physical.cleaned_data:
+                afdata_id = afdata.get('id', None)
+                afdata_fio = str(afdata.get('fio', '')).strip()
+                if afdata_id and afdata.get('DELETE', False):
+                    try:
+                        pf = IssueBGProdFounderPhysical.objects.get(id=afdata['id'], issue=self._issue)
+                        pf.delete()
+                    except ObjectDoesNotExist:
+                        pass  # nothing to do
+
+                elif not afdata_id and afdata_fio != '':
+                    new_pf = IssueBGProdFounderPhysical()
+                    new_pf.fio = afdata_fio
+                    new_pf.add_date = afdata.get('add_date', '')
+                    new_pf.additional_business = afdata.get('additional_business', '')
+                    new_pf.country = afdata.get('country', '')
+                    new_pf.auth_capital_percentage = afdata.get('auth_capital_percentage', '')
+                    new_pf.address = afdata.get('address', '')
+                    new_pf.passport_data = afdata.get('passport_data', '')
+                    new_pf.issue = self._issue
+                    new_pf.save()
+
+        # processing affiliates
+        from marer.models.issue import IssueBGProdAffiliate
+        affiliates_formset = formset_factory(AffiliatesForm, extra=0)
+        aff_formset = affiliates_formset(request.POST, prefix='aff')
+        if aff_formset.is_valid():
+            for afdata in aff_formset.cleaned_data:
+                afdata_id = afdata.get('id', None)
+                afdata_name = str(afdata.get('name', '')).strip()
+                if afdata_id and afdata.get('DELETE', False):
+                    try:
+                        aff = IssueBGProdAffiliate.objects.get(id=afdata['id'], issue=self._issue)
+                        aff.delete()
+                    except ObjectDoesNotExist:
+                        pass  # nothing to do
+
+                elif not afdata_id and afdata_name != '':
+                    new_aff = IssueBGProdAffiliate()
+                    new_aff.name = afdata_name
+                    new_aff.legal_address = afdata.get('legal_address', '')
+                    new_aff.inn = afdata.get('inn', '')
+                    new_aff.activity_type = afdata.get('activity_type', '')
+                    new_aff.aff_percentage = afdata.get('aff_percentage', '')
+                    new_aff.aff_type = afdata.get('aff_type', '')
+                    new_aff.issue = self._issue
+                    new_aff.save()
 
     def process_registering_form(self, request):
         self._issue.refresh_from_db()
