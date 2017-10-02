@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-08 16:14+0300\n"
+"POT-Creation-Date: 2017-10-02 18:52+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: marer/admin.py:17 marer/admin.py:37
+#: marer/admin.py:17 marer/admin.py:31
 msgid "SEO"
 msgstr ""
 
@@ -28,41 +28,49 @@ msgstr ""
 msgid "marer"
 msgstr "МАРЭР"
 
-#: marer/models/__init__.py:30
+#: marer/models/__init__.py:19
 msgid "finance product"
 msgstr "финансовый продукт"
 
-#: marer/models/__init__.py:31
+#: marer/models/__init__.py:20
 msgid "finance products"
 msgstr "финансовые продукты"
 
-#: marer/models/__init__.py:33
+#: marer/models/__init__.py:22
 msgid "finance product name"
 msgstr "название финансового продукта"
 
-#: marer/models/__init__.py:34
+#: marer/models/__init__.py:23
 msgid "parent product"
 msgstr "родительский финансовый продукт"
 
-#: marer/models/__init__.py:36 marer/models/__init__.py:84
+#: marer/models/__init__.py:25
+msgid "linked finance product"
+msgstr "привязанный финансовый продукт"
+
+#: marer/models/__init__.py:31 marer/models/__init__.py:84
 msgid "name on page"
 msgstr "название на странице"
 
-#: marer/models/__init__.py:37 marer/models/__init__.py:85
+#: marer/models/__init__.py:32 marer/models/__init__.py:85
 msgid "browser title"
 msgstr "заголовок браузера"
 
-#: marer/models/__init__.py:39 marer/models/__init__.py:87
+#: marer/models/__init__.py:34 marer/models/__init__.py:87
 msgid "page desctiption"
 msgstr "описание страницы"
 
-#: marer/models/__init__.py:46 marer/models/__init__.py:94
+#: marer/models/__init__.py:41 marer/models/__init__.py:94
 msgid "page keywords"
 msgstr "ключевые слова страницы"
 
-#: marer/models/__init__.py:52 marer/models/__init__.py:100
+#: marer/models/__init__.py:47 marer/models/__init__.py:100
 msgid "page content"
 msgstr "содержание страницы"
+
+#: marer/models/__init__.py:49
+msgid "index page icon"
+msgstr "картинка на главной странице"
 
 #: marer/models/__init__.py:79
 msgid "static page"
@@ -80,6 +88,6 @@ msgstr "Название статичной страницы"
 msgid "contact phone"
 msgstr "контактный телефон"
 
-#: project/settings.py:158
+#: project/settings.py:161
 msgid "Russian"
 msgstr "Русский"

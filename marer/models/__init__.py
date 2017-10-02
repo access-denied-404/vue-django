@@ -21,7 +21,13 @@ class FinanceProductPage(mptt_models.MPTTModel):
 
     name = models.CharField(verbose_name=_('finance product name'), max_length=512, blank=False, null=False)
     parent = TreeForeignKey('self', verbose_name=_('parent product'), null=True, blank=True, related_name='childrens')
-    _finance_product = models.CharField(choices=get_finance_products_as_choices(), max_length=32, blank=True, null=True)
+    _finance_product = models.CharField(
+        verbose_name=_('linked finance product'),
+        choices=get_finance_products_as_choices(),
+        max_length=32,
+        blank=True,
+        null=True
+    )
     _seo_h1 = models.CharField(verbose_name=_('name on page'), max_length=512, blank=True, null=False, default='')
     _seo_title = models.CharField(verbose_name=_('browser title'), max_length=512, blank=True, null=False, default='')
     _seo_description = models.CharField(
@@ -39,7 +45,12 @@ class FinanceProductPage(mptt_models.MPTTModel):
         default=''
     )
     page_content = RichTextField(verbose_name=_('page content'), blank=True, null=False, default='')
-    product_icon = models.ImageField(upload_to=finance_products_page_images_upload_path, blank=True, null=True)
+    product_icon = models.ImageField(
+        verbose_name=_('index page icon'),
+        upload_to=finance_products_page_images_upload_path,
+        blank=True,
+        null=True
+    )
 
     def __str__(self):
         return self.name
