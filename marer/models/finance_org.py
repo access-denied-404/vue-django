@@ -7,6 +7,9 @@ from marer.products import get_finance_products_as_choices
 class FinanceOrganization(models.Model):
     name = models.CharField(max_length=512, blank=False, null=False)
 
+    def __str__(self):
+        return self.name
+
 
 class FinanceOrgProductConditions(models.Model):
     INSURANCE_TYPE_REAL_ESTATE = 'real_estate'
