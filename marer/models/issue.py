@@ -31,74 +31,74 @@ class Issue(models.Model):
         (consts.ISSUE_STATUS_CANCELLED, 'Отменена'),
     ])
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, null=False)
-    comment = models.TextField(blank=False, null=False, default='')
+    comment = models.TextField(blank=True, null=False, default='')
 
     issuer = models.ForeignKey(Issuer, on_delete=models.SET_NULL, blank=True, null=True)
-    issuer_inn = models.CharField(max_length=32, blank=False, null=False)
-    issuer_kpp = models.CharField(max_length=32, blank=False, null=False)
-    issuer_ogrn = models.CharField(max_length=32, blank=False, null=False)
-    issuer_full_name = models.CharField(max_length=512, blank=False, null=False)
-    issuer_short_name = models.CharField(max_length=512, blank=False, null=False)
+    issuer_inn = models.CharField(max_length=32, blank=True, null=False, default='')
+    issuer_kpp = models.CharField(max_length=32, blank=True, null=False, default='')
+    issuer_ogrn = models.CharField(max_length=32, blank=True, null=False, default='')
+    issuer_full_name = models.CharField(max_length=512, blank=True, null=False, default='')
+    issuer_short_name = models.CharField(max_length=512, blank=True, null=False, default='')
 
-    issuer_foreign_name = models.CharField(max_length=512, null=True)
-    issuer_legal_address = models.CharField(max_length=512, null=True)
-    issuer_fact_address = models.CharField(max_length=512, null=True)
-    issuer_okpo = models.CharField(max_length=32, null=True)
-    issuer_registration_date = models.CharField(max_length=32, null=True)
-    issuer_ifns_reg_date = models.DateField(null=True)
-    issuer_ifns_reg_cert_number = models.CharField(max_length=32, null=True)
-    issuer_okopf = models.CharField(max_length=32, null=True)
-    issuer_okved = models.CharField(max_length=32, null=True)
+    issuer_foreign_name = models.CharField(max_length=512, blank=True, null=False, default='')
+    issuer_legal_address = models.CharField(max_length=512, blank=True, null=False, default='')
+    issuer_fact_address = models.CharField(max_length=512, blank=True, null=False, default='')
+    issuer_okpo = models.CharField(max_length=32, blank=True, null=False, default='')
+    issuer_registration_date = models.CharField(max_length=32, blank=True, null=False, default='')
+    issuer_ifns_reg_date = models.DateField(blank=True, null=True)
+    issuer_ifns_reg_cert_number = models.CharField(max_length=32, blank=True, null=False, default='')
+    issuer_okopf = models.CharField(max_length=32, blank=True, null=False, default='')
+    issuer_okved = models.CharField(max_length=32, blank=True, null=False, default='')
 
-    issuer_head_first_name = models.CharField(max_length=512, null=True)
-    issuer_head_last_name = models.CharField(max_length=512, null=True)
-    issuer_head_middle_name = models.CharField(max_length=512, null=True)
-    issuer_head_birthday = models.DateField(null=True)
-    issuer_head_org_position_and_permissions = models.CharField(max_length=512, null=True)
-    issuer_head_phone = models.CharField(max_length=512, null=True)
-    issuer_head_passport_series = models.CharField(max_length=32, null=True)
-    issuer_head_passport_number = models.CharField(max_length=32, null=True)
-    issuer_head_passport_issue_date = models.DateField(null=True)
-    issuer_head_passport_issued_by = models.CharField(max_length=512, null=True)
-    issuer_head_residence_address = models.CharField(max_length=512, null=True)
-    issuer_head_education_level = models.CharField(max_length=512, null=True)
-    issuer_head_org_work_experience = models.CharField(max_length=512, null=True)
-    issuer_head_share_in_authorized_capital = models.CharField(max_length=512, null=True)
-    issuer_head_industry_work_experience = models.CharField(max_length=512, null=True)
-    issuer_prev_org_info = models.CharField(max_length=512, null=True)
+    issuer_head_first_name = models.CharField(max_length=512, blank=True, null=False, default='')
+    issuer_head_last_name = models.CharField(max_length=512, blank=True, null=False, default='')
+    issuer_head_middle_name = models.CharField(max_length=512, blank=True, null=False, default='')
+    issuer_head_birthday = models.DateField(blank=True, null=True)
+    issuer_head_org_position_and_permissions = models.CharField(max_length=512, blank=True, null=False, default='')
+    issuer_head_phone = models.CharField(max_length=512, blank=True, null=False, default='')
+    issuer_head_passport_series = models.CharField(max_length=32, blank=True, null=False, default='')
+    issuer_head_passport_number = models.CharField(max_length=32, blank=True, null=False, default='')
+    issuer_head_passport_issue_date = models.DateField(blank=True, null=True)
+    issuer_head_passport_issued_by = models.CharField(max_length=512, blank=True, null=False, default='')
+    issuer_head_residence_address = models.CharField(max_length=512, blank=True, null=False, default='')
+    issuer_head_education_level = models.CharField(max_length=512, blank=True, null=False, default='')
+    issuer_head_org_work_experience = models.CharField(max_length=512, blank=True, null=False, default='')
+    issuer_head_share_in_authorized_capital = models.CharField(max_length=512, blank=True, null=False, default='')
+    issuer_head_industry_work_experience = models.CharField(max_length=512, blank=True, null=False, default='')
+    issuer_prev_org_info = models.CharField(max_length=512, blank=True, null=False, default='')
 
-    tender_gos_number = models.CharField(max_length=32, null=True)
-    tender_placement_type = models.CharField(max_length=512, null=True)
-    tender_exec_law = models.CharField(max_length=32, null=True, choices=[
+    tender_gos_number = models.CharField(max_length=32, blank=True, null=False, default='')
+    tender_placement_type = models.CharField(max_length=32, blank=True, null=False, default='')
+    tender_exec_law = models.CharField(max_length=32, blank=True, null=True, choices=[
         (consts.TENDER_EXEC_LAW_44_FZ, '44-ФЗ'),
         (consts.TENDER_EXEC_LAW_223_FZ, '223-ФЗ'),
     ])
-    tender_publish_date = models.DateField(null=True)
-    tender_start_cost = models.DecimalField(max_digits=12, decimal_places=2, null=True)
+    tender_publish_date = models.DateField(blank=True, null=True)
+    tender_start_cost = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
 
-    tender_contract_type = models.CharField(max_length=32, null=True, choices=[
+    tender_contract_type = models.CharField(max_length=32, blank=True, null=True, choices=[
         (consts.TENDER_CONTRACT_TYPE_SUPPLY_CONTRACT, 'Поставка товара'),
         (consts.TENDER_CONTRACT_TYPE_SERVICE_CONTRACT, 'Оказание услуг'),
         (consts.TENDER_CONTRACT_TYPE_WORKS_CONTRACT, 'Выполнение работ'),
     ])
-    tender_has_prepayment = models.NullBooleanField(null=True)
+    tender_has_prepayment = models.NullBooleanField(blank=True, null=True)
 
-    tender_responsible_full_name = models.CharField(max_length=512, null=True)
-    tender_responsible_legal_address = models.CharField(max_length=512, null=True)
-    tender_responsible_inn = models.CharField(max_length=32, null=True)
-    tender_responsible_kpp = models.CharField(max_length=32, null=True)
-    tender_responsible_ogrn = models.CharField(max_length=32, null=True)
+    tender_responsible_full_name = models.CharField(max_length=512, blank=True, null=False, default='')
+    tender_responsible_legal_address = models.CharField(max_length=512, blank=True, null=False, default='')
+    tender_responsible_inn = models.CharField(max_length=32, blank=True, null=False, default='')
+    tender_responsible_kpp = models.CharField(max_length=32, blank=True, null=False, default='')
+    tender_responsible_ogrn = models.CharField(max_length=32, blank=True, null=False, default='')
 
-    bg_sum = models.DecimalField(max_digits=12, decimal_places=2, null=True)
-    bg_currency = models.CharField(max_length=32, null=True, choices=[
+    bg_sum = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    bg_currency = models.CharField(max_length=32, blank=True, null=True, choices=[
         (consts.CURRENCY_RUR, 'Рубль'),
         (consts.CURRENCY_USD, 'Доллар'),
         (consts.CURRENCY_EUR, 'Евро'),
     ])
-    bg_start_date = models.DateField(null=True)
-    bg_end_date = models.DateField(null=True)
-    bg_deadline_date = models.DateField(null=True)
-    bg_type = models.CharField(max_length=32, null=True, choices=[
+    bg_start_date = models.DateField(blank=True, null=True)
+    bg_end_date = models.DateField(blank=True, null=True)
+    bg_deadline_date = models.DateField(blank=True, null=True)
+    bg_type = models.CharField(max_length=32, blank=True, null=True, choices=[
         (consts.BG_TYPE_APPLICATION_ENSURE, 'Обеспечение заявки'),
         (consts.BG_TYPE_CONTRACT_EXECUTION, 'Исполнение контракта'),
     ])
