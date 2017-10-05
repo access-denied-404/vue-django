@@ -389,6 +389,25 @@ class BankGuaranteeProduct(FinanceProduct):
     def get_admin_issue_fieldset(self):
         return [
             ('Issuer info', dict(fields=(
+                'bg_sum',
+                'bg_currency',
+                'bg_start_date',
+                'bg_end_date',
+                'bg_deadline_date',
+                'bg_type',
+            ))),
+
+            ('Tender info', dict(fields=(
+                'tender_gos_number',
+                'tender_placement_type',
+                'tender_exec_law',
+                'tender_publish_date',
+                'tender_start_cost',
+                'tender_contract_type',
+                'tender_has_prepayment',
+            ))),
+
+            ('Issuer info', dict(classes=('collapse',), fields=(
                 'issuer_full_name',
                 'issuer_short_name',
                 'issuer_foreign_name',
@@ -406,7 +425,7 @@ class BankGuaranteeProduct(FinanceProduct):
                 'issuer_okved',
             ))),
 
-            ('Issuer head', dict(fields=(
+            ('Issuer head', dict(classes=('collapse',), fields=(
                 'issuer_head_first_name',
                 'issuer_head_last_name',
                 'issuer_head_middle_name',
@@ -427,31 +446,12 @@ class BankGuaranteeProduct(FinanceProduct):
                 'issuer_prev_org_info',
             ))),
 
-            ('Tender info', dict(fields=(
-                'tender_gos_number',
-                'tender_placement_type',
-                'tender_exec_law',
-                'tender_publish_date',
-                'tender_start_cost',
-                'tender_contract_type',
-                'tender_has_prepayment',
-            ))),
-
-            ('Tender responsible info', dict(fields=(
+            ('Tender responsible info', dict(classes=('collapse',), fields=(
                 'tender_responsible_full_name',
                 'tender_responsible_legal_address',
                 'tender_responsible_ogrn',
                 'tender_responsible_inn',
                 'tender_responsible_kpp',
-            ))),
-
-            ('Issuer info', dict(fields=(
-                'bg_sum',
-                'bg_currency',
-                'bg_start_date',
-                'bg_end_date',
-                'bg_deadline_date',
-                'bg_type',
             ))),
         ]
 
