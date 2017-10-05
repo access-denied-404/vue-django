@@ -77,7 +77,7 @@ class IssueAdmin(ModelAdmin):
         return result_fieldset
 
 
-class IFOPClarificationAdmin(TabularInline):
+class IFOPClarificationInlineAdmin(TabularInline):
     extra = 1
     model = models.IssueFinanceOrgProposeClarification
     show_change_link = True
@@ -94,7 +94,7 @@ class IssueFinanceOrgProposeAdmin(ModelAdmin):
     )
 
     inlines = (
-        IFOPClarificationAdmin,
+        IFOPClarificationInlineAdmin,
     )
 
     def issue_id(self, obj):
