@@ -23,6 +23,7 @@ class IFOPClarificationInlineAdmin(TabularInline):
 
 
 class IFOPClarificationMessageInlineAdmin(StackedInline):
+    extra = 1
     model = models.IssueFinanceOrgProposeClarificationMessage
     show_change_link = True
 
