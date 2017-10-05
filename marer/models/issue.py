@@ -237,6 +237,18 @@ class IssueFinanceOrgProposeClarification(models.Model):
     updated_at = models.DateTimeField(auto_now=True, null=False)
     created_at = models.DateTimeField(auto_now=True, null=False)
 
+    def __str__(self):
+        str_args = (
+            self.id,
+            self.propose.issue.id,
+            self.propose.finance_org.name,
+            self.created_at.strftime('%d.%m.%Y')
+        )
+        if self.initiator == consts.IFOPC_INITIATOR_ISSUER:
+            return 'Дозапрос №{} по заявке №{} в {} от {}'.format(*str_args)
+        else:
+            return 'Дозапрос №{} по заявке №{} от {} от {}'.format(*str_args)
+
 
 class IssueFinanceOrgProposeClarificationMessage(models.Model):
     clarification = models.ForeignKey(
