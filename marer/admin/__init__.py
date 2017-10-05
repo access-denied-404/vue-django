@@ -1,4 +1,5 @@
 from django.contrib.admin import ModelAdmin, register
+from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import ugettext_lazy as _
 from mptt.admin import MPTTModelAdmin
 
@@ -113,3 +114,21 @@ class IFOPClarificationMessageAdmin(ModelAdmin):
 @register(models.IssueFinanceOrgProposeClarificationMessageDocument)
 class IFOPClarificationMessageDocumentAdmin(ModelAdmin):
     readonly_fields = ('document',)
+
+
+@register(models.User)
+class MarerUserAdmin(UserAdmin):
+    list_display = (
+        'first_name',
+        'last_name',
+        'email',
+        'phone',
+    )
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'email', 'phone')}),
+        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
+                                       'groups', 'user_permissions')}),
+        (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+    )
+    search_fields = ('username', 'first_name', 'last_name', 'email', 'phone')
