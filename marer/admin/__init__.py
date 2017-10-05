@@ -1,8 +1,11 @@
-from django.contrib.admin import ModelAdmin, register, StackedInline, TabularInline
+from django.contrib.admin import ModelAdmin, register
 from django.utils.translation import ugettext_lazy as _
-from marer import models
-from marer.models.finance_org import FinanceOrganization
 from mptt.admin import MPTTModelAdmin
+
+from marer import models
+from marer.admin.inline import IssueFinanceOrgProposeInlineAdmin, IssueDocumentInlineAdmin, \
+    IFOPClarificationInlineAdmin, IFOPClarificationMessageInlineAdmin, IFOPClarificationMessageDocumentInlineAdmin
+from marer.models.finance_org import FinanceOrganization
 
 
 @register(models.FinanceProductPage)
@@ -36,18 +39,6 @@ class StaticPageAdmin(ModelAdmin):
     )
 
 
-class IssueFinanceOrgProposeInlineAdmin(StackedInline):
-    extra = 1
-    model = models.IssueFinanceOrgPropose
-
-
-class IssueDocumentInlineAdmin(TabularInline):
-    # todo add humanized documents types
-    # todo add nested file field
-    extra = 1
-    model = models.IssueDocument
-
-
 @register(models.Issue)
 class IssueAdmin(ModelAdmin):
     list_display = (
@@ -75,13 +66,6 @@ class IssueAdmin(ModelAdmin):
         product_fieldset_part = obj.get_product().get_admin_issue_fieldset()
         result_fieldset.extend(product_fieldset_part)
         return result_fieldset
-
-
-class IFOPClarificationInlineAdmin(TabularInline):
-    extra = 1
-    model = models.IssueFinanceOrgProposeClarification
-    show_change_link = True
-    fields = ('id', 'initiator',)
 
 
 @register(models.IssueFinanceOrgPropose)
@@ -115,20 +99,10 @@ class FinanceOrganizationAdmin(ModelAdmin):
     pass
 
 
-class IFOPClarificationMessageInlineAdmin(StackedInline):
-    model = models.IssueFinanceOrgProposeClarificationMessage
-    show_change_link = True
-
-
 @register(models.IssueFinanceOrgProposeClarification)
 class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
     list_display = ('id', '__str__', 'created_at', 'updated_at',)
     inlines = (IFOPClarificationMessageInlineAdmin,)
-
-
-class IFOPClarificationMessageDocumentInlineAdmin(TabularInline):
-    model = models.IssueFinanceOrgProposeClarificationMessageDocument
-    show_change_link = True
 
 
 @register(models.IssueFinanceOrgProposeClarificationMessage)
