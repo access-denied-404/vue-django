@@ -13,3 +13,11 @@ class User(AbstractUser):
     def normalize_username(cls, username):
         username = super().normalize_username(username)
         return str(username).lower()
+
+    def __str__(self):
+        user_name_list = []
+        if self.first_name != '':
+            user_name_list.append(self.first_name)
+        if self.last_name != '':
+            user_name_list.append(self.last_name)
+        return ' '.join(user_name_list) + ', ' + self.get_username()
