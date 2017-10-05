@@ -42,6 +42,10 @@ class FinanceProduct(object):
     def process_registering_form(self, request):
         warnings.warn("Method is not implemented", NotImplementedError)
 
+    @abstractmethod
+    def get_admin_issue_fieldset(self):
+        warnings.warn("Method is not implemented", NotImplementedError)
+
 
 class FinanceProductDocumentItem(object):
     _code = ''

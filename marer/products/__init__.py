@@ -386,6 +386,75 @@ class BankGuaranteeProduct(FinanceProduct):
             setattr(self._issue, field, form.cleaned_data[field])
         self._issue.save()
 
+    def get_admin_issue_fieldset(self):
+        return [
+            ('Issuer info', dict(fields=(
+                'issuer_full_name',
+                'issuer_short_name',
+                'issuer_foreign_name',
+                'issuer_ogrn',
+                'issuer_inn',
+                'issuer_kpp',
+                'issuer_legal_address',
+                'issuer_fact_address',
+
+                'issuer_okpo',
+                'issuer_registration_date',
+                'issuer_ifns_reg_date',
+                'issuer_ifns_reg_cert_number',
+                'issuer_okopf',
+                'issuer_okved',
+            ))),
+
+            ('Issuer head', dict(fields=(
+                'issuer_head_first_name',
+                'issuer_head_last_name',
+                'issuer_head_middle_name',
+                'issuer_head_birthday',
+                'issuer_head_org_position_and_permissions',
+
+                'issuer_head_phone',
+                'issuer_head_passport_series',
+                'issuer_head_passport_number',
+                'issuer_head_passport_issue_date',
+                'issuer_head_passport_issued_by',
+                'issuer_head_residence_address',
+
+                'issuer_head_education_level',
+                'issuer_head_org_work_experience',
+                'issuer_head_share_in_authorized_capital',
+                'issuer_head_industry_work_experience',
+                'issuer_prev_org_info',
+            ))),
+
+            ('Tender info', dict(fields=(
+                'tender_gos_number',
+                'tender_placement_type',
+                'tender_exec_law',
+                'tender_publish_date',
+                'tender_start_cost',
+                'tender_contract_type',
+                'tender_has_prepayment',
+            ))),
+
+            ('Tender responsible info', dict(fields=(
+                'tender_responsible_full_name',
+                'tender_responsible_legal_address',
+                'tender_responsible_ogrn',
+                'tender_responsible_inn',
+                'tender_responsible_kpp',
+            ))),
+
+            ('Issuer info', dict(fields=(
+                'bg_sum',
+                'bg_currency',
+                'bg_start_date',
+                'bg_end_date',
+                'bg_deadline_date',
+                'bg_type',
+            ))),
+        ]
+
 
 class CreditProduct(FinanceProduct):
     _humanized_name = 'Кредит'
