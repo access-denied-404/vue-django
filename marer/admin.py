@@ -115,6 +115,27 @@ class FinanceOrganizationAdmin(ModelAdmin):
     pass
 
 
+class IFOPClarificationMessageInlineAdmin(StackedInline):
+    model = models.IssueFinanceOrgProposeClarificationMessage
+    show_change_link = True
+
+
 @register(models.IssueFinanceOrgProposeClarification)
 class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
-    pass
+    list_display = ('id', '__str__', 'created_at', 'updated_at',)
+    inlines = (IFOPClarificationMessageInlineAdmin,)
+
+
+class IFOPClarificationMessageDocumentInlineAdmin(TabularInline):
+    model = models.IssueFinanceOrgProposeClarificationMessageDocument
+    show_change_link = True
+
+
+@register(models.IssueFinanceOrgProposeClarificationMessage)
+class IFOPClarificationMessageAdmin(ModelAdmin):
+    inlines = (IFOPClarificationMessageDocumentInlineAdmin,)
+
+
+@register(models.IssueFinanceOrgProposeClarificationMessageDocument)
+class IFOPClarificationMessageDocumentAdmin(ModelAdmin):
+    readonly_fields = ('document',)
