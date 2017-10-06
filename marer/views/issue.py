@@ -114,8 +114,12 @@ class IssueRegisteringView(IssueView):
             product.set_issue(issue)
             product.process_registering_form(request)
 
-        kwargs.update(dict(base_form=base_form))
-        return self.get(request, *args, **kwargs)
+            url = reverse('issue_registering', args=[issue.id])
+            return HttpResponseRedirect(url)
+
+        else:
+            kwargs.update(dict(base_form=base_form))
+            return self.get(request, *args, **kwargs)
 
 
 class IssueCommonDocumentsRequestView(IssueView):
