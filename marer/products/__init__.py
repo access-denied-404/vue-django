@@ -126,7 +126,7 @@ class AffiliatesForm(Form):
     activity_type = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     aff_percentage = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     aff_type = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
-    DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden1'}))
+    DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden'}))
 
     class Media(object):
         js = formset_media_js
@@ -140,7 +140,7 @@ class FounderLegalForm(Form):
     country = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     auth_capital_percentage = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     legal_address = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
-    DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden1'}))
+    DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden'}))
 
     class Media(object):
         js = formset_media_js
@@ -155,7 +155,7 @@ class FounderPhysicalForm(Form):
     auth_capital_percentage = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     address = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     passport_data = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
-    DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden1'}))
+    DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden'}))
 
     class Media(object):
         js = formset_media_js
