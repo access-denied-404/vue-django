@@ -221,6 +221,9 @@ class IssueFinanceOrgPropose(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False, related_name='proposes')
     finance_org = models.ForeignKey(FinanceOrganization, on_delete=models.CASCADE, blank=False, null=False)
 
+    formalize_note = models.TextField(blank=True, null=False, default='')
+    final_note = models.TextField(blank=True, null=False, default='')
+
 
 class IssueFinanceOrgProposeClarification(models.Model):
     propose = models.ForeignKey(
@@ -310,3 +313,39 @@ class IssueBGProdFounderPhysical(models.Model):
     auth_capital_percentage = models.CharField(max_length=512, blank=False, null=False, default='')
     address = models.CharField(max_length=512, blank=False, null=False, default='')
     passport_data = models.CharField(max_length=512, blank=False, null=False, default='')
+
+
+class IssueFinanceOrgProposeFormalizeDocument(models.Model):
+    propose = models.ForeignKey(
+        IssueFinanceOrgPropose,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+        related_name='formalize_documents'
+    )
+    name = models.CharField(max_length=512, blank=False, null=False, default='')
+    document = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='propose_formalize_links'
+    )
+
+
+class IssueFinanceOrgProposeFinalDocument(models.Model):
+    propose = models.ForeignKey(
+        IssueFinanceOrgPropose,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+        related_name='final_documents'
+    )
+    name = models.CharField(max_length=512, blank=False, null=False, default='')
+    document = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='propose_final_links'
+    )
