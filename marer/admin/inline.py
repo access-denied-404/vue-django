@@ -1,6 +1,7 @@
 from django.contrib.admin import StackedInline, TabularInline
 
 from marer import models
+from marer.models.issue import IssueFinanceOrgProposeFormalizeDocument, IssueFinanceOrgProposeFinalDocument
 
 
 class IssueFinanceOrgProposeInlineAdmin(StackedInline):
@@ -20,6 +21,19 @@ class IFOPClarificationInlineAdmin(TabularInline):
     model = models.IssueFinanceOrgProposeClarification
     show_change_link = True
     fields = ('id', 'initiator',)
+    classes = ('collapse',)
+
+
+class IFOPFormalizeDocumentInlineAdmin(TabularInline):
+    extra = 1
+    model = IssueFinanceOrgProposeFormalizeDocument
+    show_change_link = True
+
+
+class IFOPFinalDocumentInlineAdmin(TabularInline):
+    extra = 1
+    model = IssueFinanceOrgProposeFinalDocument
+    show_change_link = True
 
 
 class IFOPClarificationMessageInlineAdmin(StackedInline):

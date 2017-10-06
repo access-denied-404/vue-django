@@ -5,7 +5,8 @@ from mptt.admin import MPTTModelAdmin
 
 from marer import models
 from marer.admin.inline import IssueFinanceOrgProposeInlineAdmin, IssueDocumentInlineAdmin, \
-    IFOPClarificationInlineAdmin, IFOPClarificationMessageInlineAdmin, IFOPClarificationMessageDocumentInlineAdmin
+    IFOPClarificationInlineAdmin, IFOPClarificationMessageInlineAdmin, IFOPClarificationMessageDocumentInlineAdmin, \
+    IFOPFormalizeDocumentInlineAdmin, IFOPFinalDocumentInlineAdmin
 from marer.models.finance_org import FinanceOrganization
 
 
@@ -76,10 +77,14 @@ class IssueFinanceOrgProposeAdmin(ModelAdmin):
         'issue_id',
         'issuer_full_name',
         'finance_org',
+        'formalize_note',
+        'final_note',
     )
 
     inlines = (
         IFOPClarificationInlineAdmin,
+        IFOPFormalizeDocumentInlineAdmin,
+        IFOPFinalDocumentInlineAdmin,
     )
 
     def issue_id(self, obj):
