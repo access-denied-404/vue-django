@@ -304,6 +304,17 @@ class IssueAdditionalDocumentsRequestView(IssueView):
 class IssuePaymentsView(IssueView):
     template_name = 'marer/issue/payments.html'
 
+    def get(self, request, *args, **kwargs):
+        formalizing_proposes = IssueFinanceOrgPropose.objects.filter(
+            issue=self.get_issue(),
+        ).exclude(
+            formalize_note=''
+        ).exclude(
+            formalize_note__isnull=True
+        )
+        kwargs['formalizing_proposes'] = formalizing_proposes
+        return super().get(request, *args, **kwargs)
+
 
 class IssueFinishedView(IssueView):
     template_name = 'marer/issue/finished.html'

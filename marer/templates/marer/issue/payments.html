@@ -1,28 +1,36 @@
 {% extends 'marer/issue/layout.html' %}
 
 {% block issue_content %}
-    <div class="panel panel-primary">
-        <div class="panel-heading" data-toggle="collapse" data-target="#panel1">Сбербанк</div>
-        <div class="panel-body collapse in" id="panel1">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="h4">Пакет документов</div>
-                        <table class="table">
-                            <tr><td><a href="#">Заявка на банковскую гарантию</a></td></tr>
-                            <tr><td><a href="#">Бухгалтерские балансы за последние 5 кварталов</a></td></tr>
-                            <tr><td><a href="#">Устав организации</a></td></tr>
-                            <tr><td><a href="#">Скан парспорта руководеля организации</a></td></tr>
-                        </table>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="alert alert-info">
-                            Для оформления документов продукта Вам надо что-то сделать.
-                            Что сделать, мы опишем позже, а пока что вот Вам пакетик.
+    {% for propose in formalizing_proposes %}
+        <div class="panel panel-primary">
+            <div class="panel-heading" data-toggle="collapse" data-target="#panel{{ propose.id }}">
+                {{ propose.finance_org.name }}
+            </div>
+            <div class="panel-body collapse" id="panel{{ propose.id }}">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="h4">Пакет документов</div>
+                            <table class="table">
+                                {% for formdoc in propose.formalize_documents.all %}
+                                    <tr>
+                                        <td>
+                                            <a href="{{ formdoc.document.file.url }}">
+                                                {{ formdoc.name }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="alert alert-info">
+                                {{ propose.formalize_note |linebreaks }}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    {% endfor %}
 {% endblock %}
