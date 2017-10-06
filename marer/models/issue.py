@@ -223,6 +223,7 @@ class IssueFinanceOrgPropose(models.Model):
 
     formalize_note = models.TextField(blank=True, null=False, default='')
     final_note = models.TextField(blank=True, null=False, default='')
+    final_decision = models.NullBooleanField(blank=True, null=True)
 
 
 class IssueFinanceOrgProposeClarification(models.Model):

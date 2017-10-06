@@ -78,6 +78,7 @@ class IssueFinanceOrgProposeAdmin(ModelAdmin):
         'issuer_full_name',
         'finance_org',
         'formalize_note',
+        'final_decision',
         'final_note',
     )
 
