@@ -1,43 +1,50 @@
 {% extends 'marer/issue/layout.html' %}
 
 {% block issue_content %}
-    <div class="panel panel-success">
-        <div class="panel-heading" data-toggle="collapse" data-target="#panel1">Сбербанк</div>
-        <div class="panel-body collapse in" id="panel1">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="alert alert-info text-center">
-                            <span class="h1">Банковская гарантия выдана</span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="h4">Документы</div>
-                        <table class="table">
-                            <tr><td><a href="#">Печатная форма банковской гарантии</a></td></tr>
-                            <tr><td><a href="#">Договор на выдачу банковской гарантии</a></td></tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="panel panel-danger">
-        <div class="panel-heading" data-toggle="collapse" data-target="#panel2">Газпромбанк</div>
-        <div class="panel-body collapse" id="panel2">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="alert alert-danger text-center">
-                            <span class="h1">Банковская гарантия не выдана</span>
+    {% for propose in final_proposes %}
+        <div class="panel {% if propose.final_decision == True %}panel-success{% elif propose.final_decision == False %}panel-danger{% endif %}">
+            <div class="panel-heading" data-toggle="collapse" data-target="#panel{{ propose.id }}">
+                {{ propose.finance_org.name }}
+            </div>
+            <div class="panel-body collapse in" id="panel{{ propose.id }}">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="alert {% if propose.final_decision == True %}alert-info{% elif propose.final_decision == False %}alert-danger{% endif %} text-center">
+                                <span class="h1">
+                                    {% if propose.final_decision == True %}
+                                        Банковская гарантия выдана
+                                    {% elif propose.final_decision == False %}
+                                        Банковская гарантия не выдана
+                                    {% else %}
+                                        Чо??? Как я ваще сюда попал?!
+                                    {% endif %}
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="h2 text-muted">Документы отсутствуют</div>
+                        <div class="col-md-6">
+                            {% if propose.final_documents.exists %}
+                                <div class="h4">Документы</div>
+                                <table class="table">
+                                    {% for findoc in propose.final_documents.all %}
+                                        <tr>
+                                            <td>
+                                                <a href="{{ findoc.document.file.url }}">
+                                                    {{ findoc.name }}
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            {% else %}
+                                <div class="h2 text-muted">Документы отсутствуют</div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    {% endfor %}
+
 {% endblock %}

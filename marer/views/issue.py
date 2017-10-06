@@ -319,6 +319,14 @@ class IssuePaymentsView(IssueView):
 class IssueFinishedView(IssueView):
     template_name = 'marer/issue/finished.html'
 
+    def get(self, request, *args, **kwargs):
+        final_proposes = IssueFinanceOrgPropose.objects.filter(
+            issue=self.get_issue(),
+            final_decision__isnull=False,
+        ).order_by('-final_decision')
+        kwargs['final_proposes'] = final_proposes
+        return super().get(request, *args, **kwargs)
+
 
 class IssueCancelledView(IssueView):
     template_name = 'marer/issue/cancelled.html'
