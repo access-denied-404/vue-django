@@ -165,11 +165,15 @@ class BankGuaranteeProduct(FinanceProduct):
     _humanized_name = 'Банковская гарантия'
     _survey_template_name = 'marer/products/BankGuarantee/form_survey.html'
 
-    def get_documents_list(self):
+    def get_documents_list(self, now_override=None):
         docs = []
 
         # here we getting a list with ends of year quarters
-        curr_localized_datetime = timezone.localtime(timezone.now(), timezone.get_current_timezone())
+        if now_override is None:
+            curr_localized_datetime = timezone.localtime(timezone.now(), timezone.get_current_timezone())
+        else:
+            curr_localized_datetime = timezone.localtime(now_override, timezone.get_current_timezone())
+
         curr_date = curr_localized_datetime.date()
 
         prev_month_start_date = (curr_date - relativedelta(months=1)).replace(day=1)
@@ -181,7 +185,7 @@ class BankGuaranteeProduct(FinanceProduct):
         quarters_start_date = curr_quartal_start_date - relativedelta(months=yr_quarters_cnt*3)
         quarters_curr_date = quarters_start_date
 
-        while quarters_curr_date <= curr_date:
+        while quarters_curr_date <= prev_month_start_date:
 
             fpdi_code, fpdi_name = self._build_accounting_report_common_doc_code_and_name_by_next_quarter_start_date(quarters_curr_date)
 
