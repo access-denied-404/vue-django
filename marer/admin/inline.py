@@ -56,12 +56,14 @@ class IFOPFormalizeDocumentInlineAdmin(TabularInline):
         'name',
         'file',
     )
+    classes = ('collapse',)
 
 
 class IFOPFinalDocumentInlineAdmin(TabularInline):
     extra = 1
     model = IssueFinanceOrgProposeFinalDocument
     show_change_link = True
+    classes = ('collapse',)
 
 
 class IFOPClarificationMessageInlineAdmin(StackedInline):
