@@ -5,7 +5,11 @@ from marer.products import get_finance_products_as_choices
 
 
 class FinanceOrganization(models.Model):
-    name = models.CharField(max_length=512, blank=False, null=False)
+    class Meta:
+        verbose_name = 'финансовая орнанизация'
+        verbose_name_plural = 'финансовые организации'
+
+    name = models.CharField(verbose_name='название', max_length=512, blank=False, null=False)
 
     def __str__(self):
         return self.name

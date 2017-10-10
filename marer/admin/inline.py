@@ -10,6 +10,8 @@ from marer.models.issue import IssueFinanceOrgProposeFormalizeDocument, IssueFin
 class IssueFinanceOrgProposeInlineAdmin(StackedInline):
     extra = 1
     model = models.IssueFinanceOrgPropose
+    fields = ('finance_org',)
+    show_change_link = True
 
 
 class IssueDocumentInlineAdmin(TabularInline):
@@ -23,7 +25,7 @@ class IFOPClarificationInlineAdmin(TabularInline):
     model = models.IssueFinanceOrgProposeClarification
     show_change_link = True
     fields = (
-        'id',
+        'humanized_id',
         'issue_str',
         'propose_finance_org',
         'initiator',
@@ -31,7 +33,7 @@ class IFOPClarificationInlineAdmin(TabularInline):
         'updated_at',
     )
     readonly_fields = (
-        'id',
+        'humanized_id',
         'issue_str',
         'propose_finance_org',
         'initiator',
@@ -52,11 +54,15 @@ class IFOPClarificationInlineAdmin(TabularInline):
 
     def issue_str(self, obj):
         return obj.propose.issue
-    issue_str.short_description = 'issue'
+    issue_str.short_description = 'заявка'
+
+    def humanized_id(self, obj):
+        return obj.id
+    humanized_id.short_description = 'номер дозапроса'
 
 
 class IFOPFormalizeDocumentInlineAdminForm(forms.ModelForm):
-    file = forms.FileField(required=True, label='update_doc', widget=ReadOnlyFileInput)
+    file = forms.FileField(required=True, label='файл', widget=ReadOnlyFileInput)
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
@@ -88,7 +94,7 @@ class IFOPFormalizeDocumentInlineAdmin(TabularInline):
 
 
 class IFOPFinalDocumentInlineAdminForm(forms.ModelForm):
-    file = forms.FileField(required=True, label='update_doc', widget=ReadOnlyFileInput)
+    file = forms.FileField(required=True, label='файл', widget=ReadOnlyFileInput)
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)

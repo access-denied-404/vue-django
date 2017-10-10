@@ -18,8 +18,12 @@ __all__ = [
 
 
 class Issue(models.Model):
-    product = models.CharField(max_length=32, blank=False, null=False, choices=get_finance_products_as_choices())
-    status = models.CharField(max_length=32, blank=False, null=False, choices=[
+    class Meta:
+        verbose_name = 'заявка'
+        verbose_name_plural = 'заявки'
+
+    product = models.CharField(verbose_name='банковский продукт', max_length=32, blank=False, null=False, choices=get_finance_products_as_choices())
+    status = models.CharField(verbose_name='статус заявки', max_length=32, blank=False, null=False, choices=[
         (consts.ISSUE_STATUS_REGISTERING, 'Оформление заявки'),
         (consts.ISSUE_STATUS_COMMON_DOCUMENTS_REQUEST, 'Запрос документов'),
         (consts.ISSUE_STATUS_SURVEY, 'Анкетирование'),
@@ -30,75 +34,75 @@ class Issue(models.Model):
         (consts.ISSUE_STATUS_FINISHED, 'Завершена'),
         (consts.ISSUE_STATUS_CANCELLED, 'Отменена'),
     ])
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, null=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='пользователь', on_delete=models.DO_NOTHING, null=False)
     comment = models.TextField(blank=True, null=False, default='')
 
     issuer = models.ForeignKey(Issuer, on_delete=models.SET_NULL, blank=True, null=True)
-    issuer_inn = models.CharField(max_length=32, blank=True, null=False, default='')
-    issuer_kpp = models.CharField(max_length=32, blank=True, null=False, default='')
-    issuer_ogrn = models.CharField(max_length=32, blank=True, null=False, default='')
-    issuer_full_name = models.CharField(max_length=512, blank=True, null=False, default='')
-    issuer_short_name = models.CharField(max_length=512, blank=True, null=False, default='')
+    issuer_inn = models.CharField(verbose_name='ИНН заявителя', max_length=32, blank=True, null=False, default='')
+    issuer_kpp = models.CharField(verbose_name='КПП заявителя', max_length=32, blank=True, null=False, default='')
+    issuer_ogrn = models.CharField(verbose_name='ОГРН заявителя', max_length=32, blank=True, null=False, default='')
+    issuer_full_name = models.CharField(verbose_name='полное наименование заявителя', max_length=512, blank=True, null=False, default='')
+    issuer_short_name = models.CharField(verbose_name='краткое наименование заявителя', max_length=512, blank=True, null=False, default='')
 
-    issuer_foreign_name = models.CharField(max_length=512, blank=True, null=False, default='')
-    issuer_legal_address = models.CharField(max_length=512, blank=True, null=False, default='')
-    issuer_fact_address = models.CharField(max_length=512, blank=True, null=False, default='')
-    issuer_okpo = models.CharField(max_length=32, blank=True, null=False, default='')
-    issuer_registration_date = models.CharField(max_length=32, blank=True, null=False, default='')
-    issuer_ifns_reg_date = models.DateField(blank=True, null=True)
-    issuer_ifns_reg_cert_number = models.CharField(max_length=32, blank=True, null=False, default='')
-    issuer_okopf = models.CharField(max_length=32, blank=True, null=False, default='')
-    issuer_okved = models.CharField(max_length=32, blank=True, null=False, default='')
+    issuer_foreign_name = models.CharField(verbose_name='наименование заявителя на иностранном', max_length=512, blank=True, null=False, default='')
+    issuer_legal_address = models.CharField(verbose_name='юридическй адрес заявителя', max_length=512, blank=True, null=False, default='')
+    issuer_fact_address = models.CharField(verbose_name='фактический адрес заявителя', max_length=512, blank=True, null=False, default='')
+    issuer_okpo = models.CharField(verbose_name='код ОКПО заявителя', max_length=32, blank=True, null=False, default='')
+    issuer_registration_date = models.CharField(verbose_name='дата регистрации', max_length=32, blank=True, null=False, default='')
+    issuer_ifns_reg_date = models.DateField(verbose_name='дата постановки на учет в ИФНС', blank=True, null=True)
+    issuer_ifns_reg_cert_number = models.CharField(verbose_name='номер свидетельства о постановке на учет ИФНС', max_length=32, blank=True, null=False, default='')
+    issuer_okopf = models.CharField(verbose_name='код ОКОПФ (правовая форма) заявителя', max_length=32, blank=True, null=False, default='')
+    issuer_okved = models.CharField(verbose_name='код ОКВЭД (основное направление деятельности) заявителя', max_length=32, blank=True, null=False, default='')
 
-    issuer_head_first_name = models.CharField(max_length=512, blank=True, null=False, default='')
-    issuer_head_last_name = models.CharField(max_length=512, blank=True, null=False, default='')
-    issuer_head_middle_name = models.CharField(max_length=512, blank=True, null=False, default='')
-    issuer_head_birthday = models.DateField(blank=True, null=True)
-    issuer_head_org_position_and_permissions = models.CharField(max_length=512, blank=True, null=False, default='')
-    issuer_head_phone = models.CharField(max_length=512, blank=True, null=False, default='')
-    issuer_head_passport_series = models.CharField(max_length=32, blank=True, null=False, default='')
-    issuer_head_passport_number = models.CharField(max_length=32, blank=True, null=False, default='')
-    issuer_head_passport_issue_date = models.DateField(blank=True, null=True)
-    issuer_head_passport_issued_by = models.CharField(max_length=512, blank=True, null=False, default='')
-    issuer_head_residence_address = models.CharField(max_length=512, blank=True, null=False, default='')
-    issuer_head_education_level = models.CharField(max_length=512, blank=True, null=False, default='')
-    issuer_head_org_work_experience = models.CharField(max_length=512, blank=True, null=False, default='')
-    issuer_head_share_in_authorized_capital = models.CharField(max_length=512, blank=True, null=False, default='')
-    issuer_head_industry_work_experience = models.CharField(max_length=512, blank=True, null=False, default='')
-    issuer_prev_org_info = models.CharField(max_length=512, blank=True, null=False, default='')
+    issuer_head_first_name = models.CharField(verbose_name='имя руководителя', max_length=512, blank=True, null=False, default='')
+    issuer_head_last_name = models.CharField(verbose_name='фамилия руководителя', max_length=512, blank=True, null=False, default='')
+    issuer_head_middle_name = models.CharField(verbose_name='отчество руководителя', max_length=512, blank=True, null=False, default='')
+    issuer_head_birthday = models.DateField(verbose_name='дата рождения руководителя', blank=True, null=True)
+    issuer_head_org_position_and_permissions = models.CharField(verbose_name='должность, полномочия руководителя', max_length=512, blank=True, null=False, default='')
+    issuer_head_phone = models.CharField(verbose_name='телефон руководителя', max_length=512, blank=True, null=False, default='')
+    issuer_head_passport_series = models.CharField(verbose_name='серия паспорта руководителя', max_length=32, blank=True, null=False, default='')
+    issuer_head_passport_number = models.CharField(verbose_name='номер паспорта руководителя', max_length=32, blank=True, null=False, default='')
+    issuer_head_passport_issue_date = models.DateField(verbose_name='дата выдачи паспорта руководителя', blank=True, null=True)
+    issuer_head_passport_issued_by = models.CharField(verbose_name='кем выдан паспорт руководителя', max_length=512, blank=True, null=False, default='')
+    issuer_head_residence_address = models.CharField(verbose_name='адрес прописки руководителя', max_length=512, blank=True, null=False, default='')
+    issuer_head_education_level = models.CharField(verbose_name='образование руководителя', max_length=512, blank=True, null=False, default='')
+    issuer_head_org_work_experience = models.CharField(verbose_name='стаж работы руководителя в компании', max_length=512, blank=True, null=False, default='')
+    issuer_head_share_in_authorized_capital = models.CharField(verbose_name='доля руководителя в уставном капиталле', max_length=512, blank=True, null=False, default='')
+    issuer_head_industry_work_experience = models.CharField(verbose_name='опыт работы руководителя в отрасли', max_length=512, blank=True, null=False, default='')
+    issuer_prev_org_info = models.CharField(verbose_name='предыдущее место работы руководителя, отрасль, должность', max_length=512, blank=True, null=False, default='')
 
-    tender_gos_number = models.CharField(max_length=32, blank=True, null=False, default='')
-    tender_placement_type = models.CharField(max_length=32, blank=True, null=False, default='')
-    tender_exec_law = models.CharField(max_length=32, blank=True, null=True, choices=[
+    tender_gos_number = models.CharField(verbose_name='госномер тендера', max_length=32, blank=True, null=False, default='')
+    tender_placement_type = models.CharField(verbose_name='способ определения поставщика в тендере', max_length=32, blank=True, null=False, default='')
+    tender_exec_law = models.CharField(verbose_name='закон исполнения тендера', max_length=32, blank=True, null=True, choices=[
         (consts.TENDER_EXEC_LAW_44_FZ, '44-ФЗ'),
         (consts.TENDER_EXEC_LAW_223_FZ, '223-ФЗ'),
     ])
-    tender_publish_date = models.DateField(blank=True, null=True)
-    tender_start_cost = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    tender_publish_date = models.DateField(verbose_name='дата публикации тендера', blank=True, null=True)
+    tender_start_cost = models.DecimalField(verbose_name='начальная цена тендера', max_digits=12, decimal_places=2, blank=True, null=True)
 
-    tender_contract_type = models.CharField(max_length=32, blank=True, null=True, choices=[
+    tender_contract_type = models.CharField(verbose_name='вид работ в тендере', max_length=32, blank=True, null=True, choices=[
         (consts.TENDER_CONTRACT_TYPE_SUPPLY_CONTRACT, 'Поставка товара'),
         (consts.TENDER_CONTRACT_TYPE_SERVICE_CONTRACT, 'Оказание услуг'),
         (consts.TENDER_CONTRACT_TYPE_WORKS_CONTRACT, 'Выполнение работ'),
     ])
-    tender_has_prepayment = models.NullBooleanField(blank=True, null=True)
+    tender_has_prepayment = models.NullBooleanField(verbose_name='авансирование в тендере', blank=True, null=True)
 
-    tender_responsible_full_name = models.CharField(max_length=512, blank=True, null=False, default='')
-    tender_responsible_legal_address = models.CharField(max_length=512, blank=True, null=False, default='')
-    tender_responsible_inn = models.CharField(max_length=32, blank=True, null=False, default='')
-    tender_responsible_kpp = models.CharField(max_length=32, blank=True, null=False, default='')
-    tender_responsible_ogrn = models.CharField(max_length=32, blank=True, null=False, default='')
+    tender_responsible_full_name = models.CharField(verbose_name='полное наименование организатора тендера', max_length=512, blank=True, null=False, default='')
+    tender_responsible_legal_address = models.CharField(verbose_name='юридический адрес организатора тендера', max_length=512, blank=True, null=False, default='')
+    tender_responsible_inn = models.CharField(verbose_name='ИНН организатора тендера', max_length=32, blank=True, null=False, default='')
+    tender_responsible_kpp = models.CharField(verbose_name='КПП организатора тендера', max_length=32, blank=True, null=False, default='')
+    tender_responsible_ogrn = models.CharField(verbose_name='ОГРН организатора тендера', max_length=32, blank=True, null=False, default='')
 
-    bg_sum = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
-    bg_currency = models.CharField(max_length=32, blank=True, null=True, choices=[
+    bg_sum = models.DecimalField(verbose_name='сумма', max_digits=12, decimal_places=2, blank=True, null=True)
+    bg_currency = models.CharField(verbose_name='валюта', max_length=32, blank=True, null=True, choices=[
         (consts.CURRENCY_RUR, 'Рубль'),
         (consts.CURRENCY_USD, 'Доллар'),
         (consts.CURRENCY_EUR, 'Евро'),
     ])
-    bg_start_date = models.DateField(blank=True, null=True)
-    bg_end_date = models.DateField(blank=True, null=True)
-    bg_deadline_date = models.DateField(blank=True, null=True)
-    bg_type = models.CharField(max_length=32, blank=True, null=True, choices=[
+    bg_start_date = models.DateField(verbose_name='дата начала действия банковской гарантии', blank=True, null=True)
+    bg_end_date = models.DateField(verbose_name='дата завершения действия банковской гарантии', blank=True, null=True)
+    bg_deadline_date = models.DateField(verbose_name='крайний срок выдачи банковской гарантии', blank=True, null=True)
+    bg_type = models.CharField(verbose_name='тип банковской гарантии', max_length=32, blank=True, null=True, choices=[
         (consts.BG_TYPE_APPLICATION_ENSURE, 'Обеспечение заявки'),
         (consts.BG_TYPE_CONTRACT_EXECUTION, 'Исполнение контракта'),
     ])
@@ -205,6 +209,10 @@ class Issue(models.Model):
 
 
 class IssueDocument(models.Model):
+    class Meta:
+        verbose_name = 'общий документ'
+        verbose_name_plural = 'общие документы'
+
     issue = models.ForeignKey(
         Issue,
         on_delete=models.CASCADE,
@@ -229,16 +237,22 @@ class IssueDocument(models.Model):
 class IssueFinanceOrgPropose(models.Model):
     class Meta:
         unique_together = (('issue', 'finance_org'),)
+        verbose_name = 'предложение заявки в банк'
+        verbose_name_plural = 'предложения заявок в банки'
 
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False, related_name='proposes')
-    finance_org = models.ForeignKey(FinanceOrganization, on_delete=models.CASCADE, blank=False, null=False)
+    finance_org = models.ForeignKey(FinanceOrganization, verbose_name='финансовая организация', on_delete=models.CASCADE, blank=False, null=False)
 
-    formalize_note = models.TextField(blank=True, null=False, default='')
-    final_note = models.TextField(blank=True, null=False, default='')
-    final_decision = models.NullBooleanField(blank=True, null=True)
+    formalize_note = models.TextField(verbose_name='подпись к документам для оформления', blank=True, null=False, default='')
+    final_note = models.TextField(verbose_name='подпись к итоговым документам', blank=True, null=False, default='')
+    final_decision = models.NullBooleanField(verbose_name='удовлетворена ли заявка', blank=True, null=True)
 
 
 class IssueFinanceOrgProposeClarification(models.Model):
+    class Meta:
+        verbose_name = 'дозапрос'
+        verbose_name_plural = 'дозапросы'
+
     propose = models.ForeignKey(
         IssueFinanceOrgPropose,
         on_delete=models.CASCADE,
@@ -246,12 +260,12 @@ class IssueFinanceOrgProposeClarification(models.Model):
         null=False,
         related_name='clarifications'
     )
-    initiator = models.CharField(max_length=32, blank=False, null=False, choices=[
+    initiator = models.CharField(verbose_name='инициатор', max_length=32, blank=False, null=False, choices=[
         (consts.IFOPC_INITIATOR_FINANCE_ORG, 'Финансовая организация'),
         (consts.IFOPC_INITIATOR_ISSUER, 'Заявитель'),
     ])
-    updated_at = models.DateTimeField(auto_now=True, null=False)
-    created_at = models.DateTimeField(auto_now=True, null=False)
+    updated_at = models.DateTimeField(verbose_name='время обновления', auto_now=True, null=False)
+    created_at = models.DateTimeField(verbose_name='время создания', auto_now=True, null=False)
 
     def __str__(self):
         str_args = (
@@ -329,6 +343,10 @@ class IssueBGProdFounderPhysical(models.Model):
 
 
 class IssueFinanceOrgProposeFormalizeDocument(models.Model):
+    class Meta:
+        verbose_name = 'документ для оформления'
+        verbose_name_plural = 'документы для оформления'
+
     propose = models.ForeignKey(
         IssueFinanceOrgPropose,
         on_delete=models.CASCADE,
@@ -336,7 +354,7 @@ class IssueFinanceOrgProposeFormalizeDocument(models.Model):
         null=False,
         related_name='formalize_documents'
     )
-    name = models.CharField(max_length=512, blank=False, null=False, default='')
+    name = models.CharField(verbose_name='название документа', max_length=512, blank=False, null=False, default='')
     document = models.ForeignKey(
         Document,
         on_delete=models.SET_NULL,
@@ -347,6 +365,10 @@ class IssueFinanceOrgProposeFormalizeDocument(models.Model):
 
 
 class IssueFinanceOrgProposeFinalDocument(models.Model):
+    class Meta:
+        verbose_name = 'итоговый документ'
+        verbose_name_plural = 'итоговые документы'
+
     propose = models.ForeignKey(
         IssueFinanceOrgPropose,
         on_delete=models.CASCADE,
@@ -354,7 +376,7 @@ class IssueFinanceOrgProposeFinalDocument(models.Model):
         null=False,
         related_name='final_documents'
     )
-    name = models.CharField(max_length=512, blank=False, null=False, default='')
+    name = models.CharField(verbose_name='название документа', max_length=512, blank=False, null=False, default='')
     document = models.ForeignKey(
         Document,
         on_delete=models.SET_NULL,

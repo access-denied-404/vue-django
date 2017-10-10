@@ -47,7 +47,7 @@ class StaticPageAdmin(ModelAdmin):
 @register(models.Issue)
 class IssueAdmin(ModelAdmin):
     list_display = (
-        'id',
+        'humanized_id',
         'user',
         'product',
         'issuer_short_name',
@@ -57,6 +57,19 @@ class IssueAdmin(ModelAdmin):
         IssueFinanceOrgProposeInlineAdmin,
         IssueDocumentInlineAdmin,
     )
+    formfield_overrides = {
+        TextField: dict(widget=forms.Textarea(dict(rows=4)))
+    }
+
+    def humanized_sum(self, obj):
+        return obj.humanized_sum
+    humanized_sum.short_description = 'сумма'
+    humanized_sum.admin_order_field = 'bg_sum'
+
+    def humanized_id(self, obj):
+        return obj.id
+    humanized_id.short_description = 'номер заявки'
+    humanized_id.admin_order_field = 'id'
 
     def get_fieldsets(self, request, obj=None):
         result_fieldset = [
@@ -76,7 +89,7 @@ class IssueAdmin(ModelAdmin):
 @register(models.IssueFinanceOrgPropose)
 class IssueFinanceOrgProposeAdmin(ModelAdmin):
     list_display = (
-        'id',
+        'humanized_id',
         'issue_id',
         'issuer_full_name',
         'finance_org',
@@ -102,6 +115,11 @@ class IssueFinanceOrgProposeAdmin(ModelAdmin):
         return '<a href="{}">{}</a>'.format(change_url, obj.issue)
     issue_change_link.short_description = 'Заявка'
     issue_change_link.allow_tags = True
+
+    def humanized_id(self, obj):
+        return obj.id
+    humanized_id.short_description = 'номер предложения'
+    humanized_id.admin_order_field = 'id'
 
     inlines = (
         IFOPClarificationInlineAdmin,
@@ -129,8 +147,18 @@ class FinanceOrganizationAdmin(ModelAdmin):
 
 @register(models.IssueFinanceOrgProposeClarification)
 class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
-    list_display = ('id', '__str__', 'created_at', 'updated_at',)
+    list_display = (
+        'humanized_id',
+        '__str__',
+        'created_at',
+        'updated_at',
+    )
     inlines = (IFOPClarificationMessageInlineAdmin,)
+
+    def humanized_id(self, obj):
+        return obj.id
+    humanized_id.short_description = 'номер дозапроса'
+    humanized_id.admin_order_field = 'id'
 
 
 @register(models.User)
