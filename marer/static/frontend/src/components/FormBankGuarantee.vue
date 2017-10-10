@@ -34,7 +34,7 @@
     </div>
 
     <div class="panel panel-primary">
-      <div class="panel-heading">Сведение об истребуемой гарантии</div>
+      <div class="panel-heading">Сведения об истребуемой гарантии</div>
       <div class="panel-body">
         <div class="row">
 
