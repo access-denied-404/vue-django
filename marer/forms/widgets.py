@@ -1,5 +1,5 @@
 import copy
-from django.forms.widgets import Select, ChoiceWidget
+from django.forms.widgets import Select, ChoiceWidget, ClearableFileInput
 
 
 class CallableChoicesSelect(Select):
@@ -22,3 +22,9 @@ class CallableChoicesSelect(Select):
         obj.choices_maybe_callable = copy.copy(self.choices_maybe_callable)
         memo[id(self)] = obj
         return obj
+
+
+class ReadOnlyFileInput(ClearableFileInput):
+    template_name = 'django/forms/widgets/read_only_file_input.html'
+    initial_text = 'Скачать'
+    input_text = 'Загрузить'
