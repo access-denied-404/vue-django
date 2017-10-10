@@ -8,7 +8,7 @@ from mptt.admin import MPTTModelAdmin
 
 from marer import models
 from marer.admin.inline import IssueFinanceOrgProposeInlineAdmin, IssueDocumentInlineAdmin, \
-    IFOPClarificationInlineAdmin, IFOPClarificationMessageInlineAdmin, IFOPClarificationMessageDocumentInlineAdmin, \
+    IFOPClarificationInlineAdmin, IFOPClarificationMessageInlineAdmin, \
     IFOPFormalizeDocumentInlineAdmin, IFOPFinalDocumentInlineAdmin
 from marer.models.finance_org import FinanceOrganization
 
@@ -131,16 +131,6 @@ class FinanceOrganizationAdmin(ModelAdmin):
 class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
     list_display = ('id', '__str__', 'created_at', 'updated_at',)
     inlines = (IFOPClarificationMessageInlineAdmin,)
-
-
-@register(models.IssueFinanceOrgProposeClarificationMessage)
-class IFOPClarificationMessageAdmin(ModelAdmin):
-    inlines = (IFOPClarificationMessageDocumentInlineAdmin,)
-
-
-@register(models.IssueFinanceOrgProposeClarificationMessageDocument)
-class IFOPClarificationMessageDocumentAdmin(ModelAdmin):
-    readonly_fields = ('document',)
 
 
 @register(models.User)

@@ -123,8 +123,3 @@ class IFOPClarificationMessageInlineAdmin(StackedInline):
     extra = 1
     model = models.IssueFinanceOrgProposeClarificationMessage
     show_change_link = True
-
-
-class IFOPClarificationMessageDocumentInlineAdmin(TabularInline):
-    model = models.IssueFinanceOrgProposeClarificationMessageDocument
-    show_change_link = True
