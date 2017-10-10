@@ -20,11 +20,39 @@ class IssueDocumentInlineAdmin(TabularInline):
 
 
 class IFOPClarificationInlineAdmin(TabularInline):
-    extra = 1
     model = models.IssueFinanceOrgProposeClarification
     show_change_link = True
-    fields = ('id', 'initiator',)
+    fields = (
+        'id',
+        'issue_str',
+        'propose_finance_org',
+        'initiator',
+        'created_at',
+        'updated_at',
+    )
+    readonly_fields = (
+        'id',
+        'issue_str',
+        'propose_finance_org',
+        'initiator',
+        'created_at',
+        'updated_at',
+    )
     classes = ('collapse',)
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def propose_finance_org(self, obj):
+        return obj.propose.finance_org.name
+    propose_finance_org.short_description = 'finance org'
+
+    def issue_str(self, obj):
+        return obj.propose.issue
+    issue_str.short_description = 'issue'
 
 
 class IFOPFormalizeDocumentInlineAdminForm(forms.ModelForm):

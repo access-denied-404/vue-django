@@ -1,5 +1,8 @@
 from django.contrib.admin import ModelAdmin, register
 from django.contrib.auth.admin import UserAdmin
+from django.db.models import TextField
+from django import forms
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from mptt.admin import MPTTModelAdmin
 
@@ -77,10 +80,28 @@ class IssueFinanceOrgProposeAdmin(ModelAdmin):
         'issue_id',
         'issuer_full_name',
         'finance_org',
+        'final_decision',
+    )
+    fields = (
+        'issue_change_link',
+        'finance_org',
         'formalize_note',
         'final_decision',
         'final_note',
     )
+    readonly_fields = (
+        'issue_change_link',
+        'finance_org',
+    )
+    formfield_overrides = {
+        TextField: dict(widget=forms.Textarea(dict(rows=4)))
+    }
+
+    def issue_change_link(self, obj):
+        change_url = reverse('admin:marer_issue_change', args=(obj.id,))
+        return '<a href="{}">{}</a>'.format(change_url, obj.issue)
+    issue_change_link.short_description = 'Заявка'
+    issue_change_link.allow_tags = True
 
     inlines = (
         IFOPClarificationInlineAdmin,
