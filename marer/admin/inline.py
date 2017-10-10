@@ -1,6 +1,9 @@
 from django.contrib.admin import StackedInline, TabularInline
+from django import forms
 
 from marer import models
+from marer.forms.widgets import ReadOnlyFileInput
+from marer.models import Document
 from marer.models.issue import IssueFinanceOrgProposeFormalizeDocument, IssueFinanceOrgProposeFinalDocument
 
 
@@ -24,10 +27,35 @@ class IFOPClarificationInlineAdmin(TabularInline):
     classes = ('collapse',)
 
 
+class IFOPFormalizeDocumentInlineAdminForm(forms.ModelForm):
+    file = forms.FileField(required=True, label='update_doc', widget=ReadOnlyFileInput)
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance', None)
+        if instance is not None:
+            initial = kwargs.get('initial', dict())
+            if instance.document:
+                initial['file'] = instance.document.file
+            kwargs['initial'] = initial
+        super().__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        new_doc = Document()
+        new_doc.file = self.cleaned_data['file']
+        new_doc.save()
+        self.instance.document = new_doc
+        return super().save(commit)
+
+
 class IFOPFormalizeDocumentInlineAdmin(TabularInline):
     extra = 1
     model = IssueFinanceOrgProposeFormalizeDocument
     show_change_link = True
+    form = IFOPFormalizeDocumentInlineAdminForm
+    fields = (
+        'name',
+        'file',
+    )
 
 
 class IFOPFinalDocumentInlineAdmin(TabularInline):
