@@ -392,16 +392,14 @@ class BankGuaranteeProduct(FinanceProduct):
 
     def get_admin_issue_fieldset(self):
         return [
-            ('Issuer info', dict(fields=(
-                'bg_sum',
-                'bg_currency',
-                'bg_start_date',
-                'bg_end_date',
+            ('Сведения об истребуемой гарантии', dict(fields=(
+                ('bg_sum', 'bg_currency',),
+                ('bg_start_date', 'bg_end_date',),
                 'bg_deadline_date',
                 'bg_type',
             ))),
 
-            ('Tender info', dict(fields=(
+            ('Сведения о тендере', dict(classes=('collapse',), fields=(
                 'tender_gos_number',
                 'tender_placement_type',
                 'tender_exec_law',
@@ -411,7 +409,7 @@ class BankGuaranteeProduct(FinanceProduct):
                 'tender_has_prepayment',
             ))),
 
-            ('Issuer info', dict(classes=('collapse',), fields=(
+            ('Сведения о компании-заявителе', dict(classes=('collapse',), fields=(
                 'issuer_full_name',
                 'issuer_short_name',
                 'issuer_foreign_name',
@@ -429,7 +427,7 @@ class BankGuaranteeProduct(FinanceProduct):
                 'issuer_okved',
             ))),
 
-            ('Issuer head', dict(classes=('collapse',), fields=(
+            ('Руководитель компании', dict(classes=('collapse',), fields=(
                 'issuer_head_first_name',
                 'issuer_head_last_name',
                 'issuer_head_middle_name',
@@ -450,7 +448,7 @@ class BankGuaranteeProduct(FinanceProduct):
                 'issuer_prev_org_info',
             ))),
 
-            ('Tender responsible info', dict(classes=('collapse',), fields=(
+            ('Сведения об организаторе тендера', dict(classes=('collapse',), fields=(
                 'tender_responsible_full_name',
                 'tender_responsible_legal_address',
                 'tender_responsible_ogrn',
