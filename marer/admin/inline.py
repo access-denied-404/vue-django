@@ -59,10 +59,35 @@ class IFOPFormalizeDocumentInlineAdmin(TabularInline):
     classes = ('collapse',)
 
 
+class IFOPFinalDocumentInlineAdminForm(forms.ModelForm):
+    file = forms.FileField(required=True, label='update_doc', widget=ReadOnlyFileInput)
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance', None)
+        if instance is not None:
+            initial = kwargs.get('initial', dict())
+            if instance.document:
+                initial['file'] = instance.document.file
+            kwargs['initial'] = initial
+        super().__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        new_doc = Document()
+        new_doc.file = self.cleaned_data['file']
+        new_doc.save()
+        self.instance.document = new_doc
+        return super().save(commit)
+
+
 class IFOPFinalDocumentInlineAdmin(TabularInline):
     extra = 1
     model = IssueFinanceOrgProposeFinalDocument
     show_change_link = True
+    form = IFOPFinalDocumentInlineAdminForm
+    fields = (
+        'name',
+        'file',
+    )
     classes = ('collapse',)
 
 
