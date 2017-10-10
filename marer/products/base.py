@@ -12,11 +12,11 @@ class FinanceProduct(object):
 
     @abstractmethod
     def get_registering_form_class(self):
-        warnings.warn("Method is not implemented", NotImplementedError)
+        raise NotImplementedError("Method is not implemented")
 
     @abstractmethod
     def get_documents_list(self):
-        warnings.warn("Method is not implemented", NotImplementedError)
+        raise NotImplementedError("Method is not implemented")
 
     @property
     def name(self):
@@ -32,19 +32,19 @@ class FinanceProduct(object):
 
     @abstractmethod
     def get_survey_context_part(self):
-        warnings.warn("Method is not implemented", NotImplementedError)
+        raise NotImplementedError("Method is not implemented")
 
     @abstractmethod
     def process_survey_post_data(self, request):
-        warnings.warn("Method is not implemented", NotImplementedError)
+        raise NotImplementedError("Method is not implemented")
 
     @abstractmethod
     def process_registering_form(self, request):
-        warnings.warn("Method is not implemented", NotImplementedError)
+        raise NotImplementedError("Method is not implemented")
 
     @abstractmethod
     def get_admin_issue_fieldset(self):
-        warnings.warn("Method is not implemented", NotImplementedError)
+        raise NotImplementedError("Method is not implemented")
 
 
 class FinanceProductDocumentItem(object):
