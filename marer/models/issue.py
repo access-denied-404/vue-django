@@ -191,6 +191,18 @@ class Issue(models.Model):
         ), cls=CustomJSONEncoder)
         return json_data
 
+    def __str__(self):
+        if self.bg_sum:
+            str_repr = 'Заявка №{num} на {sum} руб., {product} для {issuer}'
+        else:
+            str_repr = 'Заявка №{num}, {product} для {issuer}'
+        return str_repr.format(
+            num=self.id,
+            sum=self.bg_sum,
+            product=self.get_product().humanized_name,
+            issuer=self.get_issuer_name(),
+        )
+
 
 class IssueDocument(models.Model):
     issue = models.ForeignKey(
