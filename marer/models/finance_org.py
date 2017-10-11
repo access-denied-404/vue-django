@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 from marer.models.base import OKVED2, Region
@@ -10,6 +11,13 @@ class FinanceOrganization(models.Model):
         verbose_name_plural = 'финансовые организации'
 
     name = models.CharField(verbose_name='название', max_length=512, blank=False, null=False)
+    manager = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name='менеджер',
+        on_delete=models.DO_NOTHING,
+        blank=True,
+        null=True
+    )
 
     def __str__(self):
         return self.name
