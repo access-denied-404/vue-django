@@ -5,7 +5,8 @@ from django.db.models import TextField
 from marer import models
 from marer.forms.widgets import ReadOnlyFileInput
 from marer.models import Document
-from marer.models.issue import IssueFinanceOrgProposeFormalizeDocument, IssueFinanceOrgProposeFinalDocument
+from marer.models.issue import IssueFinanceOrgProposeFormalizeDocument, IssueFinanceOrgProposeFinalDocument, \
+    IssueBGProdAffiliate, IssueBGProdFounderLegal, IssueBGProdFounderPhysical
 
 
 class IssueFinanceOrgProposeInlineAdmin(StackedInline):
@@ -133,3 +134,21 @@ class IFOPClarificationMessageInlineAdmin(StackedInline):
     formfield_overrides = {
         TextField: dict(widget=forms.Textarea(dict(rows=4)))
     }
+
+
+class IssueBGProdAffiliateInlineAdmin(TabularInline):
+    extra = 0
+    model = IssueBGProdAffiliate
+    classes = ('collapse',)
+
+
+class IssueBGProdFounderLegalInlineAdmin(TabularInline):
+    extra = 0
+    model = IssueBGProdFounderLegal
+    classes = ('collapse',)
+
+
+class IssueBGProdFounderPhysicalInlineAdmin(TabularInline):
+    extra = 0
+    model = IssueBGProdFounderPhysical
+    classes = ('collapse',)

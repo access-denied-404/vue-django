@@ -9,7 +9,8 @@ from mptt.admin import MPTTModelAdmin
 from marer import models
 from marer.admin.inline import IssueFinanceOrgProposeInlineAdmin, IssueDocumentInlineAdmin, \
     IFOPClarificationInlineAdmin, IFOPClarificationMessageInlineAdmin, \
-    IFOPFormalizeDocumentInlineAdmin, IFOPFinalDocumentInlineAdmin
+    IFOPFormalizeDocumentInlineAdmin, IFOPFinalDocumentInlineAdmin, IssueBGProdAffiliateInlineAdmin, \
+    IssueBGProdFounderLegalInlineAdmin, IssueBGProdFounderPhysicalInlineAdmin
 from marer.models.finance_org import FinanceOrganization
 
 
@@ -56,6 +57,9 @@ class IssueAdmin(ModelAdmin):
     inlines = (
         IssueFinanceOrgProposeInlineAdmin,
         IssueDocumentInlineAdmin,
+        IssueBGProdAffiliateInlineAdmin,
+        IssueBGProdFounderLegalInlineAdmin,
+        IssueBGProdFounderPhysicalInlineAdmin,
     )
     formfield_overrides = {
         TextField: dict(widget=forms.Textarea(dict(rows=4)))
