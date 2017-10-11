@@ -153,6 +153,18 @@ class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
         'created_at',
         'updated_at',
     )
+    fields = (
+        'propose',
+        'initiator',
+        'created_at',
+        'updated_at',
+    )
+    readonly_fields = (
+        'propose',
+        'initiator',
+        'created_at',
+        'updated_at',
+    )
     inlines = (IFOPClarificationMessageInlineAdmin,)
 
     def humanized_id(self, obj):

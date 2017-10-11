@@ -247,6 +247,14 @@ class IssueFinanceOrgPropose(models.Model):
     final_note = models.TextField(verbose_name='подпись к итоговым документам', blank=True, null=False, default='')
     final_decision = models.NullBooleanField(verbose_name='удовлетворена ли заявка', blank=True, null=True)
 
+    def __str__(self):
+        return 'Предложение заявки №{num} ({prod} на {sum} руб.) в {fin_org}'.format(
+            num=self.issue.id,
+            prod=self.issue.get_product().humanized_name,
+            sum=self.issue.bg_sum,
+            fin_org=self.finance_org.name
+        )
+
 
 class IssueFinanceOrgProposeClarification(models.Model):
     class Meta:
@@ -255,6 +263,7 @@ class IssueFinanceOrgProposeClarification(models.Model):
 
     propose = models.ForeignKey(
         IssueFinanceOrgPropose,
+        verbose_name='предложение заявки в банк',
         on_delete=models.CASCADE,
         blank=False,
         null=False,
@@ -281,6 +290,10 @@ class IssueFinanceOrgProposeClarification(models.Model):
 
 
 class IssueFinanceOrgProposeClarificationMessage(models.Model):
+    class Meta:
+        verbose_name = 'сообщение по дозапросу'
+        verbose_name_plural = 'сообщения по дозапросу'
+
     clarification = models.ForeignKey(
         IssueFinanceOrgProposeClarification,
         on_delete=models.CASCADE,
@@ -288,9 +301,16 @@ class IssueFinanceOrgProposeClarificationMessage(models.Model):
         null=False,
         related_name='clarification_messages'
     )
-    message = models.TextField(blank=False, null=False, default='')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, null=False)
-    created_at = models.DateTimeField(auto_now=True, null=False)
+    message = models.TextField(verbose_name='сообщение', blank=False, null=False, default='')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='пользователь', on_delete=models.DO_NOTHING, null=False)
+    created_at = models.DateTimeField(verbose_name='время создания', auto_now=True, null=False)
+
+    def __str__(self):
+        return 'Сообщение по дозапросу №{num} от пользователя {user} в {created}'.format(
+            num=self.clarification_id,
+            user=self.user,
+            created=self.created_at,
+        )
 
 
 class IssueFinanceOrgProposeClarificationMessageDocument(models.Model):

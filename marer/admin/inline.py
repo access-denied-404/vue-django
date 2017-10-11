@@ -1,5 +1,6 @@
 from django.contrib.admin import StackedInline, TabularInline
 from django import forms
+from django.db.models import TextField
 
 from marer import models
 from marer.forms.widgets import ReadOnlyFileInput
@@ -129,3 +130,6 @@ class IFOPClarificationMessageInlineAdmin(StackedInline):
     extra = 1
     model = models.IssueFinanceOrgProposeClarificationMessage
     show_change_link = True
+    formfield_overrides = {
+        TextField: dict(widget=forms.Textarea(dict(rows=4)))
+    }
