@@ -25,12 +25,7 @@ class Issue(models.Model):
     product = models.CharField(verbose_name='банковский продукт', max_length=32, blank=False, null=False, choices=get_finance_products_as_choices())
     status = models.CharField(verbose_name='статус заявки', max_length=32, blank=False, null=False, choices=[
         (consts.ISSUE_STATUS_REGISTERING, 'Оформление заявки'),
-        (consts.ISSUE_STATUS_COMMON_DOCUMENTS_REQUEST, 'Запрос документов'),
-        (consts.ISSUE_STATUS_SURVEY, 'Анкетирование'),
-        (consts.ISSUE_STATUS_SCORING, 'Скоринг'),
-        (consts.ISSUE_STATUS_ADDITIONAL_DOCUMENTS_REQUEST, 'Дозапрос документов'),
-        (consts.ISSUE_STATUS_PAYMENTS, 'Оплата услуг'),
-        (consts.ISSUE_STATUS_FINAL_DOCUMENTS_APPROVAL, 'Согласование итоговых документов'),
+        (consts.ISSUE_STATUS_REVIEW, 'Рассмотрение заявки'),
         (consts.ISSUE_STATUS_FINISHED, 'Завершена'),
         (consts.ISSUE_STATUS_CANCELLED, 'Отменена'),
     ])

@@ -155,11 +155,7 @@ class CabinetIssueListFilterForm(Form):
             choices=[
                 (None, 'Все'),
                 (consts.ISSUE_STATUS_REGISTERING, 'Оформление заявки'),
-                (consts.ISSUE_STATUS_COMMON_DOCUMENTS_REQUEST, 'Запрос документов'),
-                (consts.ISSUE_STATUS_SURVEY, 'Анкетирование'),
-                (consts.ISSUE_STATUS_SCORING, 'Скоринг'),
-                (consts.ISSUE_STATUS_ADDITIONAL_DOCUMENTS_REQUEST, 'Дозапрос документов и разъяснений'),
-                (consts.ISSUE_STATUS_PAYMENTS, 'Оформление документов'),
+                (consts.ISSUE_STATUS_REVIEW, 'Рассмотрение заявки'),
                 (consts.ISSUE_STATUS_FINISHED, 'Завершена'),
                 (consts.ISSUE_STATUS_CANCELLED, 'Отменена'),
             ],

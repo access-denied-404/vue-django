@@ -1,11 +1,6 @@
 
 ISSUE_STATUS_REGISTERING = 'registering'
-ISSUE_STATUS_COMMON_DOCUMENTS_REQUEST = 'common_documents_request'
-ISSUE_STATUS_SURVEY = 'survey'
-ISSUE_STATUS_SCORING = 'scoring'
-ISSUE_STATUS_ADDITIONAL_DOCUMENTS_REQUEST = 'additional_documents_request'
-ISSUE_STATUS_PAYMENTS = 'payments'
-ISSUE_STATUS_FINAL_DOCUMENTS_APPROVAL = 'final_documents_approval'
+ISSUE_STATUS_REVIEW = 'review'
 ISSUE_STATUS_FINISHED = 'finished'
 ISSUE_STATUS_CANCELLED = 'cancelled'
 

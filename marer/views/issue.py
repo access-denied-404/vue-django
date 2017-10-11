@@ -48,18 +48,8 @@ class IssueRedirectView(RedirectView):
 
         if issue.status == consts.ISSUE_STATUS_REGISTERING:
             self.pattern_name = 'issue_registering'
-        elif issue.status == consts.ISSUE_STATUS_COMMON_DOCUMENTS_REQUEST:
-            self.pattern_name = 'issue_common_documents_request'
-        elif issue.status == consts.ISSUE_STATUS_SURVEY:
-            self.pattern_name = 'issue_survey'
-        elif issue.status == consts.ISSUE_STATUS_SCORING:
+        elif issue.status == consts.ISSUE_STATUS_REVIEW:
             self.pattern_name = 'issue_scoring'
-        elif issue.status == consts.ISSUE_STATUS_ADDITIONAL_DOCUMENTS_REQUEST:
-            self.pattern_name = 'issue_additional_documents_request'
-        elif issue.status == consts.ISSUE_STATUS_PAYMENTS:
-            self.pattern_name = 'issue_payments'
-        elif issue.status == consts.ISSUE_STATUS_FINAL_DOCUMENTS_APPROVAL:
-            self.pattern_name = 'issue_final_documents_approval'
         elif issue.status == consts.ISSUE_STATUS_FINISHED:
             self.pattern_name = 'issue_finished'
         elif issue.status == consts.ISSUE_STATUS_CANCELLED:
