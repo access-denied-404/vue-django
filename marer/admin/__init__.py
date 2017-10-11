@@ -81,6 +81,7 @@ class IssueAdmin(ModelAdmin):
                 'product',
                 'status',
                 'user',
+                'private_comment',
                 'comment',
             ))),
         ]

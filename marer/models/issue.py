@@ -35,7 +35,8 @@ class Issue(models.Model):
         (consts.ISSUE_STATUS_CANCELLED, 'Отменена'),
     ])
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='пользователь', on_delete=models.DO_NOTHING, null=False)
-    comment = models.TextField(blank=True, null=False, default='')
+    comment = models.TextField(verbose_name='комментарий к заявке', blank=True, null=False, default='')
+    private_comment = models.TextField(verbose_name='приватный комментарий к заявке', blank=True, null=False, default='')
 
     issuer = models.ForeignKey(Issuer, on_delete=models.SET_NULL, blank=True, null=True)
     issuer_inn = models.CharField(verbose_name='ИНН заявителя', max_length=32, blank=True, null=False, default='')
