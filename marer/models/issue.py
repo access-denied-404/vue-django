@@ -229,7 +229,7 @@ class IssueDocument(models.Model):
         related_name='common_issue_links'
     )
     code = models.CharField(
-        max_length=32,
+        max_length=512,
         null=False,
         blank=False,
     )
