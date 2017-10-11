@@ -1,6 +1,7 @@
 from django.contrib.admin import StackedInline, TabularInline
 from django import forms
 from django.db.models import TextField
+from django.forms import Select
 
 from marer import models
 from marer.forms.widgets import ReadOnlyFileInput
@@ -16,11 +17,41 @@ class IssueFinanceOrgProposeInlineAdmin(StackedInline):
     show_change_link = True
 
 
+class IssueDocumentInlineAdminForm(forms.ModelForm):
+    file = forms.FileField(required=True, label='файл', widget=ReadOnlyFileInput)
+    code = forms.CharField(required=True, widget=Select(choices=[]))
+    issue = None
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance', None)
+        if instance is not None:
+            initial = kwargs.get('initial', dict())
+            if instance.document:
+                initial['file'] = instance.document.file
+            kwargs['initial'] = initial
+        super().__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        new_doc = Document()
+        new_doc.file = self.cleaned_data['file']
+        new_doc.save()
+        self.instance.document = new_doc
+        return super().save(commit)
+
+
 class IssueDocumentInlineAdmin(TabularInline):
-    # todo add humanized documents types
-    # todo add nested file field
-    extra = 1
+    extra = 0
+    fields = (
+        'code',
+        'file',
+    )
     model = models.IssueDocument
+    form = IssueDocumentInlineAdminForm
+
+    def get_formset(self, request, obj=None, **kwargs):
+        choices = [(ch.code, ch.name) for ch in obj.get_product().get_documents_list()]
+        self.form.declared_fields['code'].widget.choices = choices
+        return super().get_formset(request, obj, **kwargs)
 
 
 class IFOPClarificationInlineAdmin(TabularInline):
