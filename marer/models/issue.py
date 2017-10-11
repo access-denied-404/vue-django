@@ -191,6 +191,50 @@ class Issue(models.Model):
         ), cls=CustomJSONEncoder)
         return json_data
 
+    @property
+    def available_dashboard_views_names(self):
+        registering_views = [
+            'issue_registering',
+            'issue_common_documents_request',
+            'issue_survey',
+        ]
+        review_views = registering_views + [
+            'issue_scoring',
+            'issue_additional_documents_requests',
+            'issue_payments',
+            'issue_finished',
+        ]
+        if self.status == consts.ISSUE_STATUS_REGISTERING:
+            return registering_views
+        if self.status == consts.ISSUE_STATUS_REVIEW:
+            return review_views
+        if self.status in [consts.ISSUE_STATUS_FINISHED, consts.ISSUE_STATUS_CANCELLED]:
+            return review_views
+        else:
+            return ['issue_registering']
+
+    def editable_dashboard_views(self):
+        registering_views = [
+            'issue_registering',
+            'issue_common_documents_request',
+            'issue_survey',
+        ]
+        review_views = [
+            'issue_scoring',
+            'issue_additional_documents_requests',
+            'issue_payments',
+            'issue_finished',
+        ]
+
+        if self.status == consts.ISSUE_STATUS_REGISTERING:
+            return registering_views
+        if self.status == consts.ISSUE_STATUS_REVIEW:
+            return review_views
+        if self.status in [consts.ISSUE_STATUS_FINISHED, consts.ISSUE_STATUS_CANCELLED]:
+            return []
+        else:
+            return ['issue_registering']
+
     def __str__(self):
         if self.bg_sum:
             str_repr = 'Заявка №{num} на {sum} руб., {product} для {issuer}'

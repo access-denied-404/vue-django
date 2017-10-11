@@ -78,6 +78,10 @@ class IssueRegisteringView(IssueView):
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+
+        if self.get_issue() and 'issue_registering' not in self.get_issue().editable_dashboard_views():
+            return self.get(request, *args, **kwargs)
+
         base_form = IssueRegisteringForm(request.POST)
         if base_form.is_valid():
             # todo go to next stage if we can
@@ -127,6 +131,10 @@ class IssueCommonDocumentsRequestView(IssueView):
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+
+        if self.get_issue() and 'issue_common_documents_request' not in self.get_issue().editable_dashboard_views():
+            return self.get(request, *args, **kwargs)
+
         fp_documents = self.get_issue().get_product().get_documents_list()
         for fpdoc in fp_documents:
             post_file = request.FILES.get(fpdoc.code, None)
@@ -144,6 +152,10 @@ class IssueSurveyView(IssueView):
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+
+        if self.get_issue() and 'issue_survey' not in self.get_issue().editable_dashboard_views():
+            return self.get(request, *args, **kwargs)
+
         self.get_issue().get_product().process_survey_post_data(request)
         return self.get(request, *args, **kwargs)
 
@@ -172,6 +184,9 @@ class IssueScoringView(IssueView):
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+
+        if self.get_issue() and 'issue_scoring' not in self.get_issue().editable_dashboard_views():
+            return self.get(request, *args, **kwargs)
 
         send_to_all = request.POST.get('send_to_all', None)
         foid = request.POST.get('foid', None)
@@ -252,6 +267,10 @@ class IssueAdditionalDocumentsRequestView(IssueView):
         comment_form = IFOPCMessageForm(request.POST, request.FILES)
 
         if comment_form.is_valid():
+
+            if self.get_issue() and 'issue_additional_documents_requests' not in self.get_issue().editable_dashboard_views():
+                return self.get(request, *args, **kwargs)
+
             clarification = self._get_clarification()
             if not clarification:
                 propose_id = request.GET.get('pid', 0)
