@@ -91,8 +91,9 @@ class IssueAdmin(ModelAdmin):
             ))),
         ]
 
-        product_fieldset_part = obj.get_product().get_admin_issue_fieldset()
-        result_fieldset.extend(product_fieldset_part)
+        if obj is not None:
+            product_fieldset_part = obj.get_product().get_admin_issue_fieldset()
+            result_fieldset.extend(product_fieldset_part)
         return result_fieldset
 
     def get_manager(self, obj):
