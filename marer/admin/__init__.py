@@ -6,11 +6,13 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from mptt.admin import MPTTModelAdmin
 
-from marer import models
+from marer import models, consts
 from marer.admin.inline import IssueFinanceOrgProposeInlineAdmin, IssueDocumentInlineAdmin, \
     IFOPClarificationInlineAdmin, IFOPClarificationMessageInlineAdmin, \
     IFOPFormalizeDocumentInlineAdmin, IFOPFinalDocumentInlineAdmin, IssueBGProdAffiliateInlineAdmin, \
     IssueBGProdFounderLegalInlineAdmin, IssueBGProdFounderPhysicalInlineAdmin
+from marer.models import IssueFinanceOrgProposeClarificationMessage, IssueFinanceOrgProposeClarificationMessageDocument, \
+    Document
 from marer.models.finance_org import FinanceOrganization
 
 
@@ -150,6 +152,45 @@ class FinanceOrganizationAdmin(ModelAdmin):
     pass
 
 
+class IFOPClarificationAddForm(forms.ModelForm):
+    user = None
+    message = forms.CharField(label='Сообщение', required=True, widget=forms.Textarea(attrs=dict(rows=4)))
+    doc1 = forms.FileField(label='Документ', required=False)
+    doc2 = forms.FileField(label='Документ', required=False)
+    doc3 = forms.FileField(label='Документ', required=False)
+    doc4 = forms.FileField(label='Документ', required=False)
+    doc5 = forms.FileField(label='Документ', required=False)
+    doc6 = forms.FileField(label='Документ', required=False)
+    doc7 = forms.FileField(label='Документ', required=False)
+    doc8 = forms.FileField(label='Документ', required=False)
+
+    def save(self, commit=True):
+        if not self.instance.id:
+            self.instance.initiator = consts.IFOPC_INITIATOR_FINANCE_ORG
+            self.instance.save()
+
+        new_msg = IssueFinanceOrgProposeClarificationMessage()
+        new_msg.user = self.user
+        new_msg.message = self.cleaned_data['message']
+        new_msg.clarification = self.instance
+        new_msg.save()
+
+        for file_field_name in self.files:
+            field_file = self.files[file_field_name]
+
+            new_ifopcmd_doc = Document()
+            new_ifopcmd_doc.file = field_file
+            new_ifopcmd_doc.save()
+
+            new_ifopcmd = IssueFinanceOrgProposeClarificationMessageDocument()
+            new_ifopcmd.name = field_file.name
+            new_ifopcmd.clarification_message = new_msg
+            new_ifopcmd.document = new_ifopcmd_doc
+            new_ifopcmd.save()
+
+        return super().save(commit)
+
+
 @register(models.IssueFinanceOrgProposeClarification)
 class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
     list_display = (
@@ -158,24 +199,90 @@ class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
         'created_at',
         'updated_at',
     )
-    fields = (
-        'propose',
-        'initiator',
-        'created_at',
-        'updated_at',
-    )
-    readonly_fields = (
-        'propose',
-        'initiator',
-        'created_at',
-        'updated_at',
-    )
-    inlines = (IFOPClarificationMessageInlineAdmin,)
 
     def humanized_id(self, obj):
         return obj.id
     humanized_id.short_description = 'номер дозапроса'
     humanized_id.admin_order_field = 'id'
+
+    form = IFOPClarificationAddForm
+
+    def get_form(self, request, obj=None, **kwargs):
+        # self.form = IFOPClarificationAddForm
+        if obj is None:
+            self.readonly_fields = ()
+            self.fields = (
+                'propose',
+                'message',
+                (
+                    'doc1',
+                    'doc2',
+                    'doc3',
+                    'doc4',
+                    'doc5',
+                    'doc6',
+                    'doc7',
+                    'doc8',
+                ),
+            )
+        else:
+            self.fields = (
+                'propose',
+                'initiator',
+                'get_messages',
+                'message',
+                (
+                    'doc1',
+                    'doc2',
+                    'doc3',
+                    'doc4',
+                    'doc5',
+                    'doc6',
+                    'doc7',
+                    'doc8',
+                ),
+            )
+            self.readonly_fields = (
+                'propose',
+                'initiator',
+                'get_messages',
+            )
+        return super().get_form(request, obj, **kwargs)
+
+    def get_messages(self, obj):
+        messages = obj.clarification_messages.all().order_by('created_at')
+        obj_tmpl = '<div>{msg}</div><br/><div>{msg_docs}</div><br/>'
+        line_tmpl = '<b>{msg.user}</b><br/>{msg_created}:<br/>{msg.message}'
+        line_doc_tmpl = '<div><a href="{doc_url}">{doc_name}</a></div>'
+        ret_text = ''
+        idx = 1
+        msgs_cnt = messages.count()
+        for msg in messages:
+            msg_text = line_tmpl.format(msg=msg, msg_created=msg.created_at.strftime('%d.%m.%Y %H:%M'))
+            docs = ''
+            if msg.documents_links.exists():
+                docs += '<b>Документы:</b><br/>'
+            for msg_doc in msg.documents_links.all():
+                doc_name = msg_doc.name
+                if msg_doc.document and msg_doc.document.file:
+                    doc_url = msg_doc.document.file.url
+                else:
+                    doc_url = '#'
+                docs += line_doc_tmpl.format(
+                    doc_name=doc_name,
+                    doc_url=doc_url,
+                )
+            ret_text += obj_tmpl.format(msg=msg_text, msg_docs=docs)
+            if idx < msgs_cnt:
+                ret_text += '<hr/>'
+            idx += 1
+        return ret_text
+    get_messages.short_description = 'Сообщения'
+    get_messages.allow_tags = True
+
+    def save_form(self, request, form, change):
+        form.user = request.user
+        return super().save_form(request, form, change)
 
 
 @register(models.User)
