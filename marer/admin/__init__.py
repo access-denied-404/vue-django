@@ -54,8 +54,11 @@ class IssueAdmin(ModelAdmin):
         'user',
         'product',
         'issuer_short_name',
+        'status',
+        'get_manager',
         'humanized_sum',
     )
+    list_filter = ('product', 'status',)
     inlines = (
         IssueFinanceOrgProposeInlineAdmin,
         IssueDocumentInlineAdmin,
@@ -92,14 +95,23 @@ class IssueAdmin(ModelAdmin):
         result_fieldset.extend(product_fieldset_part)
         return result_fieldset
 
+    def get_manager(self, obj):
+        return obj.user.manager or '—'
+    get_manager.short_description = 'Менеджер'
+    get_manager.admin_order_field = 'user__manager_id'
+
 
 @register(models.IssueFinanceOrgPropose)
 class IssueFinanceOrgProposeAdmin(ModelAdmin):
     list_display = (
         'humanized_id',
-        'issue_id',
+        'humanized_issue_id',
         'issuer_full_name',
         'finance_org',
+        'get_manager',
+        'final_decision',
+    )
+    list_filter = (
         'final_decision',
     )
     fields = (
@@ -128,6 +140,11 @@ class IssueFinanceOrgProposeAdmin(ModelAdmin):
     humanized_id.short_description = 'номер предложения'
     humanized_id.admin_order_field = 'id'
 
+    def humanized_issue_id(self, obj):
+        return obj.issue_id
+    humanized_issue_id.short_description = 'номер заявки'
+    humanized_issue_id.admin_order_field = 'issue_id'
+
     inlines = (
         IFOPClarificationInlineAdmin,
         IFOPFormalizeDocumentInlineAdmin,
@@ -146,10 +163,18 @@ class IssueFinanceOrgProposeAdmin(ModelAdmin):
             return '—'
     issuer_full_name.short_description = 'Заявитель'
 
+    def get_manager(self, obj):
+        return obj.finance_org.manager or '—'
+    get_manager.short_description = 'Менеджер'
+    get_manager.admin_order_field = 'finance_org__manager_id'
+
 
 @register(FinanceOrganization)
 class FinanceOrganizationAdmin(ModelAdmin):
-    pass
+    list_display = (
+        'name',
+        'manager',
+    )
 
 
 class IFOPClarificationAddForm(forms.ModelForm):
