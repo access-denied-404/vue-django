@@ -1,3 +1,5 @@
+import warnings
+
 from dateutil.relativedelta import relativedelta
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import formset_factory
@@ -459,20 +461,52 @@ class BankGuaranteeProduct(FinanceProduct):
 
 
 class CreditProduct(FinanceProduct):
+    def process_survey_post_data(self, request):
+        warnings.warn("Method is not implemented")
+
+    def get_admin_issue_fieldset(self):
+        warnings.warn("Method is not implemented")
+        return []
+
+    def get_survey_context_part(self):
+        warnings.warn("Method is not implemented")
+        return dict()
+
+    def process_registering_form(self, request):
+        warnings.warn("Method is not implemented")
+
     _humanized_name = 'Кредит'
 
     def get_documents_list(self):
+        warnings.warn("Method is not implemented")
         return []
 
     def get_registering_form_class(self):
+        warnings.warn("Method is not implemented")
         return Form
 
 
 class LeasingProduct(FinanceProduct):
+    def process_survey_post_data(self, request):
+        warnings.warn("Method is not implemented")
+
+    def get_admin_issue_fieldset(self):
+        warnings.warn("Method is not implemented")
+        return []
+
+    def get_survey_context_part(self):
+        warnings.warn("Method is not implemented")
+        return dict()
+
+    def process_registering_form(self, request):
+        warnings.warn("Method is not implemented")
+
     _humanized_name = 'Лизинг'
 
     def get_documents_list(self):
+        warnings.warn("Method is not implemented")
         return []
 
     def get_registering_form_class(self):
+        warnings.warn("Method is not implemented")
         return Form
