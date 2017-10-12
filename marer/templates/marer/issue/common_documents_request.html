@@ -21,13 +21,14 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <div class="col-sm-10">
-                                            <input type="file" name="{{ document.code }}" class="input-lg"/>
+                                        <div class="col-sm-8">
+                                            <input type="file" name="{{ document.code }}" />
+                                            <div><small>загрузить новый файл</small></div>
                                         </div>
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-4">
                                             {% if document.url %}
                                                 <a href="{{ document.url }}" class="btn btn-link btn-lg">
-                                                    <span class="glyphicon glyphicon-file"></span>
+                                                    Скачать <span class="glyphicon glyphicon-download"></span>
                                                 </a>
                                             {% endif %}
                                         </div>
