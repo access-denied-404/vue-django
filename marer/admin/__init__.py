@@ -1,3 +1,5 @@
+from random import randint
+
 from django.contrib.admin import ModelAdmin, register
 from django.contrib.auth.admin import UserAdmin
 from django.db.models import TextField
@@ -314,7 +316,7 @@ class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
 @register(models.User)
 class MarerUserAdmin(UserAdmin):
     list_display = (
-        'first_name',
+        'first_name_noempty',
         'last_name',
         'email',
         'phone',
@@ -327,3 +329,14 @@ class MarerUserAdmin(UserAdmin):
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
     search_fields = ('username', 'first_name', 'last_name', 'email', 'phone')
+
+    def first_name_noempty(self, obj):
+        if obj.first_name is None or obj.first_name == '':
+            max_rndi = 10
+            if randint(0, max_rndi) == max_rndi:
+                return '¯\_(ツ)_/¯'
+            return 'ИМЯ НЕ УКАЗАНО'
+        else:
+            return obj.first_name
+    first_name_noempty.short_description = 'имя'
+    first_name_noempty.admin_order_field = 'first_name'
