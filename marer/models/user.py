@@ -8,6 +8,22 @@ __all__ = ['User']
 
 
 class User(AbstractUser):
+
+    class Meta:
+        verbose_name = _('user')
+        verbose_name_plural = _('users')
+        permissions = [
+            # права менеджеров, управляющих пользователями
+            ('can_add_managed_users', 'Can add managed users'),
+            ('can_change_managed_users', 'Can change managed users'),
+            ('can_add_managed_users_issues', 'Can add managed users issues'),
+            ('can_change_managed_users_issues', 'Can change managed users issues'),
+            ('can_add_managed_users_issues_proposes', 'Can add managed users issues proposes'),
+            ('can_view_managed_users_issues_proposes', 'Can view managed users issues proposes'),
+            ('can_add_managed_users_issues_proposes_clarifications', 'Can add managed users issues proposes clarifications'),
+            ('can_add_managed_users_issues_proposes_clarifications_messages', 'Can add managed users issues proposes clarifications messages'),
+        ]
+
     phone = models.CharField(_('contact phone'), max_length=30, blank=True)
     manager = models.ForeignKey(
         settings.AUTH_USER_MODEL,

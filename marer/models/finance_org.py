@@ -9,6 +9,14 @@ class FinanceOrganization(models.Model):
     class Meta:
         verbose_name = 'финансовая орнанизация'
         verbose_name_plural = 'финансовые организации'
+        permissions = [
+            # права менеджеров, управляющих финансовыми организациями
+            ('can_change_managed_finance_org_proposes', 'Can change managed finance org proposes'),
+            ('can_view_managed_finance_org_proposes_issues', 'Can view managed finance org proposes issues'),
+            ('can_add_managed_finance_org_proposes_clarifications', 'Can add managed finance org proposes clarifications'),
+            ('can_view_managed_finance_org_proposes_clarifications', 'Can view managed finance org proposes clarifications'),
+            ('can_add_managed_finance_org_proposes_clarifications_messages', 'Can add managed finance org proposes clarifications messages'),
+        ]
 
     name = models.CharField(verbose_name='название', max_length=512, blank=False, null=False)
     manager = models.ForeignKey(
