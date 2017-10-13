@@ -116,8 +116,15 @@ class Issue(models.Model):
     def humanized_sum(self):
         if self.bg_sum:
             fmt_sum = number_format(self.bg_sum)
-            currency = 'руб.'
-            return fmt_sum + ' ' + currency
+            if self.bg_currency == consts.CURRENCY_RUR:
+                str_fmt = '{cost} руб.'
+            elif self.bg_currency == consts.CURRENCY_USD:
+                str_fmt = '${cost}'
+            elif self.bg_currency == consts.CURRENCY_EUR:
+                str_fmt = '€{cost}'
+            else:
+                str_fmt = '{cost}'
+            return str_fmt.format(cost=fmt_sum)
         else:
             return '—'
 
@@ -239,12 +246,12 @@ class Issue(models.Model):
 
     def __str__(self):
         if self.bg_sum:
-            str_repr = 'Заявка №{num} на {sum} руб., {product} для {issuer}'
+            str_repr = 'Заявка №{num} на {cost}, {product} для {issuer}'
         else:
             str_repr = 'Заявка №{num}, {product} для {issuer}'
         return str_repr.format(
             num=self.id,
-            sum=self.bg_sum,
+            cost=self.humanized_sum,
             product=self.get_product().humanized_name,
             issuer=self.get_issuer_name(),
         )
