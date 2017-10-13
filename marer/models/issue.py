@@ -28,7 +28,7 @@ class Issue(models.Model):
         (consts.ISSUE_STATUS_REVIEW, 'Рассмотрение заявки'),
         (consts.ISSUE_STATUS_FINISHED, 'Завершена'),
         (consts.ISSUE_STATUS_CANCELLED, 'Отменена'),
-    ], default=consts.ISSUE_STATUS_REGISTERING)
+    ], default=consts)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='пользователь', on_delete=models.DO_NOTHING, null=False)
     comment = models.TextField(verbose_name='комментарий к заявке', blank=True, null=False, default='')
     private_comment = models.TextField(verbose_name='приватный комментарий к заявке', blank=True, null=False, default='')
