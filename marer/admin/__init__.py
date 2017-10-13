@@ -1,6 +1,6 @@
 from random import randint
 
-from django.contrib.admin import ModelAdmin, register
+from django.contrib.admin import ModelAdmin, register, site
 from django.contrib.auth.admin import UserAdmin
 from django.db.models import TextField
 from django import forms
@@ -16,6 +16,11 @@ from marer.admin.inline import IssueFinanceOrgProposeInlineAdmin, IssueDocumentI
 from marer.models import IssueFinanceOrgProposeClarificationMessage, IssueFinanceOrgProposeClarificationMessageDocument, \
     Document
 from marer.models.finance_org import FinanceOrganization
+
+
+site.site_title = 'Управление сайтом МАРЭР'
+site.site_header = 'Управление площадкой МАРЭР'
+site.index_title = 'Управление площадкой'
 
 
 @register(models.FinanceProductPage)
