@@ -59,6 +59,8 @@ class IssueAdmin(ModelAdmin):
         'status',
         'get_manager',
         'humanized_sum',
+        'created_at',
+        'updated_at',
     )
     list_filter = ('product', 'status',)
     inlines = (
@@ -109,10 +111,12 @@ class IssueFinanceOrgProposeAdmin(ModelAdmin):
     list_display = (
         'humanized_id',
         'humanized_issue_id',
-        'issuer_full_name',
+        'issuer_short_name',
         'finance_org',
         'get_manager',
         'final_decision',
+        'created_at',
+        'updated_at',
     )
     list_filter = (
         'final_decision',
@@ -158,13 +162,15 @@ class IssueFinanceOrgProposeAdmin(ModelAdmin):
         return obj.issue.id
     issue_id.short_description = 'Номер заявки'
 
-    def issuer_full_name(self, obj):
-        issuer_full_name = obj.issue.issuer_full_name
-        if issuer_full_name and issuer_full_name != '':
+    def issuer_short_name(self, obj):
+        issuer_short_name = obj.issue.issuer_short_name
+        if issuer_short_name and issuer_short_name != '':
+            return issuer_short_name
+        elif issuer_short_name == 'НЕТ':
             return obj.issue.issuer_full_name
         else:
             return '—'
-    issuer_full_name.short_description = 'Заявитель'
+    issuer_short_name.short_description = 'Заявитель'
 
     def get_manager(self, obj):
         return obj.finance_org.manager or '—'

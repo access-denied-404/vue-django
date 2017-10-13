@@ -32,6 +32,8 @@ class Issue(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='пользователь', on_delete=models.DO_NOTHING, null=False)
     comment = models.TextField(verbose_name='комментарий к заявке', blank=True, null=False, default='')
     private_comment = models.TextField(verbose_name='приватный комментарий к заявке', blank=True, null=False, default='')
+    updated_at = models.DateTimeField(verbose_name='время обновления', auto_now=True, null=False)
+    created_at = models.DateTimeField(verbose_name='время создания', auto_now=True, null=False)
 
     issuer = models.ForeignKey(Issuer, on_delete=models.SET_NULL, blank=True, null=True)
     issuer_inn = models.CharField(verbose_name='ИНН заявителя', max_length=32, blank=True, null=False, default='')
@@ -282,6 +284,8 @@ class IssueFinanceOrgPropose(models.Model):
 
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False, related_name='proposes')
     finance_org = models.ForeignKey(FinanceOrganization, verbose_name='финансовая организация', on_delete=models.CASCADE, blank=False, null=False)
+    updated_at = models.DateTimeField(verbose_name='время обновления', auto_now=True, null=False)
+    created_at = models.DateTimeField(verbose_name='время создания', auto_now=True, null=False)
 
     formalize_note = models.TextField(verbose_name='подпись к документам для оформления', blank=True, null=False, default='')
     final_note = models.TextField(verbose_name='подпись к итоговым документам', blank=True, null=False, default='')
