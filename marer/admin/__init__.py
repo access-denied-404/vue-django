@@ -1,6 +1,7 @@
 from random import randint
 
 from django.contrib.admin import ModelAdmin, register, site
+from django.contrib.admin.models import LogEntry
 from django.contrib.auth.admin import UserAdmin
 from django.db.models import TextField
 from django import forms
@@ -384,3 +385,33 @@ class MarerUserAdmin(UserAdmin):
         if obj.id is None and obj.manager is None:
             obj.manager = request.user
         return super().save_model(request, obj, form, change)
+
+
+@register(LogEntry)
+class LogEntryAdmin(ModelAdmin):
+    list_display = (
+        'content_type',
+        'object_repr',
+        'user',
+        'is_addition',
+        'is_change',
+        'is_deletion',
+    )
+    readonly_fields = (
+        'action_time',
+        'user',
+        'content_type',
+        'object_id',
+        'object_repr',
+        'action_flag',
+        'change_message',
+    )
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def get_actions(self, request):
+        return []
