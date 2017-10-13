@@ -63,13 +63,6 @@ class IssueAdmin(ModelAdmin):
         'updated_at',
     )
     list_filter = ('product', 'status',)
-    inlines = (
-        IssueFinanceOrgProposeInlineAdmin,
-        IssueDocumentInlineAdmin,
-        IssueBGProdAffiliateInlineAdmin,
-        IssueBGProdFounderLegalInlineAdmin,
-        IssueBGProdFounderPhysicalInlineAdmin,
-    )
     formfield_overrides = {
         TextField: dict(widget=forms.Textarea(dict(rows=4)))
     }
@@ -85,17 +78,25 @@ class IssueAdmin(ModelAdmin):
     humanized_id.admin_order_field = 'id'
 
     def get_fieldsets(self, request, obj=None):
-        result_fieldset = [
-            (None, dict(fields=(
-                'product',
-                'status',
-                'user',
-                'private_comment',
-                'comment',
-            ))),
-        ]
-
-        if obj is not None:
+        if obj is None:
+            result_fieldset = [
+                (None, dict(fields=(
+                    'product',
+                    'user',
+                    'private_comment',
+                    'comment',
+                ))),
+            ]
+        else:
+            result_fieldset = [
+                (None, dict(fields=(
+                    'product',
+                    'status',
+                    'user',
+                    'private_comment',
+                    'comment',
+                ))),
+            ]
             product_fieldset_part = obj.get_product().get_admin_issue_fieldset()
             result_fieldset.extend(product_fieldset_part)
         return result_fieldset
@@ -104,6 +105,19 @@ class IssueAdmin(ModelAdmin):
         return obj.user.manager or '—'
     get_manager.short_description = 'Менеджер'
     get_manager.admin_order_field = 'user__manager_id'
+
+    def get_inline_instances(self, request, obj=None):
+        if obj is None:
+            self.inlines = []
+        else:
+            self.inlines = [
+                IssueFinanceOrgProposeInlineAdmin,
+                IssueDocumentInlineAdmin,
+                IssueBGProdAffiliateInlineAdmin,
+                IssueBGProdFounderLegalInlineAdmin,
+                IssueBGProdFounderPhysicalInlineAdmin,
+            ]
+        return super().get_inline_instances(request, obj)
 
 
 @register(models.IssueFinanceOrgPropose)
