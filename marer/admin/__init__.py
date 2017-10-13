@@ -369,6 +369,7 @@ class MarerUserAdmin(UserAdmin):
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
     search_fields = ('username', 'first_name', 'last_name', 'email', 'phone')
+    readonly_fields = ('last_login', 'date_joined',)
 
     def first_name_noempty(self, obj):
         if obj.first_name is None or obj.first_name == '':
@@ -380,6 +381,44 @@ class MarerUserAdmin(UserAdmin):
             return obj.first_name
     first_name_noempty.short_description = 'имя'
     first_name_noempty.admin_order_field = 'first_name'
+
+    def get_fieldsets(self, request, obj=None):
+        if obj:
+            if request.user.is_superuser:
+                pass
+            elif request.user.has_perm('marer.change_user'):
+                pass
+            elif request.user.has_perm('marer.can_change_managed_users'):
+                self.fieldsets = (
+                    (None, {'fields': ('username', 'password',)}),
+                    (_('Personal info'), {'fields': ('first_name', 'last_name', 'email', 'phone')}),
+                    (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+                )
+
+        return super().get_fieldsets(request, obj)
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.has_perm('marer.can_change_managed_users'):
+            if obj is None:
+                return True
+            elif obj.manager_id == request.user.id:
+                return True
+        return super().has_change_permission(request, obj)
+
+    def has_add_permission(self, request):
+        if request.user.has_perm('marer.can_add_managed_users'):
+            return True
+        return super().has_add_permission(request)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            pass
+        elif request.user.has_perm('marer.change_user'):
+            pass
+        elif request.user.has_perm('marer.can_change_managed_users'):
+            qs = qs.filter(manager_id=request.user.id)
+        return qs
 
     def save_model(self, request, obj, form, change):
         if obj.id is None and obj.manager is None:
