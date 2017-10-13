@@ -346,3 +346,8 @@ class MarerUserAdmin(UserAdmin):
             return obj.first_name
     first_name_noempty.short_description = 'имя'
     first_name_noempty.admin_order_field = 'first_name'
+
+    def save_model(self, request, obj, form, change):
+        if obj.id is None and obj.manager is None:
+            obj.manager = request.user
+        return super().save_model(request, obj, form, change)
