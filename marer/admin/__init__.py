@@ -112,6 +112,29 @@ class IssueAdmin(ModelAdmin):
     get_manager.short_description = 'Менеджер'
     get_manager.admin_order_field = 'user__manager_id'
 
+    def has_change_permission(self, request, obj=None):
+        if request.user.has_perm('marer.can_change_managed_users_issues'):
+            if obj is None:
+                return True
+            elif obj.user.manager_id == request.user.id:
+                return True
+        return super().has_change_permission(request, obj)
+
+    def has_add_permission(self, request):
+        if request.user.has_perm('marer.can_add_managed_users_issues'):
+            return True
+        return super().has_add_permission(request)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            pass
+        elif request.user.has_perm('marer.change_issue'):
+            pass
+        elif request.user.has_perm('marer.can_change_managed_users_issues'):
+            qs = qs.filter(user__manager_id=request.user.id)
+        return qs
+
     def get_inline_instances(self, request, obj=None):
         if obj is None:
             self.inlines = []
@@ -124,6 +147,19 @@ class IssueAdmin(ModelAdmin):
                 IssueBGProdFounderPhysicalInlineAdmin,
             ]
         return super().get_inline_instances(request, obj)
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if request.user.is_superuser:
+            pass
+        elif request.user.has_perm('marer.change_issue'):
+            pass
+        elif request.user.has_perm('marer.can_change_managed_users_issues'):
+            # qs = qs.filter(user__manager_id=request.user.id)
+            ufield = form.base_fields['user']
+            ufield._queryset = ufield._queryset.filter(manager=request.user)
+
+        return form
 
 
 @register(models.IssueFinanceOrgPropose)
@@ -148,10 +184,10 @@ class IssueFinanceOrgProposeAdmin(ModelAdmin):
         'final_decision',
         'final_note',
     )
-    readonly_fields = (
+    readonly_fields = [
         'issue_change_link',
         'finance_org',
-    )
+    ]
     formfield_overrides = {
         TextField: dict(widget=forms.Textarea(dict(rows=4)))
     }
@@ -196,6 +232,26 @@ class IssueFinanceOrgProposeAdmin(ModelAdmin):
         return obj.finance_org.manager or '—'
     get_manager.short_description = 'Менеджер'
     get_manager.admin_order_field = 'finance_org__manager_id'
+
+    # todo read-only formalize docs and final docs for users managers
+
+    def has_add_permission(self, request):
+        if request.user.has_perm('marer.can_add_managed_users_issues_proposes'):
+            return True
+        return super().has_add_permission(request)
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.has_perm('marer.can_view_managed_users_issues_proposes'):
+            if obj is None:
+                return True
+            elif obj.issue.user.manager_id == request.user.id:
+                self.readonly_fields += [
+                    'formalize_note',
+                    'final_decision',
+                    'final_note',
+                ]
+                return True
+        return super().has_change_permission(request, obj)
 
 
 @register(FinanceOrganization)
@@ -351,6 +407,24 @@ class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
         return '<a href="{}">{}</a>'.format(change_url, obj.propose)
     finance_org_propose_change_link.short_description = 'Предложения заявки в финансовую организацию'
     finance_org_propose_change_link.allow_tags = True
+
+    # todo filter queryset basing on permissions
+    # todo save messages as fo or issuer based on permissions if not set in form
+    # todo filter proposes in form on creating clarification
+
+    def has_add_permission(self, request):
+        if request.user.has_perm('marer.can_add_managed_users_issues_proposes_clarifications'):
+            return True
+        return super().has_add_permission(request)
+
+    def has_change_permission(self, request, obj=None):
+        # todo change to can_view_managed_users_issues_proposes_clarifications
+        if request.user.has_perm('marer.can_add_managed_users_issues_proposes_clarifications'):
+            if obj is None:
+                return True
+            elif obj.propose.issue.user.manager_id == request.user.id:
+                return True
+        return super().has_change_permission(request, obj)
 
 
 @register(models.User)

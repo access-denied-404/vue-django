@@ -15,6 +15,20 @@ class IssueFinanceOrgProposeInlineAdmin(StackedInline):
     model = models.IssueFinanceOrgPropose
     fields = ('finance_org',)
     show_change_link = True
+    can_delete = False
+
+    def has_add_permission(self, request):
+        if request.user.has_perm('marer.can_change_managed_users_issues'):
+            return True
+        return super().has_add_permission(request)
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.has_perm('marer.can_change_managed_users_issues'):
+            if obj is None:
+                return True
+            elif obj.user.manager_id == request.user.id:
+                return True
+        return super().has_change_permission(request, obj)
 
 
 class IssueDocumentInlineAdminForm(forms.ModelForm):
@@ -53,6 +67,24 @@ class IssueDocumentInlineAdmin(TabularInline):
             choices = [(ch.code, ch.name) for ch in obj.get_product().get_documents_list()]
             self.form.declared_fields['code'].widget.choices = choices
         return super().get_formset(request, obj, **kwargs)
+
+    def has_add_permission(self, request):
+        if request.user.has_perm('marer.can_change_managed_users_issues'):
+            return True
+        return super().has_add_permission(request)
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.has_perm('marer.can_change_managed_users_issues'):
+            if obj is None:
+                return True
+            elif obj.user.manager_id == request.user.id:
+                return True
+        return super().has_change_permission(request, obj)
+
+    def has_delete_permission(self, request, obj=None):
+        if request.user.has_perm('marer.can_change_managed_users_issues'):
+            return True
+        return super().has_delete_permission(request, obj)
 
 
 class IFOPClarificationInlineAdmin(TabularInline):
@@ -173,14 +205,68 @@ class IssueBGProdAffiliateInlineAdmin(TabularInline):
     model = IssueBGProdAffiliate
     classes = ('collapse',)
 
+    def has_add_permission(self, request):
+        if request.user.has_perm('marer.can_change_managed_users_issues'):
+            return True
+        return super().has_add_permission(request)
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.has_perm('marer.can_change_managed_users_issues'):
+            if obj is None:
+                return True
+            elif obj.user.manager_id == request.user.id:
+                return True
+        return super().has_change_permission(request, obj)
+
+    def has_delete_permission(self, request, obj=None):
+        if request.user.has_perm('marer.can_change_managed_users_issues'):
+            return True
+        return super().has_delete_permission(request, obj)
+
 
 class IssueBGProdFounderLegalInlineAdmin(TabularInline):
     extra = 0
     model = IssueBGProdFounderLegal
     classes = ('collapse',)
 
+    def has_add_permission(self, request):
+        if request.user.has_perm('marer.can_change_managed_users_issues'):
+            return True
+        return super().has_add_permission(request)
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.has_perm('marer.can_change_managed_users_issues'):
+            if obj is None:
+                return True
+            elif obj.user.manager_id == request.user.id:
+                return True
+        return super().has_change_permission(request, obj)
+
+    def has_delete_permission(self, request, obj=None):
+        if request.user.has_perm('marer.can_change_managed_users_issues'):
+            return True
+        return super().has_delete_permission(request, obj)
+
 
 class IssueBGProdFounderPhysicalInlineAdmin(TabularInline):
     extra = 0
     model = IssueBGProdFounderPhysical
     classes = ('collapse',)
+
+    def has_add_permission(self, request):
+        if request.user.has_perm('marer.can_change_managed_users_issues'):
+            return True
+        return super().has_add_permission(request)
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.has_perm('marer.can_change_managed_users_issues'):
+            if obj is None:
+                return True
+            elif obj.user.manager_id == request.user.id:
+                return True
+        return super().has_change_permission(request, obj)
+
+    def has_delete_permission(self, request, obj=None):
+        if request.user.has_perm('marer.can_change_managed_users_issues'):
+            return True
+        return super().has_delete_permission(request, obj)
