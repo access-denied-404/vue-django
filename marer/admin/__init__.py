@@ -251,7 +251,26 @@ class IssueFinanceOrgProposeAdmin(ModelAdmin):
                     'final_note',
                 ]
                 return True
+        elif request.user.has_perm('marer.can_change_managed_finance_org_proposes'):
+            if obj is None:
+                return True
+            elif obj.finance_org.manager_id == request.user.id:
+                return True
         return super().has_change_permission(request, obj)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            pass
+        elif request.user.has_perm('marer.change_issuefinanceorgpropose'):
+            pass
+        elif request.user.has_perm('marer.can_change_managed_users_issues'):
+            # todo check if it right
+            # qs = qs.filter(issue__user__manager_id=request.user.id)
+            pass
+        elif request.user.has_perm('marer.can_change_managed_finance_org_proposes'):
+            qs = qs.filter(finance_org__manager_id=request.user.id)
+        return qs
 
 
 @register(FinanceOrganization)
@@ -415,6 +434,8 @@ class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
     def has_add_permission(self, request):
         if request.user.has_perm('marer.can_add_managed_users_issues_proposes_clarifications'):
             return True
+        elif request.user.has_perm('marer.can_add_managed_finance_org_proposes_clarifications'):
+            return True
         return super().has_add_permission(request)
 
     def has_change_permission(self, request, obj=None):
@@ -423,6 +444,11 @@ class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
             if obj is None:
                 return True
             elif obj.propose.issue.user.manager_id == request.user.id:
+                return True
+        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_clarifications'):
+            if obj is None:
+                return True
+            elif obj.propose.finance_org.manager_id == request.user.id:
                 return True
         return super().has_change_permission(request, obj)
 

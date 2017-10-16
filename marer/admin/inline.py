@@ -111,6 +111,21 @@ class IFOPClarificationInlineAdmin(TabularInline):
     def has_add_permission(self, request):
         return False
 
+    def has_change_permission(self, request, obj=None):
+        if request.user.has_perm('marer.can_change_managed_users_issues'):
+            # todo check if it right
+            # if obj is None:
+            #     return True
+            # elif obj.user.manager_id == request.user.id:
+            #     return True
+            pass
+        elif request.user.has_perm('marer.can_change_managed_finance_org_proposes'):
+            if obj is None:
+                return True
+            elif obj.finance_org.manager_id == request.user.id:
+                return True
+        return super().has_change_permission(request, obj)
+
     def has_delete_permission(self, request, obj=None):
         return False
 
@@ -158,6 +173,24 @@ class IFOPFormalizeDocumentInlineAdmin(TabularInline):
     )
     classes = ('collapse',)
 
+    # todo check add permission
+    # todo check del permission
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.has_perm('marer.can_change_managed_users_issues'):
+            # todo check if it right
+            # if obj is None:
+            #     return True
+            # elif obj.user.manager_id == request.user.id:
+            #     return True
+            pass
+        elif request.user.has_perm('marer.can_change_managed_finance_org_proposes'):
+            if obj is None:
+                return True
+            elif obj.finance_org.manager_id == request.user.id:
+                return True
+        return super().has_change_permission(request, obj)
+
 
 class IFOPFinalDocumentInlineAdminForm(forms.ModelForm):
     file = forms.FileField(required=True, label='файл', widget=ReadOnlyFileInput)
@@ -189,6 +222,24 @@ class IFOPFinalDocumentInlineAdmin(TabularInline):
         'file',
     )
     classes = ('collapse',)
+
+    # todo check add permission
+    # todo check del permission
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.has_perm('marer.can_change_managed_users_issues'):
+            # todo check if it right
+            # if obj is None:
+            #     return True
+            # elif obj.user.manager_id == request.user.id:
+            #     return True
+            pass
+        elif request.user.has_perm('marer.can_change_managed_finance_org_proposes'):
+            if obj is None:
+                return True
+            elif obj.finance_org.manager_id == request.user.id:
+                return True
+        return super().has_change_permission(request, obj)
 
 
 class IFOPClarificationMessageInlineAdmin(StackedInline):
