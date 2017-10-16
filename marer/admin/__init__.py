@@ -61,7 +61,7 @@ class IssueAdmin(ModelAdmin):
         'humanized_id',
         'user',
         'product',
-        'issuer_short_name',
+        'issuer_name',
         'status',
         'get_manager',
         'humanized_sum',
@@ -72,6 +72,11 @@ class IssueAdmin(ModelAdmin):
     formfield_overrides = {
         TextField: dict(widget=forms.Textarea(dict(rows=4)))
     }
+
+    def issuer_name(self, obj):
+        return obj.issuer_short_name
+    issuer_name.short_description = 'заявитель'
+    issuer_name.admin_order_field = 'issuer_short_name'
 
     def humanized_sum(self, obj):
         return obj.humanized_sum
