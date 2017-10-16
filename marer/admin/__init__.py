@@ -6,6 +6,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.db.models import TextField
 from django import forms
 from django.urls import reverse
+from django.utils.timezone import localtime
 from django.utils.translation import ugettext_lazy as _
 from mptt.admin import MPTTModelAdmin
 
@@ -387,14 +388,14 @@ class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
 
     def get_messages(self, obj):
         messages = obj.clarification_messages.all().order_by('created_at')
-        obj_tmpl = '<div>{msg}</div><br/><div>{msg_docs}</div><br/>'
-        line_tmpl = '<b>{msg.user}</b><br/>{msg_created}:<br/>{msg.message}'
+        obj_tmpl = '<div>{msg}</div><br/><div>{msg_docs}</div>'
+        line_tmpl = '<b><{msg.user}</b><br/>{msg_created}:<br/><br/>{msg.message}'
         line_doc_tmpl = '<div><a href="{doc_url}">{doc_name}</a></div>'
         ret_text = ''
         idx = 1
         msgs_cnt = messages.count()
         for msg in messages:
-            msg_text = line_tmpl.format(msg=msg, msg_created=msg.created_at.strftime('%d.%m.%Y %H:%M'))
+            msg_text = line_tmpl.format(msg=msg, msg_created=localtime(msg.created_at).strftime('%d.%m.%Y %H:%M'))
             docs = ''
             if msg.documents_links.exists():
                 docs += '<b>Документы:</b><br/>'
