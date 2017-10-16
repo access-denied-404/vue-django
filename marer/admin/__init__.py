@@ -199,7 +199,7 @@ class IssueFinanceOrgProposeAdmin(ModelAdmin):
     }
 
     def issue_change_link(self, obj):
-        change_url = reverse('admin:marer_issue_change', args=(obj.id,))
+        change_url = reverse('admin:marer_issue_change', args=(obj.issue_id,))
         return '<a href="{}">{}</a>'.format(change_url, obj.issue)
     issue_change_link.short_description = 'Заявка'
     issue_change_link.allow_tags = True
@@ -422,13 +422,13 @@ class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
         return super().save_form(request, form, change)
 
     def issue_change_link(self, obj):
-        change_url = reverse('admin:marer_issue_change', args=(obj.id,))
+        change_url = reverse('admin:marer_issue_change', args=(obj.propose.issue_id,))
         return '<a href="{}">{}</a>'.format(change_url, obj.propose.issue)
     issue_change_link.short_description = 'Заявка'
     issue_change_link.allow_tags = True
 
     def finance_org_propose_change_link(self, obj):
-        change_url = reverse('admin:marer_issuefinanceorgpropose_change', args=(obj.id,))
+        change_url = reverse('admin:marer_issuefinanceorgpropose_change', args=(obj.propose_id,))
         return '<a href="{}">{}</a>'.format(change_url, obj.propose)
     finance_org_propose_change_link.short_description = 'Предложения заявки в финансовую организацию'
     finance_org_propose_change_link.allow_tags = True
