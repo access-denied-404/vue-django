@@ -119,10 +119,17 @@ class IssueAdmin(ModelAdmin):
     get_manager.admin_order_field = 'user__manager_id'
 
     def has_change_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
+        if request.user.has_perm('marer.change_issue'):
+            pass
+        elif request.user.has_perm('marer.can_change_managed_users_issues'):
             if obj is None:
                 return True
             elif obj.user.manager_id == request.user.id:
+                return True
+        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
+            if obj is None:
+                return True
+            elif obj.proposes.filter(finance_org__manager=request.user).exists():
                 return True
         return super().has_change_permission(request, obj)
 
@@ -133,12 +140,13 @@ class IssueAdmin(ModelAdmin):
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        if request.user.is_superuser:
-            pass
-        elif request.user.has_perm('marer.change_issue'):
+        if request.user.has_perm('marer.change_issue'):
             pass
         elif request.user.has_perm('marer.can_change_managed_users_issues'):
             qs = qs.filter(user__manager_id=request.user.id)
+        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
+            qs = qs.filter(proposes__finance_org__manager=request.user)
+            pass
         return qs
 
     def get_inline_instances(self, request, obj=None):
@@ -156,14 +164,15 @@ class IssueAdmin(ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
-        if request.user.is_superuser:
-            pass
-        elif request.user.has_perm('marer.change_issue'):
+        if request.user.has_perm('marer.change_issue'):
             pass
         elif request.user.has_perm('marer.can_change_managed_users_issues'):
-            # qs = qs.filter(user__manager_id=request.user.id)
             ufield = form.base_fields['user']
             ufield._queryset = ufield._queryset.filter(manager=request.user)
+        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
+            for fname in form.base_fields:
+                fld = form.base_fields[fname]
+                fld.disabled = True
 
         return form
 
@@ -247,7 +256,9 @@ class IssueFinanceOrgProposeAdmin(ModelAdmin):
         return super().has_add_permission(request)
 
     def has_change_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_view_managed_users_issues_proposes'):
+        if request.user.has_perm('marer.change_issuefinanceorgpropose'):
+            pass
+        elif request.user.has_perm('marer.can_view_managed_users_issues_proposes'):
             if obj is None:
                 return True
             elif obj.issue.user.manager_id == request.user.id:
@@ -266,14 +277,10 @@ class IssueFinanceOrgProposeAdmin(ModelAdmin):
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        if request.user.is_superuser:
+        if request.user.has_perm('marer.change_issuefinanceorgpropose'):
             pass
-        elif request.user.has_perm('marer.change_issuefinanceorgpropose'):
-            pass
-        elif request.user.has_perm('marer.can_change_managed_users_issues'):
-            # todo check if it right
-            # qs = qs.filter(issue__user__manager_id=request.user.id)
-            pass
+        elif request.user.has_perm('marer.can_view_managed_users_issues_proposes'):
+            qs = qs.filter(issue__user__manager=request.user)
         elif request.user.has_perm('marer.can_change_managed_finance_org_proposes'):
             qs = qs.filter(finance_org__manager_id=request.user.id)
         return qs
@@ -384,7 +391,20 @@ class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
                 'initiator',
                 'get_messages',
             )
-        return super().get_form(request, obj, **kwargs)
+
+        form = super().get_form(request, obj, **kwargs)
+        if request.user.has_perm('marer.change_issuefinanceorgproposeclarification'):
+            pass
+        elif request.user.has_perm('marer.can_add_managed_users_issues_proposes_clarifications'):
+            if 'propose' in form.base_fields:
+                ufield = form.base_fields['propose']
+                ufield._queryset = ufield._queryset.filter(issue__user__manager=request.user)
+        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_clarifications'):
+            if 'propose' in form.base_fields:
+                ufield = form.base_fields['propose']
+                ufield._queryset = ufield._queryset.filter(finance_org__manager=request.user)
+
+        return form
 
     def get_messages(self, obj):
         messages = obj.clarification_messages.all().order_by('created_at')
@@ -446,7 +466,10 @@ class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
 
     def has_change_permission(self, request, obj=None):
         # todo change to can_view_managed_users_issues_proposes_clarifications
-        if request.user.has_perm('marer.can_add_managed_users_issues_proposes_clarifications'):
+
+        if request.user.has_perm('marer.change_issuefinanceorgproposeclarification'):
+            pass
+        elif request.user.has_perm('marer.can_add_managed_users_issues_proposes_clarifications'):
             if obj is None:
                 return True
             elif obj.propose.issue.user.manager_id == request.user.id:
@@ -457,6 +480,16 @@ class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
             elif obj.propose.finance_org.manager_id == request.user.id:
                 return True
         return super().has_change_permission(request, obj)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.has_perm('marer.change_issuefinanceorgproposeclarification'):
+            pass
+        elif request.user.has_perm('marer.can_add_managed_users_issues_proposes_clarifications'):
+            qs = qs.filter(propose__issue__user__manager=request.user)
+        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_clarifications'):
+            qs = qs.filter(propose__finance_org__manager_id=request.user.id)
+        return qs
 
 
 @register(models.User)

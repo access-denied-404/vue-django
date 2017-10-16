@@ -28,6 +28,8 @@ class IssueFinanceOrgProposeInlineAdmin(StackedInline):
                 return True
             elif obj.user.manager_id == request.user.id:
                 return True
+        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
+            return True
         return super().has_change_permission(request, obj)
 
 
@@ -79,6 +81,8 @@ class IssueDocumentInlineAdmin(TabularInline):
                 return True
             elif obj.user.manager_id == request.user.id:
                 return True
+        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
+            return True
         return super().has_change_permission(request, obj)
 
     def has_delete_permission(self, request, obj=None):
@@ -112,13 +116,13 @@ class IFOPClarificationInlineAdmin(TabularInline):
         return False
 
     def has_change_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            # todo check if it right
-            # if obj is None:
-            #     return True
-            # elif obj.user.manager_id == request.user.id:
-            #     return True
+        if request.user.has_perm('marer.change_issuefinanceorgproposeclarification'):
             pass
+        elif request.user.has_perm('marer.can_change_managed_users_issues'):
+            if obj is None:
+                return True
+            elif obj.issue.user.manager_id == request.user.id:
+                return True
         elif request.user.has_perm('marer.can_change_managed_finance_org_proposes'):
             if obj is None:
                 return True
@@ -173,23 +177,38 @@ class IFOPFormalizeDocumentInlineAdmin(TabularInline):
     )
     classes = ('collapse',)
 
-    # todo check add permission
-    # todo check del permission
-
     def has_change_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            # todo check if it right
-            # if obj is None:
-            #     return True
-            # elif obj.user.manager_id == request.user.id:
-            #     return True
+        if request.user.has_perm('marer.change_issuefinanceorgproposeformalizedocument'):
             pass
+        elif request.user.has_perm('marer.can_change_managed_users_issues'):
+            # todo make it read only
+            if obj is None:
+                return True
+            elif obj.issue.user.manager_id == request.user.id:
+                return True
         elif request.user.has_perm('marer.can_change_managed_finance_org_proposes'):
             if obj is None:
                 return True
             elif obj.finance_org.manager_id == request.user.id:
                 return True
         return super().has_change_permission(request, obj)
+
+    def has_add_permission(self, request):
+        if request.user.has_perm('marer.change_issuefinanceorgproposeformalizedocument'):
+            pass
+        elif request.user.has_perm('marer.can_change_managed_finance_org_proposes'):
+            return True
+        return super().has_add_permission(request)
+
+    def has_delete_permission(self, request, obj=None):
+        if request.user.has_perm('marer.change_issuefinanceorgproposeformalizedocument'):
+            pass
+        elif request.user.has_perm('marer.can_change_managed_finance_org_proposes'):
+            if obj is None:
+                return True
+            elif obj.finance_org.manager_id == request.user.id:
+                return True
+        return super().has_delete_permission(request, obj)
 
 
 class IFOPFinalDocumentInlineAdminForm(forms.ModelForm):
@@ -227,19 +246,37 @@ class IFOPFinalDocumentInlineAdmin(TabularInline):
     # todo check del permission
 
     def has_change_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            # todo check if it right
-            # if obj is None:
-            #     return True
-            # elif obj.user.manager_id == request.user.id:
-            #     return True
+        if request.user.has_perm('marer.change_issuefinanceorgproposefinaldocument'):
             pass
+        elif request.user.has_perm('marer.can_change_managed_users_issues'):
+            # todo make it read only
+            if obj is None:
+                return True
+            elif obj.issue.user.manager_id == request.user.id:
+                return True
         elif request.user.has_perm('marer.can_change_managed_finance_org_proposes'):
             if obj is None:
                 return True
             elif obj.finance_org.manager_id == request.user.id:
                 return True
         return super().has_change_permission(request, obj)
+
+    def has_add_permission(self, request):
+        if request.user.has_perm('marer.change_issuefinanceorgproposeformalizedocument'):
+            pass
+        elif request.user.has_perm('marer.can_change_managed_finance_org_proposes'):
+            return True
+        return super().has_add_permission(request)
+
+    def has_delete_permission(self, request, obj=None):
+        if request.user.has_perm('marer.change_issuefinanceorgproposeformalizedocument'):
+            pass
+        elif request.user.has_perm('marer.can_change_managed_finance_org_proposes'):
+            if obj is None:
+                return True
+            elif obj.finance_org.manager_id == request.user.id:
+                return True
+        return super().has_delete_permission(request, obj)
 
 
 class IFOPClarificationMessageInlineAdmin(StackedInline):
@@ -267,6 +304,8 @@ class IssueBGProdAffiliateInlineAdmin(TabularInline):
                 return True
             elif obj.user.manager_id == request.user.id:
                 return True
+        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
+            return True
         return super().has_change_permission(request, obj)
 
     def has_delete_permission(self, request, obj=None):
@@ -291,6 +330,8 @@ class IssueBGProdFounderLegalInlineAdmin(TabularInline):
                 return True
             elif obj.user.manager_id == request.user.id:
                 return True
+        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
+            return True
         return super().has_change_permission(request, obj)
 
     def has_delete_permission(self, request, obj=None):
@@ -315,6 +356,8 @@ class IssueBGProdFounderPhysicalInlineAdmin(TabularInline):
                 return True
             elif obj.user.manager_id == request.user.id:
                 return True
+        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
+            return True
         return super().has_change_permission(request, obj)
 
     def has_delete_permission(self, request, obj=None):
