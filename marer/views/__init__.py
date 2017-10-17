@@ -423,7 +423,7 @@ class NewsPageView(TemplateView, StaticPagesContextMixin):
     template_name = 'marer/news_page.html'
 
     def get(self, request, *args, **kwargs):
-        news_page_id = kwargs.get('spid', 0)
+        news_page_id = kwargs.get('npid', 0)
         news_page = get_object_or_404(NewsPage, id=news_page_id)
 
         if 'quick_request_form' in kwargs:
