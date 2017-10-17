@@ -211,14 +211,31 @@
       </div>
     </div>
   </div>
-{#  <div class="news">#}
-{#    <div class="container">#}
-{#      <div class="newsblock">#}
-{#        <div class="blockhead w-clearfix">#}
-{#          <h3 class="blockheader">Новости</h3>#}
+  <div class="news">
+    <div class="container">
+      <div class="newsblock">
+        <div class="blockhead w-clearfix">
+          <h3 class="blockheader">Новости</h3>
 {#          <a href="#" class="moreitems">Больше новостей</a>#}
-{#        </div>#}
-{#        <div class="newsitems">#}
+        </div>
+        <div class="newsitems">
+
+            {% for news in last_news %}
+                <a href="{% url 'news_page' news.id %}" class="item w-inline-block">
+                    <div
+                            class="itemprev"
+                            {% if news.picture %}
+                                style="background-image: url({{ news.picture.url }})"
+                            {% endif %}
+                    ></div>
+                    <div class="itemdata">
+                        <div class="itemheader">{{ news.name }}</div>
+                        <div class="itemdate">{{ news.published_at }}</div>
+                    </div>
+                </a>
+            {% endfor %}
+
+
 {#          <a href="#" class="item w-inline-block">#}
 {#            <div class="itemprev">#}
 {#            </div>#}
@@ -251,7 +268,7 @@
 {#              <div class="itemdate">14:34 — 05.10.2017</div>#}
 {#            </div>#}
 {#          </a>#}
-{#        </div>#}
+        </div>
 {#        <div data-animation="slide" data-duration="500" data-infinite="1" class="blockitemsmobi w-slider">#}
 {#          <div class="w-slider-mask">#}
 {#            <div class="w-slide">#}
@@ -306,7 +323,7 @@
 {#          <div class="dotsmobi w-round w-slider-nav w-slider-nav-invert">#}
 {#          </div>#}
 {#        </div>#}
-{#      </div>#}
+      </div>
 {#      <div class="noticeblock">#}
 {#        <div class="blockhead w-clearfix">#}
 {#          <h3 class="blockheader">Анонсы#}
@@ -377,8 +394,8 @@
 {#          </div>#}
 {#        </div>#}
 {#      </div>#}
-{#    </div>#}
-{#  </div>#}
+    </div>
+  </div>
   <div class="features">
     <div class="container">
       <h2>Почему мы</h2>

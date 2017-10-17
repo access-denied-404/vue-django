@@ -56,6 +56,22 @@ class StaticPageAdmin(ModelAdmin):
     )
 
 
+@register(models.NewsPage)
+class NewsPageAdmin(ModelAdmin):
+    fieldsets = (
+        (None, dict(fields=(
+            'name',
+            'published_at',
+            'picture',
+            'page_content',
+        ))),
+        (_('SEO'), dict(classes='collapse', fields=(
+            ('_seo_h1', '_seo_title'),
+            ('_seo_description', '_seo_keywords'),
+        ))),
+    )
+
+
 @register(models.Issue)
 class IssueAdmin(ModelAdmin):
     list_display = (

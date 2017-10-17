@@ -37,6 +37,19 @@ def finance_products_page_images_upload_path(instance, filename):
     return new_filename
 
 
+def news_pictures_upload_path(instance, filename):
+    filename_arr = str(filename).split('.')
+    ext = filename_arr[-1]
+    new_filename = 'images/news/{file_name}.{file_ext}'.format(
+        file_name=uuid.uuid4(),
+        file_ext=ext,
+    )
+    new_filename = force_str(new_filename)
+    new_filename = force_text(new_filename)
+    new_filename = os.path.normpath(new_filename)
+    return new_filename
+
+
 class Document(models.Model):
     file = models.FileField(upload_to=documents_upload_path)
 

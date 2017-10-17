@@ -6,7 +6,7 @@ from mptt import models as mptt_models
 from mptt.fields import TreeForeignKey
 
 from marer.models.base import *
-from marer.models.base import finance_products_page_images_upload_path
+from marer.models.base import finance_products_page_images_upload_path, news_pictures_upload_path
 from marer.models.issue import *
 from marer.models.issuer import *
 from marer.models.user import *
@@ -99,6 +99,49 @@ class StaticPage(models.Model):
     )
     page_content = RichTextField(verbose_name=_('page content'), blank=True, null=False, default='')
     order = models.PositiveIntegerField(blank=False, null=False, default=1)
+
+    def __str__(self):
+        return self.name
+
+    def get_seo_h1(self):
+        return self._seo_h1 if self._seo_h1 != '' else self.name
+
+    def get_seo_title(self):
+        return self._seo_title if self._seo_title != '' else self.name
+
+
+class NewsPage(models.Model):
+
+    class Meta:
+        verbose_name = _('news page')
+        verbose_name_plural = _('news pages')
+        ordering = ['-published_at']
+
+    published_at = models.DateTimeField(verbose_name=_('news publish date and time'), blank=False, null=False)
+    picture = models.ImageField(
+        verbose_name=_('news picture'),
+        upload_to=news_pictures_upload_path,
+        blank=True,
+        null=True
+    )
+    name = models.CharField(verbose_name=_('news name'), max_length=512, blank=False, null=False)
+    _seo_h1 = models.CharField(verbose_name=_('name on page'), max_length=512, blank=True, null=False, default='')
+    _seo_title = models.CharField(verbose_name=_('browser title'), max_length=512, blank=True, null=False, default='')
+    _seo_description = models.CharField(
+        verbose_name=_('page desctiption'),
+        max_length=512,
+        blank=True,
+        null=False,
+        default=''
+    )
+    _seo_keywords = models.CharField(
+        verbose_name=_('page keywords'),
+        max_length=512,
+        blank=True,
+        null=False,
+        default=''
+    )
+    page_content = RichTextField(verbose_name=_('news content'), blank=True, null=False, default='')
 
     def __str__(self):
         return self.name
