@@ -6,6 +6,7 @@
   padding-left: 0;
   margin: @line-height-computed 0;
   border-radius: @border-radius-base;
+  .box-shadow(0 1px 1px rgba(0,0,0,.05));
 
   > li {
     display: inline; // Remove list-style and block-level defaults
@@ -13,7 +14,7 @@
     > span {
       position: relative;
       float: left; // Collapse white-space
-      padding: @padding-base-vertical @padding-base-horizontal;
+      padding: @padding-large-vertical @padding-large-horizontal;
       line-height: @line-height-base;
       text-decoration: none;
       color: @pagination-color;

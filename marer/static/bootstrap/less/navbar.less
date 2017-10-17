@@ -264,11 +264,13 @@
 
   // Uncollapse the nav
   @media (min-width: @grid-float-breakpoint) {
-    float: left;
+    float: none;
+    display: inline-block;
     margin: 0;
 
     > li {
-      float: left;
+      float: none;
+      display: inline-block;
       > a {
         padding-top:    @navbar-padding-vertical;
         padding-bottom: @navbar-padding-vertical;

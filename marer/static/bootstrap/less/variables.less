@@ -14,9 +14,9 @@
 @gray-light:             lighten(@gray-base, 46.7%); // #777
 @gray-lighter:           lighten(@gray-base, 93.5%); // #eee
 
-@brand-primary:         #19264a;
+@brand-primary:         #0089d8;
 @brand-success:         #5cb85c;
-@brand-info:            #5bc0de;
+@brand-info:            #e7ecf4;
 @brand-warning:         #f0ad4e;
 @brand-danger:          #d9534f;
 
@@ -26,7 +26,7 @@
 //## Settings for some of the most global styles.
 
 //** Background color for `<body>`.
-@body-bg:               #fdfdfd;
+@body-bg:               transparent;
 //** Global text color on `<body>`.
 @text-color:            @gray-dark;
 
@@ -42,13 +42,13 @@
 //
 //## Font, line-height, and color for body text, headings, and more.
 
-@font-family-sans-serif:  "DINPro-Regular", Helvetica, Arial, sans-serif;
+@font-family-sans-serif:  "PFDinDisplayPro Light", Helvetica, Arial, sans-serif;
 @font-family-serif:       Georgia, "Times New Roman", Times, serif;
 //** Default monospace fonts for `<code>`, `<kbd>`, and `<pre>`.
 @font-family-monospace:   Menlo, Monaco, Consolas, "Courier New", monospace;
 @font-family-base:        @font-family-sans-serif;
 
-@font-size-base:          14px;
+@font-size-base:          16px;
 @font-size-large:         ceil((@font-size-base * 1.25)); // ~18px
 @font-size-small:         ceil((@font-size-base * 0.85)); // ~12px
 
@@ -87,11 +87,11 @@
 //
 //## Define common padding and border radius sizes and more. Values based on 14px text and 1.428 line-height (~20px to start).
 
-@padding-base-vertical:     6px;
-@padding-base-horizontal:   12px;
+@padding-base-vertical:     10px;
+@padding-base-horizontal:   16px;
 
-@padding-large-vertical:    10px;
-@padding-large-horizontal:  16px;
+@padding-large-vertical:    15px;
+@padding-large-horizontal:  24px;
 
 @padding-small-vertical:    5px;
 @padding-small-horizontal:  10px;
@@ -122,12 +122,12 @@
 //## Customizes the `.table` component with basic values, each used across all table variations.
 
 //** Padding for `<th>`s and `<td>`s.
-@table-cell-padding:            8px;
+@table-cell-padding:            12px;
 //** Padding for cells in `.table-condensed`.
 @table-condensed-cell-padding:  5px;
 
 //** Default background color used for all tables.
-@table-bg:                      transparent;
+@table-bg:                      #ffffff;
 //** Background color used for `.table-striped`.
 @table-bg-accent:               #f9f9f9;
 //** Background color used for `.table-hover`.
@@ -171,7 +171,7 @@
 @btn-link-disabled-color:        @gray-light;
 
 // Allows for customizing button radius independently from global border radius
-@btn-border-radius-base:         @border-radius-base;
+@btn-border-radius-base:         2px;
 @btn-border-radius-large:        @border-radius-large;
 @btn-border-radius-small:        @border-radius-small;
 
@@ -193,7 +193,7 @@
 // TODO: Rename `@input-border-radius` to `@input-border-radius-base` in v4
 //** Default `.form-control` border radius
 // This has no effect on `<select>`s in some browsers, due to the limited stylability of `<select>`s in CSS.
-@input-border-radius:            @border-radius-base;
+@input-border-radius:            2px;
 //** Large `.form-control` border radius
 @input-border-radius-large:      @border-radius-large;
 //** Small `.form-control` border radius
@@ -365,12 +365,12 @@
 @navbar-collapse-max-height:       340px;
 
 @navbar-default-color:             #777;
-@navbar-default-bg:                #f8f8f8;
-@navbar-default-border:            darken(@navbar-default-bg, 6.5%);
+@navbar-default-bg:                transparent;
+@navbar-default-border:            none;
 
 // Navbar links
-@navbar-default-link-color:                #777;
-@navbar-default-link-hover-color:          #333;
+@navbar-default-link-color:                darken(@link-color, 5%);
+@navbar-default-link-hover-color:          @link-hover-color;
 @navbar-default-link-hover-bg:             transparent;
 @navbar-default-link-active-color:         #555;
 @navbar-default-link-active-bg:            darken(@navbar-default-bg, 6.5%);
@@ -449,14 +449,14 @@
 
 @pagination-color:                     @link-color;
 @pagination-bg:                        #fff;
-@pagination-border:                    #ddd;
+@pagination-border:                    none;
 
 @pagination-hover-color:               @link-hover-color;
 @pagination-hover-bg:                  @gray-lighter;
 @pagination-hover-border:              #ddd;
 
-@pagination-active-color:              #fff;
-@pagination-active-bg:                 @brand-primary;
+@pagination-active-color:              @link-color;
+@pagination-active-bg:                 @brand-info;
 @pagination-active-border:             @brand-primary;
 
 @pagination-disabled-color:            @gray-light;
@@ -501,7 +501,7 @@
 @state-success-border:           darken(spin(@state-success-bg, -10), 5%);
 
 @state-info-text:                #31708f;
-@state-info-bg:                  #d9edf7;
+@state-info-bg:                  #edf2fa;
 @state-info-border:              darken(spin(@state-info-bg, -10), 7%);
 
 @state-warning-text:             #8a6d3b;
@@ -703,8 +703,8 @@
 //##
 
 @panel-bg:                    #fff;
-@panel-body-padding:          12px;
-@panel-heading-padding:       8px 12px;
+@panel-body-padding:          15px;
+@panel-heading-padding:       15px;
 @panel-footer-padding:        @panel-heading-padding;
 @panel-border-radius:         @border-radius-base;
 
@@ -712,28 +712,28 @@
 @panel-inner-border:          #ddd;
 @panel-footer-bg:             #79cde3;
 
-@panel-default-text:          #fff;
-@panel-default-border:        #79cde3;
-@panel-default-heading-bg:    #79cde3;
+@panel-default-text:          #555;
+@panel-default-border:        none;
+@panel-default-heading-bg:    #e7ecf4;
 
 @panel-primary-text:          #fff;
-@panel-primary-border:        @brand-primary;
+@panel-primary-border:        none;
 @panel-primary-heading-bg:    @brand-primary;
 
 @panel-success-text:          @state-success-text;
-@panel-success-border:        @state-success-border;
+@panel-success-border:        none;
 @panel-success-heading-bg:    @state-success-bg;
 
 @panel-info-text:             @state-info-text;
-@panel-info-border:           @state-info-border;
+@panel-info-border:           none;
 @panel-info-heading-bg:       @state-info-bg;
 
 @panel-warning-text:          @state-warning-text;
-@panel-warning-border:        @state-warning-border;
+@panel-warning-border:        none;
 @panel-warning-heading-bg:    @state-warning-bg;
 
 @panel-danger-text:           @state-danger-text;
-@panel-danger-border:         @state-danger-border;
+@panel-danger-border:         none;
 @panel-danger-heading-bg:     @state-danger-bg;
 
 
