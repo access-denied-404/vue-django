@@ -5,6 +5,8 @@
 {% block head_additional %}
     <link href="{% static '/marer/css/sticky-navbar.css' %}" rel="stylesheet">
     <link href="{% static '/marer/css/sticky-footer.css' %}" rel="stylesheet">
+    <link href="{% static '/marer/css/btn-yellow.css' %}" rel="stylesheet">
+    <link href="{% static '/marer/css/body-bgnd.css' %}" rel="stylesheet">
     <link href="{% static 'frontend/dist/static/css/app.css' %}" rel=stylesheet>
 {% endblock %}
 
@@ -28,7 +30,12 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="{% url 'cabinet_requests' %}"><b>{{ request.user.get_full_name }}</b></a></li>
+                    <li>
+                        <a href="{% url 'cabinet_requests' %}">
+                            <span class="text-primary">{{ request.user.get_full_name }}</span>
+                            <span class="glyphicon glyphicon-user text-primary"></span>
+                        </a>
+                    </li>
                     <li><a href="{% url 'logout' %}">Выход</a></li>
                 </ul>
             </div><!-- /.navbar-collapse -->

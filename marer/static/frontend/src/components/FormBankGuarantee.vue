@@ -1,7 +1,7 @@
 <template>
   <div class="form-bank-guarantee">
 
-    <div class="panel panel-primary">
+    <div class="panel panel-info">
       <div class="panel-heading">Сведения о тендере</div>
       <div class="panel-body">
         <div class="row">
@@ -16,7 +16,7 @@
       </div>
     </div>
 
-    <div class="panel panel-primary">
+    <div class="panel panel-info">
       <div class="panel-heading">Сведения об организаторе тендера</div>
       <div class="panel-body">
         <div class="row">
@@ -33,7 +33,7 @@
       </div>
     </div>
 
-    <div class="panel panel-primary">
+    <div class="panel panel-info">
       <div class="panel-heading">Сведения об истребуемой гарантии</div>
       <div class="panel-body">
         <div class="row">

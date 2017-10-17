@@ -17,7 +17,7 @@
 
     {% if clarification %}
         {% for msg in clarification.clarification_messages.all %}
-            <div class="panel panel-primary">
+            <div class="panel panel-info">
                 <div class="panel-body">
                     <div class="container-fluid">
 
@@ -53,7 +53,7 @@
 
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="panel panel-primary">
+        <div class="panel panel-info">
             <div class="panel-heading">Новое сообщение</div>
             <div class="panel-body">
                 <div class="container-fluid">

@@ -1,0 +1,17 @@
+.btn-yellow {
+    color: black;
+    background-color: #fce200;
+    border-color: #fce200;
+}
+
+.btn-yellow:hover {
+    color: black;
+    background-color: #fff600;
+    border-color: #fff600;
+}
+
+.btn-yellow:active, .btn-yellow:focus {
+    color: black;
+    background-color: #f6cb00;
+    border-color: #f6cb00;
+}

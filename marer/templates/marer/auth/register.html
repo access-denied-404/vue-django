@@ -4,16 +4,26 @@
 
 {% block head_additional %}
     <link href="{% static '/marer/css/vertical-center.css' %}" rel="stylesheet">
+    <link href="{% static '/marer/css/no-text-decoration.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
     <div class="jumbotron vertical-center">
         <div class="container">
             <div class="row">
-                <div class="col-md-4 col-md-offset-4">
+                <div class="col-md-6 col-md-offset-3">
+                    <div class="text-center">
+                        <a href="{% url 'index' %}" class="no-text-decoration">
+                            <img src="{% static 'marer/img/logo_marer_horizontal.svg' %}" height="30"/>
+                        </a>
+                        <br/>
+                        <br/>
+                        <br/>
+                    </div>
                     <div class="panel panel-primary">
-                        <div class="panel-heading">Регистрация</div>
                         <div class="panel-body">
+                            <div class="h3 text-center text-uppercase">Регистрация</div>
+                            <br/>
                             <form method="post">
                                 {% csrf_token %}
                                 <div class="form-row">

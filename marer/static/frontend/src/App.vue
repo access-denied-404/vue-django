@@ -1,7 +1,7 @@
 <template>
   <div id="app-root">
     <form method="post">
-      <div class="panel panel-primary">
+      <div class="panel panel-info">
         <div class="panel-heading">Оформление заявки</div>
         <div class="panel-body">
           <input type="hidden" name="csrfmiddlewaretoken" :value="csrf">

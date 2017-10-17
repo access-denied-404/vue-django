@@ -1,7 +1,7 @@
 {% extends 'marer/cabinet/layout_dashboard.html' %}
 
 {% block cabinet_dashboard_content %}
-{#<div class="pull-right">#}
+<div class="pull-right">
 {#    <form style="display: inline">#}
 {#        <div class="btn-group" role="group">#}
 {#            <label>{{ filter_form.fpgrp.label }}</label>#}
@@ -9,6 +9,8 @@
 {#        <div class="btn-group" role="group" aria-label="{{ filter_form.fpgrp.label }}">#}
 {#            {{ filter_form.fpgrp }}#}
 {#        </div>#}
+{#        &nbsp;#}
+{#        &nbsp;#}
 {#        <div class="btn-group" role="group">#}
 {#            <label>{{ filter_form.status.label }}</label>#}
 {#        </div>#}
@@ -16,16 +18,16 @@
 {#            {{ filter_form.status }}#}
 {#        </div>#}
 {#    </form>#}
-{#    <div class="btn-group" role="group" aria-label="Статус заявки">#}
-{#        <a class="btn btn-primary" href="{% url 'issue_new' %}" role="button">Создать заявку</a>#}
-{#    </div>#}
-{#</div>#}
-{#<div class="clearfix"></div>#}
-{#<br/>#}
+    <div class="btn-group" role="group" aria-label="Статус заявки">
+        <a class="btn btn-yellow" href="{% url 'issue_new' %}" role="button">Создать заявку</a>
+    </div>
+</div>
+<div class="clearfix"></div>
+<br/>
 
-<div class="panel panel-primary">
+<div class="panel panel-info">
     <table class="table">
-        <tr class="bg-primary">
+        <tr class="bg-info">
             <th>Номер</th>
             <th>Организация</th>
             <th>Вид заявки</th>
@@ -49,13 +51,21 @@
 
 {#<nav aria-label="Page navigation" class="text-center">#}
 {#    <ul class="pagination">#}
-{#        <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>#}
-{#        <li><a href="#">1</a></li>#}
+{#        <li>#}
+{#            <a href="#" aria-label="Previous">#}
+{#                <span aria-hidden="true" class="glyphicon glyphicon glyphicon-chevron-left"></span>#}
+{#            </a>#}
+{#        </li>#}
+{#        <li class="active"><a href="#">1</a></li>#}
 {#        <li><a href="#">2</a></li>#}
 {#        <li><a href="#">3</a></li>#}
 {#        <li><a href="#">4</a></li>#}
 {#        <li><a href="#">5</a></li>#}
-{#        <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>#}
+{#        <li>#}
+{#            <a href="#" aria-label="Next">#}
+{#                <span aria-hidden="true" class="glyphicon glyphicon glyphicon-chevron-right"></span>#}
+{#            </a>#}
+{#        </li>#}
 {#    </ul>#}
 {#</nav>#}
 {% endblock %}

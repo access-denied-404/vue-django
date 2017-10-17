@@ -3,18 +3,18 @@
 {% block issue_content %}
 <table class="table table-hover table-condensed">
     <tr>
-        <th class="bg-primary">&nbsp;</th>
-        <th class="bg-primary">Процентная<br/>ставка</th>
-        <th class="bg-primary">Обеспечение</th>
-        <th class="bg-primary">Срок<br/>рассмотрения</th>
-        <th class="bg-primary">Открытие<br/>р/с</th>
-        <th class="bg-primary">Личное<br/>присутствие</th>
-        <th class="bg-primary text-center">
+        <th class="bg-info">&nbsp;</th>
+        <th class="bg-info">Процентная<br/>ставка</th>
+        <th class="bg-info">Обеспечение</th>
+        <th class="bg-info">Срок<br/>рассмотрения</th>
+        <th class="bg-info">Открытие<br/>р/с</th>
+        <th class="bg-info">Личное<br/>присутствие</th>
+        <th class="bg-info text-center">
             Заявка
             <form method="post">
                 {% csrf_token %}
                 <input type="hidden" name="send_to_all" value="1"/>
-                <button type="submit" class="btn btn-info btn-xs">Отправить всем</button>
+                <button type="submit" class="btn btn-primary btn-xs">Отправить всем</button>
             </form>
         </th>
     </tr>
@@ -34,7 +34,7 @@
                     {% else %}
                         {% csrf_token %}
                         <input type="hidden" name="foid" value="{{ foc.finance_org_id }}"/>
-                        <button type="submit" class="btn btn-info btn-xs">Отправить</button>
+                        <button type="submit" class="btn btn-primary btn-xs">Отправить</button>
                     {% endif %}
                 </form>
             </td>
