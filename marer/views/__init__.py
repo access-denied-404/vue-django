@@ -32,7 +32,7 @@ class IndexView(TemplateView, StaticPagesContextMixin):
             product_icon__isnull=False
         ).exclude(
             product_icon=''
-        ).order_by('?')[:8]
+        ).order_by('?')[:6]
 
         bg_rated_foc_list = FinanceOrgProductConditions.objects.filter(
             bg_44_contract_exec_interest_rate__isnull=False,

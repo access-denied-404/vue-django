@@ -1,176 +1,909 @@
-{% extends 'marer/layout_public.html' %}
+<!DOCTYPE html>
+<html>
+<head>
+    {% load staticfiles %}
+  <meta charset="utf-8" />
+  <title>МАРЭР</title>
 
-{% load staticfiles %}
+    <!-- favicon set -->
+    <link rel="apple-touch-icon" sizes="57x57" href="{% static 'marer/img/favicon/apple-icon-57x57.png' %}">
+    <link rel="apple-touch-icon" sizes="60x60" href="{% static 'marer/img/favicon/apple-icon-60x60.png' %}">
+    <link rel="apple-touch-icon" sizes="72x72" href="{% static 'marer/img/favicon/apple-icon-72x72.png' %}">
+    <link rel="apple-touch-icon" sizes="76x76" href="{% static 'marer/img/favicon/apple-icon-76x76.png' %}">
+    <link rel="apple-touch-icon" sizes="114x114" href="{% static 'marer/img/favicon/apple-icon-114x114.png' %}">
+    <link rel="apple-touch-icon" sizes="120x120" href="{% static 'marer/img/favicon/apple-icon-120x120.png' %}">
+    <link rel="apple-touch-icon" sizes="144x144" href="{% static 'marer/img/favicon/apple-icon-144x144.png' %}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{% static 'marer/img/favicon/apple-icon-152x152.png' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'marer/img/favicon/apple-icon-180x180.png' %}">
+    <link rel="icon" type="image/png" sizes="192x192"  href="{% static 'marer/img/favicon/android-icon-192x192.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'marer/img/favicon/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="96x96" href="{% static 'marer/img/favicon/favicon-96x96.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'marer/img/favicon/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'marer/img/favicon/manifest.json' %}">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="{% static 'marer/img/favicon/ms-icon-144x144.png' %}">
+    <meta name="theme-color" content="#ffffff">
 
-{% block public_content %}
-    <div class="row">
-        <div class="col-md-4 col-md-push-8">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <span class="h4">Быстрая заявка</span>
-                </div>
-                <div class="panel-body">
-                    {% include 'marer/quick_request_form.html' %}
-                </div>
-            </div>
-        </div>
-        <div class="col-md-8 col-md-pull-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <span class="h4">Лучшие продукты для вашего бизнеса</span><br>
-                </div>
-                <div class="panel-body">
-                    {% for product in best_finance_products %}
-                        <div class="col-sm-3">
-                            <a href="{% url 'finance_product' product.id %}">
-                                <div class="panel panel-default">
-                                    <div class="panel-body" style="height: 135px;position: relative;">
-                                        <span
-                                                style="
-                                                    background-color: rgba(255, 255, 255, 0.9);
-                                                    position: relative;
-                                                    padding: 0 2px;
-                                                    border-radius: 2px;
-                                                    z-index: 5;"
-                                                class="text-center"
-                                        >{{ product.name }}</span>
-                                        <img
-                                                src="{{ product.product_icon.url }}"
-                                                style="position: absolute;height: 66%;bottom: 0;right: 0; z-index: 0;">
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </div>
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <!--[if lt IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js" type="text/javascript"></script><![endif]-->
+  <script type="text/javascript">
+  !function(o,c){var n=c.documentElement,t=" w-mod-";n.className+=t+"js",("ontouchstart"in o||o.DocumentTouch&&c instanceof DocumentTouch)&&(n.className+=t+"touch")}(window,document);
+  </script>
+  <link href="{% static 'nspp/images/59d5e1da0116ac000196fa56_small.png' %}" rel="shortcut icon" type="image/x-icon" />
+  <link href="{% static 'nspp/images/59d5e1d90116ac000196fa55_big.png' %}" rel="apple-touch-icon" />
+  <link rel="stylesheet" type="text/css" href="{% static 'nspp/css/style.css' %}">
+  <link href="{% static '/marer/css/suggestions.css' %}" rel="stylesheet">
+</head>
 
-    <div class="row">
-        <div class="col-md-4">
-            <div class="panel panel-primary">
-                <div class="panel-heading">Рейтинг кредитов</div>
-                <table class="table">
-                    <tr><td>ВТБ Банк Москвы</td><td>от 11%</td></tr>
-                    <tr><td>Центр-инвест до 500 млн</td><td>от 11%</td></tr>
-                    <tr><td>Сбербанк России</td><td>от 12%</td></tr>
-                    <tr><td>Авангард</td><td>от 12%</td></tr>
-                    <tr><td>Московский Областной Банк</td><td>от 13,5%</td></tr>
-                </table>
+<body class="body">
+  <div data-ix="orderappear" class="poporder">
+    <div class="poporderwrap">
+      <div class="poporderblock">
+        <h2 class="orderheader">Время побеждать</h2>
+        <div class="ordersubheader">Оставьте заявку прямо сейчас и мы свяжемся с вами</div>
+        <div class="orderbig">
+          <div class="form-block">
+            <form id="email-form" name="email-form" data-name="Email Form" class="startorderform">
+              <input type="text" class="orderinput w-input" maxlength="256" name="Service-3" data-name="Service 3" placeholder="Выберите банковскую услугу" id="Service-3" required="" />
+              <input type="text" class="orderinput w-input party" maxlength="256" name="Company-3" data-name="Company 3" placeholder="ИНН организации или ИП" id="Company-3" required="" />
+              <input type="text" class="orderinput w-input" maxlength="256" name="Phone-2" data-name="Phone 2" placeholder="Телефон" id="Phone-2" required="" />
+              <input type="email" class="orderinput w-input" maxlength="256" name="Email-3" data-name="Email 3" placeholder="Электронная почта" id="Email-3" required="" />
+              <input type="submit" value="Отправить заявку" data-wait="Секунду..." class="ordersubmit submit w-button" />
+            </form>
+{#            <div class="ordersuccess w-form-done">#}
+{#              <div>Спасибо!#}
+{#                <br/>Скоро мы с вами свяжемся.</div>#}
+{#            </div>#}
+            <div class="ordererror w-form-fail">
+              <div>Проверьте правильность заполнения полей</div>
             </div>
+          </div>
         </div>
-        <div class="col-md-4">
-            <div class="panel panel-primary">
-                <div class="panel-heading">Рейтинг банковских гарантий</div>
-                <table class="table">
-                    {% for bgrfoc in bg_rated_foc_list %}
-                        <tr>
-                            <td>{{ bgrfoc.finance_org.name }}</td>
-                            <td>от {{ bgrfoc.bg_44_contract_exec_interest_rate | floatformat }}%</td>
-                        </tr>
-                    {% endfor %}
-                </table>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="panel panel-primary">
-                <div class="panel-heading">Рейтинг лизинговых условий</div>
-                <table class="table">
-                    <tr><td>Бизнес Альянс от 100 млн</td></tr>
-                    <tr><td>Альянс-Лизинг (ЗАО) от 50 тыс до 50 млн</td></tr>
-                    <tr><td>Тяжпромлизинг (СМП банк) от 100 млн</td></tr>
-                    <tr><td>ЛФ Финанс до 50 млн</td></tr>
-                    <tr><td>Энергоинвест от 500 тыс до 5 млн</td></tr>
-                </table>
-            </div>
-        </div>
+      </div>
     </div>
-    <div class="row">
-        <div class="col-md-8">
-            <div class="h3">О компании</div>
-            <p class="text-justify">
-                Межотраслевое агентство регионального экономического развития
-                было основано в 2014 году как организация,  осуществляющая
-                комплексную поддержку малым и среднем предприятиям на
-                региональном и на федеральном уровне. Основная деятельность
-                Агентства направлена на обеспечение финансовой, юридической и
-                социальной поддержки, а также налаживанию внутрикорпоративных
-                связей, позволяющих малым и средним предприятиям достойно
-                конкурировать на российском рынке.
-            </p>
-            <p class="text-justify">
-                Агентство МАРЭР сотрудничает с различными общественными
-                организациями, региональными администрациями, реализуя
-                значимые проекты на уровне отдельных предприятий и целых
-                регионов. Через свои филиалы и представительства Агентство
-                может организовывать помощь в проведении аудита, подбору
-                тендеров на участие в государственных и коммерческих
-                контрактах, подготовке тендерной документации, подбору
-                финансовых инструментов для реализации любых проектов. Важной
-                особенностью Агентства является возможность структурирования
-                многосторонних схем привлечения инвестиционных ресурсов,
-                включая существующие государственные программы финансовой
-                поддержки, субсидий, венчурных фондов и частных инвестиций.
-            </p>
-        </div>
-        <div class="col-md-4">
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="h3">Мы в соцсетях</div>
-                    <p>
-                        <a rel="nofollow" target="_blank" href="https://www.facebook.com/marer.ru/">
-                            <img src="{% static 'marer/img/social/fb.svg' %}" height="16" />
-                            Facebook
-                        </a>
-                    </p>
-                    <p>
-                        <a rel="nofollow" target="_blank" href="https://vk.com/marerru">
-                            <img src="{% static 'marer/img/social/vk.svg' %}" height="16" />
-                            Вконтакте
-                        </a>
-                    </p>
-                </div>
-                <div class="col-sm-6">
-                    <div class="h3">Проекты</div>
-                    <p>
-                        <a rel="nofollow" target="_blank" href="https://inspectrum.su/">
-                            <img src="https://inspectrum.su/static/portal/img/favicon.ico" height="16" />
-                            Inspectrum
-                        </a>
-                    </p>
-                    <p>
-                        <a rel="nofollow" target="_blank" href="http://www.inspectrum.org/">
-                            <img src="http://static.wixstatic.com/media/b16fac_3f5bf2059ba34bd181f5444ceba4d824~mv2.png/v1/fill/w_32%2Ch_32%2Clg_1%2Cusm_0.66_1.00_0.01/b16fac_3f5bf2059ba34bd181f5444ceba4d824~mv2.png" height="16" />
-                            Assistance
-                        </a>
-                    </p>
-                    <p>
-                        <a rel="nofollow" target="_blank" href="http://raitstudio.ru/">
-                            <img src="http://raitstudio.ru/images/58a61fa76ad309e92b71d000_3.png" height="16" />
-                            Студия РАЙТ
-                        </a>
-                    </p>
-                    <p>
-                        <a rel="nofollow" target="_blank" href="http://inspector.su/">
-                            <img src="http://inspector.su/static/inspector/img/favicon.ico" height="16" />
-                            Inspector
-                        </a>
-                    </p>
-                    <p>
-                        <a rel="nofollow" target="_blank" href="https://inspectrum.su/witness">
-                            <img src="https://inspectrum.su/static/portal/img/favicon.ico" height="16" />
-                            Witness
-                        </a>
-                    </p>
-                    <p>
-                        <a rel="nofollow" target="_blank" href="https://inspectrum.su/innetwork">
-                            <img src="https://inspectrum.su/static/innetwork/images/favicon.ico" height="16" />
-                            InNetwork
-                        </a>
-                    </p>
-                </div>
-            </div>
-        </div>
+    <div class="poporderback">
+      <a href="#" data-ix="orderclose" class="poporderx w-inline-block">
+        <img src="{% static 'nspp/images/59de20a569f6bf0001438728_x.png' %}" width="80" />
+      </a>
     </div>
-{% endblock %}
+  </div>
+  <div data-ix="fixappear" class="fix">
+    <div class="fixwrapper">
+      <div class="container">
+        <div class="headerfix">
+          <a href="#top" class="gotop w-inline-block">
+            <div class="arrowtop">right</div>
+          </a>
+          <a href="{% url 'index' %}" class="logo w-inline-block">
+            <img src="{% static 'nspp/images/59d5eba096577900017a292d_logo.png' %}" width="159" />
+            <div class="logotext">
+              <div class="logotexttop">Межотраслевое агентство</div>
+              <div class="logotextbottom">регионального экономического развития</div>
+            </div>
+          </a>
+          <a href="#order" class="toporder">Подать заявку</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div data-ix="menuappear" class="mobimenu">
+    <div class="mobilinks">
+        {% for product in finance_product_roots %}
+            <a href="{% url 'finance_product' product.id %}" class="menulink">{{ product.name }}</a>
+        {% endfor %}
+      <a data-ix="orderopen" class="mobi toporder">Подать заявку</a>
+      <div class="phonenumbermobi">+7 499 404 18 68</div>
+      <a href="#" class="contactsmobi menulink">Контакты</a>
+    </div>
+  </div>
+  <div id="top" class="hero">
+    <div class="container">
+      <div data-ix="fix" class="header">
+        <div class="headertop">
+          <a href="{% url 'index' %}" class="logo w-inline-block">
+            <img src="{% static 'nspp/images/59d5eba096577900017a292d_logo.png' %}" width="159" />
+            <div class="logotext">
+              <div class="logotexttop">Межотраслевое агентство</div>
+              <div class="logotextbottom">регионального экономического развития</div>
+            </div>
+          </a>
+          <div class="phone">
+            <div class="phonenumber">+7 499 404 18 68</div>
+          </div>
+          <a href="#" data-ix="menuopen" class="mobilink">menu</a>
+        </div>
+        <div class="headerbottom">
+          <div class="menu">
+              {% for product in finance_product_roots %}
+                  <a href="{% url 'finance_product' product.id %}" class="menulink">{{ product.name }}</a>
+              {% endfor %}
+          </div>
+          <div class="menuprofile">
+              {% if request.user.is_authenticated %}
+                  <a href="{% url 'cabinet_requests' %}" class="loginlink">
+                      {{ request.user.get_full_name }} <span class="usericon">user</span>
+                  </a>
+              {% else %}
+                  <a href="{% url 'register' %}" class="registrationlink">Регистрация</a>
+                  <a href="{% url 'login' %}" class="loginlink">Войти <span class="usericon">user</span></a>
+              {% endif %}
+          </div>
+        </div>
+        <div class="logotext mobi">
+          <div class="logotexttop">Межотраслевое агентство</div>
+          <div class="logotextbottom">регионального экономического развития</div>
+        </div>
+      </div>
+      <div class="startblock">
+        <div class="videoblock">
+          <a href="#" class="videopreview w-inline-block">
+            <div class="videoplay">
+              <img src="{% static 'nspp/images/59d5eba1e966f40001436403_play.png' %}" width="122" class="videoplayicon" />
+              <div>Смотрите
+                <br/>видео о нас</div>
+            </div>
+          </a>
+          <div class="videoclip">
+          </div>
+        </div>
+        <div class="startright">
+          <div class="startorder">
+            <div class="startorderheader">Быстрая заявка</div>
+              <form id="email-form" name="email-form" data-name="Email Form" class="startorderform">
+                <input type="text" class="orderinputtop w-input" maxlength="256" name="Service" data-name="Service" placeholder="Выберите банковскую услугу" id="Service" required="" />
+                <input type="text" class="orderinputtop w-input party" maxlength="256" name="Company" data-name="Company" placeholder="ИНН организации или ИП" id="Company" required="" />
+                <input type="text" class="orderinputtop w-input" maxlength="256" name="Phone" data-name="Phone" placeholder="Телефон" id="Phone" required="" />
+                <input type="email" class="orderinputtop w-input" maxlength="256" name="Email" data-name="Email" placeholder="Электронная почта" id="Email" required="" />
+                <input type="submit" value="Отправить заявку" data-wait="Секунду..." class="ordersubmit submit w-button" />
+              </form>
+{#            <div class="ordersuccess w-form-done">#}
+{#              <div>Спасибо!#}
+{#                <br/>Скоро мы с вами свяжемся.</div>#}
+{#            </div>#}
+            <div class="ordererror  w-form-fail">
+              <div>Проверьте правильность заполнения полей</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <img src="{% static 'nspp/images/59dbf3ea5428050001927552_sign.png' %}" width="400" srcset="{% static 'nspp/images/59dbf3ea5428050001927552_sign-p-500.png' %} 500w, {% static 'nspp/images/59dbf3ea5428050001927552_sign.png' %} 800w" sizes="(max-width: 479px) 100vw, (max-width: 991px) 300px, 400px" class="fishka" />
+  </div>
+  <div class="services">
+    <div class="container">
+      <h1 class="mainheader">Наши направления</h1>
+      <div class="servicesblock">
+          {% for product in best_finance_products %}
+              <a href="{% url 'finance_product' product.id %}" class="serviceblock w-inline-block">
+                  <div class="serviceblockicon">
+                      <img src="{{ product.product_icon.url }}" width="53" class="serviceicon" />
+                  </div>
+                  <div>{{ product.name }}</div>
+                  <div class="servicetext">Более 100 банков-партнёров</div>
+              </a>
+          {% endfor %}
+      </div>
+    </div>
+  </div>
+{#  <div class="news">#}
+{#    <div class="container">#}
+{#      <div class="newsblock">#}
+{#        <div class="blockhead w-clearfix">#}
+{#          <h3 class="blockheader">Новости</h3>#}
+{#          <a href="#" class="moreitems">Больше новостей</a>#}
+{#        </div>#}
+{#        <div class="newsitems">#}
+{#          <a href="#" class="item w-inline-block">#}
+{#            <div class="itemprev">#}
+{#            </div>#}
+{#            <div class="itemdata">#}
+{#              <div class="itemheader">Страховщики готовят эксперимент по софинансированию ОМС населением</div>#}
+{#              <div class="itemdate">14:34 — 05.10.2017</div>#}
+{#            </div>#}
+{#          </a>#}
+{#          <a href="#" class="item w-inline-block">#}
+{#            <div class="itemprev">#}
+{#            </div>#}
+{#            <div class="itemdata">#}
+{#              <div class="itemheader">Страховщики готовят эксперимент по софинансированию ОМС населением</div>#}
+{#              <div class="itemdate">14:34 — 05.10.2017</div>#}
+{#            </div>#}
+{#          </a>#}
+{#          <a href="#" class="item w-inline-block">#}
+{#            <div class="itemprev">#}
+{#            </div>#}
+{#            <div class="itemdata">#}
+{#              <div class="itemheader">Страховщики готовят эксперимент по софинансированию ОМС населением</div>#}
+{#              <div class="itemdate">14:34 — 05.10.2017</div>#}
+{#            </div>#}
+{#          </a>#}
+{#          <a href="#" class="item w-inline-block">#}
+{#            <div class="itemprev">#}
+{#            </div>#}
+{#            <div class="itemdata">#}
+{#              <div class="itemheader">Страховщики готовят эксперимент по софинансированию ОМС населением</div>#}
+{#              <div class="itemdate">14:34 — 05.10.2017</div>#}
+{#            </div>#}
+{#          </a>#}
+{#        </div>#}
+{#        <div data-animation="slide" data-duration="500" data-infinite="1" class="blockitemsmobi w-slider">#}
+{#          <div class="w-slider-mask">#}
+{#            <div class="w-slide">#}
+{#              <a href="#" class="item w-inline-block">#}
+{#                <div class="itemprev">#}
+{#                </div>#}
+{#                <div class="itemdata">#}
+{#                  <div class="itemheader">Страховщики готовят эксперимент по софинансированию ОМС населением</div>#}
+{#                  <div class="itemdate">14:34 — 05.10.2017</div>#}
+{#                </div>#}
+{#              </a>#}
+{#            </div>#}
+{#            <div class="w-slide">#}
+{#              <a href="#" class="item w-inline-block">#}
+{#                <div class="itemprev">#}
+{#                </div>#}
+{#                <div class="itemdata">#}
+{#                  <div class="itemheader">Страховщики готовят эксперимент по софинансированию ОМС населением</div>#}
+{#                  <div class="itemdate">14:34 — 05.10.2017</div>#}
+{#                </div>#}
+{#              </a>#}
+{#            </div>#}
+{#            <div class="w-slide">#}
+{#              <a href="#" class="item w-inline-block">#}
+{#                <div class="itemprev">#}
+{#                </div>#}
+{#                <div class="itemdata">#}
+{#                  <div class="itemheader">Страховщики готовят эксперимент по софинансированию ОМС населением</div>#}
+{#                  <div class="itemdate">14:34 — 05.10.2017</div>#}
+{#                </div>#}
+{#              </a>#}
+{#            </div>#}
+{#            <div class="w-slide">#}
+{#              <a href="#" class="item w-inline-block">#}
+{#                <div class="itemprev">#}
+{#                </div>#}
+{#                <div class="itemdata">#}
+{#                  <div class="itemheader">Страховщики готовят эксперимент по софинансированию ОМС населением</div>#}
+{#                  <div class="itemdate">14:34 — 05.10.2017</div>#}
+{#                </div>#}
+{#              </a>#}
+{#            </div>#}
+{#          </div>#}
+{#          <div class="arrowhide w-slider-arrow-left">#}
+{#            <div class="w-icon-slider-left">#}
+{#            </div>#}
+{#          </div>#}
+{#          <div class="arrowhide w-slider-arrow-right">#}
+{#            <div class="w-icon-slider-right">#}
+{#            </div>#}
+{#          </div>#}
+{#          <div class="dotsmobi w-round w-slider-nav w-slider-nav-invert">#}
+{#          </div>#}
+{#        </div>#}
+{#      </div>#}
+{#      <div class="noticeblock">#}
+{#        <div class="blockhead w-clearfix">#}
+{#          <h3 class="blockheader">Анонсы#}
+{#            <span class="headhide">мероприятий</span>#}
+{#          </h3>#}
+{#          <a href="#" class="moreitems">Архив</a>#}
+{#        </div>#}
+{#        <div data-animation="slide" data-duration="500" data-infinite="1" class="noticeslider w-slider">#}
+{#          <div class="w-slider-mask">#}
+{#            <div class="w-slide">#}
+{#              <div class="blockitems">#}
+{#                <a href="#" class="item notice w-inline-block">#}
+{#                  <div class="noticedata">#}
+{#                    <div class="noticenum">21-22</div>#}
+{#                    <div>сентября-октября</div>#}
+{#                  </div>#}
+{#                  <div class="noticetext">Цикл конференций Создание рабочих мест - Стратегия роста для России</div>#}
+{#                </a>#}
+{#                <a href="#" class="item notice w-inline-block">#}
+{#                  <div class="noticedata">#}
+{#                    <div class="noticenum">21-22</div>#}
+{#                    <div>сентября-октября</div>#}
+{#                  </div>#}
+{#                  <div class="noticetext">Цикл конференций Создание рабочих мест - Стратегия роста для России</div>#}
+{#                </a>#}
+{#                <a href="#" class="item notice w-inline-block">#}
+{#                  <div class="noticedata">#}
+{#                    <div class="noticenum">21-22</div>#}
+{#                    <div>сентября-октября</div>#}
+{#                  </div>#}
+{#                  <div class="noticetext">Цикл конференций Создание рабочих мест - Стратегия роста для России</div>#}
+{#                </a>#}
+{#              </div>#}
+{#            </div>#}
+{#            <div class="w-slide">#}
+{#              <div class="blockitems">#}
+{#                <a href="#" class="item notice w-inline-block">#}
+{#                  <div class="noticedata">#}
+{#                    <div class="noticenum">21-22</div>#}
+{#                    <div>сентября-октября</div>#}
+{#                  </div>#}
+{#                  <div class="noticetext">Цикл конференций Создание рабочих мест - Стратегия роста для России</div>#}
+{#                </a>#}
+{#                <a href="#" class="item notice w-inline-block">#}
+{#                  <div class="noticedata">#}
+{#                    <div class="noticenum">21-22</div>#}
+{#                    <div>сентября-октября</div>#}
+{#                  </div>#}
+{#                  <div class="noticetext">Цикл конференций Создание рабочих мест - Стратегия роста для России</div>#}
+{#                </a>#}
+{#                <a href="#" class="item notice w-inline-block">#}
+{#                  <div class="noticedata">#}
+{#                    <div class="noticenum">21-22</div>#}
+{#                    <div>сентября-октября</div>#}
+{#                  </div>#}
+{#                  <div class="noticetext">Цикл конференций Создание рабочих мест - Стратегия роста для России</div>#}
+{#                </a>#}
+{#              </div>#}
+{#            </div>#}
+{#          </div>#}
+{#          <div class="arrow w-slider-arrow-left">#}
+{#            <div class="arrowicon w-icon-slider-left">#}
+{#            </div>#}
+{#          </div>#}
+{#          <div class="arrow w-slider-arrow-right">#}
+{#            <div class="arrowicon w-icon-slider-right">#}
+{#            </div>#}
+{#          </div>#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
+{#  </div>#}
+  <div class="features">
+    <div class="container">
+      <h2>Почему мы</h2>
+      <div class="featuresblock">
+        <div class="featureitem">
+          <div class="featureitemicon">
+            <img src="{% static 'nspp/images/59d5eba047ecf500018f5b1f_list402x.png' %}" width="32" />
+          </div>
+          <div class="featureitemtext">Единая форма заявки
+            <br/>во все кредитные организации</div>
+        </div>
+        <div class="featureitem">
+          <div class="featureitemicon">
+            <img src="{% static 'nspp/images/59d5eba2e966f40001436404_user402x.png' %}" width="41" />
+          </div>
+          <div class="featureitemtext">Персональный менеджер</div>
+        </div>
+        <div class="featureitem">
+          <div class="featureitemicon">
+            <img src="{% static 'nspp/images/59d5eb9e0116ac000196fdb8_Group2012402x.png' %}" width="50" class="paper" />
+          </div>
+          <div class="featureitemtext">Мгновенный подбор кредитных
+            <br/>организаций по заявке</div>
+        </div>
+        <div class="featureitem">
+          <div class="featureitemicon">
+            <img src="{% static 'nspp/images/59d5eb9e47ecf500018f5b1e_Group2011402x.png' %}" width="42" class="find" />
+          </div>
+          <div class="featureitemtext">Мгновенная проверка компании
+            <br/>по всем источникам</div>
+        </div>
+        <div class="featureitem">
+          <div class="featureitemicon">
+            <img src="{% static 'nspp/images/59d5eb9d96577900017a2928_file402x.png' %}" width="32.5" />
+          </div>
+          <div class="featureitemtext">Минимальный пакет документов</div>
+        </div>
+        <div class="featureitem">
+          <div class="featureitemicon">
+            <img src="{% static 'nspp/images/59d5eba047ecf500018f5b1f_list402x.png' %}" width="32" />
+          </div>
+          <div class="featureitemtext">Единая форма заявки
+            <br/>во все кредитные организации</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="numbers">
+    <div class="container">
+      <h2>5 лет на рынке</h2>
+      <div class="numbersblock">
+        <div class="numberitem">
+          <div>Более</div>
+          <div class="numberitemnum">100</div>
+          <div>банков</div>
+        </div>
+        <div class="numberitem">
+          <div>Более</div>
+          <div class="numberitemnum">60</div>
+          <div>лизинговых
+            <br/>компании</div>
+        </div>
+        <div class="numberitem">
+          <div>Более</div>
+          <div class="numberitemnum">30</div>
+          <div>факторинговых
+            <br/>компаний</div>
+        </div>
+        <div class="numberitem">
+          <div>Более</div>
+          <div class="numberitemnum">40</div>
+          <div>программ
+            <br/>господдержки</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="how">
+    <div class="container">
+      <h2>Как мы работаем</h2>
+      <div class="howblock">
+        <div class="howitem">
+          <div class="howitemhead">
+            <div class="howitemnum">1</div>
+            <img src="{% static 'nspp/images/59d5eba30116ac000196fdba_arrow.png' %}" width="177" class="howitemarrow" />
+          </div>
+          <div class="howitemtext">Оформление заявки,
+            <br/>запрос документов.
+            <br/>Идентификация юридического лица.</div>
+        </div>
+        <div class="howitem">
+          <div class="howitemhead">
+            <div class="howitemnum">2</div>
+            <img src="{% static 'nspp/images/59d5eba30116ac000196fdba_arrow.png' %}" width="177" class="howitemarrow" />
+          </div>
+          <div class="howitemtext">Анкетирование.
+            <br/>Экспресс-скоринг, анализ безусловных и условных стоп-факторов.</div>
+        </div>
+        <div class="howitem">
+          <div class="howitemhead">
+            <div class="howitemnum">3</div>
+            <img src="{% static 'nspp/images/59d5eba30116ac000196fdba_arrow.png' %}" width="177" class="howitemarrow" />
+          </div>
+          <div class="howitemtext">Выбор предложений банков (иных финансовых институтов).</div>
+        </div>
+        <div class="howitem">
+          <div class="howitemhead">
+            <div class="howitemnum">4</div>
+            <img src="{% static 'nspp/images/59d5eba30116ac000196fdba_arrow.png' %}" width="177" class="howitemarrow" />
+          </div>
+          <div class="howitemtext">Формирование пакета документов для принятия решения банком (иным финансовым институтом), рассмотрение заявок.</div>
+        </div>
+        <div class="_5 howitem">
+          <div class="howitemhead">
+            <div class="howitemnum">5</div>
+          </div>
+          <div class="howitemtext">Принятие решения по сделке, согласование итоговых форм документов, закрытие
+            <br/>сделки.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+{#  <div class="partners">#}
+{#    <div class="container">#}
+{#      <h2>Компании-партнёры</h2>#}
+{#      <div data-duration-in="300" data-duration-out="100" class="tabs w-tabs">#}
+{#        <div class="tabsmenu w-tab-menu">#}
+{#          <a data-w-tab="Tab 1" class="tablink w-inline-block w-tab-link">#}
+{#            <div>Банки</div>#}
+{#          </a>#}
+{#          <a data-w-tab="Tab 2" class="tablink w-inline-block w-tab-link">#}
+{#            <div>Страховые</div>#}
+{#          </a>#}
+{#          <a data-w-tab="Tab 3" class="tablink w-inline-block w-tab-link">#}
+{#            <div>Лизинговые и факторинговые</div>#}
+{#          </a>#}
+{#          <a data-w-tab="Tab 4" class="tablink w--current w-inline-block w-tab-link">#}
+{#            <div>Госструктуры, общественные организации и фонды</div>#}
+{#          </a>#}
+{#        </div>#}
+{#        <div class="w-tab-content">#}
+{#          <div data-w-tab="Tab 1" class="w-tab-pane">#}
+{#            <div class="tab">#}
+{#              <div data-animation="slide" data-duration="500" data-infinite="1" class="sliderpartner w-slider">#}
+{#                <div class="w-slider-mask">#}
+{#                  <div class="w-slide">#}
+{#                    <div class="partnersblock">#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg'%}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg'%}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg'%}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg'%}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg'%}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg'%}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg'%}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg'%}" />#}
+{#                      </div>#}
+{#                    </div>#}
+{#                  </div>#}
+{#                  <div class="w-slide">#}
+{#                    <div class="reviewsblock">#}
+{#                      <div class="partnerlogo">#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                      </div>#}
+{#                    </div>#}
+{#                  </div>#}
+{#                </div>#}
+{#                <div class="arrow w-slider-arrow-left">#}
+{#                  <div class="w-icon-slider-left">#}
+{#                  </div>#}
+{#                </div>#}
+{#                <div class="arrow w-slider-arrow-right">#}
+{#                  <div class="w-icon-slider-right">#}
+{#                  </div>#}
+{#                </div>#}
+{#                <div class="dots w-round w-slider-nav w-slider-nav-invert">#}
+{#                </div>#}
+{#              </div>#}
+{#            </div>#}
+{#          </div>#}
+{#          <div data-w-tab="Tab 2" class="w-tab-pane">#}
+{#            <div class="tab">#}
+{#              <div data-animation="slide" data-duration="500" data-infinite="1" class="sliderpartner w-slider">#}
+{#                <div class="w-slider-mask">#}
+{#                  <div class="w-slide">#}
+{#                    <div class="partnersblock">#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg' %}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg' %}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg' %}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg' %}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg' %}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg' %}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg' %}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg' %}" />#}
+{#                      </div>#}
+{#                    </div>#}
+{#                  </div>#}
+{#                  <div class="w-slide">#}
+{#                    <div class="reviewsblock">#}
+{#                      <div class="partnerlogo">#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                      </div>#}
+{#                    </div>#}
+{#                  </div>#}
+{#                </div>#}
+{#                <div class="arrow w-slider-arrow-left">#}
+{#                  <div class="w-icon-slider-left">#}
+{#                  </div>#}
+{#                </div>#}
+{#                <div class="arrow w-slider-arrow-right">#}
+{#                  <div class="w-icon-slider-right">#}
+{#                  </div>#}
+{#                </div>#}
+{#                <div class="dots w-round w-slider-nav w-slider-nav-invert">#}
+{#                </div>#}
+{#              </div>#}
+{#            </div>#}
+{#          </div>#}
+{#          <div data-w-tab="Tab 3" class="w-tab-pane">#}
+{#            <div class="tab">#}
+{#              <div data-animation="slide" data-duration="500" data-infinite="1" class="sliderpartner w-slider">#}
+{#                <div class="w-slider-mask">#}
+{#                  <div class="w-slide">#}
+{#                    <div class="partnersblock">#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg' %}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg' %}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg' %}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg' %}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg' %}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg' %}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg' %}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg' %}" />#}
+{#                      </div>#}
+{#                    </div>#}
+{#                  </div>#}
+{#                  <div class="w-slide">#}
+{#                    <div class="reviewsblock">#}
+{#                      <div class="partnerlogo">#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                      </div>#}
+{#                    </div>#}
+{#                  </div>#}
+{#                </div>#}
+{#                <div class="arrow w-slider-arrow-left">#}
+{#                  <div class="w-icon-slider-left">#}
+{#                  </div>#}
+{#                </div>#}
+{#                <div class="arrow w-slider-arrow-right">#}
+{#                  <div class="w-icon-slider-right">#}
+{#                  </div>#}
+{#                </div>#}
+{#                <div class="dots w-round w-slider-nav w-slider-nav-invert">#}
+{#                </div>#}
+{#              </div>#}
+{#            </div>#}
+{#          </div>#}
+{#          <div data-w-tab="Tab 4" class="w--tab-active w-tab-pane">#}
+{#            <div class="tab">#}
+{#              <div data-animation="slide" data-duration="500" data-infinite="1" class="sliderpartner w-slider">#}
+{#                <div class="w-slider-mask">#}
+{#                  <div class="slide w-slide">#}
+{#                    <div class="partnersblock">#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg' %}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg' %}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg' %}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg' %}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg' %}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg' %}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg' %}" />#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                        <img src="{% static 'nspp/images/59d63df554c2d60001e170e5_17_oporarussia.jpg' %}" />#}
+{#                      </div>#}
+{#                    </div>#}
+{#                  </div>#}
+{#                  <div class="w-slide">#}
+{#                    <div class="reviewsblock">#}
+{#                      <div class="partnerlogo">#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                      </div>#}
+{#                      <div class="partnerlogo">#}
+{#                      </div>#}
+{#                    </div>#}
+{#                  </div>#}
+{#                </div>#}
+{#                <div class="arrow w-slider-arrow-left">#}
+{#                  <div class="w-icon-slider-left">#}
+{#                  </div>#}
+{#                </div>#}
+{#                <div class="arrow w-slider-arrow-right">#}
+{#                  <div class="w-icon-slider-right">#}
+{#                  </div>#}
+{#                </div>#}
+{#                <div class="dots w-round w-slider-nav w-slider-nav-invert">#}
+{#                </div>#}
+{#              </div>#}
+{#            </div>#}
+{#          </div>#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
+{#  </div>#}
+{#  <div class="reviews">#}
+{#    <div class="container">#}
+{#      <h2>Отзывы клиентов</h2>#}
+{#      <div data-animation="slide" data-duration="500" data-infinite="1" class="slider w-slider">#}
+{#        <div class="w-slider-mask">#}
+{#          <div class="w-slide">#}
+{#            <div class="reviewsblock">#}
+{#              <a href="#" class="reviewitem w-inline-block">#}
+{#                <img src="{% static 'nspp/images/59d61b138849c4000149feaf_review.jpg' %}" srcset="{% static 'nspp/images/59d61b138849c4000149feaf_review-p-500.jpeg' %} 500w, {% static 'nspp/images/59d61b138849c4000149feaf_review-p-800.jpeg' %} 800w, {% static 'nspp/images/59d61b138849c4000149feaf_review.jpg' %} 903w" sizes="(max-width: 479px) 34vw, (max-width: 767px) 13vw, (max-width: 991px) 15vw, 140.390625px" class="reviewitempic" />#}
+{#                <div>Сергей Черкасов#}
+{#                  <br/>#}
+{#                  <span class="reviewitemcompany">ООО «Отвинта»</span>#}
+{#                </div>#}
+{#              </a>#}
+{#              <a href="#" class="reviewitem w-inline-block">#}
+{#                <img src="{% static 'nspp/images/59d61b138849c4000149feaf_review.jpg' %}" srcset="{% static 'nspp/images/59d61b138849c4000149feaf_review-p-500.jpeg' %} 500w, {% static 'nspp/images/59d61b138849c4000149feaf_review-p-800.jpeg' %} 800w, {% static 'nspp/images/59d61b138849c4000149feaf_review.jpg' %} 903w" sizes="(max-width: 479px) 34vw, (max-width: 767px) 13vw, (max-width: 991px) 15vw, 140.390625px" class="reviewitempic" />#}
+{#                <div>Сергей Черкасов#}
+{#                  <br/>#}
+{#                  <span class="reviewitemcompany">ООО «Отвинта»</span>#}
+{#                </div>#}
+{#              </a>#}
+{#              <a href="#" class="reviewitem w-inline-block">#}
+{#                <img src="{% static 'nspp/images/59d61b138849c4000149feaf_review.jpg' %}" srcset="{% static 'nspp/images/59d61b138849c4000149feaf_review-p-500.jpeg' %} 500w, {% static 'nspp/images/59d61b138849c4000149feaf_review-p-800.jpeg' %} 800w, {% static 'nspp/images/59d61b138849c4000149feaf_review.jpg' %} 903w" sizes="(max-width: 479px) 34vw, (max-width: 767px) 13vw, (max-width: 991px) 15vw, 140.390625px" class="reviewitempic" />#}
+{#                <div>Сергей Черкасов#}
+{#                  <br/>#}
+{#                  <span class="reviewitemcompany">ООО «Отвинта»</span>#}
+{#                </div>#}
+{#              </a>#}
+{#              <a href="#" class="reviewitem w-inline-block">#}
+{#                <img src="{% static 'nspp/images/59d61b138849c4000149feaf_review.jpg' %}" srcset="{% static 'nspp/images/59d61b138849c4000149feaf_review-p-500.jpeg' %} 500w, {% static 'nspp/images/59d61b138849c4000149feaf_review-p-800.jpeg' %} 800w, {% static 'nspp/images/59d61b138849c4000149feaf_review.jpg' %} 903w" sizes="(max-width: 479px) 34vw, (max-width: 767px) 13vw, (max-width: 991px) 15vw, 140.390625px" class="reviewitempic" />#}
+{#                <div>Сергей Черкасов#}
+{#                  <br/>#}
+{#                  <span class="reviewitemcompany">ООО «Отвинта»</span>#}
+{#                </div>#}
+{#              </a>#}
+{#              <a href="#" class="reviewitem w-inline-block">#}
+{#                <img src="{% static 'nspp/images/59d61b138849c4000149feaf_review.jpg' %}" srcset="{% static 'nspp/images/59d61b138849c4000149feaf_review-p-500.jpeg' %} 500w, {% static 'nspp/images/59d61b138849c4000149feaf_review-p-800.jpeg' %} 800w, {% static 'nspp/images/59d61b138849c4000149feaf_review.jpg' %} 903w" sizes="(max-width: 479px) 34vw, (max-width: 767px) 13vw, (max-width: 991px) 15vw, 140.390625px" class="reviewitempic" />#}
+{#                <div>Сергей Черкасов#}
+{#                  <br/>#}
+{#                  <span class="reviewitemcompany">ООО «Отвинта»</span>#}
+{#                </div>#}
+{#              </a>#}
+{#            </div>#}
+{#          </div>#}
+{#          <div class="w-slide">#}
+{#            <div class="reviewsblock">#}
+{#              <a href="#" class="reviewitem w-inline-block">#}
+{#                <img src="{% static 'nspp/images/59d61b138849c4000149feaf_review.jpg' %}" srcset="{% static 'nspp/images/59d61b138849c4000149feaf_review-p-500.jpeg' %} 500w, {% static 'nspp/images/59d61b138849c4000149feaf_review-p-800.jpeg' %} 800w, {% static 'nspp/images/59d61b138849c4000149feaf_review.jpg' %} 903w" sizes="(max-width: 479px) 34vw, (max-width: 767px) 13vw, (max-width: 991px) 15vw, 140.390625px" class="reviewitempic" />#}
+{#                <div>Сергей Черкасов#}
+{#                  <br/>#}
+{#                  <span class="reviewitemcompany">ООО «Отвинта»</span>#}
+{#                </div>#}
+{#              </a>#}
+{#              <a href="#" class="reviewitem w-inline-block">#}
+{#                <img src="{% static 'nspp/images/59d61b138849c4000149feaf_review.jpg' %}" srcset="{% static 'nspp/images/59d61b138849c4000149feaf_review-p-500.jpeg' %} 500w, {% static 'nspp/images/59d61b138849c4000149feaf_review-p-800.jpeg' %} 800w, {% static 'nspp/images/59d61b138849c4000149feaf_review.jpg' %} 903w" sizes="(max-width: 479px) 34vw, (max-width: 767px) 13vw, (max-width: 991px) 15vw, 140.390625px" class="reviewitempic" />#}
+{#                <div>Сергей Черкасов#}
+{#                  <br/>#}
+{#                  <span class="reviewitemcompany">ООО «Отвинта»</span>#}
+{#                </div>#}
+{#              </a>#}
+{#              <a href="#" class="reviewitem w-inline-block">#}
+{#                <img src="{% static 'nspp/images/59d61b138849c4000149feaf_review.jpg' %}" srcset="{% static 'nspp/images/59d61b138849c4000149feaf_review-p-500.jpeg' %} 500w, {% static 'nspp/images/59d61b138849c4000149feaf_review-p-800.jpeg' %} 800w, {% static 'nspp/images/59d61b138849c4000149feaf_review.jpg' %} 903w" sizes="(max-width: 479px) 34vw, (max-width: 767px) 13vw, (max-width: 991px) 15vw, 140.390625px" class="reviewitempic" />#}
+{#                <div>Сергей Черкасов#}
+{#                  <br/>#}
+{#                  <span class="reviewitemcompany">ООО «Отвинта»</span>#}
+{#                </div>#}
+{#              </a>#}
+{#              <a href="#" class="reviewitem w-inline-block">#}
+{#                <img src="{% static 'nspp/images/59d61b138849c4000149feaf_review.jpg' %}" srcset="{% static 'nspp/images/59d61b138849c4000149feaf_review-p-500.jpeg' %} 500w, {% static 'nspp/images/59d61b138849c4000149feaf_review-p-800.jpeg' %} 800w, {% static 'nspp/images/59d61b138849c4000149feaf_review.jpg' %} 903w" sizes="(max-width: 479px) 34vw, (max-width: 767px) 13vw, (max-width: 991px) 15vw, 140.390625px" class="reviewitempic" />#}
+{#                <div>Сергей Черкасов#}
+{#                  <br/>#}
+{#                  <span class="reviewitemcompany">ООО «Отвинта»</span>#}
+{#                </div>#}
+{#              </a>#}
+{#              <a href="#" class="reviewitem w-inline-block">#}
+{#                <img src="{% static 'nspp/images/59d61b138849c4000149feaf_review.jpg' %}" srcset="{% static 'nspp/images/59d61b138849c4000149feaf_review-p-500.jpeg' %} 500w, {% static 'nspp/images/59d61b138849c4000149feaf_review-p-800.jpeg' %} 800w, {% static 'nspp/images/59d61b138849c4000149feaf_review.jpg' %} 903w" sizes="(max-width: 479px) 34vw, (max-width: 767px) 13vw, (max-width: 991px) 15vw, 140.390625px" class="reviewitempic" />#}
+{#                <div>Сергей Черкасов#}
+{#                  <br/>#}
+{#                  <span class="reviewitemcompany">ООО «Отвинта»</span>#}
+{#                </div>#}
+{#              </a>#}
+{#            </div>#}
+{#          </div>#}
+{#        </div>#}
+{#        <div class="arrow w-slider-arrow-left">#}
+{#          <div class="w-icon-slider-left">#}
+{#          </div>#}
+{#        </div>#}
+{#        <div class="arrow w-slider-arrow-right">#}
+{#          <div class="w-icon-slider-right">#}
+{#          </div>#}
+{#        </div>#}
+{#        <div class="dots w-round w-slider-nav w-slider-nav-invert">#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
+{#  </div>#}
+  <div id="order" class="order">
+    <div class="container">
+      <h2 class="orderheader">Время побеждать в тендерах</h2>
+      <div class="ordersubheader">Получите тендерный кредит уже через 2 дня</div>
+      <div class="orderbig">
+        <div class="form-block">
+          <form id="email-form" name="email-form" data-name="Email Form" class="startorderform">
+            <input type="text" class="orderinput w-input" maxlength="256" name="Service-3" data-name="Service 3" placeholder="Выберите банковскую услугу" id="Service-3" required="" />
+            <input type="text" class="orderinput w-input party" maxlength="256" name="Company-3" data-name="Company 3" placeholder="ИНН организации или ИП" id="Company-3" required="" />
+            <input type="text" class="orderinput w-input" maxlength="256" name="Phone-2" data-name="Phone 2" placeholder="Телефон" id="Phone-2" required="" />
+            <input type="email" class="orderinput w-input" maxlength="256" name="Email-3" data-name="Email 3" placeholder="Электронная почта" id="Email-3" required="" />
+            <input type="submit" value="Отправить заявку" data-wait="Секунду..." class="ordersubmit submit w-button" />
+          </form>
+{#          <div class="ordersuccess w-form-done">#}
+{#            <div>Спасибо!#}
+{#              <br/>Скоро мы с вами свяжемся.</div>#}
+{#          </div>#}
+          <div class="ordererror w-form-fail">
+            <div>Проверьте правильность заполнения полей</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="container">
+      <div class="footermenu">
+          {% for sp in static_pages %}
+              <a href="{% url 'static_page' sp.id %}" class="footerlink">{{ sp.name }}</a>
+          {% endfor %}
+      </div>
+      <div class="footersocial">
+        <a rel="nofollow" target="_blank" href="https://vk.com/marerru" class="footersociallink">vk</a>
+        <a rel="nofollow" target="_blank" href="https://www.facebook.com/marer.ru/" class="footersociallink">facebook</a>
+{#        <a href="#" class="footersociallink">twitter</a>#}
+{#        <a href="#" class="footersociallink">youtube</a>#}
+      </div>
+      <div class="footertext w-clearfix">&copy; ООО &laquo;МАРЭР&raquo;, 2017.
+          При использовании материалов гиперссылка на marer.ru обязательна.
+        <span class="rait">Разработано в студии
+          <a xmlns="http://www.w3.org/1999/xhtml" href="http://raitstudio.ru/" target="_blank" class="raitlink">
+            <em class="emphasized-text">РАЙТ</em>
+          </a>
+        </span>
+        <a href="http://raitstudio.ru/" target="_blank" class="raitlink">
+          <em class="emphasized-text">
+          </em>
+        </a>
+      </div>
+    </div>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js" type="text/javascript"></script>
+  <script src="{% static 'nspp/js/script.js' %}" type="text/javascript"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery.suggestions/16.8/js/jquery.suggestions.min.js"></script>
+  <!--[if lte IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif]-->
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('[href*="brandjs"]').attr('style', 'display:none !important');
+
+                // dadata
+        $('.party').suggestions({
+            serviceUrl: 'https://suggestions.dadata.ru/suggestions/api/4_1/rs',
+            token:      '{{ dadata_token }}',
+            type:       'PARTY',
+            count:      7,
+
+            onSelect: function (suggestion) {
+                $("input[name='party_ogrn']").val(suggestion.data.ogrn);
+                $("input[name='party_inn']").val(suggestion.data.inn);
+                $("input[name='party_kpp']").val(suggestion.data.kpp);
+                $("input[name='party_okved']").val(suggestion.data.okved);
+                $("input[name='party_okopf']").val(suggestion.data.okopf);
+
+                $("input[name='party_full_name']").val(suggestion.data.name.full_with_opf);
+                $("input[name='party_short_name']").val(suggestion.data.name.short_with_opf);
+                $("input[name='party_foreign_name']").val(suggestion.data.name.latin);
+
+                $("input[name='party_legal_address']").val(suggestion.data.address.value);
+                $("input[name='party_head_fio']").val(suggestion.data.management.name);
+                $("input[name='party_head_position']").val(suggestion.data.management.post);
+            },
+        });
+    });
+</script>
+</body>
+
+</html>
