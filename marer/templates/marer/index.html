@@ -43,20 +43,33 @@
         <div class="ordersubheader">Оставьте заявку прямо сейчас и мы свяжемся с вами</div>
         <div class="orderbig">
           <div class="form-block">
-            <form id="email-form" name="email-form" data-name="Email Form" class="startorderform">
-              <input type="text" class="orderinput w-input" maxlength="256" name="Service-3" data-name="Service 3" placeholder="Выберите банковскую услугу" id="Service-3" required="" />
-              <input type="text" class="orderinput w-input party" maxlength="256" name="Company-3" data-name="Company 3" placeholder="ИНН организации или ИП" id="Company-3" required="" />
-              <input type="text" class="orderinput w-input" maxlength="256" name="Phone-2" data-name="Phone 2" placeholder="Телефон" id="Phone-2" required="" />
-              <input type="email" class="orderinput w-input" maxlength="256" name="Email-3" data-name="Email 3" placeholder="Электронная почта" id="Email-3" required="" />
-              <input type="submit" value="Отправить заявку" data-wait="Секунду..." class="ordersubmit submit w-button" />
-            </form>
-{#            <div class="ordersuccess w-form-done">#}
-{#              <div>Спасибо!#}
-{#                <br/>Скоро мы с вами свяжемся.</div>#}
-{#            </div>#}
-            <div class="ordererror w-form-fail">
-              <div>Проверьте правильность заполнения полей</div>
-            </div>
+            <form class="startorderform" method="post">
+                  {% csrf_token %}
+
+                    {{ quick_request_form.product }}
+                    {{ quick_request_form.party }}
+
+                    {{ quick_request_form.party_ogrn }}
+                    {{ quick_request_form.party_inn }}
+                    {{ quick_request_form.party_kpp }}
+                    {{ quick_request_form.party_okved }}
+                    {{ quick_request_form.party_okopf }}
+
+                    {{ quick_request_form.party_full_name }}
+                    {{ quick_request_form.party_short_name }}
+                    {{ quick_request_form.party_foreign_name }}
+                    {{ quick_request_form.party_legal_address }}
+
+                    {{ quick_request_form.party_head_fio }}
+                    {{ quick_request_form.party_head_position }}
+
+                    {{ quick_request_form.contact_person_name }}
+                    {{ quick_request_form.contact_phone }}
+                    {{ quick_request_form.contact_email }}
+
+                <input type="submit" value="Отправить заявку" class="ordersubmit submit w-button" />
+              </form>
+            {% include 'marer/form_errors.html' with form=quick_request_form %}
           </div>
         </div>
       </div>
@@ -149,20 +162,33 @@
         <div class="startright">
           <div class="startorder">
             <div class="startorderheader">Быстрая заявка</div>
-              <form id="email-form" name="email-form" data-name="Email Form" class="startorderform">
-                <input type="text" class="orderinputtop w-input" maxlength="256" name="Service" data-name="Service" placeholder="Выберите банковскую услугу" id="Service" required="" />
-                <input type="text" class="orderinputtop w-input party" maxlength="256" name="Company" data-name="Company" placeholder="ИНН организации или ИП" id="Company" required="" />
-                <input type="text" class="orderinputtop w-input" maxlength="256" name="Phone" data-name="Phone" placeholder="Телефон" id="Phone" required="" />
-                <input type="email" class="orderinputtop w-input" maxlength="256" name="Email" data-name="Email" placeholder="Электронная почта" id="Email" required="" />
-                <input type="submit" value="Отправить заявку" data-wait="Секунду..." class="ordersubmit submit w-button" />
+              <form class="startorderform" method="post">
+                  {% csrf_token %}
+
+                    {{ quick_request_form.product }}
+                    {{ quick_request_form.party }}
+
+                    {{ quick_request_form.party_ogrn }}
+                    {{ quick_request_form.party_inn }}
+                    {{ quick_request_form.party_kpp }}
+                    {{ quick_request_form.party_okved }}
+                    {{ quick_request_form.party_okopf }}
+
+                    {{ quick_request_form.party_full_name }}
+                    {{ quick_request_form.party_short_name }}
+                    {{ quick_request_form.party_foreign_name }}
+                    {{ quick_request_form.party_legal_address }}
+
+                    {{ quick_request_form.party_head_fio }}
+                    {{ quick_request_form.party_head_position }}
+
+                    {{ quick_request_form.contact_person_name }}
+                    {{ quick_request_form.contact_phone }}
+                    {{ quick_request_form.contact_email }}
+
+                <input type="submit" value="Отправить заявку" class="ordersubmit submit w-button" />
               </form>
-{#            <div class="ordersuccess w-form-done">#}
-{#              <div>Спасибо!#}
-{#                <br/>Скоро мы с вами свяжемся.</div>#}
-{#            </div>#}
-            <div class="ordererror  w-form-fail">
-              <div>Проверьте правильность заполнения полей</div>
-            </div>
+            {% include 'marer/form_errors.html' with form=quick_request_form %}
           </div>
         </div>
       </div>
@@ -825,20 +851,34 @@
       <div class="ordersubheader">Получите тендерный кредит уже через 2 дня</div>
       <div class="orderbig">
         <div class="form-block">
-          <form id="email-form" name="email-form" data-name="Email Form" class="startorderform">
-            <input type="text" class="orderinput w-input" maxlength="256" name="Service-3" data-name="Service 3" placeholder="Выберите банковскую услугу" id="Service-3" required="" />
-            <input type="text" class="orderinput w-input party" maxlength="256" name="Company-3" data-name="Company 3" placeholder="ИНН организации или ИП" id="Company-3" required="" />
-            <input type="text" class="orderinput w-input" maxlength="256" name="Phone-2" data-name="Phone 2" placeholder="Телефон" id="Phone-2" required="" />
-            <input type="email" class="orderinput w-input" maxlength="256" name="Email-3" data-name="Email 3" placeholder="Электронная почта" id="Email-3" required="" />
-            <input type="submit" value="Отправить заявку" data-wait="Секунду..." class="ordersubmit submit w-button" />
-          </form>
-{#          <div class="ordersuccess w-form-done">#}
-{#            <div>Спасибо!#}
-{#              <br/>Скоро мы с вами свяжемся.</div>#}
-{#          </div>#}
-          <div class="ordererror w-form-fail">
-            <div>Проверьте правильность заполнения полей</div>
-          </div>
+          <form class="startorderform" method="post">
+              {% csrf_token %}
+
+                    {{ quick_request_form.product }}
+                    {{ quick_request_form.party }}
+
+                    {{ quick_request_form.party_ogrn }}
+                    {{ quick_request_form.party_inn }}
+                    {{ quick_request_form.party_kpp }}
+                    {{ quick_request_form.party_okved }}
+                    {{ quick_request_form.party_okopf }}
+
+                    {{ quick_request_form.party_full_name }}
+                    {{ quick_request_form.party_short_name }}
+                    {{ quick_request_form.party_foreign_name }}
+                    {{ quick_request_form.party_legal_address }}
+
+                    {{ quick_request_form.party_head_fio }}
+                    {{ quick_request_form.party_head_position }}
+
+                    {{ quick_request_form.contact_person_name }}
+                    {{ quick_request_form.contact_phone }}
+                    {{ quick_request_form.contact_email }}
+
+                <input type="submit" value="Отправить заявку" class="ordersubmit submit w-button" />
+              </form>
+            {% include 'marer/form_errors.html' with form=quick_request_form %}
+
         </div>
       </div>
     </div>

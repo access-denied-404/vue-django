@@ -83,7 +83,7 @@ class QuickRequestForm(Form):
         required=True,
         widget=Select(
             choices=get_finance_products_as_choices(),
-            attrs={'class': 'form-control'}
+            attrs={'class': 'orderinputtop w-input'}
         ),
         label='Вид услуги'
     )
@@ -91,8 +91,8 @@ class QuickRequestForm(Form):
     party = fields.CharField(
         required=True,
         widget=TextInput(attrs={
-            'class': 'party form-control',
-            'placeholder': 'Введите название, ИНН, ОГРН или адрес',
+            'class': 'orderinputtop w-input party',
+            'placeholder': 'Название, ИНН, ОГРН или адрес организации',
         }),
         label='Организация'
     )
@@ -113,17 +113,26 @@ class QuickRequestForm(Form):
 
     contact_person_name = fields.CharField(
         required=True,
-        widget=TextInput(attrs={'class': 'form-control'}),
+        widget=TextInput(attrs={
+            'class': 'orderinputtop w-input',
+            'placeholder': 'Контактное лицо',
+        }),
         label='Контактное лицо'
     )
     contact_phone = fields.CharField(
         required=True,
-        widget=TextInput(attrs={'class': 'form-control'}),
+        widget=TextInput(attrs={
+            'class': 'orderinputtop w-input',
+            'placeholder': 'Номер телефона',
+        }),
         label='Телефон'
     )
     contact_email = fields.EmailField(
         required=True,
-        widget=EmailInput(attrs={'class': 'form-control'}),
+        widget=TextInput(attrs={
+            'class': 'orderinputtop w-input',
+            'placeholder': 'Электронная почта',
+        }),
         label='E-mail'
     )
 
