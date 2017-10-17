@@ -151,10 +151,109 @@
   </div>
   <div class="page">
     <div class="container">
-      <div class="article">
+      <div class="article w-clearfix">
+        <div class="articlehead">
+{#          <a href="#" class="breadlink">Новости</a>#}
+          <div class="articledata">{{ news_page.published_at }}</div>
+        </div>
         <h1>{{ news_page.get_seo_h1 }}</h1>
+          {% if news_page.picture %}
+              <img src="{{ news_page.picture.url }}" class="newspic" />
+          {% endif %}
+
         <p>{{ news_page.page_content |safe }}</p>
       </div>
+{#      <div class="newsblock w-clearfix">#}
+{#        <div class="newsitems">#}
+{#          <a href="#" class="item w-inline-block">#}
+{#            <div class="itemprev">#}
+{#            </div>#}
+{#            <div class="itemdata">#}
+{#              <div class="itemheader">Страховщики готовят эксперимент по софинансированию ОМС населением</div>#}
+{#              <div class="itemdate">14:34 — 05.10.2017</div>#}
+{#            </div>#}
+{#          </a>#}
+{#          <a href="#" class="item w-inline-block">#}
+{#            <div class="itemprev">#}
+{#            </div>#}
+{#            <div class="itemdata">#}
+{#              <div class="itemheader">Страховщики готовят эксперимент по софинансированию ОМС населением</div>#}
+{#              <div class="itemdate">14:34 — 05.10.2017</div>#}
+{#            </div>#}
+{#          </a>#}
+{#          <a href="#" class="item w-inline-block">#}
+{#            <div class="itemprev">#}
+{#            </div>#}
+{#            <div class="itemdata">#}
+{#              <div class="itemheader">Страховщики готовят эксперимент по софинансированию ОМС населением</div>#}
+{#              <div class="itemdate">14:34 — 05.10.2017</div>#}
+{#            </div>#}
+{#          </a>#}
+{#          <a href="#" class="item w-inline-block">#}
+{#            <div class="itemprev">#}
+{#            </div>#}
+{#            <div class="itemdata">#}
+{#              <div class="itemheader">Страховщики готовят эксперимент по софинансированию ОМС населением</div>#}
+{#              <div class="itemdate">14:34 — 05.10.2017</div>#}
+{#            </div>#}
+{#          </a>#}
+{#        </div>#}
+{#        <div data-animation="slide" data-duration="500" data-infinite="1" class="blockitemsmobi w-slider">#}
+{#          <div class="w-slider-mask">#}
+{#            <div class="w-slide">#}
+{#              <a href="#" class="item w-inline-block">#}
+{#                <div class="itemprev">#}
+{#                </div>#}
+{#                <div class="itemdata">#}
+{#                  <div class="itemheader">Страховщики готовят эксперимент по софинансированию ОМС населением</div>#}
+{#                  <div class="itemdate">14:34 — 05.10.2017</div>#}
+{#                </div>#}
+{#              </a>#}
+{#            </div>#}
+{#            <div class="w-slide">#}
+{#              <a href="#" class="item w-inline-block">#}
+{#                <div class="itemprev">#}
+{#                </div>#}
+{#                <div class="itemdata">#}
+{#                  <div class="itemheader">Страховщики готовят эксперимент по софинансированию ОМС населением</div>#}
+{#                  <div class="itemdate">14:34 — 05.10.2017</div>#}
+{#                </div>#}
+{#              </a>#}
+{#            </div>#}
+{#            <div class="w-slide">#}
+{#              <a href="#" class="item w-inline-block">#}
+{#                <div class="itemprev">#}
+{#                </div>#}
+{#                <div class="itemdata">#}
+{#                  <div class="itemheader">Страховщики готовят эксперимент по софинансированию ОМС населением</div>#}
+{#                  <div class="itemdate">14:34 — 05.10.2017</div>#}
+{#                </div>#}
+{#              </a>#}
+{#            </div>#}
+{#            <div class="w-slide">#}
+{#              <a href="#" class="item w-inline-block">#}
+{#                <div class="itemprev">#}
+{#                </div>#}
+{#                <div class="itemdata">#}
+{#                  <div class="itemheader">Страховщики готовят эксперимент по софинансированию ОМС населением</div>#}
+{#                  <div class="itemdate">14:34 — 05.10.2017</div>#}
+{#                </div>#}
+{#              </a>#}
+{#            </div>#}
+{#          </div>#}
+{#          <div class="arrowhide w-slider-arrow-left">#}
+{#            <div class="w-icon-slider-left">#}
+{#            </div>#}
+{#          </div>#}
+{#          <div class="arrowhide w-slider-arrow-right">#}
+{#            <div class="w-icon-slider-right">#}
+{#            </div>#}
+{#          </div>#}
+{#          <div class="dotsmobi w-round w-slider-nav w-slider-nav-invert">#}
+{#          </div>#}
+{#        </div>#}
+{#        <a href="#" class="moreitems">Больше новостей</a>#}
+{#      </div>#}
     </div>
   </div>
   <div class="footer">
