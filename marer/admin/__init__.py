@@ -29,7 +29,7 @@ site.index_title = 'Управление площадкой'
 class FinanceProductAdmin(MPTTModelAdmin):
     fieldsets = (
         (None, dict(fields=(
-            'name',
+            ('name', 'show_in_menu',),
             'parent',
             '_finance_product',
             'product_icon',

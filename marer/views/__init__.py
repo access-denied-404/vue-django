@@ -26,7 +26,7 @@ class IndexView(TemplateView, StaticPagesContextMixin):
             quick_request_form = QuickRequestForm(user=request.user)
         else:
             quick_request_form = QuickRequestForm()
-        finance_product_roots = FinanceProductPage.objects.root_nodes()
+        finance_product_roots = FinanceProductPage.objects.root_nodes().filter(show_in_menu=True)
 
         best_finance_products = FinanceProductPage.objects.filter(
             product_icon__isnull=False
@@ -185,7 +185,7 @@ class FinanceProductView(TemplateView, StaticPagesContextMixin):
             quick_request_form = QuickRequestForm(initial=dict(
                 product=finance_product_name,
             ))
-        finance_product_roots = FinanceProductPage.objects.root_nodes()
+        finance_product_roots = FinanceProductPage.objects.root_nodes().filter(show_in_menu=True)
         context_part = dict(
             finance_product_roots=finance_product_roots,
             product=product,
@@ -308,7 +308,7 @@ class StaticPageView(TemplateView, StaticPagesContextMixin):
             quick_request_form = QuickRequestForm(user=request.user)
         else:
             quick_request_form = QuickRequestForm()
-        finance_product_roots = FinanceProductPage.objects.root_nodes()
+        finance_product_roots = FinanceProductPage.objects.root_nodes().filter(show_in_menu=True)
 
         context_part = dict(
             finance_product_roots=finance_product_roots,
@@ -432,7 +432,7 @@ class NewsPageView(TemplateView, StaticPagesContextMixin):
             quick_request_form = QuickRequestForm(user=request.user)
         else:
             quick_request_form = QuickRequestForm()
-        finance_product_roots = FinanceProductPage.objects.root_nodes()
+        finance_product_roots = FinanceProductPage.objects.root_nodes().filter(show_in_menu=True)
 
         context_part = dict(
             finance_product_roots=finance_product_roots,

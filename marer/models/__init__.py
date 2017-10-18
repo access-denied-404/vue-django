@@ -1,6 +1,7 @@
 from ckeditor.fields import RichTextField
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import BooleanField
 from django.utils.translation import ugettext_lazy as _
 from mptt import models as mptt_models
 from mptt.fields import TreeForeignKey
@@ -51,6 +52,7 @@ class FinanceProductPage(mptt_models.MPTTModel):
         blank=True,
         null=True
     )
+    show_in_menu = BooleanField(verbose_name=_('show in menu'), default=True)
 
     def __str__(self):
         return self.name
