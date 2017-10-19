@@ -1,5 +1,5 @@
 from django.forms import Form, CharField, ChoiceField, DateField, DecimalField, BooleanField, TextInput, DateInput, \
-    IntegerField, HiddenInput, CheckboxInput
+    IntegerField, HiddenInput, CheckboxInput, Select
 from djangoformsetjs.utils import formset_media_js
 
 from marer import consts
@@ -50,6 +50,37 @@ class BGFinProdRegForm(Form):
     ])
 
     tender_has_prepayment = BooleanField(required=False)
+
+
+class CreditFinProdRegForm(Form):
+    credit_product_is_credit = BooleanField(required=False)
+    credit_product_is_credit_line = BooleanField(required=False)
+    credit_product_is_overdraft = BooleanField(required=False)
+
+    credit_product_interest_rate = DecimalField(decimal_places=2, required=False)
+    credit_repayment_schedule = ChoiceField(required=False, choices=[
+        (consts.ISSUE_CREDIT_REPAYMENT_SCHEDULE_EQUAL_SHARES, 'Равными долями'),
+        (consts.ISSUE_CREDIT_REPAYMENT_SCHEDULE_END_OF_TERM, 'В конце срока'),
+    ])
+    credit_product_term = CharField(required=False)
+    credit_product_cl_tranche_term = CharField(required=False)
+    credit_purpose = CharField(required=False)
+    credit_repayment_sources = CharField(required=False)
+
+    bg_sum = DecimalField(decimal_places=2, required=False)
+    bg_currency = ChoiceField(required=False, choices=[
+        (consts.CURRENCY_RUR, 'Рубль'),
+        (consts.CURRENCY_USD, 'Доллар'),
+        (consts.CURRENCY_EUR, 'Евро'),
+    ])
+
+    issuer_full_name = CharField(required=False)
+    issuer_short_name = CharField(required=False)
+    issuer_legal_address = CharField(required=False)
+
+    issuer_ogrn = CharField(required=False)
+    issuer_inn = CharField(required=False)
+    issuer_kpp = CharField(required=False)
 
 
 class BGFinProdSurveyOrgCommonForm(Form):
@@ -126,6 +157,29 @@ class FounderPhysicalForm(Form):
     address = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     passport_data = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden'}))
+
+    class Media(object):
+        js = formset_media_js
+
+
+class CreditPledgeForm(Form):
+    id = IntegerField(required=False, widget=HiddenInput())
+
+    pledge_title = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    pledge_type = ChoiceField(required=False, widget=Select(attrs={'class': 'form-control input-sm'}), choices=[
+        (consts.CREDIT_PLEDGE_TYPE_DEPOSIT, 'Депозит'),
+        (consts.CREDIT_PLEDGE_TYPE_REAL_ESTATE, 'Недвижимость'),
+        (consts.CREDIT_PLEDGE_TYPE_OTHER, 'Другое'),
+    ])
+    cost = DecimalField(decimal_places=2, required=False, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+
+    DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden'}))
+
+    def get_pledge_type_display(self):
+        for val, val_name in self.fields['pledge_type'].choices:
+            if val == self.initial.get('pledge_type', None):
+                return val_name
+        return ''
 
     class Media(object):
         js = formset_media_js

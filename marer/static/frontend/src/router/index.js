@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Stub from '@/components/Stub'
 import FormBankGuarantee from '@/components/FormBankGuarantee'
+import FormCredit from '@/components/FormCredit'
 
 Vue.use(Router)
 
@@ -20,7 +21,7 @@ export default new Router({
     {
       path: '/CreditProduct',
       name: 'CreditProduct',
-      component: Stub
+      component: FormCredit
     },
     {
       path: '/LeasingProduct',

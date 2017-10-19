@@ -106,6 +106,19 @@ class Issue(models.Model):
         (consts.BG_TYPE_CONTRACT_EXECUTION, 'Исполнение контракта'),
     ])
 
+    credit_product_is_credit = models.NullBooleanField(verbose_name='кредит', blank=True, null=True)
+    credit_product_is_credit_line = models.NullBooleanField(verbose_name='кредитная линия', blank=True, null=True)
+    credit_product_is_overdraft = models.NullBooleanField(verbose_name='овердрафт', blank=True, null=True)
+    credit_product_interest_rate = models.FloatField(verbose_name='ставка (в % годовых)', blank=True, null=True)
+    credit_repayment_schedule = models.CharField(verbose_name='график погашения', max_length=32, blank=True, null=True, choices=[
+        (consts.ISSUE_CREDIT_REPAYMENT_SCHEDULE_EQUAL_SHARES, 'Равными долями'),
+        (consts.ISSUE_CREDIT_REPAYMENT_SCHEDULE_END_OF_TERM, 'В конце срока'),
+    ])
+    credit_product_term = models.CharField(verbose_name='срок продукта', max_length=512, blank=True, null=False, default='')
+    credit_product_cl_tranche_term = models.CharField(verbose_name='срок транша (в случае кредитной линии)', max_length=512, blank=True, null=False, default='')
+    credit_purpose = models.CharField(verbose_name='цель кредита (подробно)', max_length=512, blank=True, null=False, default='')
+    credit_repayment_sources = models.CharField(verbose_name='источники погашения', max_length=512, blank=True, null=False, default='')
+
     @property
     def humanized_id(self):
         if self.id:
@@ -468,3 +481,14 @@ class IssueFinanceOrgProposeFinalDocument(models.Model):
         blank=True,
         related_name='propose_final_links'
     )
+
+
+class IssueCreditPledge(models.Model):
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False, related_name='issuer_credit_pledges')
+    pledge_title = models.CharField(verbose_name='наименование', max_length=512, blank=False, null=False, default='')
+    pledge_type = models.CharField(verbose_name='вид', max_length=32, blank=False, null=False, choices=[
+        (consts.CREDIT_PLEDGE_TYPE_DEPOSIT, 'Депозит'),
+        (consts.CREDIT_PLEDGE_TYPE_REAL_ESTATE, 'Недвижимость'),
+        (consts.CREDIT_PLEDGE_TYPE_OTHER, 'Другое'),
+    ])
+    cost = models.DecimalField(verbose_name='сумма', max_digits=12, decimal_places=2, blank=True, null=True)

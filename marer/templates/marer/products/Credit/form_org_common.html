@@ -1,0 +1,105 @@
+<div class="panel panel-info">
+    <div class="panel-heading" data-toggle="collapse" data-target="#panel-org-common">Сведения о компании-заявителе</div>
+    <div class="panel-body collapse in" id="panel-org-common">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Полное наименование</label>
+                        {{ form.issuer_full_name }}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Краткое наименование</label>
+                        {{ form.issuer_short_name }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Наименование на иностранном языке (если имеется)</label>
+                        {{ form.issuer_foreign_name }}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Юридический адрес</label>
+                        {{ form.issuer_legal_address }}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Фактический адрес</label>
+                        {{ form.issuer_fact_address }}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>ОГРН</label>
+                        {{ form.issuer_ogrn }}
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>ИНН</label>
+                        {{ form.issuer_inn }}
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>КПП</label>
+                        {{ form.issuer_kpp }}
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>ОКПО</label>
+                        {{ form.issuer_okpo }}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Дата регистрации компании</label>
+                        {{ form.issuer_registration_date }}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Дата постановки на учет в ИФНС</label>
+                        {{ form.issuer_ifns_reg_date }}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Номер свидетельства о постановке</label>
+                        {{ form.issuer_ifns_reg_cert_number }}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Форма собственности (код ОКОПФ)</label>
+                        {{ form.issuer_okopf }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Основной вид деятельности (код ОКВЭД)</label>
+                        {{ form.issuer_okved }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
