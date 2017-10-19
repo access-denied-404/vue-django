@@ -8,7 +8,7 @@ from django.views.generic.base import TemplateView
 
 from marer import consts
 from marer.forms import QuickRequestForm
-from marer.models import FinanceProductPage, StaticPage, NewsPage
+from marer.models import FinanceProductPage, StaticPage, NewsPage, ShowcasePartner
 from marer.models.finance_org import FinanceOrgProductConditions
 from marer.models.issue import Issue
 from marer.models.issuer import Issuer
@@ -50,16 +50,44 @@ class IndexView(TemplateView, StaticPagesContextMixin):
 
         last_news = NewsPage.objects.order_by('-published_at')[:4]
 
+        partners_banks_portions = self._fill_partners_portions(consts.SHOWCASE_PARTNERS_CATEGORY_BANKS)
+        partners_insurance_portions = self._fill_partners_portions(consts.SHOWCASE_PARTNERS_CATEGORY_INSURANCE)
+        partners_lf_portions = self._fill_partners_portions(consts.SHOWCASE_PARTNERS_CATEGORY_LEASING_FACTORING)
+        partners_gpf_portions = self._fill_partners_portions(consts.SHOWCASE_PARTNERS_CATEGORY_GOS_PUB_FOUNDATIONS)
+
         context_part = dict(
             finance_product_roots=finance_product_roots,
             best_finance_products=best_finance_products,
             last_news=last_news,
+
+            partners_banks_portions=partners_banks_portions,
+            partners_insurance_portions=partners_insurance_portions,
+            partners_lf_portions=partners_lf_portions,
+            partners_gpf_portions=partners_gpf_portions,
+
             quick_request_form=quick_request_form,
             bg_rated_foc_list=distinctized_bg_rated_foc_list,
             dadata_token=settings.DADATA_TOKEN,
         )
         kwargs.update(context_part)
         return super().get(request, *args, **kwargs)
+
+    def _fill_partners_portions(self, category):
+        partners_portion_size = 8
+
+        partners = ShowcasePartner.objects.filter(category=category)
+        partners = [p for p in partners]
+        partners_banks_portions = []
+        while len(partners) > 0:
+            portion = partners[0:partners_portion_size]
+            partners_banks_portions.append(portion)
+            for pobj in portion:
+                partners.remove(pobj)
+
+        if len(partners_banks_portions) == 1 and len(partners_banks_portions[0]) == partners_portion_size:
+            partners_banks_portions.append(partners_banks_portions[0])
+
+        return partners_banks_portions
 
     def post(self, request, *args, **kwargs):
         username = ''

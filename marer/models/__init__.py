@@ -6,8 +6,10 @@ from django.utils.translation import ugettext_lazy as _
 from mptt import models as mptt_models
 from mptt.fields import TreeForeignKey
 
+from marer import consts
 from marer.models.base import *
-from marer.models.base import finance_products_page_images_upload_path, news_pictures_upload_path
+from marer.models.base import finance_products_page_images_upload_path, news_pictures_upload_path, \
+    showcase_partners_logos_upload_path
 from marer.models.issue import *
 from marer.models.issuer import *
 from marer.models.user import *
@@ -153,3 +155,27 @@ class NewsPage(models.Model):
 
     def get_seo_title(self):
         return self._seo_title if self._seo_title != '' else self.name
+
+
+class ShowcasePartner(models.Model):
+
+    class Meta:
+        verbose_name = _('partners logo')
+        verbose_name_plural = _('partners logos')
+
+    logo = models.ImageField(
+        verbose_name=_('logo'),
+        upload_to=showcase_partners_logos_upload_path,
+        blank=True,
+        null=True
+    )
+    name = models.CharField(verbose_name=_('partner name'), max_length=512, blank=False, null=False)
+    category = models.CharField(verbose_name=_('partner category'), max_length=32, blank=False, null=False, choices=[
+        (consts.SHOWCASE_PARTNERS_CATEGORY_BANKS, 'Банки'),
+        (consts.SHOWCASE_PARTNERS_CATEGORY_INSURANCE, 'Страховые'),
+        (consts.SHOWCASE_PARTNERS_CATEGORY_LEASING_FACTORING, 'Лизинговые и факторинговые'),
+        (consts.SHOWCASE_PARTNERS_CATEGORY_GOS_PUB_FOUNDATIONS, 'Госструктуры, общественные организации и фонды'),
+    ])
+
+    def __str__(self):
+        return self.name

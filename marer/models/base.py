@@ -50,6 +50,19 @@ def news_pictures_upload_path(instance, filename):
     return new_filename
 
 
+def showcase_partners_logos_upload_path(instance, filename):
+    filename_arr = str(filename).split('.')
+    ext = filename_arr[-1]
+    new_filename = 'images/showcase/partners/{file_name}.{file_ext}'.format(
+        file_name=uuid.uuid4(),
+        file_ext=ext,
+    )
+    new_filename = force_str(new_filename)
+    new_filename = force_text(new_filename)
+    new_filename = os.path.normpath(new_filename)
+    return new_filename
+
+
 class Document(models.Model):
     file = models.FileField(upload_to=documents_upload_path)
 

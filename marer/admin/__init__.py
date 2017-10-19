@@ -72,6 +72,11 @@ class NewsPageAdmin(ModelAdmin):
     )
 
 
+@register(models.ShowcasePartner)
+class ShowcasePartnerAdmin(ModelAdmin):
+    pass
+
+
 @register(models.Issue)
 class IssueAdmin(ModelAdmin):
     list_display = (
