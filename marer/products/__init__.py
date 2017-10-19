@@ -11,6 +11,58 @@ from marer.products.forms import BGFinProdRegForm, BGFinProdSurveyOrgCommonForm,
     AffiliatesForm, FounderLegalForm, FounderPhysicalForm, CreditFinProdRegForm, CreditPledgeForm
 
 
+_admin_issue_fieldset_issuer_part = (
+    'Сведения о компании-заявителе',
+    dict(
+        classes=('collapse',),
+        fields=(
+            'issuer_full_name',
+            'issuer_short_name',
+            'issuer_foreign_name',
+            'issuer_ogrn',
+            'issuer_inn',
+            'issuer_kpp',
+            'issuer_legal_address',
+            'issuer_fact_address',
+
+            'issuer_okpo',
+            'issuer_registration_date',
+            'issuer_ifns_reg_date',
+            'issuer_ifns_reg_cert_number',
+            'issuer_okopf',
+            'issuer_okved',
+        )
+    )
+)
+
+_admin_issue_fieldset_issuer_head_part = (
+    'Руководитель компании',
+    dict(
+        classes=('collapse',),
+        fields=(
+            'issuer_head_first_name',
+            'issuer_head_last_name',
+            'issuer_head_middle_name',
+            'issuer_head_birthday',
+            'issuer_head_org_position_and_permissions',
+
+            'issuer_head_phone',
+            'issuer_head_passport_series',
+            'issuer_head_passport_number',
+            'issuer_head_passport_issue_date',
+            'issuer_head_passport_issued_by',
+            'issuer_head_residence_address',
+
+            'issuer_head_education_level',
+            'issuer_head_org_work_experience',
+            'issuer_head_share_in_authorized_capital',
+            'issuer_head_industry_work_experience',
+            'issuer_prev_org_info',
+        )
+    )
+)
+
+
 def _get_subclasses_recursive(cls: type) -> list:
     """
     Поиск всех классов, наследующий указанный класс.
@@ -22,6 +74,35 @@ def _get_subclasses_recursive(cls: type) -> list:
         more_subclasses.extend(_get_subclasses_recursive(sub_cls))
     subclasses.extend(more_subclasses)
     return subclasses
+
+
+def _build_accounting_report_common_doc_code_and_name_by_next_quarter_start_date(next_quarter_start_date):
+    quarter_number = int((next_quarter_start_date - relativedelta(days=1)).month / 3)
+
+    if quarter_number == 4:
+        fpdi_code = 'accounting_report_forms_1_2_for_y{}'.format(
+            (next_quarter_start_date - relativedelta(days=1)).strftime('%Y')
+        )
+    else:
+        fpdi_code = 'accounting_report_forms_1_2_for_y{}q{}'.format(
+            (next_quarter_start_date - relativedelta(days=1)).strftime('%Y'),
+            quarter_number,
+        )
+
+    if quarter_number in [1, 3]:
+        fpdi_name = 'Бухгалтерская отчетность за {} квартал {} года'.format(
+            quarter_number,
+            next_quarter_start_date.strftime('%Y'))
+    elif quarter_number == 2:
+        fpdi_name = 'Бухгалтерская отчетность за первое полугодие {} года'.format(
+            next_quarter_start_date.strftime('%Y'))
+    elif quarter_number == 4:
+        fpdi_name = 'Бухгалтерская отчетность за {} год'.format(
+            (next_quarter_start_date - relativedelta(days=1)).strftime('%Y'))
+    else:
+        raise ValueError('Could not determine issue common document name for accounting report basing on year quarter')
+
+    return fpdi_code, fpdi_name
 
 
 def get_finance_products():
@@ -60,7 +141,8 @@ class BankGuaranteeProduct(FinanceProduct):
 
         while quarters_curr_date <= prev_month_start_date:
 
-            fpdi_code, fpdi_name = self._build_accounting_report_common_doc_code_and_name_by_next_quarter_start_date(quarters_curr_date)
+            fpdi_code, fpdi_name = _build_accounting_report_common_doc_code_and_name_by_next_quarter_start_date(
+                quarters_curr_date)
 
             docs.append(FinanceProductDocumentItem(code=fpdi_code, name=fpdi_name, description='Формы 1 и 2'))
             quarters_curr_date += relativedelta(months=3)
@@ -78,32 +160,6 @@ class BankGuaranteeProduct(FinanceProduct):
         ])
         return docs
 
-    def _build_accounting_report_common_doc_code_and_name_by_next_quarter_start_date(self, next_quarter_start_date):
-        quarter_number = int((next_quarter_start_date - relativedelta(days=1)).month / 3)
-
-        if quarter_number == 4:
-            fpdi_code = 'accounting_report_forms_1_2_for_y{}'.format(
-                (next_quarter_start_date - relativedelta(days=1)).strftime('%Y')
-            )
-        else:
-            fpdi_code = 'accounting_report_forms_1_2_for_y{}q{}'.format(
-                (next_quarter_start_date - relativedelta(days=1)).strftime('%Y'),
-                quarter_number,
-            )
-
-        if quarter_number in [1, 3]:
-            fpdi_name = 'Бухгалтерская отчетность за {} квартал {} года'.format(
-                quarter_number,
-                next_quarter_start_date.strftime('%Y'))
-        elif quarter_number == 2:
-            fpdi_name = 'Бухгалтерская отчетность за первое полугодие {} года'.format(
-                next_quarter_start_date.strftime('%Y'))
-        elif quarter_number == 4:
-            fpdi_name = 'Бухгалтерская отчетность за {} год'.format(
-                (next_quarter_start_date - relativedelta(days=1)).strftime('%Y'))
-
-        return fpdi_code, fpdi_name
-
     def get_registering_form_class(self):
         return BGFinProdRegForm
 
@@ -116,12 +172,18 @@ class BankGuaranteeProduct(FinanceProduct):
         formset_founders_legal = formset_factory(FounderLegalForm, extra=0)
         from marer.models.issue import IssueBGProdFounderLegal
         founders_legal = IssueBGProdFounderLegal.objects.filter(issue=self._issue)
-        formset_founders_legal = formset_founders_legal(initial=[fl.__dict__ for fl in founders_legal], prefix='founders_legal')
+        formset_founders_legal = formset_founders_legal(
+            initial=[fl.__dict__ for fl in founders_legal],
+            prefix='founders_legal'
+        )
 
         formset_founders_physical = formset_factory(FounderPhysicalForm, extra=0)
         from marer.models.issue import IssueBGProdFounderPhysical
         founders_physical = IssueBGProdFounderPhysical.objects.filter(issue=self._issue)
-        formset_founders_physical = formset_founders_physical(initial=[fp.__dict__ for fp in founders_physical], prefix='founders_physical')
+        formset_founders_physical = formset_founders_physical(
+            initial=[fp.__dict__ for fp in founders_physical],
+            prefix='founders_physical'
+        )
 
         return dict(
             form_org_common=BGFinProdSurveyOrgCommonForm(initial=self._issue.__dict__),
@@ -158,7 +220,8 @@ class BankGuaranteeProduct(FinanceProduct):
             self._issue.issuer_head_middle_name = form_org_head.cleaned_data['issuer_head_middle_name']
             self._issue.issuer_head_birthday = form_org_head.cleaned_data['issuer_head_birthday']
 
-            self._issue.issuer_head_org_position_and_permissions = form_org_head.cleaned_data['issuer_head_org_position_and_permissions']
+            self._issue.issuer_head_org_position_and_permissions = form_org_head.cleaned_data[
+                'issuer_head_org_position_and_permissions']
             self._issue.issuer_head_phone = form_org_head.cleaned_data['issuer_head_phone']
 
             self._issue.issuer_head_passport_series = form_org_head.cleaned_data['issuer_head_passport_series']
@@ -169,8 +232,10 @@ class BankGuaranteeProduct(FinanceProduct):
 
             self._issue.issuer_head_education_level = form_org_head.cleaned_data['issuer_head_education_level']
             self._issue.issuer_head_org_work_experience = form_org_head.cleaned_data['issuer_head_org_work_experience']
-            self._issue.issuer_head_share_in_authorized_capital = form_org_head.cleaned_data['issuer_head_share_in_authorized_capital']
-            self._issue.issuer_head_industry_work_experience = form_org_head.cleaned_data['issuer_head_industry_work_experience']
+            self._issue.issuer_head_share_in_authorized_capital = form_org_head.cleaned_data[
+                'issuer_head_share_in_authorized_capital']
+            self._issue.issuer_head_industry_work_experience = form_org_head.cleaned_data[
+                'issuer_head_industry_work_experience']
             self._issue.issuer_prev_org_info = form_org_head.cleaned_data['issuer_prev_org_info']
 
         self._issue.save()
@@ -254,15 +319,6 @@ class BankGuaranteeProduct(FinanceProduct):
                     new_aff.issue = self._issue
                     new_aff.save()
 
-    def process_registering_form(self, request):
-        self._issue.refresh_from_db()
-        form_class = self.get_registering_form_class()
-        form = form_class(request.POST)
-        form.full_clean()
-        for field in form.cleaned_data:
-            setattr(self._issue, field, form.cleaned_data[field])
-        self._issue.save()
-
     def get_admin_issue_fieldset(self):
         return [
             ('Сведения об истребуемой гарантии', dict(fields=(
@@ -282,44 +338,8 @@ class BankGuaranteeProduct(FinanceProduct):
                 'tender_has_prepayment',
             ))),
 
-            ('Сведения о компании-заявителе', dict(classes=('collapse',), fields=(
-                'issuer_full_name',
-                'issuer_short_name',
-                'issuer_foreign_name',
-                'issuer_ogrn',
-                'issuer_inn',
-                'issuer_kpp',
-                'issuer_legal_address',
-                'issuer_fact_address',
-
-                'issuer_okpo',
-                'issuer_registration_date',
-                'issuer_ifns_reg_date',
-                'issuer_ifns_reg_cert_number',
-                'issuer_okopf',
-                'issuer_okved',
-            ))),
-
-            ('Руководитель компании', dict(classes=('collapse',), fields=(
-                'issuer_head_first_name',
-                'issuer_head_last_name',
-                'issuer_head_middle_name',
-                'issuer_head_birthday',
-                'issuer_head_org_position_and_permissions',
-
-                'issuer_head_phone',
-                'issuer_head_passport_series',
-                'issuer_head_passport_number',
-                'issuer_head_passport_issue_date',
-                'issuer_head_passport_issued_by',
-                'issuer_head_residence_address',
-
-                'issuer_head_education_level',
-                'issuer_head_org_work_experience',
-                'issuer_head_share_in_authorized_capital',
-                'issuer_head_industry_work_experience',
-                'issuer_prev_org_info',
-            ))),
+            _admin_issue_fieldset_issuer_part,
+            _admin_issue_fieldset_issuer_head_part,
 
             ('Сведения об организаторе тендера', dict(classes=('collapse',), fields=(
                 'tender_responsible_full_name',
@@ -362,7 +382,8 @@ class CreditProduct(FinanceProduct):
             self._issue.issuer_head_middle_name = form_org_head.cleaned_data['issuer_head_middle_name']
             self._issue.issuer_head_birthday = form_org_head.cleaned_data['issuer_head_birthday']
 
-            self._issue.issuer_head_org_position_and_permissions = form_org_head.cleaned_data['issuer_head_org_position_and_permissions']
+            self._issue.issuer_head_org_position_and_permissions = form_org_head.cleaned_data[
+                'issuer_head_org_position_and_permissions']
             self._issue.issuer_head_phone = form_org_head.cleaned_data['issuer_head_phone']
 
             self._issue.issuer_head_passport_series = form_org_head.cleaned_data['issuer_head_passport_series']
@@ -373,8 +394,10 @@ class CreditProduct(FinanceProduct):
 
             self._issue.issuer_head_education_level = form_org_head.cleaned_data['issuer_head_education_level']
             self._issue.issuer_head_org_work_experience = form_org_head.cleaned_data['issuer_head_org_work_experience']
-            self._issue.issuer_head_share_in_authorized_capital = form_org_head.cleaned_data['issuer_head_share_in_authorized_capital']
-            self._issue.issuer_head_industry_work_experience = form_org_head.cleaned_data['issuer_head_industry_work_experience']
+            self._issue.issuer_head_share_in_authorized_capital = form_org_head.cleaned_data[
+                'issuer_head_share_in_authorized_capital']
+            self._issue.issuer_head_industry_work_experience = form_org_head.cleaned_data[
+                'issuer_head_industry_work_experience']
             self._issue.issuer_prev_org_info = form_org_head.cleaned_data['issuer_prev_org_info']
 
         self._issue.save()
@@ -500,44 +523,8 @@ class CreditProduct(FinanceProduct):
                 'credit_repayment_sources',
             ))),
 
-            ('Сведения о компании-заявителе', dict(classes=('collapse',), fields=(
-                'issuer_full_name',
-                'issuer_short_name',
-                'issuer_foreign_name',
-                'issuer_ogrn',
-                'issuer_inn',
-                'issuer_kpp',
-                'issuer_legal_address',
-                'issuer_fact_address',
-
-                'issuer_okpo',
-                'issuer_registration_date',
-                'issuer_ifns_reg_date',
-                'issuer_ifns_reg_cert_number',
-                'issuer_okopf',
-                'issuer_okved',
-            ))),
-
-            ('Руководитель компании', dict(classes=('collapse',), fields=(
-                'issuer_head_first_name',
-                'issuer_head_last_name',
-                'issuer_head_middle_name',
-                'issuer_head_birthday',
-                'issuer_head_org_position_and_permissions',
-
-                'issuer_head_phone',
-                'issuer_head_passport_series',
-                'issuer_head_passport_number',
-                'issuer_head_passport_issue_date',
-                'issuer_head_passport_issued_by',
-                'issuer_head_residence_address',
-
-                'issuer_head_education_level',
-                'issuer_head_org_work_experience',
-                'issuer_head_share_in_authorized_capital',
-                'issuer_head_industry_work_experience',
-                'issuer_prev_org_info',
-            ))),
+            _admin_issue_fieldset_issuer_part,
+            _admin_issue_fieldset_issuer_head_part,
         ]  # todo add fieldsets gathering
 
     def get_survey_context_part(self):
@@ -554,12 +541,18 @@ class CreditProduct(FinanceProduct):
         formset_founders_legal = formset_factory(FounderLegalForm, extra=0)
         from marer.models.issue import IssueBGProdFounderLegal
         founders_legal = IssueBGProdFounderLegal.objects.filter(issue=self._issue)
-        formset_founders_legal = formset_founders_legal(initial=[fl.__dict__ for fl in founders_legal], prefix='founders_legal')
+        formset_founders_legal = formset_founders_legal(
+            initial=[fl.__dict__ for fl in founders_legal],
+            prefix='founders_legal'
+        )
 
         formset_founders_physical = formset_factory(FounderPhysicalForm, extra=0)
         from marer.models.issue import IssueBGProdFounderPhysical
         founders_physical = IssueBGProdFounderPhysical.objects.filter(issue=self._issue)
-        formset_founders_physical = formset_founders_physical(initial=[fp.__dict__ for fp in founders_physical], prefix='founders_physical')
+        formset_founders_physical = formset_founders_physical(
+            initial=[fp.__dict__ for fp in founders_physical],
+            prefix='founders_physical'
+        )
 
         return dict(
             form_org_common=BGFinProdSurveyOrgCommonForm(initial=self._issue.__dict__),
@@ -569,15 +562,6 @@ class CreditProduct(FinanceProduct):
             formset_founders_legal=formset_founders_legal,
             formset_founders_physical=formset_founders_physical,
         )
-
-    def process_registering_form(self, request):
-        self._issue.refresh_from_db()
-        form_class = self.get_registering_form_class()
-        form = form_class(request.POST)
-        form.full_clean()
-        for field in form.cleaned_data:
-            setattr(self._issue, field, form.cleaned_data[field])
-        self._issue.save()
 
     def get_documents_list(self, now_override=None):
         docs = []
@@ -601,7 +585,8 @@ class CreditProduct(FinanceProduct):
 
         while quarters_curr_date <= prev_month_start_date:
 
-            fpdi_code, fpdi_name = self._build_accounting_report_common_doc_code_and_name_by_next_quarter_start_date(quarters_curr_date)
+            fpdi_code, fpdi_name = _build_accounting_report_common_doc_code_and_name_by_next_quarter_start_date(
+                quarters_curr_date)
 
             docs.append(FinanceProductDocumentItem(code=fpdi_code, name=fpdi_name, description='Формы 1 и 2'))
             quarters_curr_date += relativedelta(months=3)
@@ -618,32 +603,6 @@ class CreditProduct(FinanceProduct):
             ),
         ])
         return docs
-
-    def _build_accounting_report_common_doc_code_and_name_by_next_quarter_start_date(self, next_quarter_start_date):
-        quarter_number = int((next_quarter_start_date - relativedelta(days=1)).month / 3)
-
-        if quarter_number == 4:
-            fpdi_code = 'accounting_report_forms_1_2_for_y{}'.format(
-                (next_quarter_start_date - relativedelta(days=1)).strftime('%Y')
-            )
-        else:
-            fpdi_code = 'accounting_report_forms_1_2_for_y{}q{}'.format(
-                (next_quarter_start_date - relativedelta(days=1)).strftime('%Y'),
-                quarter_number,
-            )
-
-        if quarter_number in [1, 3]:
-            fpdi_name = 'Бухгалтерская отчетность за {} квартал {} года'.format(
-                quarter_number,
-                next_quarter_start_date.strftime('%Y'))
-        elif quarter_number == 2:
-            fpdi_name = 'Бухгалтерская отчетность за первое полугодие {} года'.format(
-                next_quarter_start_date.strftime('%Y'))
-        elif quarter_number == 4:
-            fpdi_name = 'Бухгалтерская отчетность за {} год'.format(
-                (next_quarter_start_date - relativedelta(days=1)).strftime('%Y'))
-
-        return fpdi_code, fpdi_name
 
     def get_registering_form_class(self):
         return CreditFinProdRegForm

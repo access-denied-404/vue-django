@@ -38,9 +38,14 @@ class FinanceProduct(object):
     def process_survey_post_data(self, request):
         raise NotImplementedError("Method is not implemented")
 
-    @abstractmethod
     def process_registering_form(self, request):
-        raise NotImplementedError("Method is not implemented")
+        self._issue.refresh_from_db()
+        form_class = self.get_registering_form_class()
+        form = form_class(request.POST)
+        form.full_clean()
+        for field in form.cleaned_data:
+            setattr(self._issue, field, form.cleaned_data[field])
+        self._issue.save()
 
     @abstractmethod
     def get_admin_issue_fieldset(self):
