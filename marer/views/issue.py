@@ -49,7 +49,10 @@ class IssueRedirectView(RedirectView):
         if issue.status == consts.ISSUE_STATUS_REGISTERING:
             self.pattern_name = 'issue_registering'
         elif issue.status == consts.ISSUE_STATUS_REVIEW:
-            self.pattern_name = 'issue_scoring'
+            if IssueFinanceOrgProposeClarification.objects.filter(propose__issue=issue).exists():
+                self.pattern_name = 'issue_additional_documents_requests'
+            else:
+                self.pattern_name = 'issue_scoring'
         elif issue.status == consts.ISSUE_STATUS_FINISHED:
             self.pattern_name = 'issue_finished'
         elif issue.status == consts.ISSUE_STATUS_CANCELLED:
