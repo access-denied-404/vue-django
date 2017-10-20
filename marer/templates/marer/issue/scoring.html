@@ -4,11 +4,11 @@
 <table class="table table-hover table-condensed">
     <tr>
         <th class="bg-info">&nbsp;</th>
-        <th class="bg-info">Процентная<br/>ставка</th>
-        <th class="bg-info">Обеспечение</th>
-        <th class="bg-info">Срок<br/>рассмотрения</th>
-        <th class="bg-info">Открытие<br/>р/с</th>
-        <th class="bg-info">Личное<br/>присутствие</th>
+
+        {% for _, fname in foc_fields %}
+            <th class="bg-info">{{ fname }}</th>
+        {% endfor %}
+
         <th class="bg-info text-center">
             Заявка
             <form method="post">
@@ -19,17 +19,16 @@
         </th>
     </tr>
     {% for foc in foc_list %}
-        <tr{% if foc.finance_org_id in proposed_fo_ids %} class="bg-success"{% endif %}>
+        <tr{% if foc.finance_org.id in proposed_fo_ids %} class="bg-success"{% endif %}>
             <td>{{ foc.finance_org.name }}</td>
-            {# using bg_44_contract_exec_ as prefix for stub list #}
-            <td>{{ foc.bg_44_contract_exec_interest_rate }}%</td>
-            <td>{{ foc.humanized_bg_insurance }}</td>
-            <td>{{ foc.humanized_bg_review_tern_days }}</td>
-            <td>{{ foc.humanized_bg_bank_account_opening_required }}</td>
-            <td>{{ foc.humanized_bg_personal_presence_required }}</td>
+
+            {% for foc_val in foc.values %}
+                <td>{{ foc_val }}</td>
+            {% endfor %}
+
             <td class="text-center">
                 <form method="post">
-                    {% if foc.finance_org_id in proposed_fo_ids %}
+                    {% if foc.finance_org.id in proposed_fo_ids %}
                         <button type="button" class="btn btn-default btn-xs" disabled>Отправлена</button>
                     {% else %}
                         {% csrf_token %}

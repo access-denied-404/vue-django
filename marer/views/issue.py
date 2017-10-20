@@ -168,10 +168,11 @@ class IssueScoringView(IssueView):
     template_name = 'marer/issue/scoring.html'
 
     def get(self, request, *args, **kwargs):
-        foc_list = FinanceOrgProductConditions.objects.filter(
-            bg_44_contract_exec_interest_rate__isnull=False,
-            bg_review_term_days__gt=0,
-        ).order_by('bg_44_contract_exec_interest_rate')
+
+        foc_fields = self.get_issue().get_product().get_finance_orgs_conditions_list_fields()
+
+        foc_list = self.get_issue().get_product().get_finance_orgs_conditions_list()
+        foc_list = foc_list.order_by('bg_44_contract_exec_interest_rate')
 
         # distinctize by finance org
         foc_list = [x for x in foc_list]
@@ -182,7 +183,19 @@ class IssueScoringView(IssueView):
                 distinctized_foc_list.append(foc)
                 fo_ids_used.append(foc.finance_org_id)
 
-        kwargs['foc_list'] = distinctized_foc_list
+        foc_list_list = []
+        for foc in distinctized_foc_list:
+            ffields_val = []
+            for ffield, _ in foc_fields:
+                ffields_val.append(getattr(foc, ffield))
+            foc_list_list.append(dict(
+                finance_org=foc.finance_org,
+                values=ffields_val,
+            ))
+
+        # kwargs['foc_list'] = distinctized_foc_list
+        kwargs['foc_list'] = foc_list_list
+        kwargs['foc_fields'] = foc_fields
         kwargs['proposed_fo_ids'] = IssueFinanceOrgPropose.objects.filter(
             issue=self.get_issue()).values_list('finance_org_id', flat=True)
         return super().get(request, *args, **kwargs)

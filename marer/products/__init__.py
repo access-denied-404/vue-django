@@ -350,6 +350,25 @@ class BankGuaranteeProduct(FinanceProduct):
             ))),
         ]
 
+    def get_finance_orgs_conditions_list_fields(self):
+        interest_rate_field_name = 'bg_44_contract_exec_interest_rate'
+
+        return [
+            (interest_rate_field_name, 'Процентная ставка'),
+            ('humanized_bg_insurance', 'Обеспечение'),
+            ('humanized_bg_review_tern_days', 'Срок рассмотрения'),
+            ('humanized_bg_bank_account_opening_required', 'Открытие р/с'),
+            ('humanized_bg_personal_presence_required', 'Личное присутствие'),
+        ]
+
+    def get_finance_orgs_conditions_list(self):
+        from marer.models.finance_org import FinanceOrgProductConditions
+        foc_list = FinanceOrgProductConditions.objects.filter(
+            bg_44_contract_exec_interest_rate__isnull=False,
+            bg_review_term_days__gt=0,
+        )
+        return foc_list
+
 
 class CreditProduct(FinanceProduct):
     _humanized_name = 'Кредит'
