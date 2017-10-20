@@ -172,7 +172,8 @@ class IssueScoringView(IssueView):
         foc_fields = self.get_issue().get_product().get_finance_orgs_conditions_list_fields()
 
         foc_list = self.get_issue().get_product().get_finance_orgs_conditions_list()
-        foc_list = foc_list.order_by('bg_44_contract_exec_interest_rate')
+        first_fld, _ = foc_fields[0]
+        foc_list = foc_list.order_by(first_fld)
 
         # distinctize by finance org
         foc_list = [x for x in foc_list]

@@ -6,6 +6,7 @@ from django.forms import formset_factory
 from django.forms.forms import Form
 from django.utils import timezone
 
+from marer import consts
 from marer.products.base import FinanceProduct, FinanceProductDocumentItem
 from marer.products.forms import BGFinProdRegForm, BGFinProdSurveyOrgCommonForm, BGFinProdSurveyOrgHeadForm, \
     AffiliatesForm, FounderLegalForm, FounderPhysicalForm, CreditFinProdRegForm, CreditPledgeForm
@@ -351,7 +352,20 @@ class BankGuaranteeProduct(FinanceProduct):
         ]
 
     def get_finance_orgs_conditions_list_fields(self):
-        interest_rate_field_name = 'bg_44_contract_exec_interest_rate'
+
+        # any field just to fall avoid
+        interest_rate_field_name = 'bg_44_app_ensure_interest_rate'
+
+        if self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_44_FZ:
+            if self._issue.bg_type == consts.BG_TYPE_APPLICATION_ENSURE:
+                interest_rate_field_name = 'bg_44_app_ensure_interest_rate'
+            elif self._issue.bg_type == consts.BG_TYPE_CONTRACT_EXECUTION:
+                interest_rate_field_name = 'bg_44_contract_exec_interest_rate'
+        elif self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_223_FZ:
+            if self._issue.bg_type == consts.BG_TYPE_APPLICATION_ENSURE:
+                interest_rate_field_name = 'bg_223_app_ensure_interest_rate'
+            elif self._issue.bg_type == consts.BG_TYPE_CONTRACT_EXECUTION:
+                interest_rate_field_name = 'bg_223_contract_exec_interest_rate'
 
         return [
             (interest_rate_field_name, 'Процентная ставка'),
@@ -363,11 +377,23 @@ class BankGuaranteeProduct(FinanceProduct):
 
     def get_finance_orgs_conditions_list(self):
         from marer.models.finance_org import FinanceOrgProductConditions
-        foc_list = FinanceOrgProductConditions.objects.filter(
-            bg_44_contract_exec_interest_rate__isnull=False,
+        qs = FinanceOrgProductConditions.objects.filter(
+            finance_product=self.name,
             bg_review_term_days__gt=0,
         )
-        return foc_list
+
+        if self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_44_FZ:
+            if self._issue.bg_type == consts.BG_TYPE_APPLICATION_ENSURE:
+                qs = qs.filter(bg_44_app_ensure_interest_rate__isnull=False)
+            elif self._issue.bg_type == consts.BG_TYPE_CONTRACT_EXECUTION:
+                qs = qs.filter(bg_44_contract_exec_interest_rate__isnull=False)
+        elif self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_223_FZ:
+            if self._issue.bg_type == consts.BG_TYPE_APPLICATION_ENSURE:
+                qs = qs.filter(bg_223_app_ensure_interest_rate__isnull=False)
+            elif self._issue.bg_type == consts.BG_TYPE_CONTRACT_EXECUTION:
+                qs = qs.filter(bg_223_contract_exec_interest_rate__isnull=False)
+
+        return qs
 
 
 class CreditProduct(FinanceProduct):
@@ -626,6 +652,23 @@ class CreditProduct(FinanceProduct):
     def get_registering_form_class(self):
         return CreditFinProdRegForm
 
+    def get_finance_orgs_conditions_list_fields(self):
+        return [
+            ('credit_interest_rate', 'Процентная ставка'),
+            ('humanized_bg_insurance', 'Обеспечение'),
+            ('humanized_bg_review_tern_days', 'Срок рассмотрения'),
+            ('humanized_bg_bank_account_opening_required', 'Открытие р/с'),
+            ('humanized_bg_personal_presence_required', 'Личное присутствие'),
+        ]
+
+    def get_finance_orgs_conditions_list(self):
+        from marer.models.finance_org import FinanceOrgProductConditions
+        return FinanceOrgProductConditions.objects.filter(
+            finance_product=self.name,
+            bg_review_term_days__gt=0,
+            credit_interest_rate__gt=0,
+        )
+
 
 class LeasingProduct(FinanceProduct):
     def process_survey_post_data(self, request):
@@ -651,3 +694,20 @@ class LeasingProduct(FinanceProduct):
     def get_registering_form_class(self):
         warnings.warn("Method is not implemented")
         return Form
+
+    def get_finance_orgs_conditions_list_fields(self):
+        return [
+            ('leasing_interest_rate', 'Процентная ставка'),
+            ('humanized_bg_insurance', 'Обеспечение'),
+            ('humanized_bg_review_tern_days', 'Срок рассмотрения'),
+            ('humanized_bg_bank_account_opening_required', 'Открытие р/с'),
+            ('humanized_bg_personal_presence_required', 'Личное присутствие'),
+        ]
+
+    def get_finance_orgs_conditions_list(self):
+        from marer.models.finance_org import FinanceOrgProductConditions
+        return FinanceOrgProductConditions.objects.filter(
+            finance_product=self.name,
+            bg_review_term_days__gt=0,
+            leasing_interest_rate__gt=0,
+        )
