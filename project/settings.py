@@ -174,3 +174,10 @@ REST_FRAMEWORK = {
 }
 
 DADATA_TOKEN = '47c4fdece03003595040e4db2f4fd325fb66c93e'
+
+DEFAULT_FROM_EMAIL = 'info@marer.ru'
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'marer'
+EMAIL_HOST_PASSWORD = 'cheshka1'
+EMAIL_PORT = '465'
+EMAIL_USE_SSL = True
