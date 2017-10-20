@@ -1,0 +1,28 @@
+{% extends 'mail/base.html' %}
+
+{% block content %}
+    <tr>
+        <td class="plr-20" bgcolor="#f9f9f9"
+            style="padding:30px 48px; font:18px/25px DINPro, Arial, Helvetica, sans-serif; color:#757c83;">
+            <p>
+                Вы успешно подали новую заявку на получение финансового продукта, а также
+                зарегистрировались на площадке финансовых продуктов МАРЭР.
+            </p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <br/>
+        </td>
+    </tr>
+    <tr>
+        <td class="plr-20" bgcolor="#f9f9f9"
+            style="padding:30px 48px; font:18px/25px DINPro, Arial, Helvetica, sans-serif; color:#757c83; text-align: center;">
+            <strong>Ваши данные для входа в личный кабинет</strong>
+            <br/>
+            <strong>Логин</strong>: {{ username }}
+            <br/>
+            <strong>Пароль</strong>: {{ password }}
+        </td>
+    </tr>
+{% endblock %}

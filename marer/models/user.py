@@ -1,6 +1,11 @@
+import random
+import string
+
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.core.mail import send_mail
 from django.db import models
+from django.template.loader import get_template
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -37,6 +42,19 @@ class User(AbstractUser):
     def normalize_username(cls, username):
         username = super().normalize_username(username)
         return str(username).lower()
+
+    def email_user(self, subject, message=None, from_email=None, html_template_filename=None, context=None, **kwargs):
+        if html_template_filename is None:
+            super().email_user(subject, message, from_email, **kwargs)
+        else:
+            msg_tmpl = get_template(html_template_filename)
+            message = msg_tmpl.render(context or {})
+            send_mail(subject, '', from_email, [self.email], html_message=message, **kwargs)
+
+    def generate_new_password(self):
+        new_pass = ''.join([random.choice(string.digits) for r in range(10)])
+        self.set_password(new_pass)
+        return new_pass
 
     def __str__(self):
         user_name_list = []

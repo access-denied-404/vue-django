@@ -1,0 +1,65 @@
+{% load staticfiles %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:v="urn:schemas-microsoft-com:vml"
+      xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+    <!--[if gte mso 9]>
+        <xml>
+            <o:OfficeDocumentSettings>
+                <o:AllowPNG/>
+                <o:PixelsPerInch>96</o:PixelsPerInch>
+            </o:OfficeDocumentSettings>
+        </xml>
+    <![endif]-->
+    <title>{% block title %}{% endblock %}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body bgcolor="#d9e1e8" style="margin:0; padding:0; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%;">
+
+<table bgcolor="#d9e1e8" width="100%" style="min-width:320px;" cellspacing="0" cellpadding="0">
+    <!-- fix for gmail -->
+    <tr>
+        <td class="hide" style="line-height:0;">
+            <div style="white-space:nowrap; font:15px/0 courier;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td class="plr-0" style="padding:0 10px;">
+            <br/>
+            <br/>
+            <table class="flexible" width="580" align="center" style="margin:0 auto;" cellpadding="0" cellspacing="0">
+                <!-- header -->
+                <tr>
+                    <td bgcolor="#f9f9f9" style="border-bottom:1px solid #d7d7d7;text-align: center; padding: 10px 0;">
+                        <img height="40" src="http://marer.ru{% static 'nspp/images/59d5eba096577900017a292d_logo.png' %}"/>
+                    </td>
+                </tr>
+                <!-- content -->
+                {% block content %}
+                    <tr>
+                        <td class="plr-20" bgcolor="#f9f9f9"
+                            style="padding:30px 48px; font:18px/25px DINPro, Arial, Helvetica, sans-serif; color:#757c83;">
+                            Что-то пошло не так! Мы, кажется, забыли написать текст в письме перед тем,
+                            как отправить его Вам. Пожалуйста, отправьте это письмо по адресу
+                            <a href="mailto:info@marer.ru">info@marer.ru</a> и вкратце опишите, после каких
+                            действий Вы получили именно это письмо. Мы ценим своих клиентов и постараемся исправить
+                            данное недоразумение как можно скорее.<br><br>Заранее благодарим за понимание! :)
+                        </td>
+                    </tr>
+                {% endblock %}
+            </table>
+            <br/>
+            <br/>
+        </td>
+    </tr>
+
+</table>
+</body>
+</html>

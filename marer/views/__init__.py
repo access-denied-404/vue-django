@@ -3,6 +3,7 @@ from django.contrib.auth import login
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.template.loader import get_template
 from django.urls import reverse
 from django.views.generic.base import TemplateView
 
@@ -119,7 +120,16 @@ class IndexView(TemplateView, StaticPagesContextMixin):
                     new_user.first_name = full_name_arr[1]
 
                 # todo generate and send password
+                new_password = new_user.generate_new_password()
                 new_user.save()
+                new_user.email_user(
+                    subject='Новый пользователь',
+                    html_template_filename='mail/new_user_by_quick_form.html',
+                    context=dict(
+                        username=new_user.username,
+                        password=new_password,
+                    ),
+                )
                 login(request, new_user)
 
             issuer_full_name = quick_request_form.cleaned_data['party_full_name']
