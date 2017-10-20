@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.formats import number_format
 
 from marer import consts
-from marer.models.base import Document
+from marer.models.base import Document, set_obj_update_time
 from marer.models.finance_org import FinanceOrganization
 from marer.models.issuer import Issuer, IssuerDocument
 from marer.products import get_finance_products_as_choices, FinanceProduct, get_finance_products
@@ -33,7 +33,7 @@ class Issue(models.Model):
     comment = models.TextField(verbose_name='комментарий к заявке', blank=True, null=False, default='')
     private_comment = models.TextField(verbose_name='приватный комментарий к заявке', blank=True, null=False, default='')
     updated_at = models.DateTimeField(verbose_name='время обновления', auto_now=True, null=False)
-    created_at = models.DateTimeField(verbose_name='время создания', auto_now=True, null=False)
+    created_at = models.DateTimeField(verbose_name='время создания', auto_now_add=True, null=False)
 
     issuer = models.ForeignKey(Issuer, on_delete=models.SET_NULL, blank=True, null=True)
     issuer_inn = models.CharField(verbose_name='ИНН заявителя', max_length=32, blank=True, null=False, default='')
@@ -306,7 +306,7 @@ class IssueFinanceOrgPropose(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False, related_name='proposes')
     finance_org = models.ForeignKey(FinanceOrganization, verbose_name='финансовая организация', on_delete=models.CASCADE, blank=False, null=False)
     updated_at = models.DateTimeField(verbose_name='время обновления', auto_now=True, null=False)
-    created_at = models.DateTimeField(verbose_name='время создания', auto_now=True, null=False)
+    created_at = models.DateTimeField(verbose_name='время создания', auto_now_add=True, null=False)
 
     formalize_note = models.TextField(verbose_name='подпись к документам для оформления', blank=True, null=False, default='')
     final_note = models.TextField(verbose_name='подпись к итоговым документам', blank=True, null=False, default='')
@@ -319,6 +319,10 @@ class IssueFinanceOrgPropose(models.Model):
             sum=self.issue.bg_sum,
             fin_org=self.finance_org.name
         )
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        set_obj_update_time(self.issue)
+        return super().save(force_insert, force_update, using, update_fields)
 
 
 class IssueFinanceOrgProposeClarification(models.Model):
@@ -339,7 +343,7 @@ class IssueFinanceOrgProposeClarification(models.Model):
         (consts.IFOPC_INITIATOR_ISSUER, 'Заявитель'),
     ])
     updated_at = models.DateTimeField(verbose_name='время обновления', auto_now=True, null=False)
-    created_at = models.DateTimeField(verbose_name='время создания', auto_now=True, null=False)
+    created_at = models.DateTimeField(verbose_name='время создания', auto_now_add=True, null=False)
 
     def __str__(self):
         str_args = (
@@ -352,6 +356,10 @@ class IssueFinanceOrgProposeClarification(models.Model):
             return 'Дозапрос №{} по заявке №{} в {} от {}'.format(*str_args)
         else:
             return 'Дозапрос №{} по заявке №{} от {} от {}'.format(*str_args)
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        set_obj_update_time(self.propose)
+        return super().save(force_insert, force_update, using, update_fields)
 
 
 class IssueFinanceOrgProposeClarificationMessage(models.Model):
@@ -368,7 +376,7 @@ class IssueFinanceOrgProposeClarificationMessage(models.Model):
     )
     message = models.TextField(verbose_name='сообщение', blank=False, null=False, default='')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='пользователь', on_delete=models.DO_NOTHING, null=False)
-    created_at = models.DateTimeField(verbose_name='время создания', auto_now=True, null=False)
+    created_at = models.DateTimeField(verbose_name='время создания', auto_now_add=True, null=False)
 
     def __str__(self):
         return 'Сообщение по дозапросу №{num} от пользователя {user} в {created}'.format(
@@ -376,6 +384,10 @@ class IssueFinanceOrgProposeClarificationMessage(models.Model):
             user=self.user,
             created=self.created_at,
         )
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        set_obj_update_time(self.clarification)
+        return super().save(force_insert, force_update, using, update_fields)
 
 
 class IssueFinanceOrgProposeClarificationMessageDocument(models.Model):

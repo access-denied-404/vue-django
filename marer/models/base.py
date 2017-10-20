@@ -1,9 +1,11 @@
 import datetime
 import os
 import uuid
+from logging import warning
 
 from django.db import models
 from django.utils.encoding import force_str, force_text
+from django.utils import timezone
 from mptt import models as mptt_models
 from mptt.fields import TreeForeignKey
 
@@ -61,6 +63,18 @@ def showcase_partners_logos_upload_path(instance, filename):
     new_filename = force_text(new_filename)
     new_filename = os.path.normpath(new_filename)
     return new_filename
+
+
+def set_obj_update_time(obj, updated_at_field='updated_at'):
+    if obj:
+        if hasattr(obj, updated_at_field):
+            setattr(obj, updated_at_field, timezone.now())
+            obj.save()
+        else:
+            warning('Object {} got no field called {} for update time there'.format(
+                obj, updated_at_field))
+    else:
+        warning('Got none object for set update time', stacklevel=3)
 
 
 class Document(models.Model):
