@@ -794,7 +794,48 @@ class CreditProduct(FinanceProduct):
         )
 
     def load_finance_orgs_conditions_from_worksheet(self, ws):
-        warnings.warn("Method is not implemented")
+        """
+        HEADERS
+
+            coming soon...
+        """
+        idx = 4
+
+        bank_name = get_cell_value(ws, 'a', idx).value
+        while bank_name is not None and bank_name != '':
+
+            from marer.models.finance_org import FinanceOrgProductConditions
+            new_foc = FinanceOrgProductConditions()
+
+            try:
+                min_sum, max_sum = get_cell_summ_range(get_cell_value(ws, 'b', idx))
+                new_foc.credit_min_sum = min_sum
+                new_foc.credit_max_sum = max_sum
+                new_foc.credit_interest_rate = get_cell_percentage(get_cell_value(ws, 'c', idx))
+
+                # Base conditions
+                new_foc.personal_presence_required = get_cell_bool(get_cell_value(ws, 't', idx))
+                new_foc.bg_review_term_days = get_cell_review_term_days(get_cell_value(ws, 'u', idx))
+
+                ensure_type, ensure_value = get_cell_ensure_condition(get_cell_value(ws, 'v', idx))
+                new_foc.bg_insurance_type = ensure_type
+                new_foc.bg_insurance_value = ensure_value
+                new_foc.bg_bank_account_opening_required = get_cell_bool(get_cell_value(ws, 'w', idx))
+            except Exception:
+                logger.warning("Error on parsing line {}, finance organization {}".format(idx, bank_name))
+
+            from marer.models.finance_org import FinanceOrganization
+            try:
+                finance_org = FinanceOrganization.objects.get(name__iexact=bank_name)
+            except ObjectDoesNotExist:
+                finance_org = FinanceOrganization(name=bank_name)
+                finance_org.save()
+
+            new_foc.finance_org = finance_org
+            new_foc.finance_product = self.name
+            new_foc.save()
+            idx += 1
+            bank_name = get_cell_value(ws, 'a', idx).value
 
 
 class LeasingProduct(FinanceProduct):
