@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 
+from marer import consts
 from marer.models.base import OKVED2, Region
 from marer.products import get_finance_products_as_choices
 
@@ -32,9 +33,6 @@ class FinanceOrganization(models.Model):
 
 
 class FinanceOrgProductConditions(models.Model):
-    INSURANCE_TYPE_REAL_ESTATE = 'real_estate'
-    INSURANCE_TYPE_PLEDGE = 'pledge'
-
     finance_product = models.CharField(
         max_length=32, choices=get_finance_products_as_choices(), null=False, blank=False)
     finance_org = models.ForeignKey(FinanceOrganization, null=False, blank=False, related_name='products_conditions')
@@ -74,8 +72,8 @@ class FinanceOrgProductConditions(models.Model):
     personal_presence_required = models.BooleanField(blank=True, null=False, default=False)
     bg_review_term_days = models.PositiveIntegerField(blank=False, null=False, default=1)
     bg_insurance_type = models.CharField(max_length=32, choices=[
-        (INSURANCE_TYPE_PLEDGE, 'Недвижимое имущество'),
-        (INSURANCE_TYPE_PLEDGE, 'Залог'),
+        (consts.FO_PRODUCT_CONDITIONS_INSURANCE_TYPE_REAL_ESTATE, 'Недвижимое имущество'),
+        (consts.FO_PRODUCT_CONDITIONS_INSURANCE_TYPE_PLEDGE, 'Залог'),
     ], blank=True, null=True)
     bg_insurance_value = models.PositiveSmallIntegerField(blank=False, null=False, default=0)
     bg_bank_account_opening_required = models.BooleanField(blank=True, null=False, default=False)

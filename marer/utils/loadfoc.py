@@ -1,6 +1,6 @@
 import re
 
-from marer.models.finance_org import FinanceOrgProductConditions
+from marer import consts
 
 
 def get_cell_percentage(cell_data):
@@ -115,14 +115,14 @@ def get_cell_ensure_condition(cell_data):
         matches = pattern.fullmatch(str(cell_data.value).lower())
         if matches:
             ens_data = matches.groupdict()
-            ensure_type = FinanceOrgProductConditions.INSURANCE_TYPE_PLEDGE
+            ensure_type = consts.FO_PRODUCT_CONDITIONS_INSURANCE_TYPE_PLEDGE
             ensure_value = int(ens_data.get('percentage'))
             return ensure_type, ensure_value
 
     for pattern in patterns_estate:
         matches = pattern.fullmatch(str(cell_data.value).lower())
         if matches:
-            return FinanceOrgProductConditions.INSURANCE_TYPE_REAL_ESTATE, 100
+            return consts.FO_PRODUCT_CONDITIONS_INSURANCE_TYPE_REAL_ESTATE, 100
 
     for pattern in patterns_none:
         matches = pattern.fullmatch(str(cell_data.value).lower())
