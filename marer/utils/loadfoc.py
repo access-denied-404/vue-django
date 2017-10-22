@@ -72,13 +72,14 @@ def get_cell_review_term_days(cell_data):
 
     # variants
     #   ' 10 '
+    #   ' 1 день '
     #   ' 10 дней '
     #   ' 2 дня '
     #   ' 10 д '
     #   ' 10 дн '
     #   ' 10 дн. '
 
-    pattern = re.compile('\s*(?P<days>\d+)\s*(дней|дня|д|дн|дн.)?\s*')
+    pattern = re.compile('\s*(?P<days>\d+)\s*(день|дней|дня|д|дн|дн.)?\s*')
 
     matches = pattern.fullmatch(str(cell_data.value).lower())
     if matches:
