@@ -92,9 +92,9 @@ class FinanceOrgProductConditions(models.Model):
     def humanized_bg_insurance(self):
         if self.bg_insurance_type is None:
             return 'Нет'
-        if self.bg_insurance_type == FinanceOrgProductConditions.INSURANCE_TYPE_REAL_ESTATE:
+        if self.bg_insurance_type == consts.FO_PRODUCT_CONDITIONS_INSURANCE_TYPE_REAL_ESTATE:
             return 'Недвижимость'
-        if self.bg_insurance_type == FinanceOrgProductConditions.INSURANCE_TYPE_PLEDGE:
+        if self.bg_insurance_type == consts.FO_PRODUCT_CONDITIONS_INSURANCE_TYPE_PLEDGE:
             return 'Залог {}%'.format(self.bg_insurance_value)
 
     @property
