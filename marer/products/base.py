@@ -59,6 +59,8 @@ class FinanceProduct(object):
     def get_finance_orgs_conditions_list(self):
         raise NotImplementedError("Method is not implemented")
 
+    def load_finance_orgs_conditions_from_worksheet(self, ws):
+        raise NotImplementedError("Method is not implemented")
 
 
 class FinanceProductDocumentItem(object):
