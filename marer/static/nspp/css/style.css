@@ -1,4 +1,4 @@
-/* Generated on: Wed Oct 11 2017 16:42:25 GMT+0000 (UTC) */
+/* Generated on: Mon Oct 23 2017 12:04:24 GMT+0000 (UTC) */
 /* ==========================================================================
    normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css 
    ========================================================================== */
@@ -13,7 +13,7 @@
    Start of custom Webflow CSS
    ========================================================================== */
 body {
-  font-family: DINThin, sans-serif;
+  font-family: DINThin;
   color: #0f0f0f;
   font-size: 14px;
   line-height: 20px;
@@ -192,6 +192,20 @@ a:active {
   color: #1f6aaf;
 }
 
+.menulink.lp:hover {
+  color: #97cdff;
+}
+
+.menulink.lp.w--current {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.menulink.lp.w--current:hover {
+  border-bottom-style: none;
+  color: #fff;
+}
+
 .menuprofile {
   display: inline-block;
 }
@@ -329,9 +343,9 @@ a:active {
 
 .startorderheader {
   margin-bottom: 30px;
-  font-family: DINThin, sans-serif;
+  font-family: Panton, sans-serif;
   color: #003350;
-  font-size: 27px;
+  font-size: 25px;
   line-height: 23px;
   letter-spacing: 5px;
   text-transform: uppercase;
@@ -360,6 +374,7 @@ a:active {
 }
 
 .submit {
+  display: inline-block;
   height: 50px;
   padding-top: 5px;
   padding-right: 20px;
@@ -375,6 +390,7 @@ a:active {
 
 .submit:hover {
   background-color: #ffeb00;
+  color: #000;
 }
 
 .submit:active {
@@ -384,7 +400,43 @@ a:active {
 }
 
 .submit.ordersubmit {
+  display: inline-block;
   width: 100%;
+  height: 60px;
+  padding-top: 7px;
+}
+
+.submit.lporder {
+  display: inline-block;
+  height: 60px;
+  padding-top: 17px;
+  padding-right: 30px;
+  padding-left: 30px;
+  font-size: 18px;
+}
+
+.submit.lpcalcsubmit {
+  display: block;
+  width: 210px;
+  height: 65px;
+  margin-top: 3px;
+  font-size: 22px;
+}
+
+.submit.stageorder {
+  display: inline-block;
+  margin-top: 5px;
+  padding-top: 11px;
+}
+
+.submit.lpordersubmit {
+  display: block;
+  width: 210px;
+  height: 65px;
+  margin-top: 3px;
+  margin-right: auto;
+  margin-left: auto;
+  font-size: 22px;
 }
 
 .news {
@@ -850,6 +902,7 @@ a:active {
   display: flex;
   width: 33.3%;
   margin-bottom: 50px;
+  padding-right: 10px;
   -webkit-box-pack: start;
   -webkit-justify-content: flex-start;
   -ms-flex-pack: start;
@@ -1491,15 +1544,692 @@ a:active {
   background-position: 50% 50%;
   background-size: cover;
   background-repeat: no-repeat;
-  opacity: 0.95;
+  opacity: 1;
 }
 
 .poporderx {
   position: absolute;
   top: 50px;
   right: 50px;
+  z-index: 62;
   width: 60px;
   height: 60px;
+}
+
+.lphero {
+  width: 100%;
+  padding-bottom: 22vh;
+  background-image: url("../images/59ec9b80e8bbc50001a4ffd1_bgback.jpg");
+  background-position: 50% 50%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.lp {
+  color: #fff;
+}
+
+.lpheroinfo {
+  position: relative;
+  width: 100%;
+  padding-top: 7vh;
+}
+
+.lpheroinfoblock {
+  width: 70%;
+  color: #fff;
+}
+
+.lpheroheadeer {
+  margin-bottom: 45px;
+  color: #fff;
+  font-size: 63px;
+  line-height: 67px;
+}
+
+.lpherosubheader {
+  width: 60%;
+  margin-bottom: 65px;
+  font-family: Panton, sans-serif;
+  font-size: 21px;
+  line-height: 28px;
+}
+
+.lpherovideo {
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+  width: 245px;
+  color: #fff;
+  font-size: 18px;
+  text-align: center;
+}
+
+.lpherovideo:hover {
+  color: #fff;
+}
+
+.lpherovideoblock {
+  position: relative;
+  margin-top: 10px;
+}
+
+.lpherovideoplay {
+  position: absolute;
+  left: 25px;
+  top: 35px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  width: 64px;
+  height: 64px;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  opacity: 0.75;
+  -webkit-transition: opacity 200ms ease;
+  transition: opacity 200ms ease;
+}
+
+.lpherovideoplay:hover {
+  opacity: 1;
+}
+
+.lpfeatures {
+  padding-top: 60px;
+  padding-bottom: 60px;
+  text-align: center;
+}
+
+.lpbgs {
+  padding-top: 60px;
+  padding-bottom: 60px;
+  background-image: url("../images/59d5eb91e966f400014363fa_back.jpg");
+  background-position: 50% 50%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: #fff;
+  text-align: center;
+}
+
+.lpbgsblock {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  margin-top: 80px;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-align: start;
+  -webkit-align-items: flex-start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+}
+
+.bankgarant {
+  width: 46%;
+  margin-bottom: 80px;
+  text-align: left;
+}
+
+.bankgarantheader {
+  padding-bottom: 25px;
+  border-bottom: 1px solid hsla(0, 0%, 100%, .25);
+  font-family: Panton, sans-serif;
+  font-size: 32px;
+  line-height: 38px;
+}
+
+.bankgarantlist {
+  margin-top: 25px;
+  margin-bottom: 25px;
+  padding-left: 0px;
+  font-size: 18px;
+  line-height: 22px;
+}
+
+.bullet {
+  display: inline-block;
+  padding-right: 8px;
+}
+
+.bankgarantitem {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.lpwhite {
+  padding-top: 120px;
+  padding-bottom: 120px;
+  background-image: -webkit-linear-gradient(270deg, #fff, #d3dde2);
+  background-image: linear-gradient(180deg, #fff, #d3dde2);
+}
+
+.lpaboutvideo {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.lpaboutvideoinfo {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  width: 33%;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: start;
+  -webkit-align-items: flex-start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  font-size: 18px;
+  line-height: 26px;
+}
+
+.lpaboutvideoheader {
+  margin-bottom: 25px;
+  font-family: Panton, sans-serif;
+  font-size: 45px;
+  line-height: 52px;
+}
+
+.videoaboutplay {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  margin-left: 75px;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  opacity: 0.7;
+  -webkit-transition: opacity 200ms ease;
+  transition: opacity 200ms ease;
+  color: #27578a;
+  font-size: 18px;
+  line-height: 18px;
+}
+
+.videoaboutplay:hover {
+  opacity: 1;
+}
+
+.videoaboutpreview {
+  position: absolute;
+  top: 0px;
+  z-index: 2;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  background-color: #fff;
+  background-image: url("../images/59ed035041b4090001b5d8d2_man.png");
+  background-position: 0px 50%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  text-decoration: none;
+}
+
+.lpaboutvideotext {
+  width: 90%;
+}
+
+.lpcalc {
+  width: 100%;
+  margin-top: 120px;
+  padding: 50px;
+  background-color: #fff;
+}
+
+.lpcalcheader {
+  margin-bottom: 20px;
+  font-family: Panton, sans-serif;
+  font-size: 40px;
+  line-height: 45px;
+  text-align: center;
+}
+
+.lpcalcforms {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  margin-top: 45px;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-box-align: start;
+  -webkit-align-items: flex-start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+}
+
+.lpcalclabel {
+  margin-bottom: 10px;
+  color: #848484;
+  font-size: 20px;
+  font-weight: 300;
+}
+
+.input {
+  height: 55px;
+  margin-bottom: 0px;
+  border: 1px solid #b8b8b8;
+  border-radius: 4px;
+  background-color: transparent;
+  font-family: Panton, sans-serif;
+  font-size: 26px;
+}
+
+.input:hover {
+  border-color: #1a98fa;
+}
+
+.input:focus {
+  border-color: #0056d6;
+  font-family: Panton, sans-serif;
+  font-size: 26px;
+}
+
+.input.garantselect {
+  padding-top: 6px;
+  padding-right: 0px;
+  padding-left: 6px;
+  font-family: DINLight, sans-serif;
+  font-size: 18px;
+}
+
+.lpcalcinput {
+  position: relative;
+  width: 30%;
+  margin-bottom: 20px;
+}
+
+.lpcalcinput.type {
+  width: 35%;
+}
+
+.inputbar {
+  position: relative;
+  width: 100%;
+}
+
+.inputbarbutton {
+  display: inline-block;
+  opacity: 0.8;
+  -webkit-transition: opacity 200ms ease;
+  transition: opacity 200ms ease;
+  cursor: pointer;
+}
+
+.inputbarbutton:hover {
+  opacity: 1;
+}
+
+.image {
+  position: absolute;
+  left: 15%;
+  top: 0px;
+}
+
+.lpcalcinfo {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  margin-top: 15px;
+  margin-bottom: 1px;
+}
+
+.lpcalcsum {
+  display: block;
+  width: 30%;
+}
+
+.lpcalcsumtext {
+  display: inline-block;
+  margin-bottom: 2px;
+  color: #848484;
+  font-size: 20px;
+}
+
+.lpcalcsumnum {
+  display: block;
+  font-family: Panton, sans-serif;
+  font-size: 46px;
+  line-height: 45px;
+  font-weight: 300;
+}
+
+.text-span {
+  font-family: Rubl, sans-serif;
+}
+
+.rubl {
+  margin-left: 8px;
+  font-family: Rubl, sans-serif;
+  color: #353535;
+  font-size: 45px;
+  font-weight: 600;
+}
+
+.lpcalcinputmenu {
+  position: absolute;
+  right: 15px;
+  display: inline-block;
+  margin-top: 17px;
+}
+
+.lpcalclink {
+  margin-left: 15px;
+  font-size: 16px;
+}
+
+.lpcalclink.current {
+  color: #848484;
+  cursor: default;
+}
+
+.lpcalctext {
+  width: 50%;
+  padding-right: 20px;
+  color: #898989;
+  font-size: 16px;
+  line-height: 23px;
+}
+
+.success {
+  background-color: rgba(255, 245, 0, 0);
+  font-family: Panton, sans-serif;
+  color: #fcbf00;
+  font-size: 24px;
+  line-height: 29px;
+}
+
+.error {
+  border-radius: 3px;
+  color: #000;
+  font-size: 16px;
+  text-align: center;
+}
+
+.lpcalcinputrubl {
+  position: absolute;
+  right: 15px;
+  display: inline-block;
+  margin-top: 12px;
+  font-family: Rubl, sans-serif;
+  color: #353535;
+  font-size: 30px;
+  line-height: 26px;
+  font-weight: 600;
+}
+
+.stages {
+  padding-top: 60px;
+  padding-bottom: 110px;
+  text-align: center;
+}
+
+.stagesblock {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  margin-top: 80px;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-box-pack: start;
+  -webkit-justify-content: flex-start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-align: start;
+  -webkit-align-items: flex-start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+}
+
+.stageitem {
+  position: relative;
+  z-index: 1;
+  width: 25%;
+  padding-right: 10px;
+  padding-left: 10px;
+  font-size: 20px;
+  line-height: 24px;
+}
+
+.stagenum {
+  display: block;
+  width: 66px;
+  height: 66px;
+  margin-right: auto;
+  margin-bottom: 16px;
+  margin-left: auto;
+  padding-top: 19px;
+  border: 2px solid #0074c3;
+  border-radius: 50%;
+  background-color: #fff;
+  color: #0081d9;
+  font-size: 30px;
+}
+
+.stagenum.firststage {
+  padding-right: 2px;
+  background-color: #0074c3;
+  color: #fff;
+}
+
+.stagenum.secondstage {
+  border-color: #008ad1;
+}
+
+.stagenum.thirdstage {
+  border-color: #00a6dc;
+}
+
+.stagenum.fourthstage {
+  border-color: #00bfea;
+}
+
+.stageminitext {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 17px;
+}
+
+.stagesline {
+  position: relative;
+  top: 34px;
+  display: block;
+  width: 80%;
+  height: 2px;
+  margin-right: auto;
+  margin-left: auto;
+  background-image: -webkit-linear-gradient(0deg, #0074c3 -2%, #00d2ff);
+  background-image: linear-gradient(90deg, #0074c3 -2%, #00d2ff);
+}
+
+.lporderinput {
+  width: 32%;
+  height: 42px;
+  margin-bottom: 17px;
+  padding-top: 6px;
+  border-style: none;
+  border-radius: 4px;
+  background-color: #fff;
+  -webkit-transition: background-color 200ms ease, color 200ms ease;
+  transition: background-color 200ms ease, color 200ms ease;
+  color: #000;
+  font-size: 18px;
+}
+
+.lporderinput:hover {
+  background-color: #fff;
+}
+
+.lporderinput:focus {
+  background-color: hsla(0, 0%, 100%, .96);
+  color: #0c0c0c;
+}
+
+.lporderbig {
+  display: block;
+  width: 830px;
+  margin-top: 30px;
+  margin-right: auto;
+  margin-left: auto;
+  border-radius: 5px;
+}
+
+.lporderinputs {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-box-align: start;
+  -webkit-align-items: flex-start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+}
+
+.ordertextarea {
+  min-height: 100px;
+  margin-bottom: 17px;
+  padding-top: 6px;
+  border-style: none;
+  border-radius: 4px;
+  background-color: #fff;
+  -webkit-transition: background-color 200ms ease, color 200ms ease;
+  transition: background-color 200ms ease, color 200ms ease;
+  color: #000;
+  font-size: 18px;
+}
+
+.ordertextarea:hover {
+  background-color: #fff;
+}
+
+.ordertextarea:focus {
+  background-color: hsla(0, 0%, 100%, .96);
+  color: #0c0c0c;
+}
+
+.lpordercheck {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  margin-bottom: 30px;
+  padding-top: 25px;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-align: start;
+  -webkit-align-items: flex-start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  border-top: 1px solid hsla(0, 0%, 100%, .25);
+  border-bottom: 1px solid hsla(0, 0%, 100%, .25);
+}
+
+.lpcheckbox {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  width: 50%;
+  margin-bottom: 20px;
+  font-size: 18px;
+  text-align: left;
+}
+
+.checkbox {
+  position: relative;
+  top: -4px;
+  width: 22px;
+  height: 22px;
+  margin-right: 7px;
+  border-style: none;
+}
+
+.checkboxlabel {
+  width: 90%;
+}
+
+.garantlink {
+  margin-left: 30px;
+  color: #90d2ff;
+  font-size: 18px;
+}
+
+.garantlink:hover {
+  color: #ddf1ff;
+}
+
+.poplporderblock {
+  position: relative;
+  z-index: 61;
+  padding-bottom: 50px;
+  color: #fff;
+  text-align: center;
+}
+
+.popvideo {
+  position: fixed;
+  top: 0px;
+  z-index: 60;
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+
+.popvideoblock {
+  z-index: 61;
+  width: 800px;
 }
 
 html.w-mod-js *[data-ix="menuappear"] {
@@ -1578,6 +2308,14 @@ html.w-mod-js *[data-ix="orderappear"] {
     width: 50%;
     margin-right: auto;
     margin-left: auto;
+  }
+  .submit.lporder {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+  .submit.stageorder {
+    font-size: 18px;
+    line-height: 23px;
   }
   .item {
     width: 22%;
@@ -1735,6 +2473,80 @@ html.w-mod-js *[data-ix="orderappear"] {
     width: 40px;
     height: 40px;
   }
+  .lpheroinfoblock {
+    width: 80%;
+  }
+  .bankgarantheader {
+    font-size: 30px;
+    line-height: 36px;
+  }
+  .lpaboutvideo {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+  }
+  .lpaboutvideoinfo {
+    width: 100%;
+    margin-bottom: 30px;
+  }
+  .lpaboutvideoheader {
+    margin-bottom: 5px;
+  }
+  .lpcalc {
+    padding-right: 30px;
+    padding-bottom: 20px;
+    padding-left: 30px;
+  }
+  .input.garantselect {
+    font-size: 17px;
+  }
+  .lpcalcsum {
+    width: 40%;
+  }
+  .lpcalcsumtext {
+    margin-bottom: 0px;
+    font-size: 16px;
+    line-height: 18px;
+  }
+  .lpcalcsumnum {
+    font-size: 35px;
+    line-height: 35px;
+  }
+  .rubl {
+    font-size: 33px;
+  }
+  .lpcalclink {
+    margin-left: 12px;
+    font-size: 15px;
+  }
+  .lpcalctext {
+    width: 40%;
+    font-size: 14px;
+    line-height: 19px;
+  }
+  .stageitem {
+    padding-right: 0px;
+    padding-left: 0px;
+    font-size: 18px;
+    line-height: 21px;
+  }
+  .stageminitext {
+    font-size: 15px;
+  }
+  .lporderbig {
+    width: 95%;
+    margin-top: 25px;
+  }
+  .checkboxlabel {
+    font-size: 17px;
+    line-height: 19px;
+  }
+  .garantlink {
+    margin-left: 20px;
+    font-size: 17px;
+  }
 }
 
 @media (max-width: 767px) {
@@ -1779,8 +2591,24 @@ html.w-mod-js *[data-ix="orderappear"] {
   .videopreview {
     background-size: cover;
   }
+  .videoplayicon {
+    width: 80px;
+  }
   .startorder {
     width: 80%;
+  }
+  .submit.lporder {
+    height: 50px;
+    padding-top: 13px;
+  }
+  .submit.lpcalcsubmit {
+    display: block;
+    height: 60px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+  .submit.stageorder {
+    padding-top: 13px;
   }
   .news {
     padding-top: 10px;
@@ -1937,6 +2765,12 @@ html.w-mod-js *[data-ix="orderappear"] {
     font-size: 35px;
     line-height: 42px;
   }
+  .ordersubheader {
+    display: block;
+    width: 80%;
+    margin-right: auto;
+    margin-left: auto;
+  }
   .orderbig {
     margin-top: 30px;
   }
@@ -2056,6 +2890,159 @@ html.w-mod-js *[data-ix="orderappear"] {
     width: 25px;
     height: 25px;
   }
+  .lphero {
+    background-attachment: scroll;
+  }
+  .lpheroinfo {
+    padding-top: 2vh;
+  }
+  .lpheroheadeer {
+    left: -2px;
+    margin-bottom: 20px;
+    font-size: 44px;
+  }
+  .lpherosubheader {
+    width: 65%;
+    margin-bottom: 25px;
+    font-size: 17px;
+    line-height: 23px;
+  }
+  .lpfeatures {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+  .lpbgs {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+  .lpbgsblock {
+    display: block;
+    margin-top: 40px;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+  }
+  .bankgarant {
+    width: 100%;
+    margin-bottom: 40px;
+  }
+  .bankgarantheader {
+    padding-bottom: 15px;
+    font-size: 24px;
+    line-height: 29px;
+  }
+  .bankgarantlist {
+    overflow: visible;
+    margin-top: 15px;
+    margin-bottom: 20px;
+  }
+  .bankgarantitem {
+    margin-bottom: 10px;
+  }
+  .lpwhite {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+  .lpaboutvideoheader {
+    font-size: 35px;
+    line-height: 40px;
+  }
+  .videoaboutplay {
+    margin-left: 25px;
+  }
+  .videoaboutpreview {
+    background-size: cover;
+  }
+  .lpcalc {
+    margin-top: 60px;
+    padding-top: 40px;
+  }
+  .lpcalcheader {
+    font-size: 35px;
+    line-height: 40px;
+  }
+  .lpcalcforms {
+    margin-top: 30px;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+  }
+  .lpcalcinput {
+    width: 100%;
+  }
+  .lpcalcinput.type {
+    width: 100%;
+  }
+  .lpcalcinfo {
+    margin-top: 0px;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+  }
+  .lpcalcsum {
+    width: 100%;
+    text-align: center;
+  }
+  .lpcalcsumtext {
+    font-size: 18px;
+  }
+  .lpcalcsumnum {
+    font-size: 40px;
+    line-height: 40px;
+  }
+  .rubl {
+    font-size: 39px;
+  }
+  .lpcalclink {
+    font-size: 17px;
+  }
+  .lpcalctext {
+    width: 100%;
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+  .stages {
+    padding-top: 0px;
+    padding-bottom: 40px;
+  }
+  .stagesblock {
+    margin-top: 40px;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+  }
+  .stageitem {
+    width: 100%;
+    margin-bottom: 40px;
+  }
+  .stagenum {
+    margin-bottom: 12px;
+  }
+  .stageminitext {
+    display: block;
+  }
+  .stagesline {
+    display: none;
+  }
+  .lporderbig {
+    margin-top: 30px;
+  }
+  .poplporderblock {
+    overflow: auto;
+    width: 100%;
+    height: 100vh;
+  }
+  .popvideoblock {
+    width: 90%;
+  }
 }
 
 @media (max-width: 479px) {
@@ -2067,8 +3054,8 @@ html.w-mod-js *[data-ix="orderappear"] {
     line-height: 35px;
   }
   h2 {
-    font-size: 29px;
-    line-height: 35px;
+    font-size: 32px;
+    line-height: 34px;
   }
   p {
     font-size: 18px;
@@ -2100,10 +3087,14 @@ html.w-mod-js *[data-ix="orderappear"] {
     padding-bottom: 50px;
   }
   .videoblock {
-    height: 200px;
+    height: 180px;
   }
   .videopreview {
     background-position: -4px 0px;
+  }
+  .videoplayicon {
+    width: 70px;
+    margin-bottom: 10px;
   }
   .startorder {
     width: 100%;
@@ -2112,6 +3103,16 @@ html.w-mod-js *[data-ix="orderappear"] {
   }
   .startorderheader {
     font-size: 26px;
+  }
+  .submit.lporder {
+    padding-top: 16px;
+  }
+  .submit.lpcalcsubmit {
+    width: 100%;
+    padding-top: 8px;
+  }
+  .submit.lpordersubmit {
+    width: 100%;
   }
   .moreitems {
     margin-top: 27px;
@@ -2216,11 +3217,21 @@ html.w-mod-js *[data-ix="orderappear"] {
     line-height: 60px;
   }
   .featuresblock {
-    margin-top: 25px;
+    margin-top: 30px;
   }
   .featureitem {
     width: 100%;
     margin-bottom: 15px;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+  }
+  .featureitemicon {
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
   }
   .how {
     padding-bottom: 30px;
@@ -2396,6 +3407,124 @@ html.w-mod-js *[data-ix="orderappear"] {
   .newspic {
     width: 100%;
   }
+  .lphero {
+    height: auto;
+    padding-bottom: 60px;
+  }
+  .lpheroinfoblock {
+    width: 100%;
+  }
+  .lpheroheadeer {
+    margin-bottom: 15px;
+    font-size: 41px;
+    line-height: 41px;
+  }
+  .lpherosubheader {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  .lpherovideo {
+    position: static;
+    margin-top: 40px;
+  }
+  .bankgarant {
+    margin-bottom: 50px;
+  }
+  .bankgarantitem {
+    font-size: 17px;
+    line-height: 20px;
+  }
+  .lpaboutvideoheader {
+    font-size: 30px;
+    line-height: 35px;
+  }
+  .videoaboutplay {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: start;
+    -webkit-align-items: flex-start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    font-size: 16px;
+    line-height: 17px;
+  }
+  .videoaboutpreview {
+    background-position: -4px 0px;
+  }
+  .lpaboutvideotext {
+    width: 100%;
+    line-height: 22px;
+  }
+  .lpcalc {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+  .lpcalcheader {
+    font-size: 33px;
+    line-height: 34px;
+  }
+  .lpcalclabel {
+    margin-bottom: 5px;
+    font-size: 18px;
+  }
+  .stages {
+    padding-top: 20px;
+  }
+  .stagesblock {
+    margin-top: 20px;
+  }
+  .stageitem {
+    margin-bottom: 20px;
+  }
+  .stagenum {
+    padding-top: 22px;
+  }
+  .lporderinput {
+    width: 100%;
+  }
+  .lporderbig {
+    width: 90%;
+    margin-top: 0px;
+    padding: 25px 0px;
+  }
+  .lporderinputs {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+  }
+  .lpordercheck {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+  }
+  .lpcheckbox {
+    width: 100%;
+  }
+  .checkbox {
+    top: -6px;
+  }
+  .garantlink {
+    display: block;
+    width: 40%;
+    margin-top: 6px;
+    margin-left: 0px;
+    float: right;
+    font-size: 16px;
+    line-height: 18px;
+    text-align: right;
+  }
+  .poplporderblock {
+    width: 100%;
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
 }
 @font-face {
   font-family: 'DINLight';
@@ -2425,5 +3554,11 @@ html.w-mod-js *[data-ix="orderappear"] {
   font-family: 'Panton';
   src: url('../fonts/Panton-Light.otf') format('opentype');
   font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Rubl';
+  src: url('../fonts/RUBSN.otf') format('opentype');
+  font-weight: 400;
   font-style: normal;
 }

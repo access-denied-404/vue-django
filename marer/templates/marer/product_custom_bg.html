@@ -46,7 +46,7 @@
           <div class="form-block">
             <form class="startorderform" method="post">
                   {% csrf_token %}
-
+                    <div class="lpordercheck">
                     {{ quick_request_form.product }}
                     {{ quick_request_form.party }}
 
@@ -67,11 +67,27 @@
                     {{ quick_request_form.contact_person_name }}
                     {{ quick_request_form.contact_phone }}
                     {{ quick_request_form.contact_email }}
+                    </div>
 
-                <input type="submit" value="Отправить заявку" class="ordersubmit submit w-button" />
+                <input type="submit" value="Отправить заявку" class="lpordersubmit submit w-button" />
               </form>
             {% include 'marer/form_errors.html' with form=quick_request_form %}
           </div>
+        </div>
+      </div>
+    </div>
+    <div class="poporderback">
+      <a href="#" data-ix="orderclose" class="poporderx w-inline-block">
+        <img src="{% static 'nspp/images/59de20a569f6bf0001438728_x.png' %}" width="80" />
+      </a>
+    </div>
+  </div>
+  <div data-ix="orderappear" class="popvideo">
+    <div class="poporderwrap">
+      <div class="popvideoblock">
+        <div style="padding-top:56.17021276595745%;" class="w-embed w-video">
+          <iframe class="embedly-embed" src="//cdn.embedly.com/widgets/media.html?src=https%3A%2F%2Fwww.youtube.com%2Fembed%2F7t83RaGLxyk%3Ffeature%3Doembed&url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D7t83RaGLxyk&image=https%3A%2F%2Fi.ytimg.com%2Fvi%2F7t83RaGLxyk%2Fhqdefault.jpg&key=96f1f04c5f4143bcb0f2e68c87d65feb&type=text%2Fhtml&schema=youtube" scrolling="no" frameborder="0" allowfullscreen>
+          </iframe>
         </div>
       </div>
     </div>
@@ -105,55 +121,390 @@
         {% for product in finance_product_roots %}
             <a href="{% url 'finance_product' product.id %}" class="menulink">{{ product.name }}</a>
         {% endfor %}
+      <a data-ix="orderopen" class="mobi toporder">Подать заявку</a>
       <div class="phonenumbermobi">+7 499 404 18 68</div>
       <a href="#" class="contactsmobi menulink">Контакты</a>
     </div>
   </div>
-  <div data-ix="fix" class="headerpage">
+  <div class="lphero">
     <div class="container">
       <div class="header">
         <div class="headertop">
           <a href="{% url 'index' %}" class="logo w-inline-block">
-            <img src="{% static 'nspp/images/59d5eba096577900017a292d_logo.png' %}" width="159" />
-            <div class="logotext">
+            <img src="{% static 'nspp/images/59ec9b809d16950001e27b57_logowhite.png' %}" width="159" />
+            <div class="logotext lp">
               <div class="logotexttop">Межотраслевое агентство</div>
               <div class="logotextbottom">регионального экономического развития</div>
             </div>
           </a>
           <div class="phone">
-            <div class="phonenumber">+7 499 404 18 68</div>
+            <div class="lp phonenumber">+7 499 404 18 68</div>
           </div>
           <a href="#" data-ix="menuopen" class="mobilink">menu</a>
         </div>
         <div class="headerbottom">
           <div class="menu">
               {% for product in finance_product_roots %}
-                  <a href="{% url 'finance_product' product.id %}" class="menulink">{{ product.name }}</a>
+                  <a href="{% url 'finance_product' product.id %}" class="lp menulink">{{ product.name }}</a>
               {% endfor %}
           </div>
           <div class="menuprofile">
               {% if request.user.is_authenticated %}
-                  <a href="{% url 'cabinet_requests' %}" class="loginlink">
-                      {{ request.user.get_full_name }} <span class="usericon">user</span>
+                  <a href="{% url 'cabinet_requests' %}" class="lp loginlink">
+                      {{ request.user.get_full_name }} <span class="lp usericon">user</span>
                   </a>
               {% else %}
-                  <a href="{% url 'register' %}" class="registrationlink">Регистрация</a>
-                  <a href="{% url 'login' %}" class="loginlink">Войти <span class="usericon">user</span></a>
+                  <a href="{% url 'register' %}" class="lp registrationlink">Регистрация</a>
+                  <a href="{% url 'login' %}" class="lp loginlink">Войти <span class="usericon">user</span></a>
               {% endif %}
           </div>
         </div>
-        <div class="logotext mobi">
+        <div class="logotext lp mobi">
           <div class="logotexttop">Межотраслевое агентство</div>
           <div class="logotextbottom">регионального экономического развития</div>
         </div>
       </div>
+      <div class="lpheroinfo">
+        <div class="lpheroinfoblock">
+          <h1 class="lpheroheadeer">Банковские гарантии для бизнеса</h1>
+          <div class="lpherosubheader">Наш опыт и узкая специализация — ключ к успешному решению ваших задач</div>
+          <a href="#" data-ix="orderopen" class="lporder submit">Заказать банковскую гарантию</a>
+        </div>
+        <a href="#" data-ix="videoopen" class="lpherovideo w-inline-block">
+          <div>Видеообращение гендиректора</div>
+          <div class="lpherovideoblock">
+            <img src="{% static 'nspp/images/59eca70436e5a0000168cd6d_dude.png' %}" />
+            <img src="{% static 'nspp/images/59d5eba1e966f40001436403_play.png' %}" class="lpherovideoplay" />
+          </div>
+        </a>
+      </div>
     </div>
   </div>
-  <div class="page">
+  <div class="lpfeatures">
     <div class="container">
-      <div class="article">
-        <h1>{{ product.get_seo_h1 }}</h1>
-        <p>{{ product.page_content |safe }}</p>
+      <h2>Первоклассный сервис</h2>
+      <div class="featuresblock">
+        <div class="featureitem">
+          <div class="featureitemicon">
+            <img src="{% static 'nspp/images/59d5eb9d96577900017a2928_file402x.png' %}" width="32.5" />
+          </div>
+          <div class="featureitemtext">Минимальный пакет документов</div>
+        </div>
+        <div class="featureitem">
+          <div class="featureitemicon">
+            <img src="{% static 'nspp/images/59ecaccb41b4090001b5a967_15-minutes.png' %}" width="42" />
+          </div>
+          <div class="featureitemtext">Предварительное решение
+            <br/>за 15 минут</div>
+        </div>
+        <div class="featureitem">
+          <div class="featureitemicon">
+            <img src="{% static 'nspp/images/59ecacccf4f8560001ca30d1_electrodoc.png' %}" width="33" />
+          </div>
+          <div class="featureitemtext">Электронный документооборот</div>
+        </div>
+        <div class="featureitem">
+          <div class="featureitemicon">
+            <img src="{% static 'nspp/images/59ecaccd9d16950001e286b5_nohouse.png' %}" width="42" />
+          </div>
+          <div class="featureitemtext">Без залогового обеспечения</div>
+        </div>
+        <div class="featureitem">
+          <div class="featureitemicon">
+            <img src="{% static 'nspp/images/59ecad32e8bbc50001a50925_2days.png' %}" width="41.5" />
+          </div>
+          <div class="featureitemtext">2 дня от подачи заявки
+            <br/>до выдачи гарантии</div>
+        </div>
+        <div class="featureitem">
+          <div class="featureitemicon">
+            <img src="{% static 'nspp/images/59d5eba2e966f40001436404_user402x.png' %}" width="41" />
+          </div>
+          <div class="featureitemtext">Персональный менеджер</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="lpbgs">
+    <div class="container">
+      <h2>Все виды банковских гарантий</h2>
+      <div class="lpbgsblock">
+        <div class="bankgarant">
+          <div class="bankgarantheader">Банковские гарантии по&nbsp;44,&nbsp;223&nbsp;и&nbsp;185&nbsp;ФЗ</div>
+          <ul class="bankgarantlist w-list-unstyled">
+            <li class="bankgarantitem">
+              <div class="bullet">—</div>
+              <div>Подготовка банковских гарантий за 1-3 дня</div>
+            </li>
+            <li class="bankgarantitem">
+              <div class="bullet">—</div>
+              <div>Банковская гарантия без залога, открытия счета и поручительства</div>
+            </li>
+            <li class="bankgarantitem">
+              <div class="bullet">—</div>
+              <div>Индивидуальные условия сотрудничества для каждого клиента</div>
+            </li>
+          </ul>
+          <a href="#" data-ix="orderopen" class="lporder submit">Отправить заявку</a>
+          <a href="#" class="garantlink">Подробнее об услуге</a>
+        </div>
+        <div class="bankgarant">
+          <div class="bankgarantheader">Банковские гарантии для&nbsp;исполнения коммерческих контрактов</div>
+          <ul class="bankgarantlist w-list-unstyled">
+            <li class="bankgarantitem">
+              <div class="bullet">—</div>
+              <div>Работа со сложными заказчиками</div>
+            </li>
+            <li class="bankgarantitem">
+              <div class="bullet">—</div>
+              <div>Подбор банков под конкретную сделку</div>
+            </li>
+            <li class="bankgarantitem">
+              <div class="bullet">—</div>
+              <div>Согласование сделок на уровне руководства банка</div>
+            </li>
+          </ul>
+          <a href="#" data-ix="orderopen" class="lporder submit">Отправить заявку</a>
+          <a href="#" class="garantlink">Подробнее об услуге</a>
+        </div>
+        <div class="bankgarant">
+          <div class="bankgarantheader">Банковские гарантии на&nbsp;возврат&nbsp;НДС</div>
+          <ul class="bankgarantlist w-list-unstyled">
+            <li class="bankgarantitem">
+              <div class="bullet">—</div>
+              <div>Моментальный анализ сделки</div>
+            </li>
+            <li class="bankgarantitem">
+              <div class="bullet">—</div>
+              <div>Предложение конкретного плана действия для решения задачи</div>
+            </li>
+            <li class="bankgarantitem">
+              <div class="bullet">—</div>
+              <div>Персональный менеджер с опытом работы</div>
+            </li>
+          </ul>
+          <a href="#" data-ix="orderopen" class="lporder submit">Отправить заявку</a>
+          <a href="#" class="garantlink">Подробнее об услуге</a>
+        </div>
+        <div class="bankgarant">
+          <div class="bankgarantheader">Таможенная банковская гарантия&nbsp;ФТС</div>
+          <ul class="bankgarantlist w-list-unstyled">
+            <li class="bankgarantitem">
+              <div class="bullet">—</div>
+              <div>Моментальный анализ сделки</div>
+            </li>
+            <li class="bankgarantitem">
+              <div class="bullet">—</div>
+              <div>Предложение конкретного плана действия для решения задачи</div>
+            </li>
+            <li class="bankgarantitem">
+              <div class="bullet">—</div>
+              <div>Персональный менеджер с опытом работы</div>
+            </li>
+          </ul>
+          <a href="#" data-ix="orderopen" class="lporder submit">Отправить заявку</a>
+          <a href="#" class="garantlink">Подробнее об услуге</a>
+        </div>
+        <div class="bankgarant">
+          <div class="bankgarantheader">Акцизная банковская гарантия&nbsp;РАР</div>
+          <ul class="bankgarantlist w-list-unstyled">
+            <li class="bankgarantitem">
+              <div class="bullet">—</div>
+              <div>Оценка вероятности заключения сделки за&nbsp;1&nbsp;час</div>
+            </li>
+            <li class="bankgarantitem">
+              <div class="bullet">—</div>
+              <div>Автоматизированная система работы с&nbsp;банками</div>
+            </li>
+            <li class="bankgarantitem">
+              <div class="bullet">—</div>
+              <div>Чёткие условия — конкретные сроки</div>
+            </li>
+          </ul>
+          <a href="#" data-ix="orderopen" class="lporder submit">Отправить заявку</a>
+          <a href="#" class="garantlink">Подробнее об услуге</a>
+        </div>
+        <div class="bankgarant">
+          <div class="bankgarantheader">Банковская гарантия для букмейкеров</div>
+          <ul class="bankgarantlist w-list-unstyled">
+            <li class="bankgarantitem">
+              <div class="bullet">—</div>
+              <div>Оценка вероятности заключения сделки за 1 час</div>
+            </li>
+            <li class="bankgarantitem">
+              <div class="bullet">—</div>
+              <div>Автоматизированная система работы с банками</div>
+            </li>
+            <li class="bankgarantitem">
+              <div class="bullet">—</div>
+              <div>Чёткие условия — конкретные сроки</div>
+            </li>
+          </ul>
+          <a href="#" data-ix="orderopen" class="lporder submit">Отправить заявку</a>
+          <a href="#" class="garantlink">Подробнее об услуге</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="lpwhite">
+    <div class="container">
+      <div class="lpaboutvideo">
+        <div class="lpaboutvideoinfo">
+          <div class="lpaboutvideoheader">Все этапы оформления заявки в нашем обучающем видео</div>
+          <div class="lpaboutvideotext">0% клиентов пострадали вследствие отзыва у банков лицензий</div>
+        </div>
+        <div class="videoblock">
+          <a href="#" class="videoaboutpreview w-inline-block">
+            <div class="videoaboutplay">
+              <img src="{% static 'nspp/images/59d5eba1e966f40001436403_play.png' %}" width="122" class="videoplayicon" />
+              <div>Видеообращение
+                <br/>гендиректора</div>
+            </div>
+          </a>
+          <div class="videoclip">
+          </div>
+        </div>
+      </div>
+      <div class="lpcalc">
+        <div class="lpcalcheader">Рассчитайте стоимость</div>
+        <div class="lpcalcform w-form">
+          <form id="wf-form-" name="wf-form-" data-name="Кулькулятор">
+            <div class="lpcalcforms">
+              <div class="lpcalcinput type">
+                <label for="node-10" class="lpcalclabel">Тип</label>
+                <select id="node-10" data-name="Тип" class="garantselect input w-select">
+                  <option value="">Обеспечение гарантийных обязательств</option>
+                  <option value="First">Обеспечение участия</option>
+                  <option value="Second">Возврат аванса</option>
+                </select>
+              </div>
+              <div class="lpcalcinput">
+                <label for="node-3" class="lpcalclabel">Сумма</label>
+                <div class="lpcalcinputrubl">й</div>
+                <input type="text" id="node-3" data-name="Сумма" value="100 000" maxlength="256" class="input w-input" />
+                <div class="inputbar">
+                  <div class="inputbarbutton">
+                    <img src="{% static 'nspp/images/59ecaccbf4f8560001ca30d0_barArrow.png' %}" width="18" class="image" />
+                  </div>
+                </div>
+              </div>
+              <div class="lpcalcinput">
+                <label for="name-2" class="lpcalclabel">Срок</label>
+                <div class="lpcalcinputmenu">
+                  <a href="#" class="current lpcalclink">дней</a><a href="#" class="lpcalclink">месяцев</a><a href="#" class="lpcalclink">лет</a>
+                </div>
+                <input type="text" id="node-2" data-name="Срок" value="24" maxlength="256" class="input w-input" />
+                <div class="inputbar">
+                  <div class="inputbarbutton">
+                    <img src="{% static 'nspp/images/59ecaccbf4f8560001ca30d0_barArrow.png' %}" width="18" class="image" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="lpcalcinfo">
+              <div class="lpcalcsum">
+                <div class="lpcalcsumtext">Ориентировочная стоимость</div>
+                <div class="lpcalcsumnum">~100 000<span class="rubl">й</span></div>
+              </div>
+              <div class="lpcalctext">Точную сумму сделки просчитывает менеджер, её формирование зависит от финансового положения компании, требований заказчика к банку, условий заключаемого контракта и прочее.</div>
+              <input type="submit" value="Оставить заявку" data-wait="Секунду..." class="lpcalcsubmit submit w-button" />
+            </div>
+          </form>
+          <div class="success w-form-done">
+            <div>Спасибо! Скоро мы с вами свяжемся.</div>
+          </div>
+          <div class="error w-form-fail">
+            <div>Что то пошло не так. Проверьте соединение.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="stages">
+    <div class="container">
+      <h2>Как получить</h2>
+      <div class="stagesblock">
+        <div class="stagesline">
+        </div>
+        <div class="stageitem">
+          <div class="firststage stagenum">
+            <div>1</div>
+          </div>
+          <a href="#" data-ix="orderopen" class="stageorder submit">Отправить заявку</a>
+          <div class="stageminitext">прямо сейчас за 2 минуты</div>
+        </div>
+        <div class="stageitem">
+          <div class="secondstage stagenum">
+            <div>2</div>
+          </div>
+          <div class="text-block">Укажите данные организации и загрузите необходимые документы</div>
+        </div>
+        <div class="stageitem">
+          <div class="stagenum thirdstage">
+            <div>3</div>
+          </div>
+          <div>Выберите лучшее предложение от банка</div>
+        </div>
+        <div class="stageitem">
+          <div class="fourthstage stagenum">
+            <div>4</div>
+          </div>
+          <div>Получите итоговые документы
+            <br/>и исполняйте контракт!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="order" class="order">
+    <div class="container">
+      <h2 class="orderheader">Оставьте заявку</h2>
+      <div class="ordersubheader">Заполните форму и наш менеджер свяжется с вами в рабочее время</div>
+      <div class="lporderbig">
+        <div class="form-block w-form">
+          <form id="wf-form--2" name="wf-form-" data-name="Заявка на БГ" class="startorderform">
+            <div class="lpordercheck">
+              <div class="lpcheckbox w-checkbox">
+                <input type="checkbox" id="checkbox" name="checkbox" data-name="Checkbox" class="checkbox w-checkbox-input" />
+                <label for="checkbox" class="checkboxlabel w-form-label">Банковские гарантии по 44, 223 и 185 ФЗ</label>
+              </div>
+              <div class="lpcheckbox w-checkbox">
+                <input type="checkbox" id="checkbox-2" name="checkbox-2" data-name="Checkbox 2" class="checkbox w-checkbox-input" />
+                <label for="checkbox-2" class="checkboxlabel w-form-label">Банковские гарантии для исполнения коммерческих контрактов</label>
+              </div>
+              <div class="lpcheckbox w-checkbox">
+                <input type="checkbox" id="checkbox-2" name="checkbox-2" data-name="Checkbox 2" class="checkbox w-checkbox-input" />
+                <label for="checkbox-3" class="checkboxlabel w-form-label">Банковские гарантии на возврат НДС</label>
+              </div>
+              <div class="lpcheckbox w-checkbox">
+                <input type="checkbox" id="checkbox-2" name="checkbox-2" data-name="Checkbox 2" class="checkbox w-checkbox-input" />
+                <label for="checkbox-3" class="checkboxlabel w-form-label">Таможенная банковская гарантия ФТС</label>
+              </div>
+              <div class="lpcheckbox w-checkbox">
+                <input type="checkbox" id="checkbox-2" name="checkbox-2" data-name="Checkbox 2" class="checkbox w-checkbox-input" />
+                <label for="checkbox-3" class="checkboxlabel w-form-label">Акцизная банковская гарантия РАР</label>
+              </div>
+              <div class="lpcheckbox w-checkbox">
+                <input type="checkbox" id="checkbox-2" name="checkbox-2" data-name="Checkbox 2" class="checkbox w-checkbox-input" />
+                <label for="checkbox-3" class="checkboxlabel w-form-label">Банковская гарантия для букмейкеров</label>
+              </div>
+            </div>
+            <div class="lporderinputs">
+              <input type="text" class="lporderinput w-input" maxlength="256" data-name="Имя" placeholder="Имя" id="node-12" required="" />
+              <input type="text" class="lporderinput w-input" maxlength="256" data-name="Телефон" placeholder="Телефон" id="node-13" required="" />
+              <input type="email" class="lporderinput w-input" maxlength="256" data-name="Почта" placeholder="Электронная почта" id="node-14" required="" />
+            </div>
+            <textarea id="node-15" placeholder="Опишите вашу задачу" maxlength="5000" data-name="Задача" class="ordertextarea w-input">
+            </textarea>
+            <input type="submit" value="Отправить заявку" data-wait="Секунду..." class="lpordersubmit submit w-button" />
+          </form>
+          <div class="ordersuccess w-form-done">
+            <div>Спасибо!
+              <br/>Скоро мы с вами свяжемся.</div>
+          </div>
+          <div class="error w-form-fail">
+            <div>Проверьте правильность заполнения полей</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
