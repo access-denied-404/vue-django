@@ -23,6 +23,15 @@ class FinanceProductPage(mptt_models.MPTTModel):
         verbose_name_plural = _('finance products')
 
     name = models.CharField(verbose_name=_('finance product name'), max_length=512, blank=False, null=False)
+    template = models.CharField(
+        verbose_name=_('finance product page template'),
+        choices=[
+            ('marer/product_custom_bg.html', 'Специальный шаблон для банковских гарантий'),
+        ],
+        max_length=512,
+        blank=True,
+        null=True
+    )
     parent = TreeForeignKey('self', verbose_name=_('parent product'), null=True, blank=True, related_name='childrens')
     _finance_product = models.CharField(
         verbose_name=_('linked finance product'),

@@ -204,6 +204,8 @@ class FinanceProductView(TemplateView, StaticPagesContextMixin):
 
     def get(self, request, *args, **kwargs):
         product = get_object_or_404(FinanceProductPage, id=kwargs.get('pid', 0))
+        if product.template is not None:
+            self.template_name = product.template
         finance_product = product.get_finance_product()
         if finance_product is not None:
             finance_product_name = finance_product.name

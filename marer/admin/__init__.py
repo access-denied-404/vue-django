@@ -31,7 +31,7 @@ class FinanceProductAdmin(MPTTModelAdmin):
         (None, dict(fields=(
             ('name', 'show_in_menu',),
             'parent',
-            '_finance_product',
+            ('_finance_product', 'template'),
             'product_icon',
             'page_content',
         ))),
