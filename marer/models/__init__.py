@@ -27,6 +27,7 @@ class FinanceProductPage(mptt_models.MPTTModel):
         verbose_name=_('finance product page template'),
         choices=[
             ('marer/product_custom_bg.html', 'Специальный шаблон для банковских гарантий'),
+            ('marer/product_custom_credit.html', 'Специальный шаблон для кредитов'),
         ],
         max_length=512,
         blank=True,
