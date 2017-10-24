@@ -35,20 +35,6 @@ class IndexView(TemplateView, StaticPagesContextMixin):
             product_icon=''
         ).order_by('?')[:6]
 
-        bg_rated_foc_list = FinanceOrgProductConditions.objects.filter(
-            bg_44_contract_exec_interest_rate__isnull=False,
-            bg_review_term_days__gt=0,
-        ).order_by('bg_44_contract_exec_interest_rate')[:5]
-
-        # distinctize by finance org
-        bg_rated_foc_list = [x for x in bg_rated_foc_list]
-        fo_ids_used = []
-        distinctized_bg_rated_foc_list = []
-        for foc in bg_rated_foc_list:
-            if foc.finance_org_id not in fo_ids_used:
-                distinctized_bg_rated_foc_list.append(foc)
-                fo_ids_used.append(foc.finance_org_id)
-
         last_news = NewsPage.objects.order_by('-published_at')[:4]
 
         partners_banks_portions = self._fill_partners_portions(consts.SHOWCASE_PARTNERS_CATEGORY_BANKS)
@@ -67,7 +53,6 @@ class IndexView(TemplateView, StaticPagesContextMixin):
             partners_gpf_portions=partners_gpf_portions,
 
             quick_request_form=quick_request_form,
-            bg_rated_foc_list=distinctized_bg_rated_foc_list,
             dadata_token=settings.DADATA_TOKEN,
         )
         kwargs.update(context_part)
