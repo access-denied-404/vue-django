@@ -1,16 +1,16 @@
 from django.conf.urls import url
 
-from marer import views
 from marer.views import auth
 from marer.views import cabinet
 from marer.views import issue
+from marer.views import public
 from marer.views import rest
 
 urlpatterns = [
-    url(r'^$', views.IndexView.as_view(), name='index'),
-    url(r'^product/(?P<pid>\d+)', views.FinanceProductView.as_view(), name='finance_product'),
-    url(r'^page/(?P<spid>\d+)', views.StaticPageView.as_view(), name='static_page'),
-    url(r'^news/(?P<npid>\d+)', views.NewsPageView.as_view(), name='news_page'),
+    url(r'^$', public.IndexView.as_view(), name='index'),
+    url(r'^product/(?P<pid>\d+)', public.FinanceProductView.as_view(), name='finance_product'),
+    url(r'^page/(?P<spid>\d+)', public.StaticPageView.as_view(), name='static_page'),
+    url(r'^news/(?P<npid>\d+)', public.NewsPageView.as_view(), name='news_page'),
 
     url(r'^login$', auth.LoginView.as_view(), name='login'),
     url(r'^logout$', auth.LogoutView.as_view(), name='logout'),

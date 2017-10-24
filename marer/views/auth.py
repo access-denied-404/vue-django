@@ -5,7 +5,7 @@ from django.views.generic import TemplateView, RedirectView
 
 from marer import forms
 from marer.models.user import User
-from marer.views import StaticPagesContextMixin
+from marer.views.mixins import StaticPagesContextMixin
 
 
 class LoginView(TemplateView, StaticPagesContextMixin):

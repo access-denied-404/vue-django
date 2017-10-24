@@ -8,7 +8,7 @@ from django.views.generic import TemplateView
 
 from marer import forms
 from marer.models import Issue, Issuer
-from marer.views import StaticPagesContextMixin
+from marer.views.mixins import StaticPagesContextMixin
 
 
 @method_decorator(csrf_exempt, name='dispatch')

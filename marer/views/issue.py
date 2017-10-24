@@ -13,7 +13,7 @@ from marer.models.issue import IssueFinanceOrgPropose, IssueFinanceOrgProposeCla
     IssueFinanceOrgProposeClarificationMessageDocument, IssueFinanceOrgProposeClarification
 from marer.products import get_finance_products
 from marer.stub import create_stub_issuer
-from marer.views import StaticPagesContextMixin
+from marer.views.mixins import StaticPagesContextMixin
 
 
 class IssueView(LoginRequiredMixin, TemplateView, StaticPagesContextMixin):
