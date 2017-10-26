@@ -178,10 +178,7 @@ class IssueAdmin(ModelAdmin):
             self.inlines = [
                 IssueFinanceOrgProposeInlineAdmin,
                 IssueDocumentInlineAdmin,
-                IssueBGProdAffiliateInlineAdmin,
-                IssueBGProdFounderLegalInlineAdmin,
-                IssueBGProdFounderPhysicalInlineAdmin,
-            ]
+            ] + obj.get_product().get_admin_issue_inlnes()
         return super().get_inline_instances(request, obj)
 
     def get_form(self, request, obj=None, **kwargs):

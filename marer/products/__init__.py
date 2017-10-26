@@ -356,6 +356,16 @@ class BankGuaranteeProduct(FinanceProduct):
             ))),
         ]
 
+    def get_admin_issue_inlnes(self):
+        from marer.admin import IssueBGProdAffiliateInlineAdmin
+        from marer.admin import IssueBGProdFounderLegalInlineAdmin
+        from marer.admin import IssueBGProdFounderPhysicalInlineAdmin
+        return [
+            IssueBGProdAffiliateInlineAdmin,
+            IssueBGProdFounderLegalInlineAdmin,
+            IssueBGProdFounderPhysicalInlineAdmin,
+        ]
+
     def get_finance_orgs_conditions_list_fields(self):
 
         # any field just to fall avoid
@@ -696,6 +706,18 @@ class CreditProduct(FinanceProduct):
             _admin_issue_fieldset_issuer_head_part,
         ]  # todo add fieldsets gathering
 
+    def get_admin_issue_inlnes(self):
+        from marer.admin.inline import IssueCreditPledgeInlineAdmin
+        from marer.admin import IssueBGProdAffiliateInlineAdmin
+        from marer.admin import IssueBGProdFounderLegalInlineAdmin
+        from marer.admin import IssueBGProdFounderPhysicalInlineAdmin
+        return [
+            IssueCreditPledgeInlineAdmin,
+            IssueBGProdAffiliateInlineAdmin,
+            IssueBGProdFounderLegalInlineAdmin,
+            IssueBGProdFounderPhysicalInlineAdmin,
+        ]
+
     def get_survey_context_part(self):
         affiliates_formset = formset_factory(AffiliatesForm, extra=0)
         from marer.models.issue import IssueBGProdAffiliate
@@ -843,6 +865,10 @@ class LeasingProduct(FinanceProduct):
         warnings.warn("Method is not implemented")
 
     def get_admin_issue_fieldset(self):
+        warnings.warn("Method is not implemented")
+        return []
+
+    def get_admin_issue_inlnes(self):
         warnings.warn("Method is not implemented")
         return []
 

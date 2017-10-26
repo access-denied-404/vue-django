@@ -52,6 +52,10 @@ class FinanceProduct(object):
         raise NotImplementedError("Method is not implemented")
 
     @abstractmethod
+    def get_admin_issue_inlnes(self):
+        raise NotImplementedError("Method is not implemented")
+
+    @abstractmethod
     def get_finance_orgs_conditions_list_fields(self):
         raise NotImplementedError("Method is not implemented")
 

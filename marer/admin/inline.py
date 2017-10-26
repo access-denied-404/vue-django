@@ -7,7 +7,7 @@ from marer import models
 from marer.forms.widgets import ReadOnlyFileInput
 from marer.models import Document
 from marer.models.issue import IssueFinanceOrgProposeFormalizeDocument, IssueFinanceOrgProposeFinalDocument, \
-    IssueBGProdAffiliate, IssueBGProdFounderLegal, IssueBGProdFounderPhysical
+    IssueBGProdAffiliate, IssueBGProdFounderLegal, IssueBGProdFounderPhysical, IssueCreditPledge
 
 
 class IssueFinanceOrgProposeInlineAdmin(StackedInline):
@@ -343,6 +343,32 @@ class IssueBGProdFounderLegalInlineAdmin(TabularInline):
 class IssueBGProdFounderPhysicalInlineAdmin(TabularInline):
     extra = 0
     model = IssueBGProdFounderPhysical
+    classes = ('collapse',)
+
+    def has_add_permission(self, request):
+        if request.user.has_perm('marer.can_change_managed_users_issues'):
+            return True
+        return super().has_add_permission(request)
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.has_perm('marer.can_change_managed_users_issues'):
+            if obj is None:
+                return True
+            elif obj.user.manager_id == request.user.id:
+                return True
+        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
+            return True
+        return super().has_change_permission(request, obj)
+
+    def has_delete_permission(self, request, obj=None):
+        if request.user.has_perm('marer.can_change_managed_users_issues'):
+            return True
+        return super().has_delete_permission(request, obj)
+
+
+class IssueCreditPledgeInlineAdmin(TabularInline):
+    extra = 0
+    model = IssueCreditPledge
     classes = ('collapse',)
 
     def has_add_permission(self, request):
