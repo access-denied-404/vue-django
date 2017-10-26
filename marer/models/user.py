@@ -20,6 +20,7 @@ class User(AbstractUser):
         permissions = [
             # права менеджеров, управляющих пользователями
             ('can_add_managed_users', 'Can add managed users'),
+            ('can_change_users_base_info', 'Can change users base info'),
             ('can_change_managed_users', 'Can change managed users'),
             ('can_add_managed_users_issues', 'Can add managed users issues'),
             ('can_change_managed_users_issues', 'Can change managed users issues'),

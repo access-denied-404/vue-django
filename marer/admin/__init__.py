@@ -3,6 +3,7 @@ from random import randint
 from django.contrib.admin import ModelAdmin, register, site
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.forms import UsernameField
 from django.db.models import TextField
 from django import forms
 from django.urls import reverse
@@ -543,22 +544,29 @@ class MarerUserAdmin(UserAdmin):
     first_name_noempty.admin_order_field = 'first_name'
 
     def get_fieldsets(self, request, obj=None):
+        base_info_fieldsets = (
+            (None, {'fields': ('username', 'password',)}),
+            (_('Personal info'), {'fields': ('first_name', 'last_name', 'email', 'phone')}),
+            (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+        )
         if obj:
             if request.user.is_superuser:
                 pass
             elif request.user.has_perm('marer.change_user'):
                 pass
+            elif request.user.has_perm('marer.can_change_users_base_info'):
+                self.fieldsets = base_info_fieldsets
             elif request.user.has_perm('marer.can_change_managed_users'):
-                self.fieldsets = (
-                    (None, {'fields': ('username', 'password',)}),
-                    (_('Personal info'), {'fields': ('first_name', 'last_name', 'email', 'phone')}),
-                    (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
-                )
+                self.fieldsets = base_info_fieldsets
 
         return super().get_fieldsets(request, obj)
 
     def has_change_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_change_managed_users'):
+        if request.user.has_perm('marer.change_user'):
+            pass
+        elif request.user.has_perm('marer.can_change_users_base_info'):
+            return True
+        elif request.user.has_perm('marer.can_change_managed_users'):
             if obj is None:
                 return True
             elif obj.manager_id == request.user.id:
@@ -566,7 +574,9 @@ class MarerUserAdmin(UserAdmin):
         return super().has_change_permission(request, obj)
 
     def has_add_permission(self, request):
-        if request.user.has_perm('marer.can_add_managed_users'):
+        if request.user.has_perm('marer.can_change_users_base_info'):
+            return True
+        elif request.user.has_perm('marer.can_add_managed_users'):
             return True
         return super().has_add_permission(request)
 
@@ -575,6 +585,8 @@ class MarerUserAdmin(UserAdmin):
         if request.user.is_superuser:
             pass
         elif request.user.has_perm('marer.change_user'):
+            pass
+        elif request.user.has_perm('marer.can_change_users_base_info'):
             pass
         elif request.user.has_perm('marer.can_change_managed_users'):
             qs = qs.filter(manager_id=request.user.id)
