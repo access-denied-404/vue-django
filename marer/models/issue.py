@@ -496,6 +496,11 @@ class IssueFinanceOrgProposeFinalDocument(models.Model):
 
 
 class IssueCreditPledge(models.Model):
+
+    class Meta:
+        verbose_name = 'обеспечение по заявке'
+        verbose_name_plural = 'обеспечения по заявке'
+
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False, related_name='issuer_credit_pledges')
     pledge_title = models.CharField(verbose_name='наименование', max_length=512, blank=False, null=False, default='')
     pledge_type = models.CharField(verbose_name='вид', max_length=32, blank=False, null=False, choices=[
