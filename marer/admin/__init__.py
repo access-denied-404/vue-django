@@ -514,6 +514,32 @@ class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
         return qs
 
 
+class UserCreationForm(forms.ModelForm):
+
+    class Meta:
+        model = models.User
+        fields = (
+            'username',
+            'email',
+            'first_name',
+            'last_name',
+            'phone',
+        )
+        field_classes = {'email': UsernameField}
+
+    def __init__(self, *args, **kwargs):
+        if 'email' in self.base_fields:
+            self.base_fields['email'].help_text = 'Если не заполнено, используется имя пользователя.'
+        super(UserCreationForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        if 'email' in self.cleaned_data and 'username' in self.cleaned_data:
+            if self.cleaned_data['email'] == '':
+                self.cleaned_data['email'] = self.cleaned_data['username']
+
+        return super().clean()
+
+
 @register(models.User)
 class MarerUserAdmin(UserAdmin):
     list_display = (
@@ -531,6 +557,19 @@ class MarerUserAdmin(UserAdmin):
     )
     search_fields = ('username', 'first_name', 'last_name', 'email', 'phone')
     readonly_fields = ('last_login', 'date_joined',)
+    add_form = UserCreationForm
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': (
+                'username',
+                'email',
+                'first_name',
+                'last_name',
+                'phone',
+            ),
+        }),
+    )
 
     def first_name_noempty(self, obj):
         if obj.first_name is None or obj.first_name == '':
