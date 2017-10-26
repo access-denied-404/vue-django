@@ -548,13 +548,6 @@ class MarerUserAdmin(UserAdmin):
         'email',
         'phone',
     )
-    fieldsets = (
-        (None, {'fields': ('username', 'password', 'manager',)}),
-        (_('Personal info'), {'fields': ('first_name', 'last_name', 'email', 'phone')}),
-        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
-                                       'groups', 'user_permissions')}),
-        (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
-    )
     search_fields = ('username', 'first_name', 'last_name', 'email', 'phone')
     readonly_fields = ('last_login', 'date_joined',)
     add_form = UserCreationForm
@@ -583,20 +576,29 @@ class MarerUserAdmin(UserAdmin):
     first_name_noempty.admin_order_field = 'first_name'
 
     def get_fieldsets(self, request, obj=None):
-        base_info_fieldsets = (
+        full_fieldsets = (
+            (None, {'fields': ('username', 'password', 'manager',)}),
+            (_('Personal info'), {'fields': ('first_name', 'last_name', 'email', 'phone')}),
+            (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
+                                           'groups', 'user_permissions')}),
+            (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+        )
+        limited_fieldsets = (
             (None, {'fields': ('username', 'password',)}),
             (_('Personal info'), {'fields': ('first_name', 'last_name', 'email', 'phone')}),
             (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
         )
         if obj:
             if request.user.is_superuser:
-                pass
+                self.fieldsets = full_fieldsets
             elif request.user.has_perm('marer.change_user'):
-                pass
+                self.fieldsets = full_fieldsets
             elif request.user.has_perm('marer.can_change_users_base_info'):
-                self.fieldsets = base_info_fieldsets
+                self.fieldsets = limited_fieldsets
             elif request.user.has_perm('marer.can_change_managed_users'):
-                self.fieldsets = base_info_fieldsets
+                self.fieldsets = limited_fieldsets
+            else:
+                self.fieldsets = full_fieldsets
 
         return super().get_fieldsets(request, obj)
 
