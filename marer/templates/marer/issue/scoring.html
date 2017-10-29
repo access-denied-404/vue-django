@@ -32,7 +32,7 @@
                         <button type="button" class="btn btn-default btn-xs" disabled>Отправлена</button>
                     {% else %}
                         {% csrf_token %}
-                        <input type="hidden" name="foid" value="{{ foc.finance_org_id }}"/>
+                        <input type="hidden" name="foid" value="{{ foc.finance_org.id }}"/>
                         <button type="submit" class="btn btn-primary btn-xs">Отправить</button>
                     {% endif %}
                 </form>
