@@ -6,6 +6,7 @@ from django.forms import Select
 from marer import models
 from marer.forms.widgets import ReadOnlyFileInput
 from marer.models import Document
+from marer.models.finance_org import FinanceOrgProductProposeDocument
 from marer.models.issue import IssueFinanceOrgProposeFormalizeDocument, IssueFinanceOrgProposeFinalDocument, \
     IssueBGProdAffiliate, IssueBGProdFounderLegal, IssueBGProdFounderPhysical, IssueCreditPledge
 
@@ -277,6 +278,44 @@ class IFOPFinalDocumentInlineAdmin(TabularInline):
             elif obj.finance_org.manager_id == request.user.id:
                 return True
         return super().has_delete_permission(request, obj)
+
+
+class FinanceOrgProductProposeDocumentInlineAdminForm(forms.ModelForm):
+    file = forms.FileField(required=True, label='файл', widget=ReadOnlyFileInput)
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance', None)
+        if instance is not None:
+            initial = kwargs.get('initial', dict())
+            if instance.sample:
+                initial['file'] = instance.sample.file
+            kwargs['initial'] = initial
+        super().__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        new_doc = Document()
+        new_doc.file = self.cleaned_data['file']
+        new_doc.save()
+        self.instance.sample = new_doc
+        return super().save(commit)
+
+
+class FinanceOrgProductProposeDocumentInlineAdmin(TabularInline):
+    extra = 1
+    model = FinanceOrgProductProposeDocument
+    show_change_link = True
+    form = FinanceOrgProductProposeDocumentInlineAdminForm
+    fields = (
+        'name',
+        'finance_product',
+        'code',
+        'file',
+    )
+    classes = ('collapse',)
+
+    # todo check add permission
+    # todo check change permission
+    # todo check del permission
 
 
 class IFOPClarificationMessageInlineAdmin(StackedInline):

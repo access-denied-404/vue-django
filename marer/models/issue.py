@@ -321,8 +321,74 @@ class IssueFinanceOrgPropose(models.Model):
         )
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if not self.id:
+            docs_samples = self.finance_org.products_docs_samples.filter(finance_product=self.issue.product)
+        else:
+            docs_samples = None
+
         set_obj_update_time(self.issue)
-        return super().save(force_insert, force_update, using, update_fields)
+        super().save(force_insert, force_update, using, update_fields)
+
+        if docs_samples:
+            for ds in docs_samples:
+                pdoc = IssueFinanceOrgProposeDocument()
+                pdoc.propose = self
+                pdoc.name = ds.name
+                pdoc.sample = ds.sample
+                pdoc.code = ds.code
+                pdoc.save()
+
+    @property
+    def propose_documents_ordered(self):
+        return self.propose_documents.order_by('document_id')  # need null to be first
+
+
+class IssueFinanceOrgProposeDocument(models.Model):
+    class Meta:
+        verbose_name = 'документ для банка'
+        verbose_name_plural = 'документы для банка'
+
+    propose = models.ForeignKey(
+        IssueFinanceOrgPropose,
+        verbose_name='предложение заявки в банк',
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+        related_name='propose_documents'
+    )
+    name = models.CharField(max_length=512, blank=False, null=False, default='')
+    sample = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='propose_samples_links'
+    )
+    document = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='propose_links'
+    )
+    code = models.CharField(
+        max_length=512,
+        null=True,
+        blank=True,
+    )
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None, chain_docs_update=False):
+        if not chain_docs_update and self.propose and self.propose.issue_id and self.document and self.document.file:
+            other_proposes = self.propose.issue.proposes.all()
+            if self.id:
+                other_proposes = other_proposes.exclude(id=self.id)
+            for propose in other_proposes:
+                opdocs = propose.propose_documents.filter(code=self.code)
+                for opdoc in opdocs:
+                    opdoc.document = self.document
+                    opdoc.save(chain_docs_update=True)
+
+        super().save(force_insert, force_update, using, update_fields)
 
 
 class IssueFinanceOrgProposeClarification(models.Model):

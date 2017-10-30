@@ -10,7 +10,8 @@ from marer.forms import IssueRegisteringForm, IFOPCMessageForm
 from marer.models import Issue, Issuer, Document
 from marer.models.finance_org import FinanceOrgProductConditions, FinanceOrganization
 from marer.models.issue import IssueFinanceOrgPropose, IssueFinanceOrgProposeClarificationMessage, \
-    IssueFinanceOrgProposeClarificationMessageDocument, IssueFinanceOrgProposeClarification
+    IssueFinanceOrgProposeClarificationMessageDocument, IssueFinanceOrgProposeClarification, \
+    IssueFinanceOrgProposeDocument
 from marer.products import get_finance_products
 from marer.stub import create_stub_issuer
 from marer.views.mixins import StaticPagesContextMixin
@@ -257,6 +258,33 @@ class IssueAdditionalDocumentsRequestsView(IssueView):
         proposes = IssueFinanceOrgPropose.objects.filter(issue=self.get_issue())
         kwargs['proposes'] = proposes
         return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+
+        proposes_docs = IssueFinanceOrgProposeDocument.objects.filter(
+            propose__issue=self.get_issue())
+        for pdoc in proposes_docs:
+            pdoc_files_key = 'propose_doc_%s' % pdoc.id
+            pdoc_files_del_key = 'propose_doc_%s_del' % pdoc.id
+            pdoc_file = request.FILES.get(pdoc_files_key, None)
+            pdoc_del_mark = request.POST.get(pdoc_files_del_key, None)
+            if pdoc_file:
+                if pdoc.document:
+                    pdoc.document.file = pdoc_file
+                    pdoc.document.save()
+                else:
+                    new_doc = Document()
+                    new_doc.file = pdoc_file
+                    new_doc.save()
+                    pdoc.document = new_doc
+                pdoc.save()
+                break
+
+            if pdoc_del_mark:
+                pdoc.document = None
+                pdoc.save(chain_docs_update=False)
+
+        return self.get(request, *args, **kwargs)
 
 
 class IssueAdditionalDocumentsRequestView(IssueView):

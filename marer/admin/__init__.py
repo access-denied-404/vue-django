@@ -15,7 +15,8 @@ from marer import models, consts
 from marer.admin.inline import IssueFinanceOrgProposeInlineAdmin, IssueDocumentInlineAdmin, \
     IFOPClarificationInlineAdmin, IFOPClarificationMessageInlineAdmin, \
     IFOPFormalizeDocumentInlineAdmin, IFOPFinalDocumentInlineAdmin, IssueBGProdAffiliateInlineAdmin, \
-    IssueBGProdFounderLegalInlineAdmin, IssueBGProdFounderPhysicalInlineAdmin
+    IssueBGProdFounderLegalInlineAdmin, IssueBGProdFounderPhysicalInlineAdmin, \
+    FinanceOrgProductProposeDocumentInlineAdmin
 from marer.models import IssueFinanceOrgProposeClarificationMessage, IssueFinanceOrgProposeClarificationMessageDocument, \
     Document
 from marer.models.finance_org import FinanceOrganization
@@ -310,6 +311,9 @@ class FinanceOrganizationAdmin(ModelAdmin):
     list_display = (
         'name',
         'manager',
+    )
+    inlines = (
+        FinanceOrgProductProposeDocumentInlineAdmin,
     )
 
 

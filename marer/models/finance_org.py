@@ -2,7 +2,7 @@ from django.conf import settings
 from django.db import models
 
 from marer import consts
-from marer.models.base import OKVED2, Region
+from marer.models.base import OKVED2, Region, Document
 from marer.products import get_finance_products_as_choices
 
 
@@ -131,3 +131,30 @@ class FinanceOrgProductConditions(models.Model):
     @property
     def humanized_bg_personal_presence_required(self):
         return self._humanized_bool_requirement_value(self.personal_presence_required)
+
+
+class FinanceOrgProductProposeDocument(models.Model):
+    class Meta:
+        verbose_name = 'документ для банка'
+        verbose_name_plural = 'документы для банка'
+
+    finance_product = models.CharField(
+        max_length=32, choices=get_finance_products_as_choices(), null=False, blank=False)
+    finance_org = models.ForeignKey(FinanceOrganization, null=False, blank=False, related_name='products_docs_samples')
+    name = models.CharField(max_length=512, blank=False, null=False, default='')
+    sample = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='fo_product_propose_samples_links'
+    )
+    code = models.CharField(
+        choices=[
+            (consts.FO_PRODUCT_PROPOSE_DOC_HEAD_PASSPORT, 'Паспорт генерального директора (руководителя)'),
+            (consts.FO_PRODUCT_PROPOSE_DOC_HEAD_STATUTE, 'Устав организации'),
+        ],
+        max_length=512,
+        null=True,
+        blank=True,
+    )
