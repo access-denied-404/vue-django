@@ -281,7 +281,7 @@ class IFOPFinalDocumentInlineAdmin(TabularInline):
 
 
 class FinanceOrgProductProposeDocumentInlineAdminForm(forms.ModelForm):
-    file = forms.FileField(required=True, label='файл', widget=ReadOnlyFileInput)
+    file = forms.FileField(required=False, label='файл', widget=ReadOnlyFileInput)
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
@@ -293,10 +293,11 @@ class FinanceOrgProductProposeDocumentInlineAdminForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
     def save(self, commit=True):
-        new_doc = Document()
-        new_doc.file = self.cleaned_data['file']
-        new_doc.save()
-        self.instance.sample = new_doc
+        if 'file' in self.cleaned_data:
+            new_doc = Document()
+            new_doc.file = self.cleaned_data['file']
+            new_doc.save()
+            self.instance.sample = new_doc
         return super().save(commit)
 
 
