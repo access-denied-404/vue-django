@@ -16,7 +16,7 @@ from marer.admin.inline import IssueFinanceOrgProposeInlineAdmin, IssueDocumentI
     IFOPClarificationInlineAdmin, IFOPClarificationMessageInlineAdmin, \
     IFOPFormalizeDocumentInlineAdmin, IFOPFinalDocumentInlineAdmin, IssueBGProdAffiliateInlineAdmin, \
     IssueBGProdFounderLegalInlineAdmin, IssueBGProdFounderPhysicalInlineAdmin, \
-    FinanceOrgProductProposeDocumentInlineAdmin
+    FinanceOrgProductProposeDocumentInlineAdmin, IssueProposeDocumentInlineAdmin
 from marer.models import IssueFinanceOrgProposeClarificationMessage, IssueFinanceOrgProposeClarificationMessageDocument, \
     Document
 from marer.models.finance_org import FinanceOrganization
@@ -245,6 +245,7 @@ class IssueFinanceOrgProposeAdmin(ModelAdmin):
 
     inlines = (
         IFOPClarificationInlineAdmin,
+        IssueProposeDocumentInlineAdmin,
         IFOPFormalizeDocumentInlineAdmin,
         IFOPFinalDocumentInlineAdmin,
     )

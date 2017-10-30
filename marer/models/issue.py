@@ -372,6 +372,10 @@ class IssueFinanceOrgProposeDocument(models.Model):
         related_name='propose_links'
     )
     code = models.CharField(
+        choices=[
+            (consts.FO_PRODUCT_PROPOSE_DOC_HEAD_PASSPORT, 'Паспорт генерального директора (руководителя)'),
+            (consts.FO_PRODUCT_PROPOSE_DOC_HEAD_STATUTE, 'Устав организации'),
+        ],
         max_length=512,
         null=True,
         blank=True,

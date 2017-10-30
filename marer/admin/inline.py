@@ -8,7 +8,8 @@ from marer.forms.widgets import ReadOnlyFileInput
 from marer.models import Document
 from marer.models.finance_org import FinanceOrgProductProposeDocument
 from marer.models.issue import IssueFinanceOrgProposeFormalizeDocument, IssueFinanceOrgProposeFinalDocument, \
-    IssueBGProdAffiliate, IssueBGProdFounderLegal, IssueBGProdFounderPhysical, IssueCreditPledge
+    IssueBGProdAffiliate, IssueBGProdFounderLegal, IssueBGProdFounderPhysical, IssueCreditPledge, \
+    IssueFinanceOrgProposeDocument
 
 
 class IssueFinanceOrgProposeInlineAdmin(StackedInline):
@@ -310,6 +311,48 @@ class FinanceOrgProductProposeDocumentInlineAdmin(TabularInline):
         'name',
         'finance_product',
         'code',
+        'file',
+    )
+    classes = ('collapse',)
+
+    # todo check add permission
+    # todo check change permission
+    # todo check del permission
+
+
+class IssueProposeDocumentInlineAdminForm(forms.ModelForm):
+    file_sample = forms.FileField(disabled=True, required=False, label='образец', widget=ReadOnlyFileInput)
+    file = forms.FileField(required=False, label='файл')
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance', None)
+        if instance is not None:
+            initial = kwargs.get('initial', dict())
+            if instance.sample:
+                initial['file_sample'] = instance.sample.file
+            if instance.document and instance.document.file and instance.document.file != 'False':
+                initial['file'] = instance.document.file
+            kwargs['initial'] = initial
+        super().__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        if 'file' in self.cleaned_data:
+            new_doc = Document()
+            new_doc.file = self.cleaned_data['file']
+            new_doc.save()
+            self.instance.document = new_doc
+        return super().save(commit)
+
+
+class IssueProposeDocumentInlineAdmin(TabularInline):
+    extra = 1
+    model = IssueFinanceOrgProposeDocument
+    show_change_link = True
+    form = IssueProposeDocumentInlineAdminForm
+    fields = (
+        'name',
+        'code',
+        'file_sample',
         'file',
     )
     classes = ('collapse',)
