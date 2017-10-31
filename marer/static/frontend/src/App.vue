@@ -75,6 +75,18 @@
             </div>
           </div>
 
+          <div class="row">
+            <div class="col-md-12">
+              <bs-input
+                :name="'comment'"
+                :label="'Комментарий'"
+                :type="'textarea'"
+                :rows=2
+                v-model="comment"
+              ></bs-input>
+            </div>
+          </div>
+
         </div>
       </div>
       <transition appear name="fade" mode="out-in">
@@ -123,7 +135,8 @@
         party_kpp: issuerKPP,
         party_full_name: issuerFullName,
         party_short_name: issuerShortName,
-        party_legal_address: issuerLegalAddress
+        party_legal_address: issuerLegalAddress,
+        comment: document.getElementById('app').getAttribute('comment')
       }
     },
     watch: {

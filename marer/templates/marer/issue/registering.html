@@ -7,6 +7,7 @@
             products='[{% for product in products %}{"value":"{{ product.name }}", "text":"{{ product.humanized_name }}"}{% if not forloop.last %},{% endif %}{% endfor %}]'
             {% if issue %}
                 product="{{ issue.get_product.name }}"
+                comment="{{ issue.comment }}"
                 regdata="{{ issue.serialize_registering_data }}"
             {% endif %}
             dadata_token="{{ dadata_token }}"
