@@ -788,10 +788,6 @@ class CreditProduct(FinanceProduct):
                 name='Расшифровка кредитов и займов',
                 description='По состоянию на текущую дату',
             ),
-            FinanceProductDocumentItem(
-                code='contracts_registry_yr{}_m{}'.format(curr_date.year, curr_date.month),
-                name='Реестр контрактов',
-            ),
         ])
         return docs
 
