@@ -1,28 +1,51 @@
 from django.contrib.admin import StackedInline, TabularInline
 from django import forms
 from django.db.models import TextField
-from django.forms import Select
+from django.forms import Select, BaseInlineFormSet
 
 from marer import models
 from marer.forms.widgets import ReadOnlyFileInput
 from marer.models import Document
-from marer.models.finance_org import FinanceOrgProductProposeDocument
+from marer.models.finance_org import FinanceOrgProductProposeDocument, FinanceOrgProductConditions
 from marer.models.issue import IssueFinanceOrgProposeFormalizeDocument, IssueFinanceOrgProposeFinalDocument, \
     IssueBGProdAffiliate, IssueBGProdFounderLegal, IssueBGProdFounderPhysical, IssueCreditPledge, \
     IssueFinanceOrgProposeDocument
 
 
-class IssueFinanceOrgProposeInlineAdmin(StackedInline):
+class IssueFinanceOrgProposeFormSet(BaseInlineFormSet):
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.order_by('-updated_at')[:3]
+
+
+class IssueFinanceOrgProposeInlineAdmin(TabularInline):
     extra = 1
     model = models.IssueFinanceOrgPropose
-    fields = ('finance_org',)
+    verbose_name_plural = 'Предложения заявки в банки (последние 3)'
+    fields = (
+        'id',
+        'finance_org',
+        'final_decision',
+        'created_at',
+        'updated_at',
+    )
+    readonly_fields = (
+        'id',
+        'finance_org',
+        'final_decision',
+        'created_at',
+        'updated_at',
+    )
+    formset = IssueFinanceOrgProposeFormSet
+
     show_change_link = True
     can_delete = False
 
+    def __init__(self, parent_model, admin_site):
+        super().__init__(parent_model, admin_site)
+
     def has_add_permission(self, request):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            return True
-        return super().has_add_permission(request)
+        return False
 
     def has_change_permission(self, request, obj=None):
         if request.user.has_perm('marer.can_change_managed_users_issues'):
@@ -33,6 +56,16 @@ class IssueFinanceOrgProposeInlineAdmin(StackedInline):
         elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
             return True
         return super().has_change_permission(request, obj)
+
+    show_view_all_link = True
+    has_alter_add_url = True
+
+    def get_alter_add_url(self, parent_obj):
+        return '/admin/{app_label}/{model_name}/?issue_id={parent_obj_id}'.format(
+            app_label=self.model._meta.app_label,
+            model_name=FinanceOrgProductConditions._meta.model_name,
+            parent_obj_id=parent_obj.id,
+        )
 
 
 class IssueDocumentInlineAdminForm(forms.ModelForm):

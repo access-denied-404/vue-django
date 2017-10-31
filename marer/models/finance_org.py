@@ -33,9 +33,14 @@ class FinanceOrganization(models.Model):
 
 
 class FinanceOrgProductConditions(models.Model):
+
+    class Meta:
+        verbose_name = 'условия финансовой организации'
+        verbose_name_plural = 'условия финансовых организаций'
+
     finance_product = models.CharField(
         max_length=32, choices=get_finance_products_as_choices(), null=False, blank=False)
-    finance_org = models.ForeignKey(FinanceOrganization, null=False, blank=False, related_name='products_conditions')
+    finance_org = models.ForeignKey(FinanceOrganization, verbose_name='Финансовая организация', null=False, blank=False, related_name='products_conditions')
 
     bg_44_app_ensure_min_sum = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     bg_44_app_ensure_max_sum = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
@@ -82,13 +87,12 @@ class FinanceOrgProductConditions(models.Model):
 
     credit_min_sum = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     credit_max_sum = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
-    credit_interest_rate = models.FloatField(blank=True, null=True)
+    credit_interest_rate = models.FloatField(verbose_name='Годовая ставка по кредиту', blank=True, null=True)
 
     leasing_min_sum = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     leasing_max_sum = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     leasing_interest_rate = models.FloatField(blank=True, null=True)
 
-    @property
     def humanized_bg_insurance(self):
         if self.bg_insurance_type is None:
             return 'Нет'
@@ -96,8 +100,9 @@ class FinanceOrgProductConditions(models.Model):
             return 'Недвижимость'
         if self.bg_insurance_type == consts.FO_PRODUCT_CONDITIONS_INSURANCE_TYPE_PLEDGE:
             return 'Залог {}%'.format(self.bg_insurance_value)
+    humanized_bg_insurance.short_description = 'Требуемое обеспечение'
+    humanized_bg_insurance.admin_order_field = 'bg_insurance_value'
 
-    @property
     def humanized_bg_review_tern_days(self):
 
         days_cnt = self.bg_review_term_days
@@ -117,6 +122,8 @@ class FinanceOrgProductConditions(models.Model):
         else:
             days_form = 'дней'
         return '{} {}'.format(days_cnt, days_form)
+    humanized_bg_review_tern_days.short_description = 'Время рассмотрения'
+    humanized_bg_review_tern_days.admin_order_field = 'bg_review_term_days'
 
     def _humanized_bool_requirement_value(self, value):
         if value:
@@ -124,13 +131,15 @@ class FinanceOrgProductConditions(models.Model):
         else:
             return 'Не нужно'
 
-    @property
     def humanized_bg_bank_account_opening_required(self):
         return self._humanized_bool_requirement_value(self.bg_bank_account_opening_required)
+    humanized_bg_bank_account_opening_required.short_description = 'Открытие счета в банке'
+    humanized_bg_bank_account_opening_required.admin_order_field = 'bg_bank_account_opening_required'
 
-    @property
     def humanized_bg_personal_presence_required(self):
         return self._humanized_bool_requirement_value(self.personal_presence_required)
+    humanized_bg_personal_presence_required.short_description = 'Личное присутствие'
+    humanized_bg_personal_presence_required.admin_order_field = 'personal_presence_required'
 
 
 class FinanceOrgProductProposeDocument(models.Model):

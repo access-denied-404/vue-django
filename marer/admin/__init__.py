@@ -1,10 +1,13 @@
+from collections import OrderedDict
 from random import randint
 
+from django.contrib import messages
 from django.contrib.admin import ModelAdmin, register, site
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UsernameField
-from django.db.models import TextField
+from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import TextField, BLANK_CHOICE_DASH
 from django import forms
 from django.urls import reverse
 from django.utils.timezone import localtime
@@ -18,9 +21,8 @@ from marer.admin.inline import IssueFinanceOrgProposeInlineAdmin, IssueDocumentI
     IssueBGProdFounderLegalInlineAdmin, IssueBGProdFounderPhysicalInlineAdmin, \
     FinanceOrgProductProposeDocumentInlineAdmin, IssueProposeDocumentInlineAdmin
 from marer.models import IssueFinanceOrgProposeClarificationMessage, IssueFinanceOrgProposeClarificationMessageDocument, \
-    Document
-from marer.models.finance_org import FinanceOrganization
-
+    Document, Issue, IssueFinanceOrgPropose
+from marer.models.finance_org import FinanceOrganization, FinanceOrgProductConditions
 
 site.site_title = 'Управление сайтом МАРЭР'
 site.site_header = 'Управление площадкой МАРЭР'
@@ -669,3 +671,129 @@ class LogEntryAdmin(ModelAdmin):
 
     def get_actions(self, request):
         return []
+
+
+@register(FinanceOrgProductConditions)
+class FinanceOrgProductConditionsForProposeAdmin(ModelAdmin):
+    issue = None
+
+    def get_changelist(self, request, **kwargs):
+        from django.contrib.admin.views.main import ChangeList
+
+        class CustomChangeList(ChangeList):
+
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, **kwargs)
+                self.title = 'Выберите условия финансовых организаций для подачи заявок'
+
+            def get_filters_params(self, params=None):
+                lookup_params = super().get_filters_params(params)
+
+                if 'issue_id' in lookup_params:
+                    del lookup_params['issue_id']
+
+                return lookup_params
+
+        return CustomChangeList
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_module_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def get_queryset(self, request):
+        issue_id = request.GET.get('issue_id', None)
+        if not issue_id:
+            self.message_user(request, 'Не указана заявка, по которой нужно выбрать условия', messages.WARNING)
+            return FinanceOrgProductConditions.objects.none()
+
+        issue = None
+        try:
+            issue = Issue.objects.get(id=issue_id)
+            self.issue = issue
+        except ObjectDoesNotExist:
+            pass
+        if not issue:
+            return FinanceOrgProductConditions.objects.none()
+
+        product = issue.get_product()
+        if not product:
+            return FinanceOrgProductConditions.objects.none()
+
+        return product.get_finance_orgs_conditions_list()
+
+    def get_list_display(self, request):
+        product_fields = []
+
+        issue_id = request.GET.get('issue_id', None)
+        if issue_id:
+            try:
+                issue = Issue.objects.get(id=issue_id)
+                product_fields = issue.get_product().get_finance_orgs_conditions_list_fields()
+                product_fields = [fld for fld, fld_name in product_fields]
+            except ObjectDoesNotExist:
+                pass
+
+        # todo get a tuple based on issue
+        final_fields = ['finance_org']
+        final_fields += product_fields
+        final_fields += ('is_proposed_to',)
+        return final_fields
+
+    def get_list_display_links(self, request, list_display):
+        return []
+
+    def get_action_choices(self, request, default_choices=BLANK_CHOICE_DASH):
+        return super().get_action_choices(request, [])
+
+    def get_actions(self, request):
+        return OrderedDict({'propose_to_fo': (
+            propose_to_fo,
+            'propose_to_fo',
+            'Предложить заявку в выбранные банки'
+        )})
+
+    def is_proposed_to(self, obj):
+        if not self.issue:
+            return False
+
+        if self.issue.proposes.filter(finance_org=obj.finance_org).exists():
+            return True
+        else:
+            return False
+    is_proposed_to.boolean = True
+    is_proposed_to.short_description = 'Отправлено в банк'
+
+
+def propose_to_fo(admin_cls: ModelAdmin, request, queryset):
+    issue_id = request.GET.get('issue_id', None)
+    if not issue_id:
+        admin_cls.message_user(request, 'Не указана заявка, по которой нужно выбрать условия', messages.WARNING)
+        return
+
+    issue = None
+    try:
+        issue = Issue.objects.get(id=issue_id)
+    except ObjectDoesNotExist:
+        pass
+    if not issue:
+        admin_cls.message_user(request, 'Указанная заявка не найдена', messages.WARNING)
+        return
+
+    banks_ids = queryset.values_list('finance_org', flat=True)
+    unique_banks_ids = []
+    for bid in banks_ids:
+        if bid not in unique_banks_ids:
+            unique_banks_ids.append(bid)
+    proposed_fo_ids = issue.proposes.values_list('finance_org', flat=True)
+    fo_to_propose = FinanceOrganization.objects.filter(id__in=unique_banks_ids).exclude(id__in=proposed_fo_ids)
+    for fo in fo_to_propose:
+        new_propose = IssueFinanceOrgPropose()
+        new_propose.issue = issue
+        new_propose.finance_org = fo
+        new_propose.save()
+    admin_cls.message_user(request, 'Заявки отправлены в %s банков' % fo_to_propose.count())
