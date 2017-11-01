@@ -51,7 +51,7 @@
             </div>
 
             <div class="row">
-              <div class="col-md-6"><bs-input :name="'bg_deadline_date'" v-model="bg_deadline_date" label="Крайний срок выдачи"></bs-input></div>
+              <div class="col-md-6"><label>Крайний срок выдачи</label><date-time-picker :name="'bg_deadline_date'" v-model="bg_deadline_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div>
               <div class="col-md-6"><bs-input :name="'date_range'" v-model="date_range" label="Срок БГ, дней" readonly></bs-input></div>
             </div>
 
