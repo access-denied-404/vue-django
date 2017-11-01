@@ -220,9 +220,9 @@ class Issue(models.Model):
             'issue_registering',
             'issue_common_documents_request',
             'issue_survey',
+            'issue_scoring',
         ]
         review_views = registering_views + [
-            'issue_scoring',
             'issue_additional_documents_requests',
             'issue_payments',
             'issue_finished',
@@ -241,6 +241,7 @@ class Issue(models.Model):
             'issue_registering',
             'issue_common_documents_request',
             'issue_survey',
+            'issue_scoring',
         ]
         review_views = [
             'issue_scoring',
@@ -321,6 +322,10 @@ class IssueFinanceOrgPropose(models.Model):
         )
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if not self.id and self.issue and self.issue.id and self.issue.status == consts.ISSUE_STATUS_REGISTERING and not self.issue.proposes.exists():
+            self.issue.status = consts.ISSUE_STATUS_REVIEW
+            self.issue.save()
+
         if not self.id:
             docs_samples = self.finance_org.products_docs_samples.filter(finance_product=self.issue.product)
         else:

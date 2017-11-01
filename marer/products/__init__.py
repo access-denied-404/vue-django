@@ -200,6 +200,7 @@ class BankGuaranteeProduct(FinanceProduct):
         )
 
     def process_survey_post_data(self, request):
+        processed_sucessfully_flag = True
         form_org_common = BGFinProdSurveyOrgCommonForm(request.POST)
         if form_org_common.is_valid():
             self._issue.issuer_full_name = form_org_common.cleaned_data['issuer_full_name']
@@ -218,6 +219,8 @@ class BankGuaranteeProduct(FinanceProduct):
             self._issue.issuer_ifns_reg_cert_number = form_org_common.cleaned_data['issuer_ifns_reg_cert_number']
             self._issue.issuer_okopf = form_org_common.cleaned_data['issuer_okopf']
             self._issue.issuer_okved = form_org_common.cleaned_data['issuer_okved']
+        else:
+            processed_sucessfully_flag = False
 
         form_org_head = BGFinProdSurveyOrgHeadForm(request.POST)
         if form_org_head.is_valid():
@@ -243,6 +246,8 @@ class BankGuaranteeProduct(FinanceProduct):
             self._issue.issuer_head_industry_work_experience = form_org_head.cleaned_data[
                 'issuer_head_industry_work_experience']
             self._issue.issuer_prev_org_info = form_org_head.cleaned_data['issuer_prev_org_info']
+        else:
+            processed_sucessfully_flag = False
 
         self._issue.save()
 
@@ -271,6 +276,8 @@ class BankGuaranteeProduct(FinanceProduct):
                     new_lf.legal_address = afdata.get('legal_address', '')
                     new_lf.issue = self._issue
                     new_lf.save()
+        else:
+            processed_sucessfully_flag = False
 
         # processing physical founders
         formset_founders_physical = formset_factory(FounderPhysicalForm, extra=0)
@@ -298,6 +305,8 @@ class BankGuaranteeProduct(FinanceProduct):
                     new_pf.passport_data = afdata.get('passport_data', '')
                     new_pf.issue = self._issue
                     new_pf.save()
+        else:
+            processed_sucessfully_flag = False
 
         # processing affiliates
         from marer.models.issue import IssueBGProdAffiliate
@@ -324,6 +333,10 @@ class BankGuaranteeProduct(FinanceProduct):
                     new_aff.aff_type = afdata.get('aff_type', '')
                     new_aff.issue = self._issue
                     new_aff.save()
+        else:
+            processed_sucessfully_flag = False
+
+        return processed_sucessfully_flag
 
     def get_admin_issue_fieldset(self):
         return [
@@ -535,6 +548,8 @@ class CreditProduct(FinanceProduct):
     _survey_template_name = 'marer/products/Credit/form_survey.html'
 
     def process_survey_post_data(self, request):
+        processed_sucessfully_flag = True
+
         form_org_common = BGFinProdSurveyOrgCommonForm(request.POST)
         if form_org_common.is_valid():
             self._issue.issuer_full_name = form_org_common.cleaned_data['issuer_full_name']
@@ -553,6 +568,8 @@ class CreditProduct(FinanceProduct):
             self._issue.issuer_ifns_reg_cert_number = form_org_common.cleaned_data['issuer_ifns_reg_cert_number']
             self._issue.issuer_okopf = form_org_common.cleaned_data['issuer_okopf']
             self._issue.issuer_okved = form_org_common.cleaned_data['issuer_okved']
+        else:
+            processed_sucessfully_flag = False
 
         form_org_head = BGFinProdSurveyOrgHeadForm(request.POST)
         if form_org_head.is_valid():
@@ -578,6 +595,8 @@ class CreditProduct(FinanceProduct):
             self._issue.issuer_head_industry_work_experience = form_org_head.cleaned_data[
                 'issuer_head_industry_work_experience']
             self._issue.issuer_prev_org_info = form_org_head.cleaned_data['issuer_prev_org_info']
+        else:
+            processed_sucessfully_flag = False
 
         self._issue.save()
 
@@ -606,6 +625,8 @@ class CreditProduct(FinanceProduct):
                     new_lf.legal_address = afdata.get('legal_address', '')
                     new_lf.issue = self._issue
                     new_lf.save()
+        else:
+            processed_sucessfully_flag = False
 
         # processing physical founders
         formset_founders_physical = formset_factory(FounderPhysicalForm, extra=0)
@@ -633,6 +654,8 @@ class CreditProduct(FinanceProduct):
                     new_pf.passport_data = afdata.get('passport_data', '')
                     new_pf.issue = self._issue
                     new_pf.save()
+        else:
+            processed_sucessfully_flag = False
 
         # processing pledge
         from marer.models.issue import IssueCreditPledge
@@ -657,6 +680,8 @@ class CreditProduct(FinanceProduct):
                     new_pldg.cost = pdata.get('cost', '')
                     new_pldg.issue = self._issue
                     new_pldg.save()
+        else:
+            processed_sucessfully_flag = False
 
         # processing affiliates
         from marer.models.issue import IssueBGProdAffiliate
@@ -683,6 +708,10 @@ class CreditProduct(FinanceProduct):
                     new_aff.aff_type = afdata.get('aff_type', '')
                     new_aff.issue = self._issue
                     new_aff.save()
+        else:
+            processed_sucessfully_flag = False
+
+        return processed_sucessfully_flag
 
     def get_admin_issue_fieldset(self):
         return [
