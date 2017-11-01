@@ -85,9 +85,35 @@ class FinanceOrgProductConditions(models.Model):
     bg_regions_blacklist = models.ManyToManyField(Region, blank=True)
     bg_sectors_blacklist = models.ManyToManyField(OKVED2, blank=True)
 
-    credit_min_sum = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
-    credit_max_sum = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
-    credit_interest_rate = models.FloatField(verbose_name='Годовая ставка по кредиту', blank=True, null=True)
+    credit_tender_min_sum = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    credit_tender_max_sum = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    credit_tender_issue_rate = models.FloatField(verbose_name='Годовая ставка по тендерному кредиту', blank=True, null=True)
+    credit_tender_interest_rate = models.FloatField(verbose_name='Годовая ставка по тендерному кредиту', blank=True, null=True)
+
+    credit_contract_exec_min_sum = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    credit_contract_exec_max_sum = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    credit_contract_exec_issue_rate = models.FloatField(verbose_name='Годовая ставка по кредиту на исполнение контракта', blank=True, null=True)
+    credit_contract_exec_interest_rate = models.FloatField(verbose_name='Годовая ставка по кредиту на исполнение контракта', blank=True, null=True)
+
+    credit_work_capital_refill_min_sum = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    credit_work_capital_refill_max_sum = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    credit_work_capital_refill_issue_rate = models.FloatField(verbose_name='Годовая ставка по кредиту на пополнение оборотных средств', blank=True, null=True)
+    credit_work_capital_refill_interest_rate = models.FloatField(verbose_name='Годовая ставка по кредиту на пополнение оборотных средств', blank=True, null=True)
+
+    credit_overdraft_min_sum = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    credit_overdraft_max_sum = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    credit_overdraft_issue_rate = models.FloatField(verbose_name='Годовая ставка по овердрафту', blank=True, null=True)
+    credit_overdraft_interest_rate = models.FloatField(verbose_name='Годовая ставка по овердрафту', blank=True, null=True)
+
+    credit_renewable_credit_line_min_sum = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    credit_renewable_credit_line_max_sum = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    credit_renewable_credit_line_issue_rate = models.FloatField(verbose_name='Годовая ставка по ВКЛ', blank=True, null=True)
+    credit_renewable_credit_line_interest_rate = models.FloatField(verbose_name='Годовая ставка по ВКЛ', blank=True, null=True)
+
+    credit_project_financing_min_sum = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    credit_project_financing_max_sum = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    credit_project_financing_issue_rate = models.FloatField(verbose_name='Годовая ставка по проектному финансированию', blank=True, null=True)
+    credit_project_financing_interest_rate = models.FloatField(verbose_name='Годовая ставка по проектному финансированию', blank=True, null=True)
 
     leasing_min_sum = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     leasing_max_sum = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)

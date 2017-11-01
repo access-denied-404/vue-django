@@ -177,6 +177,65 @@ def get_cell_summ_range(cell_data):
     return min_sum, max_sum
 
 
+def parse_float_value(str_value):
+
+    # variants:
+    #   '15'
+    #   '15.6'
+    #   '15,6'
+
+    patterns = [
+        re.compile('(?P<int_part>\d+)[.,](?P<decimal_part>\d+)'),
+        re.compile('(?P<int_part>\d+)'),
+    ]
+    for pattern in patterns:
+        matches = pattern.fullmatch(str_value)
+        if matches:
+            match_data = matches.groupdict()
+            percentage = float('{int_part}.{decimal_part}'.format(
+                int_part=match_data.get('int_part', 0),
+                decimal_part=match_data.get('decimal_part', 0),
+            ))
+            break
+
+    return percentage
+
+
+def get_issue_and_interest_rates(cell_data):
+
+    if cell_data.value is None or cell_data.value == '':
+        return None, None
+
+    # variants:
+    #   ' 15,6 % '
+    #   ' 15.6 % '
+    #   ' 5 % + 14 % '
+    #   ' 5.6 % + 14.6 % '
+    #   ' 5,6 % + 14,6 % '
+
+    issue_pct = None
+    interest_pct = None
+
+    patterns = [
+        re.compile('\s*(?P<interest_part>[0-9.,]+)\s*%?\s*'),
+        re.compile('\s*(?P<issue_part>[0-9.,]+)\s*%?\s*\+?\s*(?P<interest_part>[0-9.,]+)\s*%?\s*'),
+    ]
+    for pattern in patterns:
+        matches = pattern.fullmatch(str(cell_data.value).lower())
+        if matches:
+
+            match_data = matches.groupdict()
+            issue_pct_str = match_data.get('issue_part', None)
+            if issue_pct_str:
+                issue_pct = parse_float_value(issue_pct_str)
+            interest_pct_str = match_data.get('interest_part', None)
+            if interest_pct_str:
+                interest_pct = parse_float_value(interest_pct_str)
+            break
+
+    return issue_pct, interest_pct
+
+
 def get_cell_value(sheet, col, row):
     sheet_idx = '{col}{row}'.format(col=str(col).upper(), row=row)
     return sheet[sheet_idx]

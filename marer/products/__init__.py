@@ -12,7 +12,7 @@ from marer.products.base import FinanceProduct, FinanceProductDocumentItem
 from marer.products.forms import BGFinProdRegForm, BGFinProdSurveyOrgCommonForm, BGFinProdSurveyOrgHeadForm, \
     AffiliatesForm, FounderLegalForm, FounderPhysicalForm, CreditFinProdRegForm, CreditPledgeForm
 from marer.utils.loadfoc import get_cell_value, get_cell_summ_range, get_cell_percentage, get_cell_bool, \
-    get_cell_review_term_days, get_cell_ensure_condition
+    get_cell_review_term_days, get_cell_ensure_condition, get_issue_and_interest_rates
 
 
 logger = logging.getLogger('django')
@@ -796,7 +796,8 @@ class CreditProduct(FinanceProduct):
 
     def get_finance_orgs_conditions_list_fields(self):
         return [
-            ('credit_interest_rate', 'Процентная ставка'),
+            ('credit_work_capital_refill_issue_rate', 'Комиссия за выдачу'),
+            ('credit_work_capital_refill_interest_rate', 'Процентная ставка'),
             ('humanized_bg_insurance', 'Обеспечение'),
             ('humanized_bg_review_tern_days', 'Срок рассмотрения'),
             ('humanized_bg_bank_account_opening_required', 'Открытие р/с'),
@@ -808,7 +809,8 @@ class CreditProduct(FinanceProduct):
         return FinanceOrgProductConditions.objects.filter(
             finance_product=self.name,
             bg_review_term_days__gt=0,
-            credit_interest_rate__gt=0,
+            credit_work_capital_refill_issue_rate__isnull=False,
+            credit_work_capital_refill_interest_rate__isnull=False,
         )
 
     def load_finance_orgs_conditions_from_worksheet(self, ws):
@@ -827,9 +829,46 @@ class CreditProduct(FinanceProduct):
 
             try:
                 min_sum, max_sum = get_cell_summ_range(get_cell_value(ws, 'b', idx))
-                new_foc.credit_min_sum = min_sum
-                new_foc.credit_max_sum = max_sum
-                new_foc.credit_interest_rate = get_cell_percentage(get_cell_value(ws, 'c', idx))
+                issue_rate, interest_rate = get_issue_and_interest_rates(get_cell_value(ws, 'c', idx))
+                new_foc.credit_tender_min_sum = min_sum
+                new_foc.credit_tender_max_sum = max_sum
+                new_foc.credit_tender_issue_rate = issue_rate
+                new_foc.credit_tender_interest_rate = interest_rate
+
+                min_sum, max_sum = get_cell_summ_range(get_cell_value(ws, 'e', idx))
+                issue_rate, interest_rate = get_issue_and_interest_rates(get_cell_value(ws, 'f', idx))
+                new_foc.credit_contract_exec_min_sum = min_sum
+                new_foc.credit_contract_exec_max_sum = max_sum
+                new_foc.credit_contract_exec_issue_rate = issue_rate
+                new_foc.credit_contract_exec_interest_rate = interest_rate
+
+                min_sum, max_sum = get_cell_summ_range(get_cell_value(ws, 'h', idx))
+                issue_rate, interest_rate = get_issue_and_interest_rates(get_cell_value(ws, 'i', idx))
+                new_foc.credit_work_capital_refill_min_sum = min_sum
+                new_foc.credit_work_capital_refill_max_sum = max_sum
+                new_foc.credit_work_capital_refill_issue_rate = issue_rate
+                new_foc.credit_work_capital_refill_interest_rate = interest_rate
+
+                min_sum, max_sum = get_cell_summ_range(get_cell_value(ws, 'k', idx))
+                issue_rate, interest_rate = get_issue_and_interest_rates(get_cell_value(ws, 'l', idx))
+                new_foc.credit_overdraft_min_sum = min_sum
+                new_foc.credit_overdraft_max_sum = max_sum
+                new_foc.credit_overdraft_issue_rate = issue_rate
+                new_foc.credit_overdraft_interest_rate = interest_rate
+
+                min_sum, max_sum = get_cell_summ_range(get_cell_value(ws, 'n', idx))
+                issue_rate, interest_rate = get_issue_and_interest_rates(get_cell_value(ws, 'o', idx))
+                new_foc.credit_renewable_credit_line_min_sum = min_sum
+                new_foc.credit_renewable_credit_line_max_sum = max_sum
+                new_foc.credit_renewable_credit_line_issue_rate = issue_rate
+                new_foc.credit_renewable_credit_line_interest_rate = interest_rate
+
+                min_sum, max_sum = get_cell_summ_range(get_cell_value(ws, 'q', idx))
+                issue_rate, interest_rate = get_issue_and_interest_rates(get_cell_value(ws, 'r', idx))
+                new_foc.credit_project_financing_min_sum = min_sum
+                new_foc.credit_project_financing_max_sum = max_sum
+                new_foc.credit_project_financing_issue_rate = issue_rate
+                new_foc.credit_project_financing_interest_rate = interest_rate
 
                 # Base conditions
                 new_foc.personal_presence_required = get_cell_bool(get_cell_value(ws, 't', idx))
