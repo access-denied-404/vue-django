@@ -2,14 +2,22 @@ from collections import OrderedDict
 from random import randint
 
 from django.contrib import messages
+from django.conf.urls import url
 from django.contrib.admin import ModelAdmin, register, site
 from django.contrib.admin.models import LogEntry
+from django.contrib.admin.options import IS_POPUP_VAR
+from django.contrib.admin.utils import unquote
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.forms import UsernameField
+from django.contrib.auth.forms import UsernameField, UserChangeForm, ReadOnlyPasswordHashField
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import TextField, BLANK_CHOICE_DASH
+from django.core.exceptions import PermissionDenied
 from django import forms
+from django.http import Http404, HttpResponseRedirect
+from django.template.response import TemplateResponse
 from django.urls import reverse
+from django.utils.encoding import force_text
+from django.utils.html import escape
 from django.utils.timezone import localtime
 from django.utils.translation import ugettext_lazy as _
 from mptt.admin import MPTTModelAdmin
@@ -21,7 +29,7 @@ from marer.admin.inline import IssueFinanceOrgProposeInlineAdmin, IssueDocumentI
     IssueBGProdFounderLegalInlineAdmin, IssueBGProdFounderPhysicalInlineAdmin, \
     FinanceOrgProductProposeDocumentInlineAdmin, IssueProposeDocumentInlineAdmin
 from marer.models import IssueFinanceOrgProposeClarificationMessage, IssueFinanceOrgProposeClarificationMessageDocument, \
-    Document, Issue, IssueFinanceOrgPropose
+    Document, Issue, IssueFinanceOrgPropose, User
 from marer.models.finance_org import FinanceOrganization, FinanceOrgProductConditions
 
 site.site_title = 'Управление сайтом МАРЭР'
@@ -518,6 +526,20 @@ class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
         return qs
 
 
+class MarerUserChangeForm(UserChangeForm):
+    password = ReadOnlyPasswordHashField(
+        label=_("Password"),
+        help_text=_(
+            'Пароли хранятся в защищённом виде, так что у нас нет способа '
+            'узнать пароль этого пользователя. Однако вы можете сменить '
+            'его/её пароль, используя <a href="../password/">эту форму</a>.'
+            '<br/>Или же вы можете сбросить пароль пользователя на '
+            'сгенерированный автоматически и выслать новые данные для входа '
+            'письмом, используя <a href="../password/reset/">эту форму</a>.'
+        ),
+    )
+
+
 class UserCreationForm(forms.ModelForm):
 
     class Meta:
@@ -552,8 +574,10 @@ class MarerUserAdmin(UserAdmin):
         'email',
         'phone',
     )
+    reset_user_password_template = None
     search_fields = ('username', 'first_name', 'last_name', 'email', 'phone')
     readonly_fields = ('last_login', 'date_joined',)
+    form = MarerUserChangeForm
     add_form = UserCreationForm
     add_fieldsets = (
         (None, {
@@ -578,6 +602,88 @@ class MarerUserAdmin(UserAdmin):
             return obj.first_name
     first_name_noempty.short_description = 'имя'
     first_name_noempty.admin_order_field = 'first_name'
+
+    def get_urls(self):
+        return [
+            url(
+                r'^(.+)/password/reset/$',
+                self.admin_site.admin_view(self.user_reset_password),
+                name='auth_user_password_reset',
+            ),
+        ] + super().get_urls()
+
+    def user_reset_password(self, request, id, form_url=''):
+        user_id = unquote(id)
+        if self.has_change_permission(request):
+            pass
+        elif request.user.has_perm('marer.can_change_users_base_info'):
+            pass
+        elif (request.user.has_perm('marer.can_change_managed_users')
+              and User.objects.filter(id=user_id, manager=request.user).exists()):
+            pass
+        else:
+            raise PermissionDenied
+        user = self.get_object(request, unquote(id))
+        if user is None:
+            raise Http404
+
+        if user is None:
+            raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {
+                'name': force_text(self.model._meta.verbose_name),
+                'key': escape(id),
+            })
+        if request.method == 'POST' and request.POST['post'] == 'yes':
+            new_password = user.generate_new_password()
+            user.save()
+            user.email_user(
+                subject='Информация для входа в личный кабинет',
+                html_template_filename='mail/user_reset_password_by_admin.html',
+                context=dict(
+                    username=user.username,
+                    password=new_password,
+                ),
+            )
+
+            self.message_user(
+                request,
+                'Пароль пользователя {} успешно сброшен. Новые данные для входа отправлены.'.format(user)
+            )
+
+            return HttpResponseRedirect(
+                reverse(
+                    '%s:%s_%s_change' % (
+                        self.admin_site.name,
+                        user._meta.app_label,
+                        user._meta.model_name,
+                    ),
+                    args=(user.pk,),
+                )
+            )
+
+        context = {
+            'title': _('Are you sure?'),
+            'form_url': form_url,
+            'is_popup': (IS_POPUP_VAR in request.POST or IS_POPUP_VAR in request.GET),
+            'add': True,
+            'change': False,
+            'has_delete_permission': False,
+            'has_change_permission': True,
+            'has_absolute_url': False,
+            'opts': self.model._meta,
+            'original': user,
+            'save_as': False,
+            'show_save': True,
+            'media': self.media,
+        }
+        context.update(self.admin_site.each_context(request))
+        request.current_app = self.admin_site.name
+
+        return TemplateResponse(
+            request,
+            self.change_user_password_template or
+            'admin/auth/user/reset_password.html',
+            context,
+        )
 
     def get_fieldsets(self, request, obj=None):
         full_fieldsets = (
