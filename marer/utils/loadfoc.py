@@ -102,6 +102,7 @@ def get_cell_ensure_condition(cell_data):
 
     patterns_pledge = [
         re.compile('\s*залог\s*(?P<percentage>\d+)\s*%\s*'),
+        re.compile('\s*депозит\s*(?P<percentage>\d+)\s*%\s*'),
         re.compile('\s*(?P<percentage>\d+)\s*%\s*'),
     ]
     patterns_estate = [
