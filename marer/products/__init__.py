@@ -153,6 +153,15 @@ class BankGuaranteeProduct(FinanceProduct):
             docs.append(FinanceProductDocumentItem(code=fpdi_code, name=fpdi_name, description='Формы 1 и 2'))
             quarters_curr_date += relativedelta(months=3)
 
+        if self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_COMMERCIAL:
+            docs.extend([
+                FinanceProductDocumentItem(
+                    code='commerce_tender_contract_for_issue'.format(self._issue.id),
+                    name='Скан контракта',
+                    description='Отсканированные страницы контракта или его проекта',
+                ),
+            ])
+
         docs.extend([
             FinanceProductDocumentItem(
                 code='loans_description_yr{}_m{}'.format(curr_date.year, curr_date.month),
@@ -191,12 +200,23 @@ class BankGuaranteeProduct(FinanceProduct):
             prefix='founders_physical'
         )
 
+        if self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_COMMERCIAL:
+            formset_pledges = formset_factory(CreditPledgeForm, extra=0)
+            from marer.models.issue import IssueCreditPledge
+            pledges = IssueCreditPledge.objects.filter(issue=self._issue)
+            formset_pledges = formset_pledges(initial=[p.__dict__ for p in pledges], prefix='pledges')
+        else:
+            formset_pledges = None
+
         return dict(
             form_org_common=BGFinProdSurveyOrgCommonForm(initial=self._issue.__dict__),
             form_org_head=BGFinProdSurveyOrgHeadForm(initial=self._issue.__dict__),
             affiliates_formset=affiliates_formset,
             formset_founders_legal=formset_founders_legal,
             formset_founders_physical=formset_founders_physical,
+            formset_pledges=formset_pledges,
+            issue=self._issue,
+            consts=consts,
         )
 
     def process_survey_post_data(self, request):
@@ -336,10 +356,37 @@ class BankGuaranteeProduct(FinanceProduct):
         else:
             processed_sucessfully_flag = False
 
+        # processing pledge
+        if self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_COMMERCIAL:
+            from marer.models.issue import IssueCreditPledge
+            pledge_formset = formset_factory(CreditPledgeForm, extra=0)
+            pld_formset = pledge_formset(request.POST, prefix='pledges')
+            if pld_formset.is_valid():
+                for pdata in pld_formset.cleaned_data:
+                    pdata_id = pdata.get('id', None)
+                    pdata_title = str(pdata.get('pledge_title', '')).strip()
+                    if pdata_id and pdata.get('DELETE', False):
+                        pass
+                        try:
+                            pldg = IssueCreditPledge.objects.get(id=pdata['id'], issue=self._issue)
+                            pldg.delete()
+                        except ObjectDoesNotExist:
+                            pass  # nothing to do
+
+                    elif not pdata_id and pdata_title != '':
+                        new_pldg = IssueCreditPledge()
+                        new_pldg.pledge_title = pdata_title
+                        new_pldg.pledge_type = pdata.get('pledge_type', '')
+                        new_pldg.cost = pdata.get('cost', '')
+                        new_pldg.issue = self._issue
+                        new_pldg.save()
+            else:
+                processed_sucessfully_flag = False
+
         return processed_sucessfully_flag
 
     def get_admin_issue_fieldset(self):
-        return [
+        fieldset = [
             ('Сведения об истребуемой гарантии', dict(fields=(
                 ('bg_sum', 'bg_currency',),
                 ('bg_start_date', 'bg_end_date',),
@@ -369,15 +416,52 @@ class BankGuaranteeProduct(FinanceProduct):
             ))),
         ]
 
+        tender_responsible_fields_part = (
+            'tender_responsible_full_name',
+            'tender_responsible_legal_address',
+            'tender_responsible_ogrn',
+            'tender_responsible_inn',
+            'tender_responsible_kpp',
+        )
+
+        if self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_COMMERCIAL:
+            fieldset.extend([
+                ('Сведения о контракте', dict(classes=('collapse',), fields=(
+                    'bg_commercial_contract_subject',
+                    'bg_commercial_contract_place_of_work',
+                    'bg_commercial_contract_sum',
+                    'bg_commercial_contract_sign_date',
+                    'bg_commercial_contract_end_date',
+                ))),
+
+                ('Сведения о заказчике', dict(
+                    classes=('collapse',),
+                    fields=tender_responsible_fields_part
+                )),
+            ])
+        else:
+            fieldset.extend([
+                ('Сведения об организаторе тендера', dict(
+                    classes=('collapse',),
+                    fields=tender_responsible_fields_part
+                )),
+            ])
+
+        return fieldset
+
     def get_admin_issue_inlnes(self):
         from marer.admin import IssueBGProdAffiliateInlineAdmin
         from marer.admin import IssueBGProdFounderLegalInlineAdmin
         from marer.admin import IssueBGProdFounderPhysicalInlineAdmin
-        return [
+        from marer.admin.inline import IssueCreditPledgeInlineAdmin
+        inlines = [
             IssueBGProdAffiliateInlineAdmin,
             IssueBGProdFounderLegalInlineAdmin,
             IssueBGProdFounderPhysicalInlineAdmin,
         ]
+        if self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_COMMERCIAL:
+            inlines.append(IssueCreditPledgeInlineAdmin)
+        return inlines
 
     def get_finance_orgs_conditions_list_fields(self):
 
@@ -394,6 +478,10 @@ class BankGuaranteeProduct(FinanceProduct):
                 interest_rate_field_name = 'bg_223_app_ensure_interest_rate'
             elif self._issue.bg_type == consts.BG_TYPE_CONTRACT_EXECUTION:
                 interest_rate_field_name = 'bg_223_contract_exec_interest_rate'
+        elif self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_185_FZ:
+            interest_rate_field_name = 'bg_185_interest_rate'
+        elif self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_COMMERCIAL:
+            interest_rate_field_name = 'bg_ct_interest_rate'
 
         return [
             (interest_rate_field_name, 'Процентная ставка'),
@@ -420,6 +508,10 @@ class BankGuaranteeProduct(FinanceProduct):
                 qs = qs.filter(bg_223_app_ensure_interest_rate__isnull=False)
             elif self._issue.bg_type == consts.BG_TYPE_CONTRACT_EXECUTION:
                 qs = qs.filter(bg_223_contract_exec_interest_rate__isnull=False)
+        elif self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_185_FZ:
+            qs = qs.filter(bg_185_interest_rate__isnull=False)
+        elif self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_COMMERCIAL:
+            qs = qs.filter(bg_ct_interest_rate__isnull=False)
 
         return qs
 

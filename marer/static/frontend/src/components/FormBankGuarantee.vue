@@ -2,38 +2,6 @@
   <div class="form-bank-guarantee">
 
     <div class="panel panel-info">
-      <div class="panel-heading">Сведения о тендере</div>
-      <div class="panel-body">
-        <div class="row">
-          <div class="col-md-6"><bs-input :name="'tender_gos_number'" v-model="tender_gos_number" label="Госномер тендера" required></bs-input></div>
-          <div class="col-md-6"><div class="form-group"><bs-input :name="'tender_placement_type'" v-model="tender_placement_type" label="Способ определения поставщика"></bs-input></div></div>
-        </div>
-        <div class="row">
-          <div class="col-md-4"><bs3-radio-field :name="'tender_exec_law'" v-model="tender_exec_law" label="Закон исполнения торгов" :options="[{value: '44-fz', text:'44-ФЗ'}, {value: '223-fz', text:'223-ФЗ'}]"></bs3-radio-field></div>
-          <div class="col-md-4"><label>Дата публикации</label><date-time-picker :name="'tender_publish_date'" v-model="tender_publish_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div>
-          <div class="col-md-4"><bs-input :name="'tender_start_cost'" v-model="tender_start_cost" label="Начальная цена контракта" :mask="currency"></bs-input></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel panel-info">
-      <div class="panel-heading">Сведения об организаторе тендера</div>
-      <div class="panel-body">
-        <div class="row">
-          <div class="col-md-12"><bs-input :name="'tender_responsible_full_name'" v-model="tender_responsible_full_name" label="Наименование — полное наименование организации"></bs-input></div>
-        </div>
-        <div class="row">
-          <div class="col-md-12"><bs-input :name="'tender_responsible_legal_address'" v-model="tender_responsible_legal_address" label="Адрес — юридический адрес организации"></bs-input></div>
-        </div>
-        <div class="row">
-          <div class="col-md-4"><bs-input :name="'tender_responsible_inn'" v-model="tender_responsible_inn" label="ИНН"></bs-input></div>
-          <div class="col-md-4"><bs-input :name="'tender_responsible_kpp'" v-model="tender_responsible_kpp" label="КПП"></bs-input></div>
-          <div class="col-md-4"><bs-input :name="'tender_responsible_ogrn'" v-model="tender_responsible_ogrn" label="ОГРН"></bs-input></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel panel-info">
       <div class="panel-heading">Сведения об истребуемой гарантии</div>
       <div class="panel-body">
         <div class="row">
@@ -46,25 +14,90 @@
             </div>
 
             <div class="row">
-              <div class="col-md-6"><div class="form-group"><label>Сроки БГ с</label><date-time-picker :name="'bg_start_date'" v-model="bg_start_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div></div>
-              <div class="col-md-6"><div class="form-group"><label>Сроки БГ по</label><date-time-picker :name="'bg_end_date'" v-model="bg_end_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div></div>
+              <div class="col-md-4"><div class="form-group"><label>Сроки БГ с</label><date-time-picker :name="'bg_start_date'" v-model="bg_start_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div></div>
+              <div class="col-md-4"><div class="form-group"><label>Сроки БГ по</label><date-time-picker :name="'bg_end_date'" v-model="bg_end_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div></div>
+              <div class="col-md-4"><bs-input :name="'date_range'" v-model="date_range" label="Срок БГ, дней" readonly></bs-input></div>
             </div>
 
             <div class="row">
               <div class="col-md-6"><label>Крайний срок выдачи</label><date-time-picker :name="'bg_deadline_date'" v-model="bg_deadline_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div>
-              <div class="col-md-6"><bs-input :name="'date_range'" v-model="date_range" label="Срок БГ, дней" readonly></bs-input></div>
+              <div class="col-md-6">
+                <bs3-radio-field
+                  :name="'tender_exec_law'"
+                  :cols="2"
+                  v-model="tender_exec_law"
+                  label="Вид гарантии"
+                  :options="[
+                    {value: '44-fz', text:'44-ФЗ'},
+                    {value: '185-fz', text:'185-ФЗ'},
+                    {value: '223-fz', text:'223-ФЗ'},
+                    {value: 'commercial', text:'Коммерческая'}
+                  ]"
+                ></bs3-radio-field>
+              </div>
             </div>
 
           </div>
 
           <div class="col-md-4">
-            <bs3-radio-field :name="'bg_type'" v-model="bg_type" label="Тип БГ" :options="[{value: 'contract_execution', text:'Исполнение контракта'}, {value:'application_ensure', text:'Обеспечение заявки'}]"></bs3-radio-field>
+            <bs3-radio-field v-if="is_tender_info_panel_visible" :name="'bg_type'" v-model="bg_type" label="Тип БГ" :options="[{value: 'contract_execution', text:'Исполнение контракта'}, {value:'application_ensure', text:'Обеспечение заявки'}]"></bs3-radio-field>
             <bs3-radio-field :name="'tender_contract_type'" v-model="tender_contract_type" label="Тип контракта" :options="[{value: 'supply', text:'поставка товара'},{value: 'service', text:'оказание услуг'},{value: 'works', text:'выполнение работ'}]"></bs3-radio-field>
             <checkbox :name="'tender_has_prepayment'" v-model="tender_has_prepayment" type="primary">Наличие аванса</checkbox>
           </div>
 
         </div>
 
+      </div>
+    </div>
+
+    <div class="panel panel-info" v-if="is_tender_info_panel_visible">
+      <div class="panel-heading">Сведения о тендере</div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-12"><bs-input :name="'tender_gos_number'" v-model="tender_gos_number" label="Госномер тендера или ссылка на закупку" required></bs-input></div>
+        </div>
+        <div class="row">
+          <div class="col-md-5"><div class="form-group"><bs-input :name="'tender_placement_type'" v-model="tender_placement_type" label="Способ определения поставщика"></bs-input></div></div>
+          <div class="col-md-3"><label>Дата публикации</label><date-time-picker :name="'tender_publish_date'" v-model="tender_publish_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div>
+          <div class="col-md-4"><bs-input :name="'tender_start_cost'" v-model="tender_start_cost" label="Начальная цена контракта" :mask="currency"></bs-input></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-info" v-else="is_tender_info_panel_visible">
+      <div class="panel-heading">Сведения о контракте</div>
+      <div class="panel-body">
+
+        <div class="row">
+          <div class="col-md-12"><bs-input :name="'bg_commercial_contract_subject'" v-model="bg_commercial_contract_subject" label="Предмет контракта"></bs-input></div>
+        </div>
+        <div class="row">
+          <div class="col-md-12"><bs-input :name="'bg_commercial_contract_place_of_work'" v-model="bg_commercial_contract_place_of_work" label="Место выполнения работ"></bs-input></div>
+        </div>
+        <div class="row">
+          <div class="col-md-4"><bs-input :name="'bg_commercial_contract_sum'" v-model="bg_commercial_contract_sum" label="Сумма контракта"></bs-input></div>
+          <div class="col-md-4"><label>Дата заключения договора</label><date-time-picker :name="'bg_commercial_contract_sign_date'" v-model="bg_commercial_contract_sign_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div>
+          <div class="col-md-4"><label>Дата завершения договора</label><date-time-picker :name="'bg_commercial_contract_end_date'" v-model="bg_commercial_contract_end_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="panel panel-info">
+      <div class="panel-heading" v-if="is_tender_info_panel_visible">Сведения об организаторе тендера</div>
+      <div class="panel-heading" v-else="is_tender_info_panel_visible">Сведения о заказчике</div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-12"><bs-input :name="'tender_responsible_full_name'" v-model="tender_responsible_full_name" label="Наименование — полное наименование организации"></bs-input></div>
+        </div>
+        <div class="row">
+          <div class="col-md-12"><bs-input :name="'tender_responsible_legal_address'" v-model="tender_responsible_legal_address" label="Адрес — юридический адрес организации"></bs-input></div>
+        </div>
+        <div class="row">
+          <div class="col-md-4"><bs-input :name="'tender_responsible_inn'" v-model="tender_responsible_inn" label="ИНН"></bs-input></div>
+          <div class="col-md-4"><bs-input :name="'tender_responsible_kpp'" v-model="tender_responsible_kpp" label="КПП"></bs-input></div>
+          <div class="col-md-4"><bs-input :name="'tender_responsible_ogrn'" v-model="tender_responsible_ogrn" label="ОГРН"></bs-input></div>
+        </div>
       </div>
     </div>
 
@@ -121,7 +154,15 @@
           bg_currency: regData.formdata.bg_currency,
           bg_start_date: moment(regData.formdata.bg_start_date, dateformat),
           bg_end_date: moment(regData.formdata.bg_end_date, dateformat),
-          bg_deadline_date: regData.formdata.bg_deadline_date
+          bg_deadline_date: regData.formdata.bg_deadline_date,
+
+          bg_commercial_contract_subject: regData.formdata.bg_commercial_contract_subject,
+          bg_commercial_contract_place_of_work: regData.formdata.bg_commercial_contract_place_of_work,
+          bg_commercial_contract_sum: regData.formdata.bg_commercial_contract_sum,
+          bg_commercial_contract_sign_date: moment(regData.formdata.bg_commercial_contract_sign_date, dateformat),
+          bg_commercial_contract_end_date: moment(regData.formdata.bg_commercial_contract_end_date, dateformat),
+
+          is_tender_info_panel_visible: true
         }
       } else {
         return {
@@ -148,7 +189,15 @@
           bg_currency: '',
           bg_start_date: '',
           bg_end_date: '',
-          bg_deadline_date: ''
+          bg_deadline_date: '',
+
+          bg_commercial_contract_subject: '',
+          bg_commercial_contract_place_of_work: '',
+          bg_commercial_contract_sum: '',
+          bg_commercial_contract_sign_date: '',
+          bg_commercial_contract_end_date: '',
+
+          is_tender_info_panel_visible: true
         }
       }
     },
@@ -193,7 +242,13 @@
           this.tender_contract_execution_ensure_cost = data.contract_execution_ensure_cost
           this.bg_currency = data.currency_code
         })
-      }, 1000)
+      }, 1000),
+      tender_exec_law: _.debounce(function () {
+        this.is_tender_info_panel_visible = this.get_if_tender_info_panel_visible()
+      }, 200)
+    },
+    mounted () {
+      this.is_tender_info_panel_visible = this.get_if_tender_info_panel_visible()
     },
     methods: {
       bg_currency (value) {
@@ -206,6 +261,11 @@
               : value.indexOf('.') + 3
           )
           .replace(/[^\d.]+/, '')
+      },
+      get_if_tender_info_panel_visible () {
+        return this.tender_exec_law === '44-fz' ||
+          this.tender_exec_law === '223-fz' ||
+          this.tender_exec_law === '185-fz'
       }
     }
   }

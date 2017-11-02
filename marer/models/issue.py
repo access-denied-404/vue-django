@@ -70,11 +70,13 @@ class Issue(models.Model):
     issuer_head_industry_work_experience = models.CharField(verbose_name='опыт работы руководителя в отрасли', max_length=512, blank=True, null=False, default='')
     issuer_prev_org_info = models.CharField(verbose_name='предыдущее место работы руководителя, отрасль, должность', max_length=512, blank=True, null=False, default='')
 
-    tender_gos_number = models.CharField(verbose_name='госномер тендера', max_length=32, blank=True, null=False, default='')
+    tender_gos_number = models.CharField(verbose_name='госномер или ссылка на тендер', max_length=32, blank=True, null=False, default='')
     tender_placement_type = models.CharField(verbose_name='способ определения поставщика в тендере', max_length=32, blank=True, null=False, default='')
     tender_exec_law = models.CharField(verbose_name='закон исполнения тендера', max_length=32, blank=True, null=True, choices=[
         (consts.TENDER_EXEC_LAW_44_FZ, '44-ФЗ'),
         (consts.TENDER_EXEC_LAW_223_FZ, '223-ФЗ'),
+        (consts.TENDER_EXEC_LAW_185_FZ, '185-ФЗ'),
+        (consts.TENDER_EXEC_LAW_COMMERCIAL, 'Коммерческий'),
     ])
     tender_publish_date = models.DateField(verbose_name='дата публикации тендера', blank=True, null=True)
     tender_start_cost = models.DecimalField(verbose_name='начальная цена тендера', max_digits=12, decimal_places=2, blank=True, null=True)
@@ -91,6 +93,12 @@ class Issue(models.Model):
     tender_responsible_inn = models.CharField(verbose_name='ИНН организатора тендера', max_length=32, blank=True, null=False, default='')
     tender_responsible_kpp = models.CharField(verbose_name='КПП организатора тендера', max_length=32, blank=True, null=False, default='')
     tender_responsible_ogrn = models.CharField(verbose_name='ОГРН организатора тендера', max_length=32, blank=True, null=False, default='')
+
+    bg_commercial_contract_subject = models.CharField(verbose_name='предмет договора', max_length=512, blank=True, null=False, default='')
+    bg_commercial_contract_place_of_work = models.CharField(verbose_name='место выполнения работ', max_length=512, blank=True, null=False, default='')
+    bg_commercial_contract_sum = models.DecimalField(verbose_name='сумма контракта', max_digits=12, decimal_places=2, blank=True, null=True)
+    bg_commercial_contract_sign_date = models.DateField(verbose_name='дата заключения договора', blank=True, null=True)
+    bg_commercial_contract_end_date = models.DateField(verbose_name='дата завершения договора', blank=True, null=True)
 
     bg_sum = models.DecimalField(verbose_name='сумма', max_digits=12, decimal_places=2, blank=True, null=True)
     bg_currency = models.CharField(verbose_name='валюта', max_length=32, blank=True, null=True, choices=[

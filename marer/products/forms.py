@@ -14,11 +14,13 @@ class BGFinProdRegForm(Form):
     issuer_inn = CharField(required=False)
     issuer_kpp = CharField(required=False)
 
-    tender_gos_number = CharField(required=True)
+    tender_gos_number = CharField(required=False)
     tender_placement_type = CharField(required=False)
     tender_exec_law = ChoiceField(required=False, choices=[
         (consts.TENDER_EXEC_LAW_44_FZ, '44-ФЗ'),
         (consts.TENDER_EXEC_LAW_223_FZ, '223-ФЗ'),
+        (consts.TENDER_EXEC_LAW_185_FZ, '185-ФЗ'),
+        (consts.TENDER_EXEC_LAW_COMMERCIAL, 'Коммерческий'),
     ])
     tender_publish_date = DateField(required=False)
     tender_start_cost = DecimalField(decimal_places=2, required=False)
@@ -28,6 +30,12 @@ class BGFinProdRegForm(Form):
     tender_responsible_inn = CharField(required=False)
     tender_responsible_kpp = CharField(required=False)
     tender_responsible_ogrn = CharField(required=False)
+
+    bg_commercial_contract_subject = CharField(required=False)
+    bg_commercial_contract_place_of_work = CharField(required=False)
+    bg_commercial_contract_sum = DecimalField(decimal_places=2, required=False)
+    bg_commercial_contract_sign_date = DateField(required=False)
+    bg_commercial_contract_end_date = DateField(required=False)
 
     bg_sum = DecimalField(decimal_places=2, required=False)
     bg_currency = ChoiceField(required=False, choices=[
