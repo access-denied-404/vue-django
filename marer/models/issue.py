@@ -151,6 +151,15 @@ class Issue(models.Model):
             return '—'
 
     @property
+    def sum_not_null(self):
+        if self.bg_sum is None:
+            return 0
+        elif self.bg_sum.is_nan():
+            return 0
+        else:
+            return self.bg_sum
+
+    @property
     def humanized_status(self):
         return self.get_status_display()
 

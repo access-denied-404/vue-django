@@ -3,6 +3,7 @@ import warnings
 
 from dateutil.relativedelta import relativedelta
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 from django.forms import formset_factory
 from django.forms.forms import Form
 from django.utils import timezone
@@ -500,18 +501,54 @@ class BankGuaranteeProduct(FinanceProduct):
 
         if self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_44_FZ:
             if self._issue.bg_type == consts.BG_TYPE_APPLICATION_ENSURE:
-                qs = qs.filter(bg_44_app_ensure_interest_rate__isnull=False)
+                qs = qs.filter(
+                    Q(Q(bg_44_app_ensure_min_sum__lte=self._issue.sum_not_null)
+                      | Q(bg_44_app_ensure_min_sum__isnull=True)),
+                    Q(Q(bg_44_app_ensure_max_sum__gt=self._issue.sum_not_null)
+                      | Q(bg_44_app_ensure_max_sum__isnull=True)),
+                    bg_44_app_ensure_interest_rate__isnull=False
+                )
             elif self._issue.bg_type == consts.BG_TYPE_CONTRACT_EXECUTION:
-                qs = qs.filter(bg_44_contract_exec_interest_rate__isnull=False)
+                qs = qs.filter(
+                    Q(Q(bg_44_contract_exec_min_sum__lte=self._issue.sum_not_null)
+                      | Q(bg_44_contract_exec_min_sum__isnull=True)),
+                    Q(Q(bg_44_contract_exec_max_sum__gt=self._issue.sum_not_null)
+                      | Q(bg_44_contract_exec_max_sum__isnull=True)),
+                    bg_44_contract_exec_interest_rate__isnull=False
+                )
         elif self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_223_FZ:
             if self._issue.bg_type == consts.BG_TYPE_APPLICATION_ENSURE:
-                qs = qs.filter(bg_223_app_ensure_interest_rate__isnull=False)
+                qs = qs.filter(
+                    Q(Q(bg_223_app_ensure_min_sum__lte=self._issue.sum_not_null)
+                      | Q(bg_223_app_ensure_min_sum__isnull=True)),
+                    Q(Q(bg_223_app_ensure_max_sum__gt=self._issue.sum_not_null)
+                      | Q(bg_223_app_ensure_max_sum__isnull=True)),
+                    bg_223_app_ensure_interest_rate__isnull=False
+                )
             elif self._issue.bg_type == consts.BG_TYPE_CONTRACT_EXECUTION:
-                qs = qs.filter(bg_223_contract_exec_interest_rate__isnull=False)
+                qs = qs.filter(
+                    Q(Q(bg_223_contract_exec_min_sum__lte=self._issue.sum_not_null)
+                      | Q(bg_223_contract_exec_min_sum__isnull=True)),
+                    Q(Q(bg_223_contract_exec_max_sum__gt=self._issue.sum_not_null)
+                      | Q(bg_223_contract_exec_max_sum__isnull=True)),
+                    bg_223_contract_exec_interest_rate__isnull=False
+                )
         elif self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_185_FZ:
-            qs = qs.filter(bg_185_interest_rate__isnull=False)
+            qs = qs.filter(
+                Q(Q(bg_185_min_sum__lte=self._issue.sum_not_null)
+                  | Q(bg_185_min_sum__isnull=True)),
+                Q(Q(bg_185_max_sum__gt=self._issue.sum_not_null)
+                  | Q(bg_185_max_sum__isnull=True)),
+                bg_185_interest_rate__isnull=False
+            )
         elif self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_COMMERCIAL:
-            qs = qs.filter(bg_ct_interest_rate__isnull=False)
+            qs = qs.filter(
+                Q(Q(bg_ct_min_sum__lte=self._issue.sum_not_null)
+                  | Q(bg_ct_min_sum__isnull=True)),
+                Q(Q(bg_ct_max_sum__gt=self._issue.sum_not_null)
+                  | Q(bg_ct_max_sum__isnull=True)),
+                bg_ct_interest_rate__isnull=False
+            )
 
         return qs
 
@@ -928,6 +965,10 @@ class CreditProduct(FinanceProduct):
     def get_finance_orgs_conditions_list(self):
         from marer.models.finance_org import FinanceOrgProductConditions
         return FinanceOrgProductConditions.objects.filter(
+            Q(Q(credit_work_capital_refill_min_sum__lte=self._issue.sum_not_null)
+              | Q(credit_work_capital_refill_min_sum__isnull=True)),
+            Q(Q(credit_work_capital_refill_max_sum__gt=self._issue.sum_not_null)
+              | Q(credit_work_capital_refill_max_sum__isnull=True)),
             finance_product=self.name,
             bg_review_term_days__gt=0,
             credit_work_capital_refill_issue_rate__isnull=False,
