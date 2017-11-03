@@ -38,6 +38,7 @@ class User(AbstractUser):
         blank=True,
         null=True
     )
+    comment = models.TextField(verbose_name='комментарий', blank=True, null=False, default='')
 
     @classmethod
     def normalize_username(cls, username):
