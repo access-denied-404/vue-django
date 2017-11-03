@@ -1,18 +1,17 @@
 from collections import OrderedDict
 from random import randint
 
-from django.contrib import messages
 from django.conf.urls import url
+from django.contrib import messages
 from django.contrib.admin import ModelAdmin, register, site
 from django.contrib.admin.models import LogEntry
 from django.contrib.admin.options import IS_POPUP_VAR
 from django.contrib.admin.utils import unquote
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.forms import UsernameField, UserChangeForm, ReadOnlyPasswordHashField
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import TextField, BLANK_CHOICE_DASH
 from django.core.exceptions import PermissionDenied
-from django import forms
+from django.db.models import TextField, BLANK_CHOICE_DASH
+from django.forms import Textarea
 from django.http import Http404, HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -22,14 +21,14 @@ from django.utils.timezone import localtime
 from django.utils.translation import ugettext_lazy as _
 from mptt.admin import MPTTModelAdmin
 
-from marer import models, consts
+from marer import models
+from marer.admin.forms import IFOPClarificationAddForm, MarerUserChangeForm, UserCreationForm
 from marer.admin.inline import IssueFinanceOrgProposeInlineAdmin, IssueDocumentInlineAdmin, \
     IFOPClarificationInlineAdmin, IFOPClarificationMessageInlineAdmin, \
     IFOPFormalizeDocumentInlineAdmin, IFOPFinalDocumentInlineAdmin, IssueBGProdAffiliateInlineAdmin, \
     IssueBGProdFounderLegalInlineAdmin, IssueBGProdFounderPhysicalInlineAdmin, \
     FinanceOrgProductProposeDocumentInlineAdmin, IssueProposeDocumentInlineAdmin
-from marer.models import IssueFinanceOrgProposeClarificationMessage, IssueFinanceOrgProposeClarificationMessageDocument, \
-    Document, Issue, IssueFinanceOrgPropose, User
+from marer.models import Issue, IssueFinanceOrgPropose, User
 from marer.models.finance_org import FinanceOrganization, FinanceOrgProductConditions
 
 site.site_title = 'Управление сайтом МАРЭР'
@@ -104,7 +103,7 @@ class IssueAdmin(ModelAdmin):
     )
     list_filter = ('product', 'status',)
     formfield_overrides = {
-        TextField: dict(widget=forms.Textarea(dict(rows=4)))
+        TextField: dict(widget=Textarea(dict(rows=4)))
     }
 
     def issuer_name(self, obj):
@@ -234,7 +233,7 @@ class IssueFinanceOrgProposeAdmin(ModelAdmin):
         'finance_org',
     ]
     formfield_overrides = {
-        TextField: dict(widget=forms.Textarea(dict(rows=4)))
+        TextField: dict(widget=Textarea(dict(rows=4)))
     }
 
     def issue_change_link(self, obj):
@@ -332,45 +331,6 @@ class FinanceOrganizationAdmin(ModelAdmin):
         return obj.products_conditions.exists()
     has_conditions.short_description = 'есть условия'
     has_conditions.boolean = True
-
-
-class IFOPClarificationAddForm(forms.ModelForm):
-    user = None
-    message = forms.CharField(label='Сообщение', required=True, widget=forms.Textarea(attrs=dict(rows=4)))
-    doc1 = forms.FileField(label='Документ', required=False)
-    doc2 = forms.FileField(label='Документ', required=False)
-    doc3 = forms.FileField(label='Документ', required=False)
-    doc4 = forms.FileField(label='Документ', required=False)
-    doc5 = forms.FileField(label='Документ', required=False)
-    doc6 = forms.FileField(label='Документ', required=False)
-    doc7 = forms.FileField(label='Документ', required=False)
-    doc8 = forms.FileField(label='Документ', required=False)
-
-    def save(self, commit=True):
-        if not self.instance.id:
-            self.instance.initiator = consts.IFOPC_INITIATOR_FINANCE_ORG
-            self.instance.save()
-
-        new_msg = IssueFinanceOrgProposeClarificationMessage()
-        new_msg.user = self.user
-        new_msg.message = self.cleaned_data['message']
-        new_msg.clarification = self.instance
-        new_msg.save()
-
-        for file_field_name in self.files:
-            field_file = self.files[file_field_name]
-
-            new_ifopcmd_doc = Document()
-            new_ifopcmd_doc.file = field_file
-            new_ifopcmd_doc.save()
-
-            new_ifopcmd = IssueFinanceOrgProposeClarificationMessageDocument()
-            new_ifopcmd.name = field_file.name
-            new_ifopcmd.clarification_message = new_msg
-            new_ifopcmd.document = new_ifopcmd_doc
-            new_ifopcmd.save()
-
-        return super().save(commit)
 
 
 @register(models.IssueFinanceOrgProposeClarification)
@@ -530,46 +490,6 @@ class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
         elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_clarifications'):
             qs = qs.filter(propose__finance_org__manager_id=request.user.id)
         return qs
-
-
-class MarerUserChangeForm(UserChangeForm):
-    password = ReadOnlyPasswordHashField(
-        label=_("Password"),
-        help_text=_(
-            'Пароли хранятся в защищённом виде, так что у нас нет способа '
-            'узнать пароль этого пользователя. Однако вы можете сменить '
-            'его/её пароль, используя <a href="../password/">эту форму</a>.'
-            '<br/>Или же вы можете сбросить пароль пользователя на '
-            'сгенерированный автоматически и выслать новые данные для входа '
-            'письмом, используя <a href="../password/reset/">эту форму</a>.'
-        ),
-    )
-
-
-class UserCreationForm(forms.ModelForm):
-
-    class Meta:
-        model = models.User
-        fields = (
-            'username',
-            'email',
-            'first_name',
-            'last_name',
-            'phone',
-        )
-        field_classes = {'email': UsernameField}
-
-    def __init__(self, *args, **kwargs):
-        if 'email' in self.base_fields:
-            self.base_fields['email'].help_text = 'Если не заполнено, используется имя пользователя.'
-        super(UserCreationForm, self).__init__(*args, **kwargs)
-
-    def clean(self):
-        if 'email' in self.cleaned_data and 'username' in self.cleaned_data:
-            if self.cleaned_data['email'] == '':
-                self.cleaned_data['email'] = self.cleaned_data['username']
-
-        return super().clean()
 
 
 @register(models.User)

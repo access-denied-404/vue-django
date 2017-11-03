@@ -1,11 +1,11 @@
-from django.contrib.admin import StackedInline, TabularInline
 from django import forms
+from django.contrib.admin import StackedInline, TabularInline
 from django.db.models import TextField
-from django.forms import Select, BaseInlineFormSet
+from django.forms import BaseInlineFormSet
 
 from marer import models
-from marer.forms.widgets import ReadOnlyFileInput
-from marer.models import Document
+from marer.admin.forms import FinanceOrgProductProposeDocumentInlineAdminForm, IFOPFinalDocumentInlineAdminForm, \
+    IFOPFormalizeDocumentInlineAdminForm, IssueDocumentInlineAdminForm, IssueProposeDocumentInlineAdminForm
 from marer.models.finance_org import FinanceOrgProductProposeDocument, FinanceOrgProductConditions
 from marer.models.issue import IssueFinanceOrgProposeFormalizeDocument, IssueFinanceOrgProposeFinalDocument, \
     IssueBGProdAffiliate, IssueBGProdFounderLegal, IssueBGProdFounderPhysical, IssueCreditPledge, \
@@ -66,28 +66,6 @@ class IssueFinanceOrgProposeInlineAdmin(TabularInline):
             model_name=FinanceOrgProductConditions._meta.model_name,
             parent_obj_id=parent_obj.id,
         )
-
-
-class IssueDocumentInlineAdminForm(forms.ModelForm):
-    file = forms.FileField(required=True, label='файл', widget=ReadOnlyFileInput)
-    code = forms.CharField(required=True, widget=Select(choices=[]))
-    issue = None
-
-    def __init__(self, *args, **kwargs):
-        instance = kwargs.get('instance', None)
-        if instance is not None:
-            initial = kwargs.get('initial', dict())
-            if instance.document:
-                initial['file'] = instance.document.file
-            kwargs['initial'] = initial
-        super().__init__(*args, **kwargs)
-
-    def save(self, commit=True):
-        new_doc = Document()
-        new_doc.file = self.cleaned_data['file']
-        new_doc.save()
-        self.instance.document = new_doc
-        return super().save(commit)
 
 
 class IssueDocumentInlineAdmin(TabularInline):
@@ -181,26 +159,6 @@ class IFOPClarificationInlineAdmin(TabularInline):
     humanized_id.short_description = 'номер дозапроса'
 
 
-class IFOPFormalizeDocumentInlineAdminForm(forms.ModelForm):
-    file = forms.FileField(required=True, label='файл', widget=ReadOnlyFileInput)
-
-    def __init__(self, *args, **kwargs):
-        instance = kwargs.get('instance', None)
-        if instance is not None:
-            initial = kwargs.get('initial', dict())
-            if instance.document:
-                initial['file'] = instance.document.file
-            kwargs['initial'] = initial
-        super().__init__(*args, **kwargs)
-
-    def save(self, commit=True):
-        new_doc = Document()
-        new_doc.file = self.cleaned_data['file']
-        new_doc.save()
-        self.instance.document = new_doc
-        return super().save(commit)
-
-
 class IFOPFormalizeDocumentInlineAdmin(TabularInline):
     extra = 1
     model = IssueFinanceOrgProposeFormalizeDocument
@@ -244,26 +202,6 @@ class IFOPFormalizeDocumentInlineAdmin(TabularInline):
             elif obj.finance_org.manager_id == request.user.id:
                 return True
         return super().has_delete_permission(request, obj)
-
-
-class IFOPFinalDocumentInlineAdminForm(forms.ModelForm):
-    file = forms.FileField(required=True, label='файл', widget=ReadOnlyFileInput)
-
-    def __init__(self, *args, **kwargs):
-        instance = kwargs.get('instance', None)
-        if instance is not None:
-            initial = kwargs.get('initial', dict())
-            if instance.document:
-                initial['file'] = instance.document.file
-            kwargs['initial'] = initial
-        super().__init__(*args, **kwargs)
-
-    def save(self, commit=True):
-        new_doc = Document()
-        new_doc.file = self.cleaned_data['file']
-        new_doc.save()
-        self.instance.document = new_doc
-        return super().save(commit)
 
 
 class IFOPFinalDocumentInlineAdmin(TabularInline):
@@ -314,27 +252,6 @@ class IFOPFinalDocumentInlineAdmin(TabularInline):
         return super().has_delete_permission(request, obj)
 
 
-class FinanceOrgProductProposeDocumentInlineAdminForm(forms.ModelForm):
-    file = forms.FileField(required=False, label='файл', widget=ReadOnlyFileInput)
-
-    def __init__(self, *args, **kwargs):
-        instance = kwargs.get('instance', None)
-        if instance is not None:
-            initial = kwargs.get('initial', dict())
-            if instance.sample:
-                initial['file'] = instance.sample.file
-            kwargs['initial'] = initial
-        super().__init__(*args, **kwargs)
-
-    def save(self, commit=True):
-        if 'file' in self.cleaned_data:
-            new_doc = Document()
-            new_doc.file = self.cleaned_data['file']
-            new_doc.save()
-            self.instance.sample = new_doc
-        return super().save(commit)
-
-
 class FinanceOrgProductProposeDocumentInlineAdmin(TabularInline):
     extra = 1
     model = FinanceOrgProductProposeDocument
@@ -351,30 +268,6 @@ class FinanceOrgProductProposeDocumentInlineAdmin(TabularInline):
     # todo check add permission
     # todo check change permission
     # todo check del permission
-
-
-class IssueProposeDocumentInlineAdminForm(forms.ModelForm):
-    file_sample = forms.FileField(disabled=True, required=False, label='образец', widget=ReadOnlyFileInput)
-    file = forms.FileField(required=False, label='файл')
-
-    def __init__(self, *args, **kwargs):
-        instance = kwargs.get('instance', None)
-        if instance is not None:
-            initial = kwargs.get('initial', dict())
-            if instance.sample:
-                initial['file_sample'] = instance.sample.file
-            if instance.document and instance.document.file and instance.document.file != 'False':
-                initial['file'] = instance.document.file
-            kwargs['initial'] = initial
-        super().__init__(*args, **kwargs)
-
-    def save(self, commit=True):
-        if 'file' in self.cleaned_data:
-            new_doc = Document()
-            new_doc.file = self.cleaned_data['file']
-            new_doc.save()
-            self.instance.document = new_doc
-        return super().save(commit)
 
 
 class IssueProposeDocumentInlineAdmin(TabularInline):
