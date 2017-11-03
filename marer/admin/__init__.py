@@ -22,6 +22,7 @@ from django.utils.translation import ugettext_lazy as _
 from mptt.admin import MPTTModelAdmin
 
 from marer import models
+from marer.admin.filters import ManagerListFilter
 from marer.admin.forms import IFOPClarificationAddForm, MarerUserChangeForm, UserCreationForm
 from marer.admin.inline import IssueFinanceOrgProposeInlineAdmin, IssueDocumentInlineAdmin, \
     IFOPClarificationInlineAdmin, IFOPClarificationMessageInlineAdmin, \
@@ -101,7 +102,11 @@ class IssueAdmin(ModelAdmin):
         'created_at',
         'updated_at',
     )
-    list_filter = ('product', 'status',)
+    list_filter = (
+        ('user__manager', ManagerListFilter),
+        'product',
+        'status',
+    )
     formfield_overrides = {
         TextField: dict(widget=Textarea(dict(rows=4)))
     }
@@ -323,6 +328,9 @@ class FinanceOrganizationAdmin(ModelAdmin):
         'manager',
         'has_conditions',
     )
+    list_filter = (
+        ('manager', ManagerListFilter),
+    )
     inlines = (
         FinanceOrgProductProposeDocumentInlineAdmin,
     )
@@ -501,6 +509,13 @@ class MarerUserAdmin(UserAdmin):
         'email',
         'phone',
         'manager',
+    )
+    list_filter = (
+        ('manager', ManagerListFilter),
+        'is_staff',
+        'is_superuser',
+        'is_active',
+        'groups'
     )
     reset_user_password_template = None
     search_fields = ('username', 'first_name', 'last_name', 'email', 'phone')
