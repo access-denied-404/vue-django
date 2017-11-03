@@ -322,10 +322,16 @@ class FinanceOrganizationAdmin(ModelAdmin):
     list_display = (
         'name',
         'manager',
+        'has_conditions',
     )
     inlines = (
         FinanceOrgProductProposeDocumentInlineAdmin,
     )
+
+    def has_conditions(self, obj):
+        return obj.products_conditions.exists()
+    has_conditions.short_description = 'есть условия'
+    has_conditions.boolean = True
 
 
 class IFOPClarificationAddForm(forms.ModelForm):
