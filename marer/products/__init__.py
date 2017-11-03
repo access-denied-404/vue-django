@@ -498,10 +498,11 @@ class BankGuaranteeProduct(FinanceProduct):
             finance_product=self.name,
             bg_review_term_days__gt=0,
         )
+        final_qs = FinanceOrgProductConditions.objects.none()
 
         if self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_44_FZ:
             if self._issue.bg_type == consts.BG_TYPE_APPLICATION_ENSURE:
-                qs = qs.filter(
+                final_qs = qs.filter(
                     Q(Q(bg_44_app_ensure_min_sum__lte=self._issue.sum_not_null)
                       | Q(bg_44_app_ensure_min_sum__isnull=True)),
                     Q(Q(bg_44_app_ensure_max_sum__gt=self._issue.sum_not_null)
@@ -509,7 +510,7 @@ class BankGuaranteeProduct(FinanceProduct):
                     bg_44_app_ensure_interest_rate__isnull=False
                 )
             elif self._issue.bg_type == consts.BG_TYPE_CONTRACT_EXECUTION:
-                qs = qs.filter(
+                final_qs = qs.filter(
                     Q(Q(bg_44_contract_exec_min_sum__lte=self._issue.sum_not_null)
                       | Q(bg_44_contract_exec_min_sum__isnull=True)),
                     Q(Q(bg_44_contract_exec_max_sum__gt=self._issue.sum_not_null)
@@ -518,7 +519,7 @@ class BankGuaranteeProduct(FinanceProduct):
                 )
         elif self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_223_FZ:
             if self._issue.bg_type == consts.BG_TYPE_APPLICATION_ENSURE:
-                qs = qs.filter(
+                final_qs = qs.filter(
                     Q(Q(bg_223_app_ensure_min_sum__lte=self._issue.sum_not_null)
                       | Q(bg_223_app_ensure_min_sum__isnull=True)),
                     Q(Q(bg_223_app_ensure_max_sum__gt=self._issue.sum_not_null)
@@ -526,7 +527,7 @@ class BankGuaranteeProduct(FinanceProduct):
                     bg_223_app_ensure_interest_rate__isnull=False
                 )
             elif self._issue.bg_type == consts.BG_TYPE_CONTRACT_EXECUTION:
-                qs = qs.filter(
+                final_qs = qs.filter(
                     Q(Q(bg_223_contract_exec_min_sum__lte=self._issue.sum_not_null)
                       | Q(bg_223_contract_exec_min_sum__isnull=True)),
                     Q(Q(bg_223_contract_exec_max_sum__gt=self._issue.sum_not_null)
@@ -534,7 +535,7 @@ class BankGuaranteeProduct(FinanceProduct):
                     bg_223_contract_exec_interest_rate__isnull=False
                 )
         elif self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_185_FZ:
-            qs = qs.filter(
+            final_qs = qs.filter(
                 Q(Q(bg_185_min_sum__lte=self._issue.sum_not_null)
                   | Q(bg_185_min_sum__isnull=True)),
                 Q(Q(bg_185_max_sum__gt=self._issue.sum_not_null)
@@ -542,7 +543,7 @@ class BankGuaranteeProduct(FinanceProduct):
                 bg_185_interest_rate__isnull=False
             )
         elif self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_COMMERCIAL:
-            qs = qs.filter(
+            final_qs = qs.filter(
                 Q(Q(bg_ct_min_sum__lte=self._issue.sum_not_null)
                   | Q(bg_ct_min_sum__isnull=True)),
                 Q(Q(bg_ct_max_sum__gt=self._issue.sum_not_null)
@@ -550,7 +551,7 @@ class BankGuaranteeProduct(FinanceProduct):
                 bg_ct_interest_rate__isnull=False
             )
 
-        return qs
+        return final_qs
 
     def load_finance_orgs_conditions_from_worksheet(self, ws):
         """
