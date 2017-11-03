@@ -495,10 +495,12 @@ class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
 @register(models.User)
 class MarerUserAdmin(UserAdmin):
     list_display = (
+        'username',
         'first_name_noempty',
         'last_name',
         'email',
         'phone',
+        'manager',
     )
     reset_user_password_template = None
     search_fields = ('username', 'first_name', 'last_name', 'email', 'phone')
