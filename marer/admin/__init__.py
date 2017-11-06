@@ -515,6 +515,7 @@ class MarerUserAdmin(UserAdmin):
         'is_staff',
         'is_superuser',
         'is_active',
+        'is_broker',
         'groups'
     )
     reset_user_password_template = None
@@ -633,7 +634,7 @@ class MarerUserAdmin(UserAdmin):
         full_fieldsets = (
             (None, {'fields': ('username', 'password', 'manager',)}),
             (_('Personal info'), {'fields': ('first_name', 'last_name', 'email', 'phone', 'comment')}),
-            (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
+            (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'is_broker',
                                            'groups', 'user_permissions')}),
             (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
         )

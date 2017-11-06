@@ -39,6 +39,11 @@ class User(AbstractUser):
         null=True
     )
     comment = models.TextField(verbose_name='комментарий', blank=True, null=False, default='')
+    is_broker = models.BooleanField(
+        'Статус брокера',
+        default=False,
+        help_text='Определяет, рассчитывается ли для пользователя комиссия и видит ли он свои выплаты, как брокер',
+    )
 
     @classmethod
     def normalize_username(cls, username):
