@@ -406,6 +406,10 @@ a:active {
   padding-top: 7px;
 }
 
+  .featureitemtext {
+  	width: 100%;
+  }
+
 .submit.lporder {
   display: inline-block;
   height: 60px;

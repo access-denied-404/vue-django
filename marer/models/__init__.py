@@ -28,6 +28,9 @@ class FinanceProductPage(mptt_models.MPTTModel):
         choices=[
             ('marer/product_custom_bg.html', 'Специальный шаблон для банковских гарантий'),
             ('marer/product_custom_credit.html', 'Специальный шаблон для кредитов'),
+            ('marer/product_custom_factoring.html', 'Специальный шаблон для факторинга'),
+            ('marer/product_custom_leasing.html', 'Специальный шаблон для лизинга'),
+            ('marer/product_custom_gos_prog.html', 'Специальный шаблон для госпрограмм'),
         ],
         max_length=512,
         blank=True,
