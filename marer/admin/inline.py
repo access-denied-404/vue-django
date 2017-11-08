@@ -81,7 +81,16 @@ class IssueDocumentInlineAdmin(TabularInline):
         if obj is not None:
             choices = [(ch.code, ch.name) for ch in obj.get_product().get_documents_list()]
             self.form.declared_fields['code'].widget.choices = choices
-        return super().get_formset(request, obj, **kwargs)
+
+        formset = super().get_formset(request, obj, **kwargs)
+        if request.user.has_perm('marer.change_issue'):
+            pass
+        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
+            for field_name in formset.form.base_fields:
+                field = formset.form.base_fields[field_name]
+                field.disabled = True
+
+        return formset
 
     def has_add_permission(self, request):
         if request.user.has_perm('marer.can_change_managed_users_issues'):
@@ -322,6 +331,17 @@ class IssueBGProdAffiliateInlineAdmin(TabularInline):
             return True
         return super().has_delete_permission(request, obj)
 
+    def get_formset(self, request, obj=None, **kwargs):
+        formset = super().get_formset(request, obj, **kwargs)
+        if request.user.has_perm('marer.change_issue'):
+            pass
+        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
+            for field_name in formset.form.base_fields:
+                field = formset.form.base_fields[field_name]
+                field.disabled = True
+
+        return formset
+
 
 class IssueBGProdFounderLegalInlineAdmin(TabularInline):
     extra = 0
@@ -347,6 +367,17 @@ class IssueBGProdFounderLegalInlineAdmin(TabularInline):
         if request.user.has_perm('marer.can_change_managed_users_issues'):
             return True
         return super().has_delete_permission(request, obj)
+
+    def get_formset(self, request, obj=None, **kwargs):
+        formset = super().get_formset(request, obj, **kwargs)
+        if request.user.has_perm('marer.change_issue'):
+            pass
+        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
+            for field_name in formset.form.base_fields:
+                field = formset.form.base_fields[field_name]
+                field.disabled = True
+
+        return formset
 
 
 class IssueBGProdFounderPhysicalInlineAdmin(TabularInline):
@@ -374,6 +405,17 @@ class IssueBGProdFounderPhysicalInlineAdmin(TabularInline):
             return True
         return super().has_delete_permission(request, obj)
 
+    def get_formset(self, request, obj=None, **kwargs):
+        formset = super().get_formset(request, obj, **kwargs)
+        if request.user.has_perm('marer.change_issue'):
+            pass
+        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
+            for field_name in formset.form.base_fields:
+                field = formset.form.base_fields[field_name]
+                field.disabled = True
+
+        return formset
+
 
 class IssueCreditPledgeInlineAdmin(TabularInline):
     extra = 0
@@ -399,3 +441,14 @@ class IssueCreditPledgeInlineAdmin(TabularInline):
         if request.user.has_perm('marer.can_change_managed_users_issues'):
             return True
         return super().has_delete_permission(request, obj)
+
+    def get_formset(self, request, obj=None, **kwargs):
+        formset = super().get_formset(request, obj, **kwargs)
+        if request.user.has_perm('marer.change_issue'):
+            pass
+        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
+            for field_name in formset.form.base_fields:
+                field = formset.form.base_fields[field_name]
+                field.disabled = True
+
+        return formset
