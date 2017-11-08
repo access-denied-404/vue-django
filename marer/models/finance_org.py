@@ -174,17 +174,24 @@ class FinanceOrgProductProposeDocument(models.Model):
         verbose_name_plural = 'документы для банка'
 
     finance_product = models.CharField(
-        max_length=32, choices=get_finance_products_as_choices(), null=False, blank=False)
+        verbose_name='Финансовый продукт',
+        max_length=32,
+        choices=get_finance_products_as_choices(),
+        null=False,
+        blank=False
+    )
     finance_org = models.ForeignKey(FinanceOrganization, null=False, blank=False, related_name='products_docs_samples')
-    name = models.CharField(max_length=512, blank=False, null=False, default='')
+    name = models.CharField(verbose_name='наименование', max_length=512, blank=False, null=False, default='')
     sample = models.ForeignKey(
         Document,
+        verbose_name='образец',
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
         related_name='fo_product_propose_samples_links'
     )
     code = models.CharField(
+        verbose_name='вид общего документа',
         choices=[
             (consts.FO_PRODUCT_PROPOSE_DOC_HEAD_PASSPORT, 'Паспорт генерального директора (руководителя)'),
             (consts.FO_PRODUCT_PROPOSE_DOC_HEAD_STATUTE, 'Устав организации'),

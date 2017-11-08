@@ -89,7 +89,7 @@ class UserCreationForm(forms.ModelForm):
 
 
 class FinanceOrgProductProposeDocumentInlineAdminForm(forms.ModelForm):
-    file = forms.FileField(required=False, label='файл', widget=ReadOnlyFileInput)
+    file = forms.FileField(required=False, label='Образец', widget=ReadOnlyFileInput)
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
