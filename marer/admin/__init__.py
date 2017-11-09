@@ -723,6 +723,21 @@ class LogEntryAdmin(ModelAdmin):
     def get_actions(self, request):
         return []
 
+    def is_addition(self, obj):
+        return obj.is_addition()
+    is_addition.short_description = 'Добавление'
+    is_addition.boolean = True
+
+    def is_change(self, obj):
+        return obj.is_change()
+    is_change.short_description = 'Изменение'
+    is_change.boolean = True
+
+    def is_deletion(self, obj):
+        return obj.is_deletion()
+    is_deletion.short_description = 'Удаление'
+    is_deletion.boolean = True
+
 
 @register(FinanceOrgProductConditions)
 class FinanceOrgProductConditionsForProposeAdmin(ModelAdmin):
