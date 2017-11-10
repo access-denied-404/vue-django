@@ -1,0 +1,23 @@
+{% extends 'mail/base.html' %}
+
+{#Пользователю, когда менеджер банка что-то меняет в предложении#}
+
+{% block content %}
+    <tr>
+        <td class="plr-20" bgcolor="#f9f9f9"
+            style="padding:30px 48px; font:18px/25px DINPro, Arial, Helvetica, sans-serif; color:#757c83;">
+
+            <p>Ваша заявка в банке {{ finance_org_name }} была обновлена менеджером банка</p>
+
+            <p>
+                Номер заявки:
+                <a href="http://marer.ru{% url 'cabinet_request' issue_id %}">
+                    <strong>{{ issue_number }}</strong>
+                </a>
+            </p>
+            {% if issuer_short_name %}<p>Заявитель: <strong>{{ issuer_short_name }}</strong></p>{% endif %}
+            <p>Банковский продукт: <strong>{{ finance_product }}</strong></p>
+            <p><a href="http://marer.ru{% url 'cabinet_request' issue_id %}">Ссылка на заявку</a></p>
+        </td>
+    </tr>
+{% endblock %}

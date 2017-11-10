@@ -14,6 +14,10 @@ from marer.models.issue import IssueFinanceOrgPropose, IssueFinanceOrgProposeCla
     IssueFinanceOrgProposeDocument
 from marer.products import get_finance_products
 from marer.stub import create_stub_issuer
+from marer.utils.notify import notify_user_manager_about_user_created_issue, \
+    notify_user_manager_about_user_updated_issue, notify_about_user_created_clarification, \
+    notify_about_user_adds_message, notify_fo_managers_about_issue_proposed_to_banks, \
+    notify_user_manager_about_issue_proposed_to_banks
 from marer.views.mixins import StaticPagesContextMixin
 
 
@@ -89,6 +93,7 @@ class IssueRegisteringView(IssueView):
         base_form = IssueRegisteringForm(request.POST)
         if base_form.is_valid():
             # todo go to next stage if we can
+            need_to_notify_for_issue_create = False
             if not self.get_issue():
                 issuer = create_stub_issuer(
                     user_owner=request.user,
@@ -102,11 +107,16 @@ class IssueRegisteringView(IssueView):
                     user=request.user,
                 )  # todo set values
                 new_issue.fill_from_issuer()
+                need_to_notify_for_issue_create = True
                 self._issue = new_issue
             issue = self.get_issue()
             issue.comment = base_form.cleaned_data['comment']
             issue.product = base_form.cleaned_data['product']
             issue.save()
+            if need_to_notify_for_issue_create:
+                notify_user_manager_about_user_created_issue(issue)
+            else:
+                notify_user_manager_about_user_updated_issue(issue)
 
             # todo issue process registering form
             product = issue.get_product()
@@ -152,6 +162,7 @@ class IssueCommonDocumentsRequestView(IssueView):
         if not_all_docs_loaded_flag:
             return self.get(request, *args, **kwargs)
         else:
+            notify_user_manager_about_user_updated_issue(self.get_issue())
             url = reverse('issue_survey', args=[self.get_issue().id])
             return HttpResponseRedirect(url)
 
@@ -171,6 +182,7 @@ class IssueSurveyView(IssueView):
 
         all_ok = self.get_issue().get_product().process_survey_post_data(request)
         if all_ok:
+            notify_user_manager_about_user_updated_issue(self.get_issue())
             url = reverse('issue_scoring', args=[self.get_issue().id])
             return HttpResponseRedirect(url)
         else:
@@ -219,6 +231,7 @@ class IssueScoringView(IssueView):
         if self.get_issue() and 'issue_scoring' not in self.get_issue().editable_dashboard_views():
             return self.get(request, *args, **kwargs)
 
+        new_proposes = []
         send_to_all = request.POST.get('send_to_all', None)
         foid = request.POST.get('foid', None)
         if send_to_all:
@@ -244,6 +257,7 @@ class IssueScoringView(IssueView):
                     new_propose.finance_org = foc.finance_org
                     new_propose.issue = self.get_issue()
                     new_propose.save()
+                    new_proposes.append(new_propose)
 
         elif foid:
             propose_qs = IssueFinanceOrgPropose.objects.filter(
@@ -253,7 +267,10 @@ class IssueScoringView(IssueView):
                 new_propose.finance_org_id = foid
                 new_propose.issue = self.get_issue()
                 new_propose.save()
+                new_proposes.append(new_propose)
 
+        notify_fo_managers_about_issue_proposed_to_banks(new_proposes)
+        notify_user_manager_about_issue_proposed_to_banks(new_proposes)
         url = reverse('issue_scoring', args=args, kwargs=kwargs)
         get_params = request.GET.urlencode()
         if get_params:
@@ -330,6 +347,7 @@ class IssueAdditionalDocumentsRequestView(IssueView):
                 return self.get(request, *args, **kwargs)
 
             clarification = self._get_clarification()
+            clarification_change = True
             if not clarification:
                 propose_id = request.GET.get('pid', 0)
                 propose = get_object_or_404(IssueFinanceOrgPropose, id=propose_id)
@@ -338,6 +356,7 @@ class IssueAdditionalDocumentsRequestView(IssueView):
                 clarification.initiator = consts.IFOPC_INITIATOR_ISSUER
                 clarification.propose = propose
                 clarification.save()
+                clarification_change = False
 
             new_msg = IssueFinanceOrgProposeClarificationMessage()
             new_msg.clarification = clarification
@@ -357,6 +376,11 @@ class IssueAdditionalDocumentsRequestView(IssueView):
                     new_clarif_doc_link.name = ffile.name
                     new_clarif_doc_link.document = new_doc
                     new_clarif_doc_link.save()
+
+            if clarification_change:
+                notify_about_user_adds_message(new_msg)
+            else:
+                notify_about_user_created_clarification(clarification)
 
             url = reverse(
                 'issue_additional_documents_request',

@@ -9,6 +9,7 @@ from django.views.generic import TemplateView
 from marer import consts
 from marer.forms import QuickRequestForm
 from marer.models import User, Issuer, Issue, FinanceProductPage, NewsPage, ShowcasePartner, StaticPage
+from marer.utils.notify import notify_user_manager_about_user_created_issue
 from marer.views.mixins import StaticPagesContextMixin, FinanceProductsRootsMixin
 
 
@@ -132,6 +133,7 @@ class QuickRequestFormContextMixin(TemplateView):
             new_issue.issuer_head_org_position_and_permissions = quick_request_form.cleaned_data['party_head_position']
 
             new_issue.save()
+            notify_user_manager_about_user_created_issue(new_issue)
             url = reverse('cabinet_request', args=[new_issue.id])
             return HttpResponseRedirect(url)
         else:

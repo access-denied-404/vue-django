@@ -31,6 +31,10 @@ from marer.admin.inline import IssueFinanceOrgProposeInlineAdmin, IssueDocumentI
     FinanceOrgProductProposeDocumentInlineAdmin, IssueProposeDocumentInlineAdmin
 from marer.models import Issue, IssueFinanceOrgPropose, User
 from marer.models.finance_org import FinanceOrganization, FinanceOrgProductConditions
+from marer.utils.notify import notify_user_about_manager_created_issue_for_user, \
+    notify_user_about_manager_updated_issue_for_user, notify_fo_managers_about_issue_proposed_to_banks, \
+    notify_user_about_issue_proposed_to_banks, notify_user_manager_about_issue_proposed_to_banks, \
+    notify_about_fo_manager_updated_propose
 
 site.site_title = 'Управление сайтом МАРЭР'
 site.site_header = 'Управление площадкой МАРЭР'
@@ -210,6 +214,13 @@ class IssueAdmin(ModelAdmin):
 
         return form
 
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if change:
+            notify_user_about_manager_updated_issue_for_user(obj)
+        else:
+            notify_user_about_manager_created_issue_for_user(obj)
+
 
 @register(models.IssueFinanceOrgPropose)
 class IssueFinanceOrgProposeAdmin(ModelAdmin):
@@ -319,6 +330,14 @@ class IssueFinanceOrgProposeAdmin(ModelAdmin):
         elif request.user.has_perm('marer.can_change_managed_finance_org_proposes'):
             qs = qs.filter(finance_org__manager_id=request.user.id)
         return qs
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if change:
+            notify_about_fo_manager_updated_propose(obj)
+        else:
+            notify_user_about_issue_proposed_to_banks([obj])
+            notify_user_manager_about_issue_proposed_to_banks([obj])
 
 
 @register(FinanceOrganization)
@@ -857,9 +876,13 @@ def propose_to_fo(admin_cls: ModelAdmin, request, queryset):
             unique_banks_ids.append(bid)
     proposed_fo_ids = issue.proposes.values_list('finance_org', flat=True)
     fo_to_propose = FinanceOrganization.objects.filter(id__in=unique_banks_ids).exclude(id__in=proposed_fo_ids)
+    proposes = []
     for fo in fo_to_propose:
         new_propose = IssueFinanceOrgPropose()
         new_propose.issue = issue
         new_propose.finance_org = fo
         new_propose.save()
+        proposes.append(new_propose)
+    notify_fo_managers_about_issue_proposed_to_banks(proposes)
+    notify_user_about_issue_proposed_to_banks(proposes)
     admin_cls.message_user(request, 'Заявки отправлены в %s банков' % fo_to_propose.count())

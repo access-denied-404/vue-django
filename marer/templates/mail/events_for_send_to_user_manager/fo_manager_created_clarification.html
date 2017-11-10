@@ -1,0 +1,24 @@
+{% extends 'mail/base.html' %}
+
+{% block content %}
+    <tr>
+        <td class="plr-20" bgcolor="#f9f9f9"
+            style="padding:30px 48px; font:18px/25px DINPro, Arial, Helvetica, sans-serif; color:#757c83;">
+            <p>Менеджер банка создал дозапрос по заявке</p>
+            <p>
+                Номер заявки:
+                <a href="http://marer.ru{% url 'admin:marer_issue_change' issue_id %}">
+                    <strong>{{ issue_number }}</strong>
+                </a>
+            </p>
+            {% if issuer_short_name %}<p>Заявитель: <strong>{{ issuer_short_name }}</strong></p>{% endif %}
+            <p>Банковский продукт: <strong>{{ finance_product }}</strong></p>
+            <p>Финансова организация: <strong>{{ finance_org_name }}</strong></p>
+            <p>
+                <a href="http://marer.ru{% url 'admin:marer_issuefinanceorgproposeclarification_change' clarification_id %}">
+                    Ссылка на дозапрос
+                </a>
+            </p>
+        </td>
+    </tr>
+{% endblock %}

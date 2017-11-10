@@ -7,6 +7,8 @@ from marer import consts, models
 from marer.forms.widgets import ReadOnlyFileInput
 from marer.models import IssueFinanceOrgProposeClarificationMessage, Document, \
     IssueFinanceOrgProposeClarificationMessageDocument
+from marer.utils.notify import notify_about_user_manager_adds_message, notify_about_user_manager_created_clarification, \
+    notify_about_fo_manager_created_clarification, notify_about_fo_manager_adds_message
 
 
 class IFOPClarificationAddForm(forms.ModelForm):
@@ -22,9 +24,11 @@ class IFOPClarificationAddForm(forms.ModelForm):
     doc8 = forms.FileField(label='Документ', required=False)
 
     def save(self, commit=True):
+        change = True
         if not self.instance.id:
             self.instance.initiator = consts.IFOPC_INITIATOR_FINANCE_ORG
             self.instance.save()
+            change = False
 
         new_msg = IssueFinanceOrgProposeClarificationMessage()
         new_msg.user = self.user
@@ -44,6 +48,17 @@ class IFOPClarificationAddForm(forms.ModelForm):
             new_ifopcmd.clarification_message = new_msg
             new_ifopcmd.document = new_ifopcmd_doc
             new_ifopcmd.save()
+
+        if change:
+            if self.user.id == self.instance.propose.issue.user.manager_id:
+                notify_about_user_manager_adds_message(new_msg)
+            else:
+                notify_about_fo_manager_adds_message(new_msg)
+        else:
+            if self.user.id == self.instance.propose.issue.user.manager_id:
+                notify_about_user_manager_created_clarification(self.instance)
+            else:
+                notify_about_fo_manager_created_clarification(self.instance)
 
         return super().save(commit)
 

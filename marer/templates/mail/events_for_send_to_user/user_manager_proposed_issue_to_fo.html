@@ -1,0 +1,30 @@
+{% extends 'mail/base.html' %}
+
+{#Пользователю, когда его менеджер создает предложение в банк#}
+
+{% block content %}
+    <tr>
+        <td class="plr-20" bgcolor="#f9f9f9"
+            style="padding:30px 48px; font:18px/25px DINPro, Arial, Helvetica, sans-serif; color:#757c83;">
+            <p>Ваш менеджер отправил заявку в финансовые организации.</p>
+            <p><strong>{{ issue_number }}</strong></p>
+            {% if issuer_short_name %}<p>Заявитель: <strong>{{ issuer_short_name }}</strong></p>{% endif %}
+            <p>Банковский продукт: <strong>{{ finance_product }}</strong></p>
+            <p>
+                <a href="http://marer.ru{% url 'cabinet_request' issue_id %}">
+                    Ссылка на заявку
+                </a>
+            </p>
+        </td>
+    </tr>
+    <tr><td><p></p></td></tr>
+    <tr>
+        <td class="plr-20" bgcolor="#f9f9f9"
+            style="padding:30px 48px; font:18px/25px DINPro, Arial, Helvetica, sans-serif; color:#757c83;">
+            <p><strong>Финансовые организации, в которые отправлена заявка:</strong></p>
+            {% for propose in proposes %}
+                <p>{{ propose.finance_org.name }}</p>
+            {% endfor %}
+        </td>
+    </tr>
+{% endblock %}
