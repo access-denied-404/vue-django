@@ -59,6 +59,14 @@
         dest=/etc/nginx/sites-enabled/marer.ru
         state=link
 
+    - name: Setup SSL Certificates
+      copy:
+        src={{ item }}
+        dest=/srv/{{ item }}
+      with_items:
+        - marer.ru.crt
+        - marer.ru.key
+
     - name: Reload nginx
       service: name=nginx state=reloaded
 
