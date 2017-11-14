@@ -1,5 +1,5 @@
 [all]
-new.marer.ru
+marer.ru
 
 [all:vars]
 ansible_user=root
