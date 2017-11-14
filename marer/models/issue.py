@@ -127,6 +127,36 @@ class Issue(models.Model):
     credit_purpose = models.CharField(verbose_name='цель кредита (подробно)', max_length=512, blank=True, null=False, default='')
     credit_repayment_sources = models.CharField(verbose_name='источники погашения', max_length=512, blank=True, null=False, default='')
 
+    factoring_product_is_regressive = models.NullBooleanField(verbose_name='регрессивный факторинг', blank=True, null=True)
+    factoring_product_is_not_regressive = models.NullBooleanField(verbose_name='факторинг без регресса', blank=True, null=True)
+    factoring_product_is_cred_risks_cover = models.NullBooleanField(verbose_name='покрытие кредитных рисков', blank=True, null=True)
+    factoring_product_is_suppliers_financing = models.NullBooleanField(verbose_name='финансирование поставщиков', blank=True, null=True)
+    factoring_product_is_orders_financing = models.NullBooleanField(verbose_name='финансирование заказов', blank=True, null=True)
+    factoring_product_is_closed = models.NullBooleanField(verbose_name='закрытый факторинг', blank=True, null=True)
+    factoring_product_is_export = models.NullBooleanField(verbose_name='экспортный факторинг', blank=True, null=True)
+    factoring_product_is_import = models.NullBooleanField(verbose_name='импортный факторинг', blank=True, null=True)
+    factoring_avg_actual_buyers_payment_term = models.IntegerField(verbose_name='Срок лизинга (мес.)', blank=True, null=True)
+    factoring_max_contract_deferred_payment_term = models.IntegerField(verbose_name='Срок лизинга (мес.)', blank=True, null=True)
+    factoring_sale_goods_or_services = models.CharField(verbose_name='виды реализуемых товаров/услуг', max_length=512, blank=True, null=False, default='')
+    factoring_manufactured_goods = models.CharField(verbose_name='виды производимых товаров', max_length=512, blank=True, null=False, default='')
+
+    leasing_term = models.IntegerField(verbose_name='Срок лизинга (мес.)', blank=True, null=True)
+    leasing_advance_payment_rate = models.FloatField(verbose_name='Авансовый платеж (%)', blank=True, null=True)
+    leasing_payment_schedule = models.CharField(verbose_name='График платежей', max_length=512, blank=True, null=False, default='')
+    leasing_asset_operation_territory = models.CharField(verbose_name='Территория эксплуатации предмета лизинга', max_length=512, blank=True, null=False, default='')
+    leasing_bank_account_number = models.CharField(verbose_name='Рассчетный счет заявителя', max_length=32, blank=True, null=False, default='')
+    leasing_corr_account_number = models.CharField(verbose_name='Корреспондентский счет', max_length=32, blank=True, null=False, default='')
+    leasing_bank_name = models.CharField(verbose_name='Банк', max_length=512, blank=True, null=False, default='')
+    leasing_bank_identification_code = models.CharField(verbose_name='БИК', max_length=32, blank=True, null=False, default='')
+    leasing_holder_on_balance_name = models.CharField(verbose_name='Балансодержатель', max_length=512, blank=True, null=False, default='')
+    leasing_holder_on_balance_ogrn = models.CharField(verbose_name='ОГРН балансодержателя', max_length=32, blank=True, null=False, default='')
+    leasing_holder_on_balance_inn = models.CharField(verbose_name='ИНН балансодержателя', max_length=32, blank=True, null=False, default='')
+    leasing_holder_on_balance_kpp = models.CharField(verbose_name='КПП балансодержателя', max_length=32, blank=True, null=False, default='')
+    leasing_insurer_name = models.CharField(verbose_name='Страхователь', max_length=512, blank=True, null=False, default='')
+    leasing_insurer_ogrn = models.CharField(verbose_name='ОГРН страхователя', max_length=32, blank=True, null=False, default='')
+    leasing_insurer_inn = models.CharField(verbose_name='ИНН страхователя', max_length=32, blank=True, null=False, default='')
+    leasing_insurer_kpp = models.CharField(verbose_name='КПП страхователя', max_length=32, blank=True, null=False, default='')
+
     @property
     def humanized_id(self):
         if self.id:

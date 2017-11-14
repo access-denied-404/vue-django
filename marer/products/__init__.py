@@ -11,7 +11,8 @@ from django.utils import timezone
 from marer import consts
 from marer.products.base import FinanceProduct, FinanceProductDocumentItem
 from marer.products.forms import BGFinProdRegForm, BGFinProdSurveyOrgCommonForm, BGFinProdSurveyOrgHeadForm, \
-    AffiliatesForm, FounderLegalForm, FounderPhysicalForm, CreditFinProdRegForm, CreditPledgeForm
+    AffiliatesForm, FounderLegalForm, FounderPhysicalForm, CreditFinProdRegForm, CreditPledgeForm, \
+    FactoringFinProdRegForm, LeasingFinProdRegForm
 from marer.utils.loadfoc import get_cell_value, get_cell_summ_range, get_cell_percentage, get_cell_bool, \
     get_cell_review_term_days, get_cell_ensure_condition, get_issue_and_interest_rates
 
@@ -1059,6 +1060,9 @@ class CreditProduct(FinanceProduct):
 
 
 class LeasingProduct(FinanceProduct):
+    _humanized_name = 'Лизинг'
+    _survey_template_name = 'marer/products/Leasing/form_survey.html'
+
     def process_survey_post_data(self, request):
         warnings.warn("Method is not implemented")
 
@@ -1074,22 +1078,129 @@ class LeasingProduct(FinanceProduct):
         warnings.warn("Method is not implemented")
         return dict()
 
-    def process_registering_form(self, request):
-        warnings.warn("Method is not implemented")
+    def get_documents_list(self, now_override=None):
+        docs = []
 
-    _humanized_name = 'Лизинг'
+        # here we getting a list with ends of year quarters
+        if now_override is None:
+            curr_localized_datetime = timezone.localtime(timezone.now(), timezone.get_current_timezone())
+        else:
+            curr_localized_datetime = timezone.localtime(now_override, timezone.get_current_timezone())
 
-    def get_documents_list(self):
-        warnings.warn("Method is not implemented")
-        return []
+        curr_date = curr_localized_datetime.date()
+
+        prev_month_start_date = (curr_date - relativedelta(months=1)).replace(day=1)
+        yr_quartals_start_months = [1, 4, 7, 10]
+        curr_quartal_start_date = prev_month_start_date
+        while curr_quartal_start_date.month not in yr_quartals_start_months:
+            curr_quartal_start_date -= relativedelta(months=1)
+        yr_quarters_cnt = 4  # first quarter will catch as finished quarter on start
+        quarters_start_date = curr_quartal_start_date - relativedelta(months=yr_quarters_cnt*3)
+        quarters_curr_date = quarters_start_date
+
+        while quarters_curr_date <= prev_month_start_date:
+
+            fpdi_code, fpdi_name = _build_accounting_report_common_doc_code_and_name_by_next_quarter_start_date(
+                quarters_curr_date)
+
+            docs.append(FinanceProductDocumentItem(code=fpdi_code, name=fpdi_name, description='Формы 1 и 2'))
+            quarters_curr_date += relativedelta(months=3)
+
+        docs.extend([
+            FinanceProductDocumentItem(
+                code='loans_description_yr{}_m{}'.format(curr_date.year, curr_date.month),
+                name='Расшифровка кредитов и займов',
+                description='По состоянию на текущую дату',
+            ),
+        ])
+        return docs
 
     def get_registering_form_class(self):
-        warnings.warn("Method is not implemented")
-        return Form
+        return LeasingFinProdRegForm
 
     def get_finance_orgs_conditions_list_fields(self):
         return [
             ('leasing_interest_rate', 'Процентная ставка'),
+            ('humanized_bg_insurance', 'Обеспечение'),
+            ('humanized_bg_review_tern_days', 'Срок рассмотрения'),
+            ('humanized_bg_bank_account_opening_required', 'Открытие р/с'),
+            ('humanized_bg_personal_presence_required', 'Личное присутствие'),
+        ]
+
+    def get_finance_orgs_conditions_list(self):
+        from marer.models.finance_org import FinanceOrgProductConditions
+        return FinanceOrgProductConditions.objects.filter(
+            finance_product=self.name,
+            bg_review_term_days__gt=0,
+            leasing_interest_rate__gt=0,
+        )
+
+    def load_finance_orgs_conditions_from_worksheet(self, ws):
+        warnings.warn("Method is not implemented")
+
+
+class FactoringProduct(FinanceProduct):
+    _humanized_name = 'Факторинг'
+    _survey_template_name = 'marer/products/Factoring/form_survey.html'
+
+    def process_survey_post_data(self, request):
+        warnings.warn("Method is not implemented")
+
+    def get_admin_issue_fieldset(self):
+        warnings.warn("Method is not implemented")
+        return []
+
+    def get_admin_issue_inlnes(self):
+        warnings.warn("Method is not implemented")
+        return []
+
+    def get_survey_context_part(self):
+        warnings.warn("Method is not implemented")
+        return dict()
+
+    def get_documents_list(self, now_override=None):
+        docs = []
+
+        # here we getting a list with ends of year quarters
+        if now_override is None:
+            curr_localized_datetime = timezone.localtime(timezone.now(), timezone.get_current_timezone())
+        else:
+            curr_localized_datetime = timezone.localtime(now_override, timezone.get_current_timezone())
+
+        curr_date = curr_localized_datetime.date()
+
+        prev_month_start_date = (curr_date - relativedelta(months=1)).replace(day=1)
+        yr_quartals_start_months = [1, 4, 7, 10]
+        curr_quartal_start_date = prev_month_start_date
+        while curr_quartal_start_date.month not in yr_quartals_start_months:
+            curr_quartal_start_date -= relativedelta(months=1)
+        yr_quarters_cnt = 4  # first quarter will catch as finished quarter on start
+        quarters_start_date = curr_quartal_start_date - relativedelta(months=yr_quarters_cnt*3)
+        quarters_curr_date = quarters_start_date
+
+        while quarters_curr_date <= prev_month_start_date:
+
+            fpdi_code, fpdi_name = _build_accounting_report_common_doc_code_and_name_by_next_quarter_start_date(
+                quarters_curr_date)
+
+            docs.append(FinanceProductDocumentItem(code=fpdi_code, name=fpdi_name, description='Формы 1 и 2'))
+            quarters_curr_date += relativedelta(months=3)
+
+        docs.extend([
+            FinanceProductDocumentItem(
+                code='loans_description_yr{}_m{}'.format(curr_date.year, curr_date.month),
+                name='Расшифровка кредитов и займов',
+                description='По состоянию на текущую дату',
+            ),
+        ])
+        return docs
+
+    def get_registering_form_class(self):
+        return FactoringFinProdRegForm
+
+    def get_finance_orgs_conditions_list_fields(self):
+        return [
+            # todo set right fields list
             ('humanized_bg_insurance', 'Обеспечение'),
             ('humanized_bg_review_tern_days', 'Срок рассмотрения'),
             ('humanized_bg_bank_account_opening_required', 'Открытие р/с'),

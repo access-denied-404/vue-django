@@ -191,3 +191,37 @@ class CreditPledgeForm(Form):
 
     class Media(object):
         js = formset_media_js
+
+
+class LeasingFinProdRegForm(Form):
+    leasing_term = IntegerField(required=False)
+    leasing_advance_payment_rate = DecimalField(decimal_places=2, required=False)
+    leasing_payment_schedule = CharField(required=False)
+    leasing_asset_operation_territory = CharField(required=False)
+    leasing_bank_account_number = CharField(required=False)
+    leasing_corr_account_number = CharField(required=False)
+    leasing_bank_name = CharField(required=False)
+    leasing_bank_identification_code = CharField(required=False)
+    leasing_holder_on_balance_name = CharField(required=False)
+    leasing_holder_on_balance_ogrn = CharField(required=False)
+    leasing_holder_on_balance_inn = CharField(required=False)
+    leasing_holder_on_balance_kpp = CharField(required=False)
+    leasing_insurer_name = CharField(required=False)
+    leasing_insurer_ogrn = CharField(required=False)
+    leasing_insurer_inn = CharField(required=False)
+    leasing_insurer_kpp = CharField(required=False)
+
+
+class FactoringFinProdRegForm(Form):
+    factoring_product_is_regressive = BooleanField(required=False)
+    factoring_product_is_not_regressive = BooleanField(required=False)
+    factoring_product_is_cred_risks_cover = BooleanField(required=False)
+    factoring_product_is_suppliers_financing = BooleanField(required=False)
+    factoring_product_is_orders_financing = BooleanField(required=False)
+    factoring_product_is_closed = BooleanField(required=False)
+    factoring_product_is_export = BooleanField(required=False)
+    factoring_product_is_import = BooleanField(required=False)
+    factoring_avg_actual_buyers_payment_term = IntegerField(required=False)
+    factoring_max_contract_deferred_payment_term = IntegerField(required=False)
+    factoring_sale_goods_or_services = CharField(required=False)
+    factoring_manufactured_goods = CharField(required=False)
