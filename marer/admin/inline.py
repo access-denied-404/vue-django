@@ -79,7 +79,7 @@ class IssueDocumentInlineAdmin(TabularInline):
 
     def get_formset(self, request, obj=None, **kwargs):
         if obj is not None:
-            choices = [(ch.code, ch.name) for ch in obj.get_product().get_documents_list()]
+            choices = [(None, '---------')] + [(ch.code, ch.name) for ch in obj.get_product().get_documents_list()]
             self.form.declared_fields['code'].widget.choices = choices
 
         formset = super().get_formset(request, obj, **kwargs)

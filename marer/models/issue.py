@@ -340,8 +340,8 @@ class IssueDocument(models.Model):
     )
     code = models.CharField(
         max_length=512,
-        null=False,
-        blank=False,
+        null=True,
+        blank=True,
     )
 
 

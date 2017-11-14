@@ -166,7 +166,7 @@ class IFOPFormalizeDocumentInlineAdminForm(forms.ModelForm):
 
 class IssueDocumentInlineAdminForm(forms.ModelForm):
     file = forms.FileField(required=True, label='файл', widget=ReadOnlyFileInput)
-    code = forms.CharField(required=True, widget=Select(choices=[]))
+    code = forms.CharField(required=False, widget=Select(choices=[]))
     issue = None
 
     def __init__(self, *args, **kwargs):
