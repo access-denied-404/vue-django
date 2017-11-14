@@ -98,9 +98,8 @@ def notify_fo_managers_about_issue_proposed_to_banks(proposes: list):
     for propose in proposes:
         mgr_id = propose.finance_org.manager_id
         if not mgr_id:
-            warnings.warn('No manager for FO #{org_id} ({org_name}) got notify of new issue FO propose'.format(
-                org_id=propose.finance_org.id,
-                org_name=propose.finance_org.name
+            warnings.warn('No manager for FO #{org_id} got notify of new issue FO propose'.format(
+                org_id=propose.finance_org.id
             ))
             continue
         mgr_proposes = managers_fo_proposes.get(mgr_id, [])
@@ -225,9 +224,8 @@ def notify_about_user_created_clarification(clarification: IssueFinanceOrgPropos
     # )
 
     if not clarification.propose.finance_org.manager_id:
-        warnings.warn('No manager for FO #{org_id} ({org_name}) got notify of clarification for propose #{propose_id}'.format(
+        warnings.warn('No manager for FO #{org_id} got notify of clarification for propose #{propose_id}'.format(
             org_id=clarification.propose.finance_org.id,
-            org_name=clarification.propose.finance_org.name,
             propose_id=clarification.propose_id,
         ))
     else:
@@ -265,9 +263,8 @@ def notify_about_user_manager_created_clarification(clarification: IssueFinanceO
     # )
 
     if not clarification.propose.finance_org.manager_id:
-        warnings.warn('No manager for FO #{org_id} ({org_name}) got notify of clarification for propose #{propose_id}'.format(
+        warnings.warn('No manager for FO #{org_id} got notify of clarification for propose #{propose_id}'.format(
             org_id=clarification.propose.finance_org.id,
-            org_name=clarification.propose.finance_org.name,
             propose_id=clarification.propose_id,
         ))
     else:
@@ -341,9 +338,8 @@ def notify_about_user_adds_message(msg: IssueFinanceOrgProposeClarificationMessa
     # )
 
     if not msg.clarification.propose.finance_org.manager_id:
-        warnings.warn('No manager for FO #{org_id} ({org_name}) got notify of clarification for propose #{propose_id}'.format(
+        warnings.warn('No manager for FO #{org_id} got notify of clarification for propose #{propose_id}'.format(
             org_id=msg.clarification.propose.finance_org.id,
-            org_name=msg.clarification.propose.finance_org.name,
             propose_id=msg.clarification.propose_id,
         ))
     else:
@@ -381,9 +377,8 @@ def notify_about_user_manager_adds_message(msg: IssueFinanceOrgProposeClarificat
     # )
 
     if not msg.clarification.propose.finance_org.manager_id:
-        warnings.warn('No manager for FO #{org_id} ({org_name}) got notify of clarification for propose #{propose_id}'.format(
+        warnings.warn('No manager for FO #{org_id} got notify of clarification for propose #{propose_id}'.format(
             org_id=msg.clarification.propose.finance_org.id,
-            org_name=msg.clarification.propose.finance_org.name,
             propose_id=msg.clarification.propose_id,
         ))
     else:
