@@ -186,8 +186,9 @@ class IssueAdmin(ModelAdmin):
         elif request.user.has_perm('marer.can_change_managed_users_issues'):
             qs = qs.filter(user__manager_id=request.user.id)
         elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
-            qs = qs.filter(proposes__finance_org__manager=request.user)
-            pass
+            ifop_issue_ids = IssueFinanceOrgPropose.objects.filter(
+                finance_org__manager=request.user).values_list('issue_id', flat=True)
+            qs = qs.filter(id__in=ifop_issue_ids)
         return qs
 
     def get_inline_instances(self, request, obj=None):
