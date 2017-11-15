@@ -1230,11 +1230,39 @@ class LeasingProduct(FinanceProduct):
 
     def get_admin_issue_fieldset(self):
         warnings.warn("Method is not implemented")
-        return []
+        return [
+            ('Сведения об испрашиваемом лизинговом продукте', dict(fields=(
+                'leasing_term',
+                'leasing_advance_payment_rate',
+                'leasing_payment_schedule',
+                'leasing_asset_operation_territory',
+                ('leasing_bank_account_number', 'leasing_corr_account_number'),
+                ('leasing_bank_name', 'leasing_bank_identification_code',),
+                ('leasing_holder_on_balance_name', 'leasing_holder_on_balance_ogrn', 'leasing_holder_on_balance_inn', 'leasing_holder_on_balance_kpp'),
+                ('leasing_insurer_name', 'leasing_insurer_ogrn', 'leasing_insurer_inn', 'leasing_insurer_kpp'),
+            ))),
+
+            ('Сведения о компании-заявителе', dict(classes=('collapse',), fields=(
+                'issuer_full_name',
+                'issuer_short_name',
+                'issuer_foreign_name',
+                'issuer_ogrn',
+                'issuer_inn',
+                'issuer_kpp',
+                'issuer_legal_address',
+                'issuer_fact_address',
+            ))),
+        ]
 
     def get_admin_issue_inlnes(self):
-        warnings.warn("Method is not implemented")
-        return []
+        from marer.admin.inline import IssueLeasingProdAssetInlineAdmin
+        from marer.admin.inline import IssueLeasingProdSupplierInlineAdmin
+        from marer.admin.inline import IssueLeasingProdPayRuleInlineAdmin
+        return [
+            IssueLeasingProdAssetInlineAdmin,
+            IssueLeasingProdSupplierInlineAdmin,
+            IssueLeasingProdPayRuleInlineAdmin
+        ]
 
     def get_survey_context_part(self):
 
