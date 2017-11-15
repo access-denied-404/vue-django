@@ -12,7 +12,7 @@ from marer import consts
 from marer.products.base import FinanceProduct, FinanceProductDocumentItem
 from marer.products.forms import BGFinProdRegForm, BGFinProdSurveyOrgCommonForm, BGFinProdSurveyOrgHeadForm, \
     AffiliatesForm, FounderLegalForm, FounderPhysicalForm, CreditFinProdRegForm, CreditPledgeForm, \
-    FactoringFinProdRegForm, LeasingFinProdRegForm
+    FactoringFinProdRegForm, LeasingFinProdRegForm, LeasingAssetForm, LeasingSupplierForm, LeasingPayRuleForm
 from marer.utils.loadfoc import get_cell_value, get_cell_summ_range, get_cell_percentage, get_cell_bool, \
     get_cell_review_term_days, get_cell_ensure_condition, get_issue_and_interest_rates
 
@@ -1064,7 +1064,89 @@ class LeasingProduct(FinanceProduct):
     _survey_template_name = 'marer/products/Leasing/form_survey.html'
 
     def process_survey_post_data(self, request):
-        warnings.warn("Method is not implemented")
+        processed_sucessfully_flag = True
+
+        # processing assets
+        from marer.models.issue import IssueLeasingProdAsset
+        assets_formset = formset_factory(LeasingAssetForm, extra=0)
+        assest_formset = assets_formset(request.POST, prefix='assets')
+        if assest_formset.is_valid():
+            for fsdata in assest_formset.cleaned_data:
+                fsdata_id = fsdata.get('id', None)
+                fsdata_name = str(fsdata.get('supplier_name', '')).strip()
+                if fsdata_id and fsdata.get('DELETE', False):
+                    try:
+                        del_obj = IssueLeasingProdAsset.objects.get(id=fsdata['id'], issue=self._issue)
+                        del_obj.delete()
+                    except ObjectDoesNotExist:
+                        pass  # nothing to do
+
+                elif not fsdata_id and fsdata_name != '':
+                    new_obj = IssueLeasingProdAsset()
+                    new_obj.supplier_name = fsdata_name
+                    new_obj.asset_name = fsdata.get('asset_name', '')
+                    new_obj.asset_spec = fsdata.get('asset_spec', '')
+                    new_obj.asset_count = fsdata.get('asset_count', '')
+                    new_obj.cost_with_vat = fsdata.get('cost_with_vat', '')
+                    new_obj.supply_term = fsdata.get('supply_term', '')
+                    new_obj.issue = self._issue
+                    new_obj.save()
+        else:
+            processed_sucessfully_flag = False
+
+        # processing affiliates
+        from marer.models.issue import IssueLeasingProdSupplier
+        suppliers_formset = formset_factory(LeasingSupplierForm, extra=0)
+        suppliers_formset = suppliers_formset(request.POST, prefix='suppliers')
+        if suppliers_formset.is_valid():
+            for fsdata in suppliers_formset.cleaned_data:
+                fsdata_id = fsdata.get('id', None)
+                fsdata_name = str(fsdata.get('supplier_name', '')).strip()
+                if fsdata_id and fsdata.get('DELETE', False):
+                    try:
+                        del_obj = IssueLeasingProdSupplier.objects.get(id=fsdata['id'], issue=self._issue)
+                        del_obj.delete()
+                    except ObjectDoesNotExist:
+                        pass  # nothing to do
+
+                elif not fsdata_id and fsdata_name != '':
+                    new_obj = IssueLeasingProdSupplier()
+                    new_obj.supplier_name = fsdata_name
+                    new_obj.supplier_head_fio = fsdata.get('supplier_head_fio', '')
+                    new_obj.supplier_contact_fio = fsdata.get('supplier_contact_fio', '')
+                    new_obj.supplier_contacts = fsdata.get('supplier_contacts', '')
+                    new_obj.issue = self._issue
+                    new_obj.save()
+        else:
+            processed_sucessfully_flag = False
+
+        # processing affiliates
+        from marer.models.issue import IssueLeasingProdPayRule
+        pay_rules_formset = formset_factory(LeasingPayRuleForm, extra=0)
+        pay_rules_formset = pay_rules_formset(request.POST, prefix='pay_rules')
+        if pay_rules_formset.is_valid():
+            for fsdata in pay_rules_formset.cleaned_data:
+                fsdata_id = fsdata.get('id', None)
+                fsdata_name = str(fsdata.get('asset_name', '')).strip()
+                if fsdata_id and fsdata.get('DELETE', False):
+                    try:
+                        del_obj = IssueLeasingProdPayRule.objects.get(id=fsdata['id'], issue=self._issue)
+                        del_obj.delete()
+                    except ObjectDoesNotExist:
+                        pass  # nothing to do
+
+                elif not fsdata_id and fsdata_name != '':
+                    new_obj = IssueLeasingProdPayRule()
+                    new_obj.asset_name = fsdata_name
+                    new_obj.payment_name = fsdata.get('payment_name', '')
+                    new_obj.payment_size = fsdata.get('payment_size', '')
+                    new_obj.payment_rule = fsdata.get('payment_rule', '')
+                    new_obj.issue = self._issue
+                    new_obj.save()
+        else:
+            processed_sucessfully_flag = False
+
+        return processed_sucessfully_flag
 
     def get_admin_issue_fieldset(self):
         warnings.warn("Method is not implemented")
@@ -1075,8 +1157,27 @@ class LeasingProduct(FinanceProduct):
         return []
 
     def get_survey_context_part(self):
-        warnings.warn("Method is not implemented")
-        return dict()
+
+        assets_formset = formset_factory(LeasingAssetForm, extra=0)
+        from marer.models.issue import IssueLeasingProdAsset
+        assets = IssueLeasingProdAsset.objects.filter(issue=self._issue)
+        assets_formset = assets_formset(initial=[asset.__dict__ for asset in assets], prefix='assets')
+
+        suppliers_formset = formset_factory(LeasingSupplierForm, extra=0)
+        from marer.models.issue import IssueLeasingProdSupplier
+        suppliers = IssueLeasingProdSupplier.objects.filter(issue=self._issue)
+        suppliers_formset = suppliers_formset(initial=[supplier.__dict__ for supplier in suppliers], prefix='suppliers')
+
+        pay_rules_formset = formset_factory(LeasingPayRuleForm, extra=0)
+        from marer.models.issue import IssueLeasingProdPayRule
+        pay_rules = IssueLeasingProdPayRule.objects.filter(issue=self._issue)
+        pay_rules_formset = pay_rules_formset(initial=[pay_rule.__dict__ for pay_rule in pay_rules], prefix='pay_rules')
+
+        return dict(
+            assets_formset=assets_formset,
+            suppliers_formset=suppliers_formset,
+            pay_rules_formset=pay_rules_formset,
+        )
 
     def get_documents_list(self, now_override=None):
         docs = []

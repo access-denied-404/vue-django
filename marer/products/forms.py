@@ -212,6 +212,44 @@ class LeasingFinProdRegForm(Form):
     leasing_insurer_kpp = CharField(required=False)
 
 
+class LeasingAssetForm(Form):
+    id = IntegerField(required=False, widget=HiddenInput())
+    supplier_name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    asset_name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    asset_spec = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    asset_count = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    cost_with_vat = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    supply_term = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden'}))
+
+    class Media(object):
+        js = formset_media_js
+
+
+class LeasingSupplierForm(Form):
+    id = IntegerField(required=False, widget=HiddenInput())
+    supplier_name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    supplier_head_fio = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    supplier_contact_fio = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    supplier_contacts = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden'}))
+
+    class Media(object):
+        js = formset_media_js
+
+
+class LeasingPayRuleForm(Form):
+    id = IntegerField(required=False, widget=HiddenInput())
+    asset_name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    payment_name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    payment_size = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    payment_rule = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden'}))
+
+    class Media(object):
+        js = formset_media_js
+
+
 class FactoringFinProdRegForm(Form):
     factoring_product_is_regressive = BooleanField(required=False)
     factoring_product_is_not_regressive = BooleanField(required=False)

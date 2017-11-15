@@ -544,6 +544,44 @@ class IssueBGProdAffiliate(models.Model):
     aff_type = models.CharField(verbose_name='отношение к организации', max_length=512, blank=False, null=False, default='')
 
 
+class IssueLeasingProdAsset(models.Model):
+    class Meta:
+        verbose_name = 'лизинговое имущество'
+        verbose_name_plural = 'лизинговое имущество'
+
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False, related_name='leasing_assets')
+    supplier_name = models.CharField(verbose_name='наименование поставщика/продавца', max_length=512, blank=False, null=False, default='')
+    asset_name = models.CharField(verbose_name='наименование, тип, модель', max_length=512, blank=False, null=False, default='')
+    asset_spec = models.CharField(verbose_name='спецификация', max_length=512, blank=False, null=False, default='')
+    asset_count = models.CharField(verbose_name='количество', max_length=512, blank=False, null=False, default='')
+    cost_with_vat = models.CharField(verbose_name='стоимость с НДС', max_length=512, blank=False, null=False, default='')
+    supply_term = models.CharField(verbose_name='срок поставки', max_length=512, blank=False, null=False, default='')
+
+
+class IssueLeasingProdSupplier(models.Model):
+    class Meta:
+        verbose_name = 'поставщик/продавец предмета лизинга'
+        verbose_name_plural = 'поставщики/продавцы предмета лизинга'
+
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False, related_name='leasing_suppliers')
+    supplier_name = models.CharField(verbose_name='наименование поставщика/продавца', max_length=512, blank=False, null=False, default='')
+    supplier_head_fio = models.CharField(verbose_name='ФИО руководителя', max_length=512, blank=False, null=False, default='')
+    supplier_contact_fio = models.CharField(verbose_name='ФИО контактного лица поставщика/продавца', max_length=512, blank=False, null=False, default='')
+    supplier_contacts = models.CharField(verbose_name='контакты', max_length=512, blank=False, null=False, default='')
+
+
+class IssueLeasingProdPayRule(models.Model):
+    class Meta:
+        verbose_name = 'порядок и сроки оплаты'
+        verbose_name_plural = 'условия и сроки оплаты'
+
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False, related_name='leasing_pay_rules')
+    asset_name = models.CharField(verbose_name='наименование, тип, модель', max_length=512, blank=False, null=False, default='')
+    payment_name = models.CharField(verbose_name='наименование платежа', max_length=512, blank=False, null=False, default='')
+    payment_size = models.CharField(verbose_name='сумма платежа', max_length=512, blank=False, null=False, default='')
+    payment_rule = models.CharField(verbose_name='порядок и срок оплаты', max_length=512, blank=False, null=False, default='')
+
+
 class IssueBGProdFounderLegal(models.Model):
     class Meta:
         verbose_name = 'учредитель-юрлицо'

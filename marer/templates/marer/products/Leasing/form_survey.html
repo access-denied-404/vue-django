@@ -1,5 +1,3 @@
-{#{% include 'marer/products/Credit/form_org_common.html' with form=form_org_common %}#}
-{#{% include 'marer/products/Credit/form_org_head.html' with form=form_org_head %}#}
-{#{% include 'marer/products/Credit/form_pledge.html' with formset=formset_pledges %}#}
-{#{% include 'marer/products/Credit/form_org_founders.html' with formset_physical=formset_founders_physical formset_legal=formset_founders_legal %}#}
-{#{% include 'marer/products/Credit/form_org_affiliates.html' with formset=affiliates_formset %}#}
+{% include 'marer/products/Leasing/form_supplied_assets_to_lease.html' with formset=assets_formset %}
+{% include 'marer/products/Leasing/form_leasing_assets_suppliers.html' with formset=suppliers_formset %}
+{% include 'marer/products/Leasing/form_payments_rules_to_supplier.html' with formset=pay_rules_formset %}
