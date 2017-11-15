@@ -72,6 +72,10 @@ class CreditFinProdRegForm(Form):
     ])
     credit_product_term = CharField(required=False)
     credit_product_cl_tranche_term = CharField(required=False)
+    credit_purpose_type = ChoiceField(required=False, choices=[
+        (consts.CREDIT_PURPOSE_TYPE_WORK_CAPITAL_REFILL, 'Пополнение оборотных средств'),
+        (consts.CREDIT_PURPOSE_TYPE_CONTRACT_EXEC, 'Исполнение контракта'),
+    ])
     credit_purpose = CharField(required=False)
     credit_repayment_sources = CharField(required=False)
 

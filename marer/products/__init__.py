@@ -858,6 +858,7 @@ class CreditProduct(FinanceProduct):
                 'credit_product_term',
                 'credit_product_cl_tranche_term',
 
+                'credit_purpose_type',
                 'credit_purpose',
                 'credit_repayment_sources',
             ))),
@@ -955,27 +956,106 @@ class CreditProduct(FinanceProduct):
         return CreditFinProdRegForm
 
     def get_finance_orgs_conditions_list_fields(self):
-        return [
-            ('credit_work_capital_refill_issue_rate', 'Комиссия за выдачу'),
-            ('credit_work_capital_refill_interest_rate', 'Процентная ставка'),
+
+        fields = []
+        if self._issue.credit_product_is_credit:
+            if self._issue.credit_purpose_type == consts.CREDIT_PURPOSE_TYPE_WORK_CAPITAL_REFILL:
+                fields.extend([
+                    ('credit_work_capital_refill_issue_rate', 'Комиссия за выдачу на пополнение оборотных средств'),
+                    ('credit_work_capital_refill_interest_rate', 'Процентная ставка на пополнение оборотных средств'),
+                ])
+            elif self._issue.credit_purpose_type == consts.CREDIT_PURPOSE_TYPE_CONTRACT_EXEC:
+                fields.extend([
+                    ('credit_contract_exec_issue_rate', 'Комиссия за выдачу кредита на исполнение контракта'),
+                    ('credit_contract_exec_interest_rate', 'Процентная ставка по кредиту на исполнение контракта'),
+                ])
+
+        if self._issue.credit_product_is_credit_line:
+            fields.extend([
+                ('credit_renewable_credit_line_issue_rate', 'Комиссия за выдачу ВКЛ'),
+                ('credit_renewable_credit_line_interest_rate', 'Процентная ставка ВКЛ'),
+            ])
+
+        if self._issue.credit_product_is_overdraft:
+            fields.extend([
+                ('credit_overdraft_issue_rate', 'Комиссия за выдачу овердрафта'),
+                ('credit_overdraft_interest_rate', 'Процентная ставка на овердрафт'),
+            ])
+
+        if len(fields) == 0:  # sorting by first field failover
+            fields.extend([
+                ('credit_work_capital_refill_issue_rate', 'Комиссия за выдачу'),
+                ('credit_work_capital_refill_interest_rate', 'Процентная ставка'),
+            ])
+
+        fields.extend([
             ('humanized_bg_insurance', 'Обеспечение'),
             ('humanized_bg_review_tern_days', 'Срок рассмотрения'),
             ('humanized_bg_bank_account_opening_required', 'Открытие р/с'),
             ('humanized_bg_personal_presence_required', 'Личное присутствие'),
-        ]
+        ])
+
+        return fields
 
     def get_finance_orgs_conditions_list(self):
         from marer.models.finance_org import FinanceOrgProductConditions
-        return FinanceOrgProductConditions.objects.filter(
-            Q(Q(credit_work_capital_refill_min_sum__lte=self._issue.sum_not_null)
-              | Q(credit_work_capital_refill_min_sum__isnull=True)),
-            Q(Q(credit_work_capital_refill_max_sum__gt=self._issue.sum_not_null)
-              | Q(credit_work_capital_refill_max_sum__isnull=True)),
+
+        qs = FinanceOrgProductConditions.objects.filter(
             finance_product=self.name,
             bg_review_term_days__gt=0,
-            credit_work_capital_refill_issue_rate__isnull=False,
-            credit_work_capital_refill_interest_rate__isnull=False,
         )
+
+        qs_or_filters = []
+
+        if self._issue.credit_product_is_credit:
+            if self._issue.credit_purpose_type == consts.CREDIT_PURPOSE_TYPE_WORK_CAPITAL_REFILL:
+                qs_or_filters.append(Q(
+                    Q(Q(credit_work_capital_refill_min_sum__lte=self._issue.sum_not_null)
+                      | Q(credit_work_capital_refill_min_sum__isnull=True)),
+                    Q(Q(credit_work_capital_refill_max_sum__gt=self._issue.sum_not_null)
+                      | Q(credit_work_capital_refill_max_sum__isnull=True)),
+                    credit_work_capital_refill_issue_rate__isnull=False,
+                    credit_work_capital_refill_interest_rate__isnull=False,
+                ))
+            elif self._issue.credit_purpose_type == consts.CREDIT_PURPOSE_TYPE_CONTRACT_EXEC:
+                qs_or_filters.append(Q(
+                    Q(Q(credit_contract_exec_min_sum__lte=self._issue.sum_not_null)
+                      | Q(credit_contract_exec_min_sum__isnull=True)),
+                    Q(Q(credit_contract_exec_max_sum__gt=self._issue.sum_not_null)
+                      | Q(credit_contract_exec_max_sum__isnull=True)),
+                    credit_contract_exec_issue_rate__isnull=False,
+                    credit_contract_exec_interest_rate__isnull=False,
+                ))
+
+        if self._issue.credit_product_is_credit_line:
+            qs_or_filters.append(Q(
+                Q(Q(credit_renewable_credit_line_min_sum__lte=self._issue.sum_not_null)
+                  | Q(credit_renewable_credit_line_min_sum__isnull=True)),
+                Q(Q(credit_renewable_credit_line_max_sum__gt=self._issue.sum_not_null)
+                  | Q(credit_renewable_credit_line_max_sum__isnull=True)),
+                credit_renewable_credit_line_issue_rate__isnull=False,
+                credit_renewable_credit_line_interest_rate__isnull=False,
+            ))
+
+        if self._issue.credit_product_is_overdraft:
+            qs_or_filters.append(Q(
+                Q(Q(credit_overdraft_min_sum__lte=self._issue.sum_not_null)
+                  | Q(credit_overdraft_min_sum__isnull=True)),
+                Q(Q(credit_overdraft_max_sum__gt=self._issue.sum_not_null)
+                  | Q(credit_overdraft_max_sum__isnull=True)),
+                credit_overdraft_issue_rate__isnull=False,
+                credit_overdraft_interest_rate__isnull=False,
+            ))
+
+        if len(qs_or_filters) == 0:
+            qs = qs.none()
+        else:
+            qs_part_filter = Q(qs_or_filters.pop())
+            for qpart in qs_or_filters:
+                qs_part_filter |= qpart
+            qs = qs.filter(Q(qs_part_filter))
+
+        return qs
 
     def load_finance_orgs_conditions_from_worksheet(self, ws):
         """

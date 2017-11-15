@@ -6,11 +6,11 @@
         <th class="bg-info">&nbsp;</th>
 
         {% for _, fname in foc_fields %}
-            <th class="bg-info">{{ fname }}</th>
+            <th class="bg-info h6"><b>{{ fname }}</b></th>
         {% endfor %}
 
-        <th class="bg-info text-center">
-            Заявка
+        <th class="bg-info text-center h6">
+            <b>Заявка</b>
             <form method="post">
                 {% csrf_token %}
                 <input type="hidden" name="send_to_all" value="1"/>
@@ -20,10 +20,10 @@
     </tr>
     {% for foc in foc_list %}
         <tr{% if foc.finance_org.id in proposed_fo_ids %} class="bg-success"{% endif %}>
-            <td>{{ foc.finance_org.name }}</td>
+            <td class="h6"><b>{{ foc.finance_org.name }}</b></td>
 
             {% for foc_val in foc.values %}
-                <td>{{ foc_val }}</td>
+                <td class="h6">{{ foc_val |default_if_none:"&mdash;" }}</td>
             {% endfor %}
 
             <td class="text-center">

@@ -124,6 +124,10 @@ class Issue(models.Model):
     ])
     credit_product_term = models.CharField(verbose_name='срок продукта', max_length=512, blank=True, null=False, default='')
     credit_product_cl_tranche_term = models.CharField(verbose_name='срок транша (в случае кредитной линии)', max_length=512, blank=True, null=False, default='')
+    credit_purpose_type = models.CharField(verbose_name='цель кредита', max_length=32, blank=True, null=True, choices=[
+        (consts.CREDIT_PURPOSE_TYPE_WORK_CAPITAL_REFILL, 'Пополнение оборотных средств'),
+        (consts.CREDIT_PURPOSE_TYPE_CONTRACT_EXEC, 'Исполнение контракта'),
+    ])
     credit_purpose = models.CharField(verbose_name='цель кредита (подробно)', max_length=512, blank=True, null=False, default='')
     credit_repayment_sources = models.CharField(verbose_name='источники погашения', max_length=512, blank=True, null=False, default='')
 

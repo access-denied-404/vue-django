@@ -34,9 +34,9 @@
           <div class="col-md-6"><bs-input :name="'credit_product_cl_tranche_term'" v-model="credit_product_cl_tranche_term" label="Срок транша (в случае кредитной линии)"></bs-input></div>
         </div>
 
-
         <div class="row">
-          <div class="col-md-12"><bs-input :name="'credit_purpose'" v-model="credit_purpose" label="Цель кредита (подробно)"></bs-input></div>
+          <div class="col-md-6"><bs3-select-field v-model="credit_purpose_type" :name="'credit_purpose_type'" :label="'Цель кредита'" :options="[{value: 'contract_exec', text:'Исполнение контракта'},{value: 'work_capital_refill', text:'Пополнение оборотных средств'}]"></bs3-select-field></div>
+          <div class="col-md-6"><bs-input :name="'credit_purpose'" v-model="credit_purpose" label="Цель кредита (подробно)"></bs-input></div>
         </div>
 
         <div class="row">
@@ -50,26 +50,15 @@
 </template>
 
 <script>
-//  import jQuery from 'jquery'
-  import moment from 'moment'
-//  import _ from 'lodash'
   import {input, checkbox} from 'vue-strap'
-  import DateTimePicker from 'vue-bootstrap-datetimepicker'
   import BS3SelectField from '@/components/inputs/BS3SelectField'
-  import BS3RadioField from '@/components/inputs/BS3RadioField'
-  import 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css'
-
-  moment.locale = 'ru'
-//  let dateformat = 'DD.MM.YYYY'
 
   export default {
     name: 'form-credit',
     components: {
       'bs-input': input,
       'checkbox': checkbox,
-      'bs3-select-field': BS3SelectField,
-      'bs3-radio-field': BS3RadioField,
-      'date-time-picker': DateTimePicker
+      'bs3-select-field': BS3SelectField
     },
     data () {
       var regData = JSON.parse(window.regdata)
@@ -85,6 +74,7 @@
           credit_product_cl_tranche_term: regData.formdata.credit_product_cl_tranche_term,
           credit_purpose: regData.formdata.credit_purpose,
           credit_repayment_sources: regData.formdata.credit_repayment_sources,
+          credit_purpose_type: regData.formdata.credit_purpose_type,
 
           bg_sum: regData.formdata.bg_sum,
           bg_currency: regData.formdata.bg_currency
@@ -100,6 +90,7 @@
           credit_product_cl_tranche_term: '',
           credit_purpose: '',
           credit_repayment_sources: '',
+          credit_purpose_type: '',
 
           bg_sum: '',
           bg_currency: ''
