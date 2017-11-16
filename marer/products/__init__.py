@@ -13,7 +13,7 @@ from marer.products.base import FinanceProduct, FinanceProductDocumentItem
 from marer.products.forms import BGFinProdRegForm, BGFinProdSurveyOrgCommonForm, BGFinProdSurveyOrgHeadForm, \
     AffiliatesForm, FounderLegalForm, FounderPhysicalForm, CreditFinProdRegForm, CreditPledgeForm, \
     FactoringFinProdRegForm, LeasingFinProdRegForm, LeasingAssetForm, LeasingSupplierForm, LeasingPayRuleForm, \
-    FactoringBuyerForm
+    FactoringBuyerForm, FactoringSalesAnalyzeForm
 from marer.utils.loadfoc import get_cell_value, get_cell_summ_range, get_cell_percentage, get_cell_bool, \
     get_cell_review_term_days, get_cell_ensure_condition, get_issue_and_interest_rates
 
@@ -1356,6 +1356,24 @@ class FactoringProduct(FinanceProduct):
     def process_survey_post_data(self, request):
         processed_sucessfully_flag = True
 
+        form_sales_analyze = FactoringSalesAnalyzeForm(request.POST)
+        if form_sales_analyze.is_valid():
+            self._issue.curr_year_sales_value = form_sales_analyze.cleaned_data['curr_year_sales_value']
+            self._issue.prev_year_sales_value = form_sales_analyze.cleaned_data['prev_year_sales_value']
+
+            self._issue.curr_year_sales_value_inc_deferment = form_sales_analyze.cleaned_data['curr_year_sales_value_inc_deferment']
+            self._issue.prev_year_sales_value_inc_deferment = form_sales_analyze.cleaned_data['prev_year_sales_value_inc_deferment']
+
+            self._issue.curr_year_expected_sales_value = form_sales_analyze.cleaned_data['curr_year_expected_sales_value']
+            self._issue.prev_year_expected_sales_value = form_sales_analyze.cleaned_data['prev_year_expected_sales_value']
+
+            self._issue.curr_year_expected_sales_value_inc_deferment = form_sales_analyze.cleaned_data['curr_year_expected_sales_value_inc_deferment']
+            self._issue.prev_year_expected_sales_value_inc_deferment = form_sales_analyze.cleaned_data['prev_year_expected_sales_value_inc_deferment']
+        else:
+            processed_sucessfully_flag = False
+
+        self._issue.save()
+
         # processing buyers
         from marer.models.issue import IssueFactoringBuyer
         buyers_formset = formset_factory(FactoringBuyerForm, extra=0)
@@ -1405,6 +1423,7 @@ class FactoringProduct(FinanceProduct):
         buyers_formset = buyers_formset(initial=[buyer.__dict__ for buyer in buyers], prefix='buyers')
 
         return dict(
+            sales_analyze_form=FactoringSalesAnalyzeForm(initial=self._issue.__dict__),
             buyers_formset=buyers_formset,
         )
 

@@ -269,6 +269,17 @@ class FactoringFinProdRegForm(Form):
     factoring_manufactured_goods = CharField(required=False)
 
 
+class FactoringSalesAnalyzeForm(Form):
+    curr_year_sales_value = DecimalField(decimal_places=2, required=False)
+    prev_year_sales_value = DecimalField(decimal_places=2, required=False)
+    curr_year_sales_value_inc_deferment = DecimalField(decimal_places=2, required=False)
+    prev_year_sales_value_inc_deferment = DecimalField(decimal_places=2, required=False)
+    curr_year_expected_sales_value = DecimalField(decimal_places=2, required=False)
+    prev_year_expected_sales_value = DecimalField(decimal_places=2, required=False)
+    curr_year_expected_sales_value_inc_deferment = DecimalField(decimal_places=2, required=False)
+    prev_year_expected_sales_value_inc_deferment = DecimalField(decimal_places=2, required=False)
+
+
 class FactoringBuyerForm(Form):
     id = IntegerField(required=False, widget=HiddenInput())
     name_and_inn = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
