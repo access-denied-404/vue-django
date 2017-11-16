@@ -187,7 +187,7 @@ class IssueDocumentInlineAdminForm(forms.ModelForm):
 
 
 class IssueProposeDocumentInlineAdminForm(forms.ModelForm):
-    file_sample = forms.FileField(disabled=True, required=False, label='образец', widget=ReadOnlyFileInput)
+    file_sample = forms.FileField(required=False, label='образец')
     file = forms.FileField(required=False, label='файл')
 
     def __init__(self, *args, **kwargs):
@@ -207,4 +207,9 @@ class IssueProposeDocumentInlineAdminForm(forms.ModelForm):
             new_doc.file = self.cleaned_data['file']
             new_doc.save()
             self.instance.document = new_doc
+        if 'file_sample' in self.cleaned_data:
+            new_sample = Document()
+            new_sample.file = self.cleaned_data['file_sample']
+            new_sample.save()
+            self.instance.sample = new_sample
         return super().save(commit)
