@@ -4,6 +4,8 @@ ansible/marer.ru.crt
 ansible/marer.ru.key
 ansible/*.retry
 bower_components/**
-static/**
 media/**
+project/local_settings.py
+project/secrets.py
+static/**
 db.sqlite3
