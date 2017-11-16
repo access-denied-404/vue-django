@@ -23,7 +23,7 @@ class BGFinProdRegForm(Form):
         (consts.TENDER_EXEC_LAW_COMMERCIAL, 'Коммерческий'),
     ])
     tender_publish_date = DateField(required=False)
-    tender_start_cost = DecimalField(decimal_places=2, required=False)
+    tender_start_cost = DecimalField(decimal_places=2, required=False, localize=True)
 
     tender_responsible_full_name = CharField(required=False)
     tender_responsible_legal_address = CharField(required=False)
@@ -33,11 +33,11 @@ class BGFinProdRegForm(Form):
 
     bg_commercial_contract_subject = CharField(required=False)
     bg_commercial_contract_place_of_work = CharField(required=False)
-    bg_commercial_contract_sum = DecimalField(decimal_places=2, required=False)
+    bg_commercial_contract_sum = DecimalField(decimal_places=2, required=False, localize=True)
     bg_commercial_contract_sign_date = DateField(required=False)
     bg_commercial_contract_end_date = DateField(required=False)
 
-    bg_sum = DecimalField(decimal_places=2, required=False)
+    bg_sum = DecimalField(decimal_places=2, required=False, localize=True)
     bg_currency = ChoiceField(required=False, choices=[
         (consts.CURRENCY_RUR, 'Рубль'),
         (consts.CURRENCY_USD, 'Доллар'),
@@ -65,7 +65,7 @@ class CreditFinProdRegForm(Form):
     credit_product_is_credit_line = BooleanField(required=False)
     credit_product_is_overdraft = BooleanField(required=False)
 
-    credit_product_interest_rate = DecimalField(decimal_places=2, required=False)
+    credit_product_interest_rate = DecimalField(decimal_places=2, required=False, localize=True)
     credit_repayment_schedule = ChoiceField(required=False, choices=[
         (consts.ISSUE_CREDIT_REPAYMENT_SCHEDULE_EQUAL_SHARES, 'Равными долями'),
         (consts.ISSUE_CREDIT_REPAYMENT_SCHEDULE_END_OF_TERM, 'В конце срока'),
@@ -79,7 +79,7 @@ class CreditFinProdRegForm(Form):
     credit_purpose = CharField(required=False)
     credit_repayment_sources = CharField(required=False)
 
-    bg_sum = DecimalField(decimal_places=2, required=False)
+    bg_sum = DecimalField(decimal_places=2, required=False, localize=True)
     bg_currency = ChoiceField(required=False, choices=[
         (consts.CURRENCY_RUR, 'Рубль'),
         (consts.CURRENCY_USD, 'Доллар'),
@@ -183,7 +183,7 @@ class CreditPledgeForm(Form):
         (consts.CREDIT_PLEDGE_TYPE_REAL_ESTATE, 'Недвижимость'),
         (consts.CREDIT_PLEDGE_TYPE_OTHER, 'Другое'),
     ])
-    cost = DecimalField(decimal_places=2, required=False, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    cost = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
 
     DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden'}))
 
@@ -199,7 +199,7 @@ class CreditPledgeForm(Form):
 
 class LeasingFinProdRegForm(Form):
     leasing_term = IntegerField(required=False)
-    leasing_advance_payment_rate = DecimalField(decimal_places=2, required=False)
+    leasing_advance_payment_rate = DecimalField(decimal_places=2, required=False, localize=True)
     leasing_payment_schedule = CharField(required=False)
     leasing_asset_operation_territory = CharField(required=False)
     leasing_bank_account_number = CharField(required=False)
@@ -270,14 +270,14 @@ class FactoringFinProdRegForm(Form):
 
 
 class FactoringSalesAnalyzeForm(Form):
-    curr_year_sales_value = DecimalField(decimal_places=2, required=False)
-    prev_year_sales_value = DecimalField(decimal_places=2, required=False)
-    curr_year_sales_value_inc_deferment = DecimalField(decimal_places=2, required=False)
-    prev_year_sales_value_inc_deferment = DecimalField(decimal_places=2, required=False)
-    curr_year_expected_sales_value = DecimalField(decimal_places=2, required=False)
-    prev_year_expected_sales_value = DecimalField(decimal_places=2, required=False)
-    curr_year_expected_sales_value_inc_deferment = DecimalField(decimal_places=2, required=False)
-    prev_year_expected_sales_value_inc_deferment = DecimalField(decimal_places=2, required=False)
+    curr_year_sales_value = DecimalField(decimal_places=2, required=False, localize=True)
+    prev_year_sales_value = DecimalField(decimal_places=2, required=False, localize=True)
+    curr_year_sales_value_inc_deferment = DecimalField(decimal_places=2, required=False, localize=True)
+    prev_year_sales_value_inc_deferment = DecimalField(decimal_places=2, required=False, localize=True)
+    curr_year_expected_sales_value = DecimalField(decimal_places=2, required=False, localize=True)
+    prev_year_expected_sales_value = DecimalField(decimal_places=2, required=False, localize=True)
+    curr_year_expected_sales_value_inc_deferment = DecimalField(decimal_places=2, required=False, localize=True)
+    prev_year_expected_sales_value_inc_deferment = DecimalField(decimal_places=2, required=False, localize=True)
 
 
 class FactoringBuyerForm(Form):
@@ -286,7 +286,7 @@ class FactoringBuyerForm(Form):
     avg_monthly_shipments = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     operating_pay_deferment_days = IntegerField(required=False, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     start_work_date = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
-    required_credit_limit = DecimalField(decimal_places=2, required=False, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    required_credit_limit = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     debitor_share = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     average_delay_days = IntegerField(required=False, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     sales_volume = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
