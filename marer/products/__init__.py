@@ -1451,6 +1451,8 @@ class FactoringProduct(FinanceProduct):
     def get_finance_orgs_conditions_list_fields(self):
         return [
             # todo set right fields list
+            ('leasing_interest_rate', 'Процентная ставка'),
+
             ('humanized_bg_insurance', 'Обеспечение'),
             ('humanized_bg_review_tern_days', 'Срок рассмотрения'),
             ('humanized_bg_bank_account_opening_required', 'Открытие р/с'),
