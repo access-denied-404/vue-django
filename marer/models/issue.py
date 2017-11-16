@@ -673,3 +673,19 @@ class IssueCreditPledge(models.Model):
         (consts.CREDIT_PLEDGE_TYPE_OTHER, 'Другое'),
     ])
     cost = models.DecimalField(verbose_name='сумма', max_digits=12, decimal_places=2, blank=True, null=True)
+
+
+class IssueFactoringBuyer(models.Model):
+    class Meta:
+        verbose_name = 'покупатель на факторинговое обслуживание'
+        verbose_name_plural = 'покупатели на факторинговое обслуживание'
+
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False, related_name='factoring_buyers')
+    name_and_inn = models.CharField(verbose_name='наименование, ИНН', max_length=512, blank=False, null=False, default='')
+    avg_monthly_shipments = models.CharField(verbose_name='средние отгрузки за последние 12 месяцев (млн руб. без НДС)', max_length=512, blank=False, null=False, default='')
+    operating_pay_deferment_days = models.IntegerField(verbose_name='действующая отсрочка платежа, дней', blank=True, null=True)
+    start_work_date = models.CharField(verbose_name='дата начала работы', max_length=512, blank=False, null=False, default='')
+    required_credit_limit = models.DecimalField(verbose_name='требуемый кредитный лимит (млн руб. без НДС)', max_digits=12, decimal_places=2, blank=True, null=True)
+    debitor_share = models.CharField(verbose_name='доля дебитора', max_length=512, blank=False, null=False, default='')
+    average_delay_days = models.IntegerField(verbose_name='средние просрочки за 12 месяцев, дней', blank=True, null=True)
+    sales_volume = models.CharField(verbose_name='объем продаж за последние 12 месяцев (млн руб. без НДС)', max_length=512, blank=False, null=False, default='')

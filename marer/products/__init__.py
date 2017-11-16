@@ -12,7 +12,8 @@ from marer import consts
 from marer.products.base import FinanceProduct, FinanceProductDocumentItem
 from marer.products.forms import BGFinProdRegForm, BGFinProdSurveyOrgCommonForm, BGFinProdSurveyOrgHeadForm, \
     AffiliatesForm, FounderLegalForm, FounderPhysicalForm, CreditFinProdRegForm, CreditPledgeForm, \
-    FactoringFinProdRegForm, LeasingFinProdRegForm, LeasingAssetForm, LeasingSupplierForm, LeasingPayRuleForm
+    FactoringFinProdRegForm, LeasingFinProdRegForm, LeasingAssetForm, LeasingSupplierForm, LeasingPayRuleForm, \
+    FactoringBuyerForm
 from marer.utils.loadfoc import get_cell_value, get_cell_summ_range, get_cell_percentage, get_cell_bool, \
     get_cell_review_term_days, get_cell_ensure_condition, get_issue_and_interest_rates
 
@@ -1353,7 +1354,40 @@ class FactoringProduct(FinanceProduct):
     _survey_template_name = 'marer/products/Factoring/form_survey.html'
 
     def process_survey_post_data(self, request):
-        warnings.warn("Method is not implemented")
+        processed_sucessfully_flag = True
+
+        # processing buyers
+        from marer.models.issue import IssueFactoringBuyer
+        buyers_formset = formset_factory(FactoringBuyerForm, extra=0)
+        buyers_formset = buyers_formset(request.POST, prefix='buyers')
+        if buyers_formset.is_valid():
+            for fsdata in buyers_formset.cleaned_data:
+                fsdata_id = fsdata.get('id', None)
+                fsdata_name = str(fsdata.get('name_and_inn', '')).strip()
+                if fsdata_id and fsdata.get('DELETE', False):
+                    try:
+                        del_obj = IssueFactoringBuyer.objects.get(id=fsdata['id'], issue=self._issue)
+                        del_obj.delete()
+                    except ObjectDoesNotExist:
+                        pass  # nothing to do
+
+                elif not fsdata_id and fsdata_name != '':
+                    new_obj = IssueFactoringBuyer()
+                    new_obj.name_and_inn = fsdata_name
+
+                    new_obj.avg_monthly_shipments = fsdata.get('avg_monthly_shipments', '')
+                    new_obj.operating_pay_deferment_days = fsdata.get('operating_pay_deferment_days', '')
+                    new_obj.start_work_date = fsdata.get('start_work_date', '')
+                    new_obj.required_credit_limit = fsdata.get('required_credit_limit', '')
+                    new_obj.debitor_share = fsdata.get('debitor_share', '')
+                    new_obj.average_delay_days = fsdata.get('average_delay_days', '')
+                    new_obj.sales_volume = fsdata.get('sales_volume', '')
+                    new_obj.issue = self._issue
+                    new_obj.save()
+        else:
+            processed_sucessfully_flag = False
+
+        return processed_sucessfully_flag
 
     def get_admin_issue_fieldset(self):
         warnings.warn("Method is not implemented")
@@ -1364,8 +1398,15 @@ class FactoringProduct(FinanceProduct):
         return []
 
     def get_survey_context_part(self):
-        warnings.warn("Method is not implemented")
-        return dict()
+
+        buyers_formset = formset_factory(FactoringBuyerForm, extra=0)
+        from marer.models.issue import IssueFactoringBuyer
+        buyers = IssueFactoringBuyer.objects.filter(issue=self._issue)
+        buyers_formset = buyers_formset(initial=[buyer.__dict__ for buyer in buyers], prefix='buyers')
+
+        return dict(
+            buyers_formset=buyers_formset,
+        )
 
     def get_documents_list(self, now_override=None):
         docs = []

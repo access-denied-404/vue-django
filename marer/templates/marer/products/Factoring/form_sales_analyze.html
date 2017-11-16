@@ -1,0 +1,81 @@
+{% load formset_tags %}
+
+<div class="panel panel-info">
+    <div class="panel-heading" data-toggle="collapse" data-target="#panel-{{ formset.prefix }}">Имущество, приобретаемое на условиях лизинга</div>
+    <div class="panel-body collapse formset" id="panel-{{ formset.prefix }}" data-formset-prefix="{{ formset.prefix }}">
+        <div class="container-fluid">
+            <div class="row">
+
+                {{ formset.management_form }}
+
+                <!-- The empty form template. By wrapping this in a <script> tag, the
+                __prefix__ placeholder can easily be replaced in both attributes and
+                any scripts -->
+                <script type="form-template" data-formset-empty-form>
+                    {% escapescript %}
+
+                        <tr data-formset-form>
+                            <td class="h6">
+                                {{ formset.empty_form.id }}
+                                {{ formset.empty_form.supplier_name }}
+                            </td>
+                            <td class="h6">{{ formset.empty_form.asset_name }}</td>
+                            <td class="h6">{{ formset.empty_form.asset_spec }}</td>
+                            <td class="h6">{{ formset.empty_form.asset_count }}</td>
+                            <td class="h6">{{ formset.empty_form.cost_with_vat }}</td>
+                            <td class="h6">{{ formset.empty_form.supply_term }}</td>
+                            <td class="h6">
+                                {{ formset.empty_form.DELETE }}
+                                <button type="button" class="btn btn-link btn-xs" data-formset-delete-button>
+                                    <span class="glyphicon glyphicon-remove text-danger"></span>
+                                </button>
+                            </td>
+                        </tr>
+
+                    {% endescapescript %}
+                </script>
+
+                <table class="table">
+                    <tr>
+                        <th class="h6"><b>Наименование<br/>поставщика/продавца</b></th>
+                        <th class="h6"><b>Наименование, тип, модель</b></th>
+                        <th class="h6"><b>Спецификация</b></th>
+                        <th class="h6"><b>Кол-во</b></th>
+                        <th class="h6"><b>Стоимость с НДС</b></th>
+                        <th class="h6"><b>Срок поставки</b></th>
+                        <th>&nbsp;</th>
+                    </tr>
+                    <tbody data-formset-body>
+                    {% for form in formset %}
+                        <tr data-formset-form>
+                            <td class="h6">
+                                {{ form.id }}
+                                {{ form.supplier_name.value }}
+                            </td>
+                            <td class="h6">{{ form.asset_name.value }}</td>
+                            <td class="h6">{{ form.asset_spec.value }}</td>
+                            <td class="h6">{{ form.asset_count.value }}</td>
+                            <td class="h6">{{ form.cost_with_vat.value }}</td>
+                            <td class="h6">{{ form.supply_term.value }}</td>
+                            <td class="h6">
+                                {{ form.DELETE }}
+                                <button type="button" class="btn btn-link btn-xs" data-formset-delete-button>
+                                    <span class="glyphicon glyphicon-remove text-danger"></span>
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tr>
+                        <td colspan="7" class="text-center">
+                            <button type="button" class="btn btn-primary" data-formset-add>
+                                Добавить приобретаемое имущество
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>

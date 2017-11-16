@@ -267,3 +267,19 @@ class FactoringFinProdRegForm(Form):
     factoring_max_contract_deferred_payment_term = IntegerField(required=False)
     factoring_sale_goods_or_services = CharField(required=False)
     factoring_manufactured_goods = CharField(required=False)
+
+
+class FactoringBuyerForm(Form):
+    id = IntegerField(required=False, widget=HiddenInput())
+    name_and_inn = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    avg_monthly_shipments = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    operating_pay_deferment_days = IntegerField(required=False, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    start_work_date = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    required_credit_limit = DecimalField(decimal_places=2, required=False, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    debitor_share = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    average_delay_days = IntegerField(required=False, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    sales_volume = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden'}))
+
+    class Media(object):
+        js = formset_media_js
