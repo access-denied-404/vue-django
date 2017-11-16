@@ -53,7 +53,7 @@
                                 {% for propose_doc in propose.propose_documents_ordered %}
                                     <tr>
                                         <td class="h6">
-                                            {% if propose_doc.document %}
+                                            {% if propose_doc.document and propose_doc.document.file %}
                                                 <input
                                                         type="hidden"
                                                         name="propose_doc_{{ propose_doc.id }}_del"
@@ -68,7 +68,7 @@
                                                     Образец <span class="glyphicon glyphicon-download-alt"></span>
                                                 </a>
                                             {% endif %}
-                                            {% if propose_doc.document %}
+                                            {% if propose_doc.document and propose_doc.document.file %}
                                                 <a href="{{ propose_doc.document.file.url }}">
                                                     {{ propose_doc.name }}
                                                 </a>
