@@ -235,10 +235,7 @@ class IssueScoringView(IssueView):
         send_to_all = request.POST.get('send_to_all', None)
         foid = request.POST.get('foid', None)
         if send_to_all:
-            foc_list = FinanceOrgProductConditions.objects.filter(
-                bg_44_contract_exec_interest_rate__isnull=False,
-                bg_review_term_days__gt=0,
-            )
+            foc_list = self.get_issue().get_product().get_finance_orgs_conditions_list()
 
             # distinctize by finance org
             foc_list = [x for x in foc_list]
