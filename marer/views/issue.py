@@ -304,7 +304,6 @@ class IssueAdditionalDocumentsRequestsView(IssueView):
                     new_doc.save()
                     pdoc.document = new_doc
                 pdoc.save()
-                break
 
             if pdoc_del_mark:
                 pdoc.document = None
