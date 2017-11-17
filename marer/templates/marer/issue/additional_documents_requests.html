@@ -54,11 +54,7 @@
                                     <tr>
                                         <td class="h6">
                                             {% if propose_doc.document and propose_doc.document.file %}
-                                                <input
-                                                        type="hidden"
-                                                        name="propose_doc_{{ propose_doc.id }}_del"
-                                                        value="true" />
-                                                <button type="submit" class="btn btn-link btn-xs pull-right">
+                                                <button type="submit" class="btn btn-link btn-xs pull-right" form="propose_doc_{{ propose_doc.id }}_del_form">
                                                     <span class="glyphicon glyphicon-remove text-danger"></span>
                                                 </button>
                                             {% elif propose_doc.sample and propose_doc.sample.file %}
@@ -97,6 +93,18 @@
 
             </div>
         </div>
+        {% for propose_doc in propose.propose_documents_ordered %}
+            <form
+                    class="hidden"
+                    id="propose_doc_{{ propose_doc.id }}_del_form"
+                    method="post">
+                {% csrf_token %}
+                <input
+                        type="hidden"
+                        name="propose_doc_{{ propose_doc.id }}_del"
+                        value="true" />
+            </form>
+        {% endfor %}
     {% endfor %}
 
 {% endblock %}
