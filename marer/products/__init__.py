@@ -1230,7 +1230,6 @@ class LeasingProduct(FinanceProduct):
         return processed_sucessfully_flag
 
     def get_admin_issue_fieldset(self):
-        warnings.warn("Method is not implemented")
         return [
             ('Сведения об испрашиваемом лизинговом продукте', dict(fields=(
                 'leasing_term',
@@ -1408,12 +1407,39 @@ class FactoringProduct(FinanceProduct):
         return processed_sucessfully_flag
 
     def get_admin_issue_fieldset(self):
-        warnings.warn("Method is not implemented")
-        return []
+        return [
+            ('Сведения об испрашиваемом факторинговом продукте', dict(fields=(
+                ('factoring_product_is_regressive', 'factoring_product_is_not_regressive',),
+                ('factoring_product_is_cred_risks_cover', 'factoring_product_is_suppliers_financing',),
+                ('factoring_product_is_orders_financing', 'factoring_product_is_closed',),
+                ('factoring_product_is_export', 'factoring_product_is_import',),
+                ('factoring_avg_actual_buyers_payment_term', 'factoring_max_contract_deferred_payment_term',),
+                'factoring_sale_goods_or_services',
+                'factoring_manufactured_goods',
+            ))),
+
+            ('Сведения о компании-заявителе', dict(classes=('collapse',), fields=(
+                'issuer_full_name',
+                'issuer_short_name',
+                'issuer_foreign_name',
+                'issuer_ogrn',
+                'issuer_inn',
+                'issuer_kpp',
+                'issuer_legal_address',
+                'issuer_fact_address',
+            ))),
+
+            ('Анализ продаж', dict(classes=('collapse',), fields=(
+                ('curr_year_sales_value', 'prev_year_sales_value',),
+                ('curr_year_sales_value_inc_deferment', 'prev_year_sales_value_inc_deferment',),
+                ('curr_year_expected_sales_value', 'prev_year_expected_sales_value',),
+                ('curr_year_expected_sales_value_inc_deferment', 'prev_year_expected_sales_value_inc_deferment',),
+            ))),
+        ]
 
     def get_admin_issue_inlnes(self):
-        warnings.warn("Method is not implemented")
-        return []
+        from marer.admin.inline import IssueFactoringBuyerInlineAdmin
+        return [IssueFactoringBuyerInlineAdmin]
 
     def get_survey_context_part(self):
 
