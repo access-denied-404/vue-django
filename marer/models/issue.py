@@ -447,7 +447,7 @@ class IssueFinanceOrgProposeDocument(models.Model):
     )
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None, chain_docs_update=False):
-        if not chain_docs_update and self.propose and self.propose.issue_id and self.document and self.document.file:
+        if not chain_docs_update and self.propose and self.propose.issue_id and self.document and self.document.file and self.code is not None and self.code != '':
             other_proposes = self.propose.issue.proposes.all()
             if self.id:
                 other_proposes = other_proposes.exclude(id=self.id)
