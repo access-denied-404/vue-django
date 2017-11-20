@@ -25,8 +25,8 @@ _admin_issue_fieldset_issuer_part = (
     dict(
         classes=('collapse',),
         fields=(
-            'issuer_full_name',
             'issuer_short_name',
+            'issuer_full_name',
             'issuer_foreign_name',
             'issuer_ogrn',
             'issuer_inn',
@@ -1243,8 +1243,8 @@ class LeasingProduct(FinanceProduct):
             ))),
 
             ('Сведения о компании-заявителе', dict(classes=('collapse',), fields=(
-                'issuer_full_name',
                 'issuer_short_name',
+                'issuer_full_name',
                 'issuer_foreign_name',
                 'issuer_ogrn',
                 'issuer_inn',
@@ -1419,8 +1419,8 @@ class FactoringProduct(FinanceProduct):
             ))),
 
             ('Сведения о компании-заявителе', dict(classes=('collapse',), fields=(
-                'issuer_full_name',
                 'issuer_short_name',
+                'issuer_full_name',
                 'issuer_foreign_name',
                 'issuer_ogrn',
                 'issuer_inn',

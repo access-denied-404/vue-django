@@ -1,0 +1,51 @@
+{% extends "admin/change_form.html" %}
+
+{% load staticfiles marer_admin %}
+
+{% block footer %}
+    {{ block.super }}
+    <script type="text/javascript">
+        jQuery = django.jQuery
+    </script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery.suggestions/16.8/js/jquery.suggestions.min.js"></script>
+    <script type="text/javascript">
+        django.jQuery(document).ready(function(){
+            // dadata
+            django.jQuery('#id_issuer_short_name').suggestions({
+                serviceUrl: 'https://suggestions.dadata.ru/suggestions/api/4_1/rs',
+                token:      '{% settings_value 'DADATA_TOKEN' %}',
+                type:       'PARTY',
+                count:      7,
+
+                onSelect: function (suggestion) {
+                    django.jQuery("input[name='issuer_short_name']").val(suggestion.data.name.short_with_opf);
+                    django.jQuery("input[name='issuer_ogrn']").val(suggestion.data.ogrn);
+                    django.jQuery("input[name='issuer_inn']").val(suggestion.data.inn);
+                    django.jQuery("input[name='issuer_kpp']").val(suggestion.data.kpp);
+                    django.jQuery("input[name='issuer_okved']").val(suggestion.data.okved);
+                    django.jQuery("input[name='issuer_okopf']").val(suggestion.data.okopf);
+
+                    django.jQuery("input[name='issuer_full_name']").val(suggestion.data.name.full_with_opf);
+                    django.jQuery("input[name='issuer_short_name']").val(suggestion.data.name.short_with_opf);
+                    django.jQuery("input[name='issuer_foreign_name']").val(suggestion.data.name.latin);
+
+                    django.jQuery("input[name='issuer_legal_address']").val(suggestion.data.address.value);
+                    django.jQuery("input[name='issuer_head_fio']").val(suggestion.data.management.name);
+                    django.jQuery("input[name='issuer_head_position']").val(suggestion.data.management.post);
+                },
+            });
+        });
+
+    </script>
+{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link href="{% static '/marer/css/suggestions.css' %}" rel="stylesheet">
+    <style>
+        .form-row .suggestions-input {
+            width: 20em;
+            box-sizing: content-box !important;
+        }
+    </style>
+{% endblock %}
