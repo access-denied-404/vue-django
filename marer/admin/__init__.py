@@ -237,6 +237,7 @@ class IssueFinanceOrgProposeAdmin(ModelAdmin):
     )
     list_filter = (
         'final_decision',
+        ('finance_org__manager', ManagerListFilter),
     )
     fields = (
         'issue_change_link',
