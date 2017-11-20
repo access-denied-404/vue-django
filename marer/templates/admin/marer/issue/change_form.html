@@ -34,6 +34,25 @@
                     django.jQuery("input[name='issuer_head_position']").val(suggestion.data.management.post);
                 },
             });
+
+            // tender
+            django.jQuery('#id_tender_gos_number').on('change', function () {
+                var tender_gos_number = django.jQuery("input[name='tender_gos_number']").val();
+                django.jQuery.getJSON('/rest/tender?format=json&gos_number=' + tender_gos_number, (data, status, xhr) => {
+                    django.jQuery("input[name='tender_exec_law']").val(data.law);
+                    django.jQuery("input[name='tender_placement_type']").val(data.placement_type);
+                    django.jQuery("input[name='tender_publish_date']").val(data.publish_datetime);
+                    django.jQuery("input[name='tender_start_cost']").val(data.start_cost);
+                    django.jQuery("input[name='tender_responsible_full_name']").val(data.publisher.full_name);
+                    django.jQuery("input[name='tender_responsible_legal_address']").val(data.publisher.legal_address);
+                    django.jQuery("input[name='tender_responsible_inn']").val(data.publisher.inn);
+                    django.jQuery("input[name='tender_responsible_kpp']").val(data.publisher.kpp);
+                    django.jQuery("input[name='tender_responsible_ogrn']").val(data.publisher.ogrn);
+                    django.jQuery("input[name='tender_application_ensure_cost']").val(data.application_ensure_cost);
+                    django.jQuery("input[name='tender_contract_execution_ensure_cost']").val(data.contract_execution_ensure_cost);
+                    django.jQuery("input[name='bg_currency']").val(data.currency_code);
+                });
+            })
         });
 
     </script>
