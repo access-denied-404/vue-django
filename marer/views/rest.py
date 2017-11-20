@@ -20,5 +20,5 @@ class TenderDataView(APIView):
             return HttpResponseNotFound()
 
         tdata = req.json()
-        tdata['publish_datetime'] = parse_datetime(tdata['publish_datetime'])
+        tdata['publish_datetime'] = parse_datetime(tdata['publish_datetime']).strftime('%d.%m.%Y')
         return Response(tdata)
