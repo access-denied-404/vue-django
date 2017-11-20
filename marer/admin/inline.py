@@ -168,6 +168,17 @@ class IFOPClarificationInlineAdmin(TabularInline):
         return obj.id
     humanized_id.short_description = 'номер дозапроса'
 
+    show_view_all_link = True
+    show_view_all_filter_field_name = 'propose'
+    has_alter_add_url = True
+
+    def get_alter_add_url(self, parent_obj):
+        return '/admin/{app_label}/{model_name}/add/?propose={parent_obj_id}'.format(
+            app_label=self.model._meta.app_label,
+            model_name=self.model._meta.model_name,
+            parent_obj_id=parent_obj.id,
+        )
+
 
 class IFOPFormalizeDocumentInlineAdmin(TabularInline):
     extra = 1

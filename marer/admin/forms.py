@@ -23,6 +23,17 @@ class IFOPClarificationAddForm(forms.ModelForm):
     doc7 = forms.FileField(label='Документ', required=False)
     doc8 = forms.FileField(label='Документ', required=False)
 
+    def __init__(self, initial = None, *args, **kwargs):
+        if initial:
+            propose_id = initial.get('propose', None)
+            if propose_id:
+                field = self.base_fields['propose']
+                field.disabled = True
+                field.initial = propose_id
+                field.widget.can_add_related = False
+
+        super().__init__(*args, **kwargs)
+
     def save(self, commit=True):
         change = True
         if not self.instance.id:

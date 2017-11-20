@@ -9,7 +9,11 @@
        {{ inline_admin_formset.opts.verbose_name_plural|capfirst }}
 
        {% if inline_admin_formset.opts.show_view_all_link %}
-           <a href="/admin/{{ inline_admin_formset.opts.opts.app_label }}/{{ inline_admin_formset.opts.opts.model_name }}/?{{ opts.model_name }}_id={{ original.id }}" class="changelink" target="_blank" style="background-color: white;">смотреть все</a>
+           {% if inline_admin_formset.opts.show_view_all_filter_field_name %}
+               <a href="/admin/{{ inline_admin_formset.opts.opts.app_label }}/{{ inline_admin_formset.opts.opts.model_name }}/?{{ inline_admin_formset.opts.show_view_all_filter_field_name }}_id={{ original.id }}" class="changelink" target="_blank" style="background-color: white;">смотреть все</a>
+           {% else %}
+               <a href="/admin/{{ inline_admin_formset.opts.opts.app_label }}/{{ inline_admin_formset.opts.opts.model_name }}/?{{ opts.model_name }}_id={{ original.id }}" class="changelink" target="_blank" style="background-color: white;">смотреть все</a>
+           {% endif %}
        {% endif %}
        {% if inline_admin_formset.opts.has_alter_add_url %}
            <a href="{{ inline_admin_formset.opts |alter_add_url:original }}" class="addlink" target="_blank" style="background-color: white;">создать</a>
