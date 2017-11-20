@@ -410,13 +410,6 @@ class BankGuaranteeProduct(FinanceProduct):
             _admin_issue_fieldset_issuer_part,
             _admin_issue_fieldset_issuer_head_part,
 
-            ('Сведения об организаторе тендера', dict(classes=('collapse',), fields=(
-                'tender_responsible_full_name',
-                'tender_responsible_legal_address',
-                'tender_responsible_ogrn',
-                'tender_responsible_inn',
-                'tender_responsible_kpp',
-            ))),
         ]
 
         tender_responsible_fields_part = (
