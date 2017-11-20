@@ -85,7 +85,9 @@ class IssueDocumentInlineAdmin(TabularInline):
 
         formset = super().get_formset(request, obj, **kwargs)
         if request.user.has_perm('marer.change_issue'):
-            pass
+            for field_name in formset.form.base_fields:
+                field = formset.form.base_fields[field_name]
+                field.disabled = False
         elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
             for field_name in formset.form.base_fields:
                 field = formset.form.base_fields[field_name]
@@ -346,7 +348,9 @@ class IssueBGProdAffiliateInlineAdmin(TabularInline):
     def get_formset(self, request, obj=None, **kwargs):
         formset = super().get_formset(request, obj, **kwargs)
         if request.user.has_perm('marer.change_issue'):
-            pass
+            for field_name in formset.form.base_fields:
+                field = formset.form.base_fields[field_name]
+                field.disabled = False
         elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
             for field_name in formset.form.base_fields:
                 field = formset.form.base_fields[field_name]
@@ -383,7 +387,9 @@ class IssueBGProdFounderLegalInlineAdmin(TabularInline):
     def get_formset(self, request, obj=None, **kwargs):
         formset = super().get_formset(request, obj, **kwargs)
         if request.user.has_perm('marer.change_issue'):
-            pass
+            for field_name in formset.form.base_fields:
+                field = formset.form.base_fields[field_name]
+                field.disabled = False
         elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
             for field_name in formset.form.base_fields:
                 field = formset.form.base_fields[field_name]
@@ -420,7 +426,9 @@ class IssueBGProdFounderPhysicalInlineAdmin(TabularInline):
     def get_formset(self, request, obj=None, **kwargs):
         formset = super().get_formset(request, obj, **kwargs)
         if request.user.has_perm('marer.change_issue'):
-            pass
+            for field_name in formset.form.base_fields:
+                field = formset.form.base_fields[field_name]
+                field.disabled = False
         elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
             for field_name in formset.form.base_fields:
                 field = formset.form.base_fields[field_name]
@@ -457,7 +465,9 @@ class IssueCreditPledgeInlineAdmin(TabularInline):
     def get_formset(self, request, obj=None, **kwargs):
         formset = super().get_formset(request, obj, **kwargs)
         if request.user.has_perm('marer.change_issue'):
-            pass
+            for field_name in formset.form.base_fields:
+                field = formset.form.base_fields[field_name]
+                field.disabled = False
         elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
             for field_name in formset.form.base_fields:
                 field = formset.form.base_fields[field_name]
@@ -494,7 +504,9 @@ class IssueLeasingProdAssetInlineAdmin(TabularInline):
     def get_formset(self, request, obj=None, **kwargs):
         formset = super().get_formset(request, obj, **kwargs)
         if request.user.has_perm('marer.change_issue'):
-            pass
+            for field_name in formset.form.base_fields:
+                field = formset.form.base_fields[field_name]
+                field.disabled = False
         elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
             for field_name in formset.form.base_fields:
                 field = formset.form.base_fields[field_name]
@@ -531,7 +543,9 @@ class IssueLeasingProdSupplierInlineAdmin(TabularInline):
     def get_formset(self, request, obj=None, **kwargs):
         formset = super().get_formset(request, obj, **kwargs)
         if request.user.has_perm('marer.change_issue'):
-            pass
+            for field_name in formset.form.base_fields:
+                field = formset.form.base_fields[field_name]
+                field.disabled = False
         elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
             for field_name in formset.form.base_fields:
                 field = formset.form.base_fields[field_name]
@@ -568,7 +582,9 @@ class IssueLeasingProdPayRuleInlineAdmin(TabularInline):
     def get_formset(self, request, obj=None, **kwargs):
         formset = super().get_formset(request, obj, **kwargs)
         if request.user.has_perm('marer.change_issue'):
-            pass
+            for field_name in formset.form.base_fields:
+                field = formset.form.base_fields[field_name]
+                field.disabled = False
         elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
             for field_name in formset.form.base_fields:
                 field = formset.form.base_fields[field_name]
@@ -607,7 +623,9 @@ class IssueFactoringBuyerInlineAdmin(StackedInline):
     def get_formset(self, request, obj=None, **kwargs):
         formset = super().get_formset(request, obj, **kwargs)
         if request.user.has_perm('marer.change_issue'):
-            pass
+            for field_name in formset.form.base_fields:
+                field = formset.form.base_fields[field_name]
+                field.disabled = False
         elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
             for field_name in formset.form.base_fields:
                 field = formset.form.base_fields[field_name]
