@@ -361,6 +361,19 @@ class FinanceOrganizationAdmin(ModelAdmin):
     has_conditions.short_description = 'есть условия'
     has_conditions.boolean = True
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.has_perm('marer.change_financeorganization'):
+            pass
+        elif request.user.has_perm('marer.can_change_managed_finance_orgs'):
+            qs = qs.filter(manager=request.user)
+        return qs
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.has_perm('marer.can_change_managed_finance_orgs'):
+            return True
+        return super().has_change_permission(request, obj)
+
 
 @register(models.IssueFinanceOrgProposeClarification)
 class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):

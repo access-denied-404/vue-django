@@ -12,6 +12,7 @@ class FinanceOrganization(models.Model):
         verbose_name_plural = 'финансовые организации'
         permissions = [
             # права менеджеров, управляющих финансовыми организациями
+            ('can_change_managed_finance_orgs', 'Can change managed finance orgs'),
             ('can_change_managed_finance_org_proposes', 'Can change managed finance org proposes'),
             ('can_view_managed_finance_org_proposes_issues', 'Can view managed finance org proposes issues'),
             ('can_add_managed_finance_org_proposes_clarifications', 'Can add managed finance org proposes clarifications'),
