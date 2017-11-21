@@ -77,6 +77,43 @@ class ProfileForm(Form):
     )
 
 
+class ChangePasswordForm(Form):
+    user = None
+
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)
+
+    old_password = fields.CharField(
+        required=True,
+        widget=PasswordInput(attrs={'class': 'form-control'}),
+        label='Старый пароль'
+    )
+    password = fields.CharField(
+        required=True,
+        widget=PasswordInput(attrs={'class': 'form-control'}),
+        label='Новый пароль'
+    )
+    password_repeat = fields.CharField(
+        required=True,
+        widget=PasswordInput(attrs={'class': 'form-control'}),
+        label='Пароль еще раз'
+    )
+
+    def _get_field_data(self, field_name):
+        if self.prefix:
+            return self.data[self.prefix + '-' + field_name]
+        else:
+            return self.data[field_name]
+
+    def is_valid(self):
+        if not self.user.check_password(self._get_field_data('old_password')):
+            self.add_error('old_password', 'Указан неверный старый пароль')
+        if self._get_field_data('password') != self._get_field_data('password_repeat'):
+            self.add_error(None, 'Введенные пароли не совпадают')
+        return super().is_valid()
+
+
 class QuickRequestForm(Form):
 
     product = fields.CharField(

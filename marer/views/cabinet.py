@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 
 from marer import forms
+from marer.forms import ChangePasswordForm
 from marer.models import Issue, Issuer
 from marer.views.mixins import StaticPagesContextMixin
 
@@ -56,17 +57,22 @@ class CabinetProfileView(LoginRequiredMixin, TemplateView):
     template_name = 'marer/cabinet/profile.html'
 
     def get(self, request, *args, **kwargs):
-        profile_form = forms.ProfileForm(initial=dict(
+        profile_form = forms.ProfileForm(prefix='profile', initial=dict(
             first_name=request.user.first_name,
             last_name=request.user.last_name,
             phone=request.user.phone,
         ))
+        password_form = ChangePasswordForm(prefix='password', user=request.user)
         if 'profile_form' not in kwargs:
             kwargs.update(dict(profile_form=profile_form))
+        if 'password_form' not in kwargs:
+            kwargs.update(dict(password_form=password_form))
         return super().get(request=request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        profile_form = forms.ProfileForm(request.POST)
+        profile_form = forms.ProfileForm(request.POST, prefix='profile')
+        password_form = ChangePasswordForm(data=request.POST, prefix='password', user=request.user)
+
         if profile_form.is_valid():
             user = request.user
             user.first_name = profile_form.cleaned_data['first_name']
@@ -76,6 +82,17 @@ class CabinetProfileView(LoginRequiredMixin, TemplateView):
 
             url = reverse('cabinet_profile', args=args, kwargs=kwargs)
             return HttpResponseRedirect(url)
+
+        if password_form.is_valid():
+            request.user.set_password(password_form.cleaned_data['password'])
+            request.user.save()
+
+            url = reverse('cabinet_profile', args=args, kwargs=kwargs)
+            return HttpResponseRedirect(url)
+
         else:
-            kwargs.update(dict(profile_form=profile_form))
+            kwargs.update(dict(
+                profile_form=profile_form,
+                password_form=password_form,
+            ))
             return self.get(request=request, *args, **kwargs)

@@ -29,24 +29,30 @@
 <div class="panel panel-info">
     <div class="panel-heading">Сменить пароль</div>
     <div class="panel-body">
-        <form>
+        <form method="post">
             <div class="form-row">
+                {% csrf_token %}
                 <div class="form-group col-md-12">
-                    <label class="control-label" for="current_password">Текущий пароль</label>
-                    <input name="current_password" class="form-control"/>
+                    <label class="control-label" for="current_password">{{ password_form.old_password.label }}</label>
+                    {{ password_form.old_password }}
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label class="control-label" for="new_password">Новый пароль</label>
-                    <input name="new_password" class="form-control"/>
+                    <label class="control-label" for="new_password">{{ password_form.password.label }}</label>
+                    {{ password_form.password }}
                 </div>
                 <div class="form-group col-md-6">
-                    <label class="control-label" for="new_password_repeat">Новый пароль еще раз</label>
-                    <input name="new_password_repeat" class="form-control"/>
+                    <label class="control-label" for="new_password_repeat">{{ password_form.password_repeat.label }}</label>
+                    {{ password_form.password_repeat }}
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary center-block">Сохранить изменения</button>
+            {% include 'marer/form_errors.html' with form=password_form %}
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary center-block">Сохранить изменения</button>
+                </div>
+            </div>
         </form>
     </div>
 </div>
