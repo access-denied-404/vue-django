@@ -97,9 +97,10 @@ class ShowcasePartnerAdmin(ModelAdmin):
 class IssueAdmin(ModelAdmin):
     list_display = (
         'humanized_id',
-        'user',
+        'shortened_user',
         'product',
         'issuer_name',
+        'issuer_inn',
         'status',
         'get_manager',
         'user_is_broker',
@@ -137,6 +138,16 @@ class IssueAdmin(ModelAdmin):
     user_is_broker.short_description = 'от брокера'
     user_is_broker.admin_order_field = 'user__is_broker'
     user_is_broker.boolean = True
+
+    def shortened_user(self, obj):
+        return '{} {},<br>{}'.format(
+            obj.user.first_name or '',
+            obj.user.last_name or '',
+            obj.user.email or '',
+        )
+    shortened_user.short_description = 'пользователь'
+    shortened_user.admin_order_field = 'user__first_name'
+    shortened_user.allow_tags = True
 
     def get_fieldsets(self, request, obj=None):
         if obj is None:
