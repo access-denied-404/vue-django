@@ -38,3 +38,28 @@ class ManagerListFilter(FieldListFilter):
                 query_string=changelist.get_query_string({self.lookup_kwarg: manager.id}, [self.lookup_kwarg2]),
                 display=manager.get_full_name()
             )
+
+
+class BrokerListFilter(FieldListFilter):
+    def __init__(self, field, request, params, model, model_admin, field_path):
+        self.lookup_kwarg = field_path
+        self.lookup_val = request.GET.get(self.lookup_kwarg)
+        super().__init__(field, request, params, model, model_admin, field_path)
+        self.title = 'брокер'
+
+    def expected_parameters(self):
+        return [self.lookup_kwarg]
+
+    def choices(self, changelist):
+        yield dict(
+            selected=self.lookup_val is None,
+            query_string=changelist.get_query_string({}, [self.lookup_kwarg]),
+            display='Все брокеры и клиенты',
+        )
+        managers = User.objects.filter(is_broker=True).order_by('first_name')
+        for manager in managers:
+            yield dict(
+                selected=(self.lookup_val == str(manager.id)),
+                query_string=changelist.get_query_string({self.lookup_kwarg: manager.id}),
+                display=manager.get_full_name()
+            )

@@ -22,7 +22,7 @@ from django.utils.translation import ugettext_lazy as _
 from mptt.admin import MPTTModelAdmin
 
 from marer import models
-from marer.admin.filters import ManagerListFilter
+from marer.admin.filters import ManagerListFilter, BrokerListFilter
 from marer.admin.forms import IFOPClarificationAddForm, MarerUserChangeForm, UserCreationForm
 from marer.admin.inline import IssueFinanceOrgProposeInlineAdmin, IssueDocumentInlineAdmin, \
     IFOPClarificationInlineAdmin, IFOPClarificationMessageInlineAdmin, \
@@ -102,12 +102,14 @@ class IssueAdmin(ModelAdmin):
         'issuer_name',
         'status',
         'get_manager',
+        'user_is_broker',
         'humanized_sum',
         'created_at',
         'updated_at',
     )
     list_filter = (
         ('user__manager', ManagerListFilter),
+        ('user', BrokerListFilter),
         'product',
         'status',
     )
@@ -129,6 +131,12 @@ class IssueAdmin(ModelAdmin):
         return obj.id
     humanized_id.short_description = 'номер заявки'
     humanized_id.admin_order_field = 'id'
+
+    def user_is_broker(self, obj):
+        return obj.user.is_broker
+    user_is_broker.short_description = 'от брокера'
+    user_is_broker.admin_order_field = 'user__is_broker'
+    user_is_broker.boolean = True
 
     def get_fieldsets(self, request, obj=None):
         if obj is None:
