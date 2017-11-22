@@ -31,6 +31,14 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
+                    {% if request.user.is_staff %}
+                        <li>
+                            <a href="{% url 'admin:index' %}">
+                                <span class="text-primary">Управление</span>
+                                <span class="glyphicon glyphicon-briefcase text-primary"></span>
+                            </a>
+                        </li>
+                    {% endif %}
                     <li>
                         <a href="{% url 'cabinet_requests' %}">
                             <span class="text-primary">{{ request.user.get_full_name }}</span>
