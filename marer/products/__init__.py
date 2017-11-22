@@ -394,13 +394,12 @@ class BankGuaranteeProduct(FinanceProduct):
                 ('bg_sum', 'bg_currency',),
                 ('bg_start_date', 'bg_end_date',),
                 'bg_deadline_date',
-                'bg_type',
+                ('tender_exec_law', 'bg_type',),
             ))),
 
             ('Сведения о тендере', dict(classes=('collapse',), fields=(
                 'tender_gos_number',
                 'tender_placement_type',
-                'tender_exec_law',
                 'tender_publish_date',
                 'tender_start_cost',
                 'tender_contract_type',
@@ -478,6 +477,10 @@ class BankGuaranteeProduct(FinanceProduct):
             interest_rate_field_name = 'bg_185_interest_rate'
         elif self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_COMMERCIAL:
             interest_rate_field_name = 'bg_ct_interest_rate'
+        elif self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_CUSTOMS:
+            interest_rate_field_name = 'bg_customs_interest_rate'
+        elif self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_VAT:
+            interest_rate_field_name = 'bg_vat_interest_rate'
 
         return [
             (interest_rate_field_name, 'Процентная ставка'),
@@ -544,6 +547,22 @@ class BankGuaranteeProduct(FinanceProduct):
                 Q(Q(bg_ct_max_sum__gt=self._issue.sum_not_null)
                   | Q(bg_ct_max_sum__isnull=True)),
                 bg_ct_interest_rate__isnull=False
+            )
+        elif self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_CUSTOMS:
+            final_qs = qs.filter(
+                Q(Q(bg_customs_min_sum__lte=self._issue.sum_not_null)
+                  | Q(bg_customs_min_sum__isnull=True)),
+                Q(Q(bg_customs_max_sum__gt=self._issue.sum_not_null)
+                  | Q(bg_customs_max_sum__isnull=True)),
+                bg_customs_interest_rate__isnull=False
+            )
+        elif self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_VAT:
+            final_qs = qs.filter(
+                Q(Q(bg_vat_min_sum__lte=self._issue.sum_not_null)
+                  | Q(bg_vat_min_sum__isnull=True)),
+                Q(Q(bg_vat_max_sum__gt=self._issue.sum_not_null)
+                  | Q(bg_vat_max_sum__isnull=True)),
+                bg_vat_interest_rate__isnull=False
             )
 
         return final_qs

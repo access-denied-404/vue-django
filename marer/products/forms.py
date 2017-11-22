@@ -21,6 +21,8 @@ class BGFinProdRegForm(Form):
         (consts.TENDER_EXEC_LAW_223_FZ, '223-ФЗ'),
         (consts.TENDER_EXEC_LAW_185_FZ, '185-ФЗ'),
         (consts.TENDER_EXEC_LAW_COMMERCIAL, 'Коммерческий'),
+        (consts.TENDER_EXEC_LAW_CUSTOMS, 'Таможенная'),
+        (consts.TENDER_EXEC_LAW_VAT, 'Возврат НДС'),
     ])
     tender_publish_date = DateField(required=False)
     tender_start_cost = DecimalField(decimal_places=2, required=False, localize=True)

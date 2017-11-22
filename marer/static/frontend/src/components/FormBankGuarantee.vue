@@ -2,6 +2,33 @@
   <div class="form-bank-guarantee">
 
     <div class="panel panel-info">
+      <div class="panel-heading">Вид банковской гарантии</div>
+      <div class="panel-body">
+
+    <div class="row">
+      <div class="col-md-12 text-center1">
+        <bs3-radio-field
+          :name="'tender_exec_law'"
+          v-model="tender_exec_law"
+          label=""
+          :options="[
+            {value: '44-fz', text:'44-ФЗ'},
+            {value: '185-fz', text:'185-ФЗ'},
+            {value: '223-fz', text:'223-ФЗ'},
+            {value: 'commercial', text:'Коммерческая'},
+            {value: 'customs', text: 'Таможенная'},
+            {value: 'vat', text: 'Возврат НДС'}
+          ]"
+          :cols="4"
+        ></bs3-radio-field>
+        <!--<br/>-->
+      </div>
+    </div>
+
+      </div>
+    </div>
+
+    <div class="panel panel-info">
       <div class="panel-heading">Сведения об истребуемой гарантии</div>
       <div class="panel-body">
         <div class="row">
@@ -9,32 +36,15 @@
           <div class="col-md-8">
 
             <div class="row">
-              <div class="col-md-6"><bs-input :name="'bg_sum'" v-model="bg_sum" label="Требуемая сумма БГ" :mask="currency"></bs-input></div>
-              <div class="col-md-6"><bs3-select-field v-model="bg_currency" :name="'bg_currency'" :label="'Валюта'" :options="[{value: 'rur', text:'Рубль'},{value: 'usd', text:'Доллар'},{value: 'eur', text:'Евро'}]"></bs3-select-field></div>
+              <div class="col-md-4"><bs-input :name="'bg_sum'" v-model="bg_sum" label="Требуемая сумма" :mask="currency"></bs-input></div>
+              <div class="col-md-3"><bs3-select-field v-model="bg_currency" :name="'bg_currency'" :label="'Валюта'" :options="[{value: 'rur', text:'Рубль'},{value: 'usd', text:'Доллар'},{value: 'eur', text:'Евро'}]"></bs3-select-field></div>
+              <div class="col-md-5"><label>Крайний срок выдачи</label><date-time-picker :name="'bg_deadline_date'" v-model="bg_deadline_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div>
             </div>
 
             <div class="row">
               <div class="col-md-4"><div class="form-group"><label>Сроки БГ с</label><date-time-picker :name="'bg_start_date'" v-model="bg_start_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div></div>
               <div class="col-md-4"><div class="form-group"><label>Сроки БГ по</label><date-time-picker :name="'bg_end_date'" v-model="bg_end_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div></div>
               <div class="col-md-4"><bs-input :name="'date_range'" v-model="date_range" label="Срок БГ, дней" readonly></bs-input></div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-6"><label>Крайний срок выдачи</label><date-time-picker :name="'bg_deadline_date'" v-model="bg_deadline_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div>
-              <div class="col-md-6">
-                <bs3-radio-field
-                  :name="'tender_exec_law'"
-                  :cols="2"
-                  v-model="tender_exec_law"
-                  label="Вид гарантии"
-                  :options="[
-                    {value: '44-fz', text:'44-ФЗ'},
-                    {value: '185-fz', text:'185-ФЗ'},
-                    {value: '223-fz', text:'223-ФЗ'},
-                    {value: 'commercial', text:'Коммерческая'}
-                  ]"
-                ></bs3-radio-field>
-              </div>
             </div>
 
           </div>
@@ -64,7 +74,7 @@
       </div>
     </div>
 
-    <div class="panel panel-info" v-else="is_tender_info_panel_visible">
+    <div class="panel panel-info" v-if="is_contract_info_panel_visible">
       <div class="panel-heading">Сведения о контракте</div>
       <div class="panel-body">
 
@@ -83,9 +93,9 @@
       </div>
     </div>
 
-    <div class="panel panel-info">
+    <div class="panel panel-info" v-if="is_tender_info_panel_visible || is_contract_info_panel_visible">
       <div class="panel-heading" v-if="is_tender_info_panel_visible">Сведения об организаторе тендера</div>
-      <div class="panel-heading" v-else="is_tender_info_panel_visible">Сведения о заказчике</div>
+      <div class="panel-heading" v-if="is_contract_info_panel_visible">Сведения о заказчике</div>
       <div class="panel-body">
         <div class="row">
           <div class="col-md-12"><bs-input :name="'tender_responsible_full_name'" v-model="tender_responsible_full_name" label="Наименование — полное наименование организации"></bs-input></div>
@@ -162,7 +172,8 @@
           bg_commercial_contract_sign_date: moment(regData.formdata.bg_commercial_contract_sign_date, dateformat),
           bg_commercial_contract_end_date: moment(regData.formdata.bg_commercial_contract_end_date, dateformat),
 
-          is_tender_info_panel_visible: true
+          is_tender_info_panel_visible: true,
+          is_contract_info_panel_visible: false
         }
       } else {
         return {
@@ -197,7 +208,8 @@
           bg_commercial_contract_sign_date: '',
           bg_commercial_contract_end_date: '',
 
-          is_tender_info_panel_visible: true
+          is_tender_info_panel_visible: true,
+          is_contract_info_panel_visible: false
         }
       }
     },
@@ -245,10 +257,12 @@
       }, 1000),
       tender_exec_law: _.debounce(function () {
         this.is_tender_info_panel_visible = this.get_if_tender_info_panel_visible()
+        this.is_contract_info_panel_visible = this.get_is_contract_info_panel_visible()
       }, 200)
     },
     mounted () {
       this.is_tender_info_panel_visible = this.get_if_tender_info_panel_visible()
+      this.is_contract_info_panel_visible = this.get_is_contract_info_panel_visible()
     },
     methods: {
       bg_currency (value) {
@@ -266,6 +280,9 @@
         return this.tender_exec_law === '44-fz' ||
           this.tender_exec_law === '223-fz' ||
           this.tender_exec_law === '185-fz'
+      },
+      get_is_contract_info_panel_visible () {
+        return this.tender_exec_law === 'commercial'
       }
     }
   }

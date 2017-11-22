@@ -71,11 +71,13 @@ class Issue(models.Model):
 
     tender_gos_number = models.CharField(verbose_name='госномер или ссылка на тендер', max_length=512, blank=True, null=False, default='')
     tender_placement_type = models.CharField(verbose_name='способ определения поставщика в тендере', max_length=32, blank=True, null=False, default='')
-    tender_exec_law = models.CharField(verbose_name='закон исполнения тендера', max_length=32, blank=True, null=True, choices=[
+    tender_exec_law = models.CharField(verbose_name='вид банковской гарантии', max_length=32, blank=True, null=True, choices=[
         (consts.TENDER_EXEC_LAW_44_FZ, '44-ФЗ'),
         (consts.TENDER_EXEC_LAW_223_FZ, '223-ФЗ'),
         (consts.TENDER_EXEC_LAW_185_FZ, '185-ФЗ'),
         (consts.TENDER_EXEC_LAW_COMMERCIAL, 'Коммерческий'),
+        (consts.TENDER_EXEC_LAW_CUSTOMS, 'Таможенная'),
+        (consts.TENDER_EXEC_LAW_VAT, 'Возврат НДС'),
     ])
     tender_publish_date = models.DateField(verbose_name='дата публикации тендера', blank=True, null=True)
     tender_start_cost = models.DecimalField(verbose_name='начальная цена тендера', max_digits=12, decimal_places=2, blank=True, null=True)
