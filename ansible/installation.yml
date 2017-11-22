@@ -17,6 +17,7 @@
         - npm
         - nginx
         - uwsgi
+        - uwsgi-plugin-python3
         - gettext
       become: true
 
