@@ -87,6 +87,11 @@ class NewsPageAdmin(ModelAdmin):
         ))),
     )
 
+    list_display = (
+        'name',
+        'published_at'
+    )
+
 
 @register(models.ShowcasePartner)
 class ShowcasePartnerAdmin(ModelAdmin):
