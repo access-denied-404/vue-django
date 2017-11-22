@@ -24,7 +24,7 @@ class FinanceProductPage(mptt_models.MPTTModel):
 
     name = models.CharField(verbose_name=_('finance product name'), max_length=512, blank=False, null=False)
     template = models.CharField(
-        verbose_name=_('finance product page template'),
+        verbose_name='особый шаблон страницы',
         choices=[
             ('marer/product_custom_bg.html', 'Специальный шаблон для банковских гарантий'),
             ('marer/product_custom_credit.html', 'Специальный шаблон для кредитов'),
@@ -130,35 +130,35 @@ class StaticPage(models.Model):
 class NewsPage(models.Model):
 
     class Meta:
-        verbose_name = _('news page')
-        verbose_name_plural = _('news pages')
+        verbose_name = 'новость'
+        verbose_name_plural = 'новости'
         ordering = ['-published_at']
 
-    published_at = models.DateTimeField(verbose_name=_('news publish date and time'), blank=False, null=False)
+    published_at = models.DateTimeField(verbose_name='дата и время публикации новости', blank=False, null=False)
     picture = models.ImageField(
-        verbose_name=_('news picture'),
+        verbose_name='картинка к новости',
         upload_to=news_pictures_upload_path,
         blank=True,
         null=True
     )
-    name = models.CharField(verbose_name=_('news name'), max_length=512, blank=False, null=False)
-    _seo_h1 = models.CharField(verbose_name=_('name on page'), max_length=512, blank=True, null=False, default='')
-    _seo_title = models.CharField(verbose_name=_('browser title'), max_length=512, blank=True, null=False, default='')
+    name = models.CharField(verbose_name='название новости', max_length=512, blank=False, null=False)
+    _seo_h1 = models.CharField(verbose_name='название на странице', max_length=512, blank=True, null=False, default='')
+    _seo_title = models.CharField(verbose_name='заголовок браузера', max_length=512, blank=True, null=False, default='')
     _seo_description = models.CharField(
-        verbose_name=_('page desctiption'),
+        verbose_name='описание страницы',
         max_length=512,
         blank=True,
         null=False,
         default=''
     )
     _seo_keywords = models.CharField(
-        verbose_name=_('page keywords'),
+        verbose_name='ключевые слова страницы',
         max_length=512,
         blank=True,
         null=False,
         default=''
     )
-    page_content = RichTextField(verbose_name=_('news content'), blank=True, null=False, default='')
+    page_content = RichTextField(verbose_name='текст новости', blank=True, null=False, default='')
 
     def __str__(self):
         return self.name
@@ -173,17 +173,17 @@ class NewsPage(models.Model):
 class ShowcasePartner(models.Model):
 
     class Meta:
-        verbose_name = _('partners logo')
-        verbose_name_plural = _('partners logos')
+        verbose_name = 'логотип партнера'
+        verbose_name_plural = 'логотипы партнеров'
 
     logo = models.ImageField(
-        verbose_name=_('logo'),
+        verbose_name='логотип',
         upload_to=showcase_partners_logos_upload_path,
         blank=True,
         null=True
     )
-    name = models.CharField(verbose_name=_('partner name'), max_length=512, blank=False, null=False)
-    category = models.CharField(verbose_name=_('partner category'), max_length=32, blank=False, null=False, choices=[
+    name = models.CharField(verbose_name='наименование', max_length=512, blank=False, null=False)
+    category = models.CharField(verbose_name='категория', max_length=32, blank=False, null=False, choices=[
         (consts.SHOWCASE_PARTNERS_CATEGORY_BANKS, 'Банки'),
         (consts.SHOWCASE_PARTNERS_CATEGORY_INSURANCE, 'Страховые'),
         (consts.SHOWCASE_PARTNERS_CATEGORY_LEASING_FACTORING, 'Лизинговые и факторинговые'),
