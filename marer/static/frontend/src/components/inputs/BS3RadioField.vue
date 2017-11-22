@@ -1,19 +1,24 @@
 <template>
-  <div class="form-group">
+  <div v-if="cols > 0">
+    <div class="form-group">
+      <label>
+        <slot name="label">{{label}}</slot>
+      </label>
+      <div class="row">
+        <div v-for="option in options" :class="colClass">
+          <radio v-model="selected" :name="name" :selected-value="option.value" type="primary" :button="button">{{ option.text }}</radio>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div v-else>
     <label>
       <slot name="label">{{label}}</slot>
     </label>
-    <div class="row">
-      <div v-for="option in options" :class="colClass">
-        <radio v-model="selected" :name="name" :selected-value="option.value" type="primary">{{ option.text }}</radio>
-      </div>
+    <div>
+      <radio v-for="option in options" v-model="selected" :name="name" :selected-value="option.value" type="primary" :button="button">{{ option.text }}</radio>
     </div>
-
-
-
-
   </div>
-
 </template>
 
 <script>
@@ -22,7 +27,7 @@
     components: {
       'radio': radio
     },
-    props: ['name', 'value', 'label', 'options', 'cols'],
+    props: ['name', 'value', 'label', 'options', 'cols', 'button'],
     computed: {
       selected: {
         get () {
