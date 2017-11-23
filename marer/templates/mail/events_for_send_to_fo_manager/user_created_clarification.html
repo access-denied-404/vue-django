@@ -7,7 +7,7 @@
             <p>Пользователь {{ user_full_name }} создал дозапрос по предложенной в Ваш банк заявке</p>
             <p>
                 Номер заявки:
-                <a href="http://marer.ru{% url 'admin:marer_issue_change' issue_id %}">
+                <a href="http://sgbmarertest.ru{% url 'admin:marer_issue_change' issue_id %}">
                     <strong>{{ issue_number }}</strong>
                 </a>
             </p>
@@ -15,7 +15,7 @@
             <p>Банковский продукт: <strong>{{ finance_product }}</strong></p>
             <p>Финансовая организация: <strong>{{ finance_org_name }}</strong></p>
             <p>
-                <a href="http://marer.ru{% url 'admin:marer_issuefinanceorgproposeclarification_change' clarification_id %}">
+                <a href="http://sgbmarertest.ru{% url 'admin:marer_issuefinanceorgproposeclarification_change' clarification_id %}">
                     Ссылка на дозапрос
                 </a>
             </p>
