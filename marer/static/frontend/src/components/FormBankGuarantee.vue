@@ -28,38 +28,6 @@
       </div>
     </div>
 
-    <div class="panel panel-info">
-      <div class="panel-heading">Сведения об истребуемой гарантии</div>
-      <div class="panel-body">
-        <div class="row">
-
-          <div class="col-md-8">
-
-            <div class="row">
-              <div class="col-md-4"><bs-input :name="'bg_sum'" v-model="bg_sum" label="Требуемая сумма" :mask="currency"></bs-input></div>
-              <div class="col-md-3"><bs3-select-field v-model="bg_currency" :name="'bg_currency'" :label="'Валюта'" :options="[{value: 'rur', text:'Рубль'},{value: 'usd', text:'Доллар'},{value: 'eur', text:'Евро'}]"></bs3-select-field></div>
-              <div class="col-md-5"><label>Крайний срок выдачи</label><date-time-picker :name="'bg_deadline_date'" v-model="bg_deadline_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-4"><div class="form-group"><label>Сроки БГ с</label><date-time-picker :name="'bg_start_date'" v-model="bg_start_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div></div>
-              <div class="col-md-4"><div class="form-group"><label>Сроки БГ по</label><date-time-picker :name="'bg_end_date'" v-model="bg_end_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div></div>
-              <div class="col-md-4"><bs-input :name="'date_range'" v-model="date_range" label="Срок БГ, дней" readonly></bs-input></div>
-            </div>
-
-          </div>
-
-          <div class="col-md-4">
-            <bs3-radio-field v-if="is_tender_info_panel_visible" :name="'bg_type'" v-model="bg_type" label="Тип БГ" :options="[{value: 'contract_execution', text:'Исполнение контракта'}, {value:'application_ensure', text:'Обеспечение заявки'}]"></bs3-radio-field>
-            <bs3-radio-field :name="'tender_contract_type'" v-model="tender_contract_type" label="Тип контракта" :options="[{value: 'supply', text:'поставка товара'},{value: 'service', text:'оказание услуг'},{value: 'works', text:'выполнение работ'}]"></bs3-radio-field>
-            <checkbox :name="'tender_has_prepayment'" v-model="tender_has_prepayment" type="primary">Наличие аванса</checkbox>
-          </div>
-
-        </div>
-
-      </div>
-    </div>
-
     <div class="panel panel-info" v-if="is_tender_info_panel_visible">
       <div class="panel-heading">Сведения о тендере</div>
       <div class="panel-body">
@@ -88,6 +56,38 @@
           <div class="col-md-4"><bs-input :name="'bg_commercial_contract_sum'" v-model="bg_commercial_contract_sum" label="Сумма контракта"></bs-input></div>
           <div class="col-md-4"><label>Дата заключения договора</label><date-time-picker :name="'bg_commercial_contract_sign_date'" v-model="bg_commercial_contract_sign_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div>
           <div class="col-md-4"><label>Дата завершения договора</label><date-time-picker :name="'bg_commercial_contract_end_date'" v-model="bg_commercial_contract_end_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="panel panel-info">
+      <div class="panel-heading">Сведения об истребуемой гарантии</div>
+      <div class="panel-body">
+        <div class="row">
+
+          <div class="col-md-8">
+
+            <div class="row">
+              <div class="col-md-4"><bs-input :name="'bg_sum'" v-model="bg_sum" label="Требуемая сумма" :mask="currency"></bs-input></div>
+              <div class="col-md-3"><bs3-select-field v-model="bg_currency" :name="'bg_currency'" :label="'Валюта'" :options="[{value: 'rur', text:'Рубль'},{value: 'usd', text:'Доллар'},{value: 'eur', text:'Евро'}]"></bs3-select-field></div>
+              <div class="col-md-5"><label>Крайний срок выдачи</label><date-time-picker :name="'bg_deadline_date'" v-model="bg_deadline_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-4"><div class="form-group"><label>Сроки БГ с</label><date-time-picker :name="'bg_start_date'" v-model="bg_start_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div></div>
+              <div class="col-md-4"><div class="form-group"><label>Сроки БГ по</label><date-time-picker :name="'bg_end_date'" v-model="bg_end_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div></div>
+              <div class="col-md-4"><bs-input :name="'date_range'" v-model="date_range" label="Срок БГ, дней" readonly></bs-input></div>
+            </div>
+
+          </div>
+
+          <div class="col-md-4">
+            <bs3-radio-field v-if="is_tender_info_panel_visible" :name="'bg_type'" v-model="bg_type" label="Тип БГ" :options="[{value: 'contract_execution', text:'Исполнение контракта'}, {value:'application_ensure', text:'Обеспечение заявки'}]"></bs3-radio-field>
+            <bs3-radio-field :name="'tender_contract_type'" v-model="tender_contract_type" label="Тип контракта" :options="[{value: 'supply', text:'поставка товара'},{value: 'service', text:'оказание услуг'},{value: 'works', text:'выполнение работ'}]"></bs3-radio-field>
+            <checkbox :name="'tender_has_prepayment'" v-model="tender_has_prepayment" type="primary">Наличие аванса</checkbox>
+          </div>
+
         </div>
 
       </div>
