@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.admin import StackedInline, TabularInline
+from django.contrib.admin.options import InlineModelAdmin
 from django.db.models import TextField
 from django.forms import BaseInlineFormSet
 
@@ -11,6 +12,46 @@ from marer.models.issue import IssueFinanceOrgProposeFormalizeDocument, IssueFin
     IssueBGProdAffiliate, IssueBGProdFounderLegal, IssueBGProdFounderPhysical, IssueCreditPledge, \
     IssueFinanceOrgProposeDocument, IssueLeasingProdAsset, IssueLeasingProdSupplier, IssueLeasingProdPayRule, \
     IssueFactoringBuyer
+
+
+class IssueInlineFormsetAdmin(InlineModelAdmin):
+
+    def has_add_permission(self, request):
+        if request.user.has_perm('marer.can_change_managed_users_issues'):
+            return True
+        return super().has_add_permission(request)
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.has_perm('marer.can_change_managed_users_issues'):
+            if obj is None:
+                return True
+            elif obj.user.manager_id == request.user.id:
+                return True
+        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
+            return True
+        return super().has_change_permission(request, obj)
+
+    def has_delete_permission(self, request, obj=None):
+        if request.user.has_perm('marer.can_change_managed_users_issues'):
+            return True
+        return super().has_delete_permission(request, obj)
+
+    def get_formset(self, request, obj=None, **kwargs):
+        formset = super().get_formset(request, obj, **kwargs)
+        if request.user.has_perm('marer.change_issue'):
+            for field_name in formset.form.base_fields:
+                field = formset.form.base_fields[field_name]
+                field.disabled = False
+        if request.user.has_perm('marer.can_change_managed_users_issues'):
+            for field_name in formset.form.base_fields:
+                field = formset.form.base_fields[field_name]
+                field.disabled = False
+        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
+            for field_name in formset.form.base_fields:
+                field = formset.form.base_fields[field_name]
+                field.disabled = True
+
+        return formset
 
 
 class IssueFinanceOrgProposeFormSet(BaseInlineFormSet):
@@ -69,7 +110,7 @@ class IssueFinanceOrgProposeInlineAdmin(TabularInline):
         )
 
 
-class IssueDocumentInlineAdmin(TabularInline):
+class IssueDocumentInlineAdmin(TabularInline, IssueInlineFormsetAdmin):
     extra = 0
     fields = (
         'code',
@@ -83,41 +124,7 @@ class IssueDocumentInlineAdmin(TabularInline):
             choices = [(None, '---------')] + [(ch.code, ch.name) for ch in obj.get_product().get_documents_list()]
             self.form.declared_fields['code'].widget.choices = choices
 
-        formset = super().get_formset(request, obj, **kwargs)
-        if request.user.has_perm('marer.change_issue'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = False
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = False
-        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = True
-
-        return formset
-
-    def has_add_permission(self, request):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            return True
-        return super().has_add_permission(request)
-
-    def has_change_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            if obj is None:
-                return True
-            elif obj.user.manager_id == request.user.id:
-                return True
-        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
-            return True
-        return super().has_change_permission(request, obj)
-
-    def has_delete_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            return True
-        return super().has_delete_permission(request, obj)
+        return super().get_formset(request, obj, **kwargs)
 
 
 class IFOPClarificationInlineAdmin(TabularInline):
@@ -324,347 +331,49 @@ class IFOPClarificationMessageInlineAdmin(StackedInline):
     }
 
 
-class IssueBGProdAffiliateInlineAdmin(TabularInline):
+class IssueBGProdAffiliateInlineAdmin(TabularInline, IssueInlineFormsetAdmin):
     extra = 0
     model = IssueBGProdAffiliate
     classes = ('collapse',)
 
-    def has_add_permission(self, request):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            return True
-        return super().has_add_permission(request)
 
-    def has_change_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            if obj is None:
-                return True
-            elif obj.user.manager_id == request.user.id:
-                return True
-        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
-            return True
-        return super().has_change_permission(request, obj)
-
-    def has_delete_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            return True
-        return super().has_delete_permission(request, obj)
-
-    def get_formset(self, request, obj=None, **kwargs):
-        formset = super().get_formset(request, obj, **kwargs)
-        if request.user.has_perm('marer.change_issue'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = False
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = False
-        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = True
-
-        return formset
-
-
-class IssueBGProdFounderLegalInlineAdmin(TabularInline):
+class IssueBGProdFounderLegalInlineAdmin(TabularInline, IssueInlineFormsetAdmin):
     extra = 0
     model = IssueBGProdFounderLegal
     classes = ('collapse',)
 
-    def has_add_permission(self, request):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            return True
-        return super().has_add_permission(request)
 
-    def has_change_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            if obj is None:
-                return True
-            elif obj.user.manager_id == request.user.id:
-                return True
-        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
-            return True
-        return super().has_change_permission(request, obj)
-
-    def has_delete_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            return True
-        return super().has_delete_permission(request, obj)
-
-    def get_formset(self, request, obj=None, **kwargs):
-        formset = super().get_formset(request, obj, **kwargs)
-        if request.user.has_perm('marer.change_issue'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = False
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = False
-        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = True
-
-        return formset
-
-
-class IssueBGProdFounderPhysicalInlineAdmin(TabularInline):
+class IssueBGProdFounderPhysicalInlineAdmin(TabularInline, IssueInlineFormsetAdmin):
     extra = 0
     model = IssueBGProdFounderPhysical
     classes = ('collapse',)
 
-    def has_add_permission(self, request):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            return True
-        return super().has_add_permission(request)
 
-    def has_change_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            if obj is None:
-                return True
-            elif obj.user.manager_id == request.user.id:
-                return True
-        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
-            return True
-        return super().has_change_permission(request, obj)
-
-    def has_delete_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            return True
-        return super().has_delete_permission(request, obj)
-
-    def get_formset(self, request, obj=None, **kwargs):
-        formset = super().get_formset(request, obj, **kwargs)
-        if request.user.has_perm('marer.change_issue'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = False
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = False
-        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = True
-
-        return formset
-
-
-class IssueCreditPledgeInlineAdmin(TabularInline):
+class IssueCreditPledgeInlineAdmin(TabularInline, IssueInlineFormsetAdmin):
     extra = 0
     model = IssueCreditPledge
     classes = ('collapse',)
 
-    def has_add_permission(self, request):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            return True
-        return super().has_add_permission(request)
 
-    def has_change_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            if obj is None:
-                return True
-            elif obj.user.manager_id == request.user.id:
-                return True
-        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
-            return True
-        return super().has_change_permission(request, obj)
-
-    def has_delete_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            return True
-        return super().has_delete_permission(request, obj)
-
-    def get_formset(self, request, obj=None, **kwargs):
-        formset = super().get_formset(request, obj, **kwargs)
-        if request.user.has_perm('marer.change_issue'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = False
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = False
-        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = True
-
-        return formset
-
-
-class IssueLeasingProdAssetInlineAdmin(TabularInline):
+class IssueLeasingProdAssetInlineAdmin(TabularInline, IssueInlineFormsetAdmin):
     extra = 0
     model = IssueLeasingProdAsset
     classes = ('collapse',)
 
-    def has_add_permission(self, request):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            return True
-        return super().has_add_permission(request)
 
-    def has_change_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            if obj is None:
-                return True
-            elif obj.user.manager_id == request.user.id:
-                return True
-        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
-            return True
-        return super().has_change_permission(request, obj)
-
-    def has_delete_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            return True
-        return super().has_delete_permission(request, obj)
-
-    def get_formset(self, request, obj=None, **kwargs):
-        formset = super().get_formset(request, obj, **kwargs)
-        if request.user.has_perm('marer.change_issue'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = False
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = False
-        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = True
-
-        return formset
-
-
-class IssueLeasingProdSupplierInlineAdmin(TabularInline):
+class IssueLeasingProdSupplierInlineAdmin(TabularInline, IssueInlineFormsetAdmin):
     extra = 0
     model = IssueLeasingProdSupplier
     classes = ('collapse',)
 
-    def has_add_permission(self, request):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            return True
-        return super().has_add_permission(request)
 
-    def has_change_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            if obj is None:
-                return True
-            elif obj.user.manager_id == request.user.id:
-                return True
-        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
-            return True
-        return super().has_change_permission(request, obj)
-
-    def has_delete_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            return True
-        return super().has_delete_permission(request, obj)
-
-    def get_formset(self, request, obj=None, **kwargs):
-        formset = super().get_formset(request, obj, **kwargs)
-        if request.user.has_perm('marer.change_issue'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = False
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = False
-        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = True
-
-        return formset
-
-
-class IssueLeasingProdPayRuleInlineAdmin(TabularInline):
+class IssueLeasingProdPayRuleInlineAdmin(TabularInline, IssueInlineFormsetAdmin):
     extra = 0
     model = IssueLeasingProdPayRule
     classes = ('collapse',)
 
-    def has_add_permission(self, request):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            return True
-        return super().has_add_permission(request)
 
-    def has_change_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            if obj is None:
-                return True
-            elif obj.user.manager_id == request.user.id:
-                return True
-        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
-            return True
-        return super().has_change_permission(request, obj)
-
-    def has_delete_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            return True
-        return super().has_delete_permission(request, obj)
-
-    def get_formset(self, request, obj=None, **kwargs):
-        formset = super().get_formset(request, obj, **kwargs)
-        if request.user.has_perm('marer.change_issue'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = False
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = False
-        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = True
-
-        return formset
-
-
-class IssueFactoringBuyerInlineAdmin(StackedInline):
+class IssueFactoringBuyerInlineAdmin(StackedInline, IssueInlineFormsetAdmin):
     extra = 0
     model = IssueFactoringBuyer
     classes = ('collapse',)
-
-    # fields = ()
-
-    def has_add_permission(self, request):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            return True
-        return super().has_add_permission(request)
-
-    def has_change_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            if obj is None:
-                return True
-            elif obj.user.manager_id == request.user.id:
-                return True
-        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
-            return True
-        return super().has_change_permission(request, obj)
-
-    def has_delete_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            return True
-        return super().has_delete_permission(request, obj)
-
-    def get_formset(self, request, obj=None, **kwargs):
-        formset = super().get_formset(request, obj, **kwargs)
-        if request.user.has_perm('marer.change_issue'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = False
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = False
-        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
-            for field_name in formset.form.base_fields:
-                field = formset.form.base_fields[field_name]
-                field.disabled = True
-
-        return formset
