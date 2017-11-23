@@ -9,11 +9,10 @@ from django.views.generic import TemplateView
 from marer import forms
 from marer.forms import ChangePasswordForm
 from marer.models import Issue, Issuer
-from marer.views.mixins import StaticPagesContextMixin
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class CabinetRequestsView(LoginRequiredMixin, TemplateView, StaticPagesContextMixin):
+class CabinetRequestsView(LoginRequiredMixin, TemplateView):
     template_name = 'marer/cabinet/requests.html'
 
     def get(self, request, *args, **kwargs):

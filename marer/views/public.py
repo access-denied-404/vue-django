@@ -8,9 +8,8 @@ from django.views.generic import TemplateView
 
 from marer import consts
 from marer.forms import QuickRequestForm
-from marer.models import User, Issuer, Issue, FinanceProductPage, NewsPage, ShowcasePartner, StaticPage
+from marer.models import User, Issuer, Issue
 from marer.utils.notify import notify_user_manager_about_user_created_issue
-from marer.views.mixins import StaticPagesContextMixin, FinanceProductsRootsMixin
 
 
 class QuickRequestFormContextMixin(TemplateView):
@@ -139,81 +138,3 @@ class QuickRequestFormContextMixin(TemplateView):
         else:
             kwargs.update(dict(quick_request_form=quick_request_form))
             return self.get(request, *args, **kwargs)
-
-
-class IndexView(StaticPagesContextMixin, QuickRequestFormContextMixin, FinanceProductsRootsMixin):
-    template_name = 'marer/index.html'
-
-    def get(self, request, *args, **kwargs):
-        best_finance_products = FinanceProductPage.objects.filter(
-            product_icon__isnull=False
-        ).exclude(
-            product_icon=''
-        ).order_by('?')[:6]
-
-        last_news = NewsPage.objects.order_by('-published_at')[:4]
-
-        partners_banks_portions = self._fill_partners_portions(consts.SHOWCASE_PARTNERS_CATEGORY_BANKS)
-        partners_insurance_portions = self._fill_partners_portions(consts.SHOWCASE_PARTNERS_CATEGORY_INSURANCE)
-        partners_lf_portions = self._fill_partners_portions(consts.SHOWCASE_PARTNERS_CATEGORY_LEASING_FACTORING)
-        partners_gpf_portions = self._fill_partners_portions(consts.SHOWCASE_PARTNERS_CATEGORY_GOS_PUB_FOUNDATIONS)
-
-        context_part = dict(
-            best_finance_products=best_finance_products,
-            last_news=last_news,
-
-            partners_banks_portions=partners_banks_portions,
-            partners_insurance_portions=partners_insurance_portions,
-            partners_lf_portions=partners_lf_portions,
-            partners_gpf_portions=partners_gpf_portions,
-        )
-        kwargs.update(context_part)
-        return super().get(request, *args, **kwargs)
-
-    def _fill_partners_portions(self, category):
-        partners_portion_size = 8
-
-        partners = ShowcasePartner.objects.filter(category=category)
-        partners = [p for p in partners]
-        partners_banks_portions = []
-        while len(partners) > 0:
-            portion = partners[0:partners_portion_size]
-            partners_banks_portions.append(portion)
-            for pobj in portion:
-                partners.remove(pobj)
-
-        if len(partners_banks_portions) == 1 and len(partners_banks_portions[0]) == partners_portion_size:
-            partners_banks_portions.append(partners_banks_portions[0])
-
-        return partners_banks_portions
-
-
-class FinanceProductView(StaticPagesContextMixin, QuickRequestFormContextMixin, FinanceProductsRootsMixin):
-    template_name = 'marer/product.html'
-
-    def get(self, request, *args, **kwargs):
-        product = get_object_or_404(FinanceProductPage, id=kwargs.get('pid', 0))
-        if product.template is not None:
-            self.template_name = product.template
-        kwargs['product'] = product
-        return super().get(request, *args, **kwargs)
-
-
-class StaticPageView(StaticPagesContextMixin, QuickRequestFormContextMixin, FinanceProductsRootsMixin):
-    template_name = 'marer/static_page.html'
-
-    def get(self, request, *args, **kwargs):
-        static_page_id = kwargs.get('spid', 0)
-        static_page = get_object_or_404(StaticPage, id=static_page_id)
-        kwargs['static_page'] = static_page
-        return super().get(request, *args, **kwargs)
-
-
-class NewsPageView(StaticPagesContextMixin, QuickRequestFormContextMixin, FinanceProductsRootsMixin):
-    template_name = 'marer/news_page.html'
-
-    def get(self, request, *args, **kwargs):
-        news_page_id = kwargs.get('npid', 0)
-        news_page = get_object_or_404(NewsPage, id=news_page_id)
-        kwargs['news_page'] = news_page
-        return super().get(request, *args, **kwargs)

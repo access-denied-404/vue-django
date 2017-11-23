@@ -19,7 +19,6 @@ from django.utils.encoding import force_text
 from django.utils.html import escape
 from django.utils.timezone import localtime
 from django.utils.translation import ugettext_lazy as _
-from mptt.admin import MPTTModelAdmin
 
 from marer import models
 from marer.admin.filters import ManagerListFilter, BrokerListFilter
@@ -36,66 +35,9 @@ from marer.utils.notify import notify_user_about_manager_created_issue_for_user,
     notify_user_about_issue_proposed_to_banks, notify_user_manager_about_issue_proposed_to_banks, \
     notify_about_fo_manager_updated_propose
 
-site.site_title = 'Управление сайтом МАРЭР'
-site.site_header = 'Управление площадкой МАРЭР'
+site.site_title = 'Управление сайтом'
+site.site_header = 'Управление площадкой'
 site.index_title = 'Управление площадкой'
-
-
-@register(models.FinanceProductPage)
-class FinanceProductAdmin(MPTTModelAdmin):
-    fieldsets = (
-        (None, dict(fields=(
-            ('name', 'show_in_menu',),
-            'parent',
-            ('_finance_product', 'template'),
-            'product_icon',
-            'page_content',
-        ))),
-        (_('SEO'), dict(classes='collapse', fields=(
-            ('_seo_h1', '_seo_title'),
-            ('_seo_description', '_seo_keywords'),
-        ))),
-    )
-
-
-@register(models.StaticPage)
-class StaticPageAdmin(ModelAdmin):
-    fieldsets = (
-        (None, dict(fields=(
-            ('name', 'order'),
-            'page_content',
-        ))),
-        (_('SEO'), dict(classes='collapse', fields=(
-            ('_seo_h1', '_seo_title'),
-            ('_seo_description', '_seo_keywords'),
-        ))),
-    )
-
-
-@register(models.NewsPage)
-class NewsPageAdmin(ModelAdmin):
-    fieldsets = (
-        (None, dict(fields=(
-            'name',
-            'published_at',
-            'picture',
-            'page_content',
-        ))),
-        (_('SEO'), dict(classes='collapse', fields=(
-            ('_seo_h1', '_seo_title'),
-            ('_seo_description', '_seo_keywords'),
-        ))),
-    )
-
-    list_display = (
-        'name',
-        'published_at'
-    )
-
-
-@register(models.ShowcasePartner)
-class ShowcasePartnerAdmin(ModelAdmin):
-    pass
 
 
 @register(models.Issue)

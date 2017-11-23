@@ -18,10 +18,9 @@ from marer.utils.notify import notify_user_manager_about_user_created_issue, \
     notify_user_manager_about_user_updated_issue, notify_about_user_created_clarification, \
     notify_about_user_adds_message, notify_fo_managers_about_issue_proposed_to_banks, \
     notify_user_manager_about_issue_proposed_to_banks
-from marer.views.mixins import StaticPagesContextMixin
 
 
-class IssueView(LoginRequiredMixin, TemplateView, StaticPagesContextMixin):
+class IssueView(LoginRequiredMixin, TemplateView):
     template_name = ''
     _issue = None
 
