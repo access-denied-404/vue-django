@@ -3,6 +3,8 @@ from django.contrib.admin import StackedInline, TabularInline
 from django.contrib.admin.options import InlineModelAdmin
 from django.db.models import TextField
 from django.forms import BaseInlineFormSet
+from django.forms.formsets import ManagementForm, TOTAL_FORM_COUNT, INITIAL_FORM_COUNT, MAX_NUM_FORM_COUNT, \
+    MIN_NUM_FORM_COUNT
 
 from marer import models
 from marer.admin.forms import FinanceOrgProductProposeDocumentInlineAdminForm, IFOPFinalDocumentInlineAdminForm, \
@@ -14,7 +16,32 @@ from marer.models.issue import IssueFinanceOrgProposeFormalizeDocument, IssueFin
     IssueFactoringBuyer
 
 
+class IIFAInlineFormSet(BaseInlineFormSet):
+
+    @property
+    def management_form(self):
+        """Returns the ManagementForm instance for this FormSet."""
+        if self.is_bound:
+            form = ManagementForm(self.data, auto_id=self.auto_id, prefix=self.prefix)
+            if not form.is_valid():
+                form.cleaned_data = {
+                    TOTAL_FORM_COUNT: 0,
+                    INITIAL_FORM_COUNT: 0,
+                    MIN_NUM_FORM_COUNT: 0,
+                    MAX_NUM_FORM_COUNT: 0,
+                }
+        else:
+            form = ManagementForm(auto_id=self.auto_id, prefix=self.prefix, initial={
+                TOTAL_FORM_COUNT: self.total_form_count(),
+                INITIAL_FORM_COUNT: self.initial_form_count(),
+                MIN_NUM_FORM_COUNT: self.min_num,
+                MAX_NUM_FORM_COUNT: self.max_num
+            })
+        return form
+
+
 class IssueInlineFormsetAdmin(InlineModelAdmin):
+    formset = IIFAInlineFormSet
 
     def has_add_permission(self, request):
         if request.user.has_perm('marer.can_change_managed_users_issues'):
