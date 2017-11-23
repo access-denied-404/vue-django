@@ -3,6 +3,7 @@ locale/*/LC_MESSAGES/*.mo
 ansible/marer.ru.crt
 ansible/marer.ru.key
 ansible/*.retry
+ansible/inventory.*
 bower_components/**
 media/**
 project/local_settings.py

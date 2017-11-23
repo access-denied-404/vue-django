@@ -3,3 +3,4 @@ marer.ru
 
 [all:vars]
 ansible_user=root
+git_branch=master

@@ -40,7 +40,7 @@
         force=no
         repo=git@bitbucket.org:vladi-z/marer.git
         accept_hostkey=true
-        version=master
+        version={{git_branch}}
       become: true
 
     - name: Install requirements
