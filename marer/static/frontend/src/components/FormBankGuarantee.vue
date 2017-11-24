@@ -214,19 +214,6 @@
       }
     },
     computed: {
-      bg_sum: {
-        get () {
-          if (this.bg_type === 'contract') {
-            return this.tender_contract_execution_ensure_cost
-          }
-          if (this.bg_type === 'application') {
-            return this.tender_application_ensure_cost
-          }
-          return ''
-        },
-        set () {
-        }
-      },
       date_range: {
         get () {
           if (this.bg_start_date && this.bg_end_date) {
@@ -264,6 +251,14 @@
       tender_exec_law: _.debounce(function () {
         this.is_tender_info_panel_visible = this.get_if_tender_info_panel_visible()
         this.is_contract_info_panel_visible = this.get_is_contract_info_panel_visible()
+      }, 200),
+      bg_type: _.debounce(function () {
+        if (this.bg_type === 'application_ensure') {
+          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === this.tender_contract_execution_ensure_cost) this.bg_sum = this.tender_application_ensure_cost
+        }
+        if (this.bg_type === 'contract_execution') {
+          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === this.tender_application_ensure_cost) this.bg_sum = this.tender_contract_execution_ensure_cost
+        }
       }, 200)
     },
     mounted () {
