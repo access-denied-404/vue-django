@@ -20,6 +20,10 @@
                         <br/>
                         <br/>
                     </div>
+                    <ul class="nav nav-tabs nav-justified">
+                        <li class="{% if request.resolver_match.url_name == 'login' or request.resolver_match.url_name == 'index' %}active bg-primary{% endif %}"><a href="{% url 'login' %}">Имя и пароль</a></li>
+                        <li class="{% if request.resolver_match.url_name == 'login_sign' %}active bg-primary{% endif %}"><a href="{% url 'login_sign' %}">Цифровая подпись</a></li>
+                    </ul>
                     <div class="panel panel-primary">
                         <div class="panel-body">
                             <div class="h3 text-center text-uppercase">Вход</div>

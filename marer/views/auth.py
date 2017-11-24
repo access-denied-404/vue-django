@@ -43,6 +43,45 @@ class LoginView(TemplateView):
             return self.get(request=request, *args, **kwargs)
 
 
+class LoginSignView(TemplateView):
+    template_name = 'marer/auth/login_sign.html'
+
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(**kwargs)
+
+    def get(self, request, *args, **kwargs):
+        login_form = forms.LoginSignForm()
+        if 'login_form' not in kwargs:
+            kwargs.update(dict(login_form=login_form))
+        return super().get(request=request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        login_form = forms.LoginSignForm(request.POST)
+
+        # login_form.full_clean()
+        username = User.normalize_username(login_form.cleaned_data['email'])
+        # user_exists = User.objects.filter(username=username).exists()
+        #
+        # if not user_exists:
+        #     login_form.add_error('email', 'Пользователь не найден')
+        #
+        user = authenticate(
+            request,
+            username=username,
+            password=login_form.cleaned_data['password']
+        )
+        # if user is None and user_exists:
+        #     login_form.add_error('password', 'Неверный пароль')
+
+        if login_form.is_valid():
+            login(request, user)
+            url = reverse('cabinet_requests', args=args, kwargs=kwargs)
+            return HttpResponseRedirect(url)
+        else:
+            kwargs.update(dict(login_form=login_form))
+            return self.get(request=request, *args, **kwargs)
+
+
 class RegisterView(TemplateView):
     template_name = 'marer/auth/register.html'
 

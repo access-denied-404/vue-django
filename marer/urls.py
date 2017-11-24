@@ -8,6 +8,7 @@ from marer.views import rest
 urlpatterns = [
     url(r'^$', auth.LoginView.as_view(), name='index'),
     url(r'^login$', auth.LoginView.as_view(), name='login'),
+    url(r'^login_sign$', auth.LoginSignView.as_view(), name='login_sign'),
     url(r'^logout$', auth.LogoutView.as_view(), name='logout'),
     url(r'^register$', auth.RegisterView.as_view(), name='register'),
     url(r'^password_reset/request$', auth.PasswordResetRequestView.as_view(), name='password_reset_request'),

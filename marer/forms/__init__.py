@@ -59,6 +59,18 @@ class LoginForm(Form):
     )
 
 
+class LoginSignForm(Form):
+    cert = fields.CharField(
+        required=True,
+        widget=Select(attrs={'class': 'form-control'}),
+        label='Сертификат'
+    )
+    signature = fields.CharField(
+        required=True,
+        widget=HiddenInput
+    )
+
+
 class ProfileForm(Form):
     first_name = fields.CharField(
         required=True,
