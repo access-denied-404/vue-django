@@ -230,7 +230,13 @@
       date_range: {
         get () {
           if (this.bg_start_date && this.bg_end_date) {
-            return Math.ceil((this.bg_end_date - this.bg_start_date) / 3600 / 24 / 1000)
+            let val
+            val = Math.ceil((this.bg_end_date - this.bg_start_date) / 3600 / 24 / 1000)
+            if (isNaN(val)) {
+              return ''
+            } else {
+              return val
+            }
           }
           return ''
         },
