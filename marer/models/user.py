@@ -44,6 +44,8 @@ class User(AbstractUser):
         default=False,
         help_text='Определяет, рассчитывается ли для пользователя комиссия и видит ли он свои выплаты, как брокер',
     )
+    cert_hash = models.CharField(max_length=512, blank=True, null=False, default='')
+    cert_sign = models.TextField(blank=True, null=False, default='')
 
     @classmethod
     def normalize_username(cls, username):

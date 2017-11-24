@@ -1,10 +1,13 @@
 from django.contrib.auth import authenticate, login, logout
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic import TemplateView, RedirectView
 
 from marer import forms
+from marer.forms import RegisterSignForm
 from marer.models.user import User
+from marer.utils.crypto import extract_certificate_from_sign
 
 
 class LoginView(TemplateView):
@@ -58,28 +61,54 @@ class LoginSignView(TemplateView):
     def post(self, request, *args, **kwargs):
         login_form = forms.LoginSignForm(request.POST)
 
-        # login_form.full_clean()
-        username = User.normalize_username(login_form.cleaned_data['email'])
-        # user_exists = User.objects.filter(username=username).exists()
-        #
-        # if not user_exists:
-        #     login_form.add_error('email', 'Пользователь не найден')
-        #
-        user = authenticate(
-            request,
-            username=username,
-            password=login_form.cleaned_data['password']
-        )
-        # if user is None and user_exists:
-        #     login_form.add_error('password', 'Неверный пароль')
-
         if login_form.is_valid():
-            login(request, user)
-            url = reverse('cabinet_requests', args=args, kwargs=kwargs)
-            return HttpResponseRedirect(url)
-        else:
-            kwargs.update(dict(login_form=login_form))
-            return self.get(request=request, *args, **kwargs)
+            user = None
+            login_cert_hash = login_form.cleaned_data['cert']
+            login_sign = login_form.cleaned_data['signature']
+            login_cert = extract_certificate_from_sign(login_sign)
+            try:
+                # todo check by cert sign
+                user_for_check = User.objects.get(cert_hash=login_cert_hash)
+                check_cert = extract_certificate_from_sign(user_for_check.cert_sign)
+                if check_cert.digest('sha512') == login_cert.digest('sha512'):  # why it needed a bytes??
+                    user = user_for_check
+                    login_form.add_error(None, 'Неверная подпись')
+
+            except ObjectDoesNotExist:
+                # signing registration
+                if request.POST.get('reg_stage'):
+                    register_form = RegisterSignForm(data=request.POST, initial=dict(
+                        cert=login_cert_hash,
+                        signature=login_sign
+                    ))
+                else:
+                    register_form = RegisterSignForm(initial=dict(
+                        cert=login_cert_hash,
+                        signature=login_sign
+                    ))
+                if register_form.is_valid():
+                    new_user = User()
+                    new_user.first_name = register_form.cleaned_data['first_name']
+                    new_user.last_name = register_form.cleaned_data['last_name']
+                    new_user.email = register_form.cleaned_data['email']
+                    new_user.username = User.normalize_username(register_form.cleaned_data['email'])
+                    new_user.phone = register_form.cleaned_data['phone']
+                    new_user.cert_hash = register_form.cleaned_data['cert']
+                    new_user.cert_sign = register_form.cleaned_data['signature']
+                    new_user.save()
+                    user = new_user
+
+                else:
+                    kwargs['reg_form'] = register_form
+                    self.template_name = 'marer/auth/register_sign.html'
+
+            if user:
+                login(request, user)
+                url = reverse('cabinet_requests', args=args, kwargs=kwargs)
+                return HttpResponseRedirect(url)
+
+        kwargs.update(dict(login_form=login_form))
+        return self.get(request=request, *args, **kwargs)
 
 
 class RegisterView(TemplateView):

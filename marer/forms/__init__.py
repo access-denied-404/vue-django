@@ -71,6 +71,37 @@ class LoginSignForm(Form):
     )
 
 
+class RegisterSignForm(Form):
+    first_name = fields.CharField(
+        required=True,
+        widget=TextInput(attrs={'class': 'form-control'}),
+        label='Имя'
+    )
+    last_name = fields.CharField(
+        required=True,
+        widget=TextInput(attrs={'class': 'form-control'}),
+        label='Фамилия'
+    )
+    email = fields.EmailField(
+        required=True,
+        widget=TextInput(attrs={'class': 'form-control'}),
+        label='E-mail'
+    )
+    phone = fields.CharField(
+        required=True,
+        widget=TextInput(attrs={'class': 'form-control'}),
+        label='Контактный телефон'
+    )
+    cert = fields.CharField(
+        required=True,
+        widget=HiddenInput
+    )
+    signature = fields.CharField(
+        required=True,
+        widget=HiddenInput
+    )
+
+
 class ProfileForm(Form):
     first_name = fields.CharField(
         required=True,

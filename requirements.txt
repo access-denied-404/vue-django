@@ -7,6 +7,8 @@ django-split-settings==0.2.5
 djangorestframework==3.6.4
 openpyxl==2.4.8
 Pillow==4.2.1
+pyasn1==0.4.2
+pyOpenSSL==17.4.0
 python-dateutil==2.6.1
 pytz==2017.2
 requests==2.18.4
