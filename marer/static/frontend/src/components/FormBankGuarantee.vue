@@ -35,6 +35,11 @@
           <div class="col-md-12"><bs-input :name="'tender_gos_number'" v-model="tender_gos_number" label="Госномер тендера или ссылка на закупку" required></bs-input></div>
         </div>
         <div class="row">
+          <div class="col-md-12 text-center">
+            <a class="btn btn-link" v-on:click="tender_add_data_visible = !tender_add_data_visible">{{tender_add_data_switch_caption}}</a>
+          </div>
+        </div>
+        <div class="row" v-if="tender_add_data_visible">
           <div class="col-md-5"><div class="form-group"><bs-input :name="'tender_placement_type'" v-model="tender_placement_type" label="Способ определения поставщика"></bs-input></div></div>
           <div class="col-md-3"><label>Дата публикации</label><date-time-picker :name="'tender_publish_date'" v-model="tender_publish_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div>
           <div class="col-md-4"><bs-input :name="'tender_start_cost'" v-model="tender_start_cost" label="Начальная цена контракта" :mask="currency"></bs-input></div>
@@ -93,7 +98,7 @@
       </div>
     </div>
 
-    <div class="panel panel-info" v-if="is_tender_info_panel_visible || is_contract_info_panel_visible">
+    <div class="panel panel-info" v-if="tender_add_data_visible && (is_tender_info_panel_visible || is_contract_info_panel_visible)">
       <div class="panel-heading" v-if="is_tender_info_panel_visible">Сведения об организаторе тендера</div>
       <div class="panel-heading" v-if="is_contract_info_panel_visible">Сведения о заказчике</div>
       <div class="panel-body">
@@ -173,7 +178,8 @@
           bg_commercial_contract_end_date: moment(regData.formdata.bg_commercial_contract_end_date, dateformat),
 
           is_tender_info_panel_visible: true,
-          is_contract_info_panel_visible: false
+          is_contract_info_panel_visible: false,
+          tender_add_data_visible: false
         }
       } else {
         return {
@@ -209,7 +215,8 @@
           bg_commercial_contract_end_date: '',
 
           is_tender_info_panel_visible: true,
-          is_contract_info_panel_visible: false
+          is_contract_info_panel_visible: false,
+          tender_add_data_visible: false
         }
       }
     },
@@ -229,6 +236,16 @@
         },
         set () {
         }
+      },
+      tender_add_data_switch_caption: {
+        get () {
+          if (this.tender_add_data_visible) {
+            return 'Скрыть'
+          } else {
+            return 'Подробнее'
+          }
+        },
+        set () {}
       }
     },
     watch: {

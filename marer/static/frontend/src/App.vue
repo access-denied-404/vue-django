@@ -26,6 +26,12 @@
           </div>
 
           <div class="row">
+            <div class="col-md-12 text-center">
+              <a class="btn btn-link" v-on:click="org_add_data_visible = !org_add_data_visible">{{org_add_data_switch_caption}}</a>
+            </div>
+          </div>
+
+          <div class="row" v-if="org_add_data_visible">
             <div class="col-md-8">
               <bs-input
                 :name="'issuer_full_name'"
@@ -42,7 +48,7 @@
             </div>
           </div>
 
-          <div class="row">
+          <div class="row" v-if="org_add_data_visible">
             <div class="col-md-12">
               <bs-input
                 :name="'issuer_legal_address'"
@@ -52,7 +58,7 @@
             </div>
           </div>
 
-          <div class="row">
+          <div class="row" v-if="org_add_data_visible">
             <div class="col-md-4">
               <bs-input
                 :name="'issuer_ogrn'"
@@ -136,12 +142,26 @@
         party_full_name: issuerFullName,
         party_short_name: issuerShortName,
         party_legal_address: issuerLegalAddress,
-        comment: document.getElementById('app').getAttribute('comment')
+        comment: document.getElementById('app').getAttribute('comment'),
+
+        org_add_data_visible: false
       }
     },
     watch: {
       product (e) {
         window.location.hash = '/' + this.product
+      }
+    },
+    computed: {
+      org_add_data_switch_caption: {
+        get () {
+          if (this.org_add_data_visible) {
+            return 'Скрыть'
+          } else {
+            return 'Подробнее'
+          }
+        },
+        set () {}
       }
     },
     created () {
