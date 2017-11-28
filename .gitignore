@@ -5,6 +5,7 @@ ansible/marer.ru.key
 ansible/*.retry
 ansible/inventory.*
 bower_components/**
+custom/**
 media/**
 project/local_settings.py
 project/secrets.py

@@ -185,6 +185,8 @@ EMAIL_USE_SSL = True
 
 DEFAULT_MANAGER_ID = 0
 
+AUTH_CERT_SIGN_CHECK_CLASS = ''
+
 include(
     optional('secrets.py'),
     optional('local_settings.py'),

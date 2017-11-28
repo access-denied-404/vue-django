@@ -1,3 +1,6 @@
+import importlib
+
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
@@ -67,12 +70,29 @@ class LoginSignView(TemplateView):
             login_sign = login_form.cleaned_data['signature']
             login_cert = extract_certificate_from_sign(login_sign)
             try:
-                # todo check by cert sign
                 user_for_check = User.objects.get(cert_hash=login_cert_hash)
                 check_cert = extract_certificate_from_sign(user_for_check.cert_sign)
-                if check_cert.digest('sha512') == login_cert.digest('sha512'):  # why it needed a bytes??
-                    user = user_for_check
-                    login_form.add_error(None, 'Неверная подпись')
+                if check_cert.digest('sha512') != login_cert.digest('sha512'):  # why it needed a bytes??
+                    # user = user_for_check
+                    login_form.add_error(None, 'Неверный сертификат')
+
+                sign_is_correct = None
+                raw_check_sign_class = settings.AUTH_CERT_SIGN_CHECK_CLASS
+                if raw_check_sign_class is not None and raw_check_sign_class != '':
+                    raw_check_sign_class = str(raw_check_sign_class)
+                    check_sign_module_name, check_sign_class_name = raw_check_sign_class.rsplit('.', 1)
+                    check_sign_module = importlib.import_module(check_sign_module_name)
+                    check_sign_class = getattr(check_sign_module, check_sign_class_name)
+                    sign_is_correct = check_sign_class.check_sign(login_sign)
+
+                    if sign_is_correct:
+                        user = user_for_check
+                    elif sign_is_correct is False:
+                        login_form.add_error(None, 'Неверная подпись')
+
+                else:
+                    login_form.add_error(None, 'Невозможно проверить подпись. Обратитесь в техническую поддержку.')
+
 
             except ObjectDoesNotExist:
                 # signing registration
