@@ -2,8 +2,8 @@ import warnings
 
 from django.conf import settings
 
-from marer.models import Issue, User, IssueFinanceOrgPropose, IssueFinanceOrgProposeClarification, \
-    IssueFinanceOrgProposeClarificationMessage
+from marer.models import Issue, User, IssueClarification, \
+    IssueClarificationMessage
 
 
 def _get_default_manager():
@@ -168,42 +168,7 @@ def notify_user_manager_about_issue_proposed_to_banks(proposes: list):
     )
 
 
-def notify_about_fo_manager_updated_propose(propose: IssueFinanceOrgPropose):
-    # менеджер банка обновил предложение, уведомить пользователя и его менеджера
-
-    # DISABLED
-    # user = propose.issue.user
-    # user.email_user(
-    #     subject="Менеджер изменил Ваше предложение заявки в банк",
-    #     html_template_filename='mail/events_for_send_to_user/fo_manager_updated_propose.html',
-    #     context=dict(
-    #         issue_id=propose.issue.id,
-    #         issue_number=propose.issue.humanized_id,
-    #         finance_product=propose.issue.get_product().humanized_name,
-    #         finance_org_name=propose.finance_org.name,
-    #         issuer_short_name=propose.issue.issuer_short_name,
-    #     )
-    # )
-
-    user_manager = propose.issue.user.manager
-    if user_manager is None:
-        user_manager = _get_default_manager()
-
-    user_manager.email_user(
-        subject="Менеджер банка изменил предложение заявки в банк Вашего пользователя",
-        html_template_filename='mail/events_for_send_to_user/fo_manager_updated_propose.html',
-        context=dict(
-            issue_id=propose.issue.id,
-            issue_number=propose.issue.humanized_id,
-            finance_product=propose.issue.get_product().humanized_name,
-            issuer_short_name=propose.issue.issuer_short_name,
-            propose_id=propose.id,
-            finance_org_name=propose.finance_org.name,
-        )
-    )
-
-
-def notify_about_user_created_clarification(clarification: IssueFinanceOrgProposeClarification):
+def notify_about_user_created_clarification(clarification: IssueClarification):
     # notify user manager and fo manager
 
     # DISABLED
@@ -223,28 +188,30 @@ def notify_about_user_created_clarification(clarification: IssueFinanceOrgPropos
     #     )
     # )
 
-    if not clarification.propose.finance_org.manager_id:
-        warnings.warn('No manager for FO #{org_id} got notify of clarification for propose #{propose_id}'.format(
-            org_id=clarification.propose.finance_org.id,
-            propose_id=clarification.propose_id,
-        ))
-    else:
-        clarification.propose.finance_org.manager.email_user(
-            subject="Пользователь создал новый дозапрос по заявке",
-            html_template_filename='mail/events_for_send_to_fo_manager/user_created_clarification.html',
-            context=dict(
-                user_full_name=clarification.propose.issue.user.__str__(),
-                issue_id=clarification.propose.issue.id,
-                issue_number=clarification.propose.issue.humanized_id,
-                finance_product=clarification.propose.issue.get_product().humanized_name,
-                issuer_short_name=clarification.propose.issue.issuer_short_name,
-                finance_org_name=clarification.propose.finance_org.name,
-                clarification_id=clarification.id,
-            )
-        )
+    # if not clarification.propose.finance_org.manager_id:
+    #     warnings.warn('No manager for FO #{org_id} got notify of clarification for propose #{propose_id}'.format(
+    #         org_id=clarification.propose.finance_org.id,
+    #         propose_id=clarification.propose_id,
+    #     ))
+    # else:
+    #     clarification.propose.finance_org.manager.email_user(
+    #         subject="Пользователь создал новый дозапрос по заявке",
+    #         html_template_filename='mail/events_for_send_to_fo_manager/user_created_clarification.html',
+    #         context=dict(
+    #             user_full_name=clarification.propose.issue.user.__str__(),
+    #             issue_id=clarification.propose.issue.id,
+    #             issue_number=clarification.propose.issue.humanized_id,
+    #             finance_product=clarification.propose.issue.get_product().humanized_name,
+    #             issuer_short_name=clarification.propose.issue.issuer_short_name,
+    #             finance_org_name=clarification.propose.finance_org.name,
+    #             clarification_id=clarification.id,
+    #         )
+    #     )
+
+    warnings.warn('Clarification {} is saved but nobody notified'.format(clarification.id))
 
 
-def notify_about_user_manager_created_clarification(clarification: IssueFinanceOrgProposeClarification):
+def notify_about_user_manager_created_clarification(clarification: IssueClarification):
     # notify user and fo manager
 
     # DISABLED
@@ -282,7 +249,7 @@ def notify_about_user_manager_created_clarification(clarification: IssueFinanceO
         )
 
 
-def notify_about_fo_manager_created_clarification(clarification: IssueFinanceOrgProposeClarification):
+def notify_about_fo_manager_created_clarification(clarification: IssueClarification):
     # менеджер банка создал дозапрос, уведомить клиента
 
     user = clarification.propose.issue.user
@@ -317,7 +284,7 @@ def notify_about_fo_manager_created_clarification(clarification: IssueFinanceOrg
     )
 
 
-def notify_about_user_adds_message(msg: IssueFinanceOrgProposeClarificationMessage):
+def notify_about_user_adds_message(msg: IssueClarificationMessage):
     # notify fo manager and user manager
 
     # DISABLED
@@ -358,7 +325,7 @@ def notify_about_user_adds_message(msg: IssueFinanceOrgProposeClarificationMessa
         )
 
 
-def notify_about_user_manager_adds_message(msg: IssueFinanceOrgProposeClarificationMessage):
+def notify_about_user_manager_adds_message(msg: IssueClarificationMessage):
     # notify user and fo manager
 
     # DISABLED
@@ -396,7 +363,7 @@ def notify_about_user_manager_adds_message(msg: IssueFinanceOrgProposeClarificat
         )
 
 
-def notify_about_fo_manager_adds_message(msg: IssueFinanceOrgProposeClarificationMessage):
+def notify_about_fo_manager_adds_message(msg: IssueClarificationMessage):
     # notify user and user manager
 
     user = msg.clarification.propose.issue.user

@@ -2,49 +2,47 @@
 
 {% block issue_content %}
 
-    {% for propose in final_proposes %}
-        <div class="panel {% if propose.final_decision == True %}panel-success{% elif propose.final_decision == False %}panel-danger{% endif %}">
-            <div class="panel-heading" data-toggle="collapse" data-target="#panel{{ propose.id }}">
-                {{ propose.finance_org.name }}
-            </div>
-            <div class="panel-body collapse in" id="panel{{ propose.id }}">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="alert {% if propose.final_decision == True %}alert-info{% elif propose.final_decision == False %}alert-danger{% endif %} text-center">
-                                <span class="h1">
-                                    {% if propose.final_decision == True %}
-                                        Банковская гарантия выдана
-                                    {% elif propose.final_decision == False %}
-                                        Банковская гарантия не выдана
-                                    {% else %}
-                                        Чо??? Как я ваще сюда попал?!
-                                    {% endif %}
-                                </span>
-                            </div>
+    <div class="panel {% if issue.final_decision == True %}panel-success{% elif propose.final_decision == False %}panel-danger{% endif %}">
+        <div class="panel-heading">
+            Итоговые документы по заявке
+        </div>
+        <div class="panel-body">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="alert {% if issue.final_decision == True %}alert-info{% elif issue.final_decision == False %}alert-danger{% endif %} text-center">
+                            <span class="h1">
+                                {% if issue.final_decision == True %}
+                                    Банковская гарантия выдана
+                                {% elif issue.final_decision == False %}
+                                    Банковская гарантия не выдана
+                                {% else %}
+                                    Решение по заявке еще не принято
+                                {% endif %}
+                            </span>
                         </div>
-                        <div class="col-md-6">
-                            {% if propose.final_documents.exists %}
-                                <div class="h4">Документы</div>
-                                <table class="table">
-                                    {% for findoc in propose.final_documents.all %}
-                                        <tr>
-                                            <td>
-                                                <a href="{{ findoc.document.file.url }}">
-                                                    {{ findoc.name }}
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </table>
-                            {% else %}
-                                <div class="h2 text-muted">Документы отсутствуют</div>
-                            {% endif %}
-                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        {% if issue.final_documents.exists %}
+                            <div class="h4">Документы</div>
+                            <table class="table">
+                                {% for findoc in issue.final_documents.all %}
+                                    <tr>
+                                        <td>
+                                            <a href="{{ findoc.document.file.url }}">
+                                                {{ findoc.name }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        {% else %}
+                            <div class="h2 text-muted">Документы отсутствуют</div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
-    {% endfor %}
+    </div>
 
 {% endblock %}

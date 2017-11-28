@@ -23,17 +23,16 @@ from django.utils.translation import ugettext_lazy as _
 from marer import models
 from marer.admin.filters import ManagerListFilter, BrokerListFilter
 from marer.admin.forms import IFOPClarificationAddForm, MarerUserChangeForm, UserCreationForm
-from marer.admin.inline import IssueFinanceOrgProposeInlineAdmin, IssueDocumentInlineAdmin, \
+from marer.admin.inline import IssueDocumentInlineAdmin, \
     IFOPClarificationInlineAdmin, IFOPClarificationMessageInlineAdmin, \
     IFOPFormalizeDocumentInlineAdmin, IFOPFinalDocumentInlineAdmin, IssueBGProdAffiliateInlineAdmin, \
     IssueBGProdFounderLegalInlineAdmin, IssueBGProdFounderPhysicalInlineAdmin, \
     FinanceOrgProductProposeDocumentInlineAdmin, IssueProposeDocumentInlineAdmin
-from marer.models import Issue, IssueFinanceOrgPropose, User
-from marer.models.finance_org import FinanceOrganization, FinanceOrgProductConditions
+from marer.models import Issue, User
+from marer.models.finance_org import FinanceOrganization, FinanceOrgProductConditions, FinanceOrgProductProposeDocument
 from marer.utils.notify import notify_user_about_manager_created_issue_for_user, \
     notify_user_about_manager_updated_issue_for_user, notify_fo_managers_about_issue_proposed_to_banks, \
-    notify_user_about_issue_proposed_to_banks, notify_user_manager_about_issue_proposed_to_banks, \
-    notify_about_fo_manager_updated_propose
+    notify_user_about_issue_proposed_to_banks, notify_user_manager_about_issue_proposed_to_banks
 
 site.site_title = 'Управление сайтом'
 site.site_header = 'Управление площадкой'
@@ -114,6 +113,9 @@ class IssueAdmin(ModelAdmin):
                     'user',
                     'private_comment',
                     'comment',
+                    'formalize_note',
+                    'final_note',
+                    'final_decision',
                 ))),
             ]
             product_fieldset_part = obj.get_product().get_admin_issue_fieldset()
@@ -151,10 +153,6 @@ class IssueAdmin(ModelAdmin):
             pass
         elif request.user.has_perm('marer.can_change_managed_users_issues'):
             qs = qs.filter(user__manager_id=request.user.id)
-        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
-            ifop_issue_ids = IssueFinanceOrgPropose.objects.filter(
-                finance_org__manager=request.user).values_list('issue_id', flat=True)
-            qs = qs.filter(id__in=ifop_issue_ids)
         return qs
 
     def get_inline_instances(self, request, obj=None):
@@ -162,8 +160,11 @@ class IssueAdmin(ModelAdmin):
             self.inlines = []
         else:
             self.inlines = [
-                IssueFinanceOrgProposeInlineAdmin,
                 IssueDocumentInlineAdmin,
+                IssueProposeDocumentInlineAdmin,
+                IFOPFinalDocumentInlineAdmin,
+                IFOPFormalizeDocumentInlineAdmin,
+                IFOPClarificationInlineAdmin,
             ] + obj.get_product().get_admin_issue_inlnes()
         return super().get_inline_instances(request, obj)
 
@@ -189,159 +190,7 @@ class IssueAdmin(ModelAdmin):
             notify_user_about_manager_created_issue_for_user(obj)
 
 
-@register(models.IssueFinanceOrgPropose)
-class IssueFinanceOrgProposeAdmin(ModelAdmin):
-    list_display = (
-        'humanized_id',
-        'humanized_issue_id',
-        'issuer_short_name',
-        'finance_org',
-        'get_manager',
-        'final_decision',
-        'created_at',
-        'updated_at',
-    )
-    list_filter = (
-        'final_decision',
-        ('finance_org__manager', ManagerListFilter),
-    )
-    fields = (
-        'issue_change_link',
-        'finance_org',
-        'formalize_note',
-        'final_decision',
-        'final_note',
-    )
-    readonly_fields = [
-        'issue_change_link',
-        'finance_org',
-    ]
-    formfield_overrides = {
-        TextField: dict(widget=Textarea(dict(rows=4)))
-    }
-
-    def issue_change_link(self, obj):
-        change_url = reverse('admin:marer_issue_change', args=(obj.issue_id,))
-        return '<a href="{}">{}</a>'.format(change_url, obj.issue)
-    issue_change_link.short_description = 'Заявка'
-    issue_change_link.allow_tags = True
-
-    def humanized_id(self, obj):
-        return obj.id
-    humanized_id.short_description = 'номер предложения'
-    humanized_id.admin_order_field = 'id'
-
-    def humanized_issue_id(self, obj):
-        return obj.issue_id
-    humanized_issue_id.short_description = 'номер заявки'
-    humanized_issue_id.admin_order_field = 'issue_id'
-
-    inlines = (
-        IFOPClarificationInlineAdmin,
-        IssueProposeDocumentInlineAdmin,
-        IFOPFormalizeDocumentInlineAdmin,
-        IFOPFinalDocumentInlineAdmin,
-    )
-
-    def issue_id(self, obj):
-        return obj.issue.id
-    issue_id.short_description = 'Номер заявки'
-
-    def issuer_short_name(self, obj):
-        issuer_short_name = obj.issue.issuer_short_name
-        if issuer_short_name and issuer_short_name != '':
-            return issuer_short_name
-        elif issuer_short_name == 'НЕТ':
-            return obj.issue.issuer_full_name
-        else:
-            return '—'
-    issuer_short_name.short_description = 'Заявитель'
-
-    def get_manager(self, obj):
-        return obj.finance_org.manager or '—'
-    get_manager.short_description = 'Менеджер'
-    get_manager.admin_order_field = 'finance_org__manager_id'
-
-    # todo read-only formalize docs and final docs for users managers
-
-    def has_add_permission(self, request):
-        if request.user.has_perm('marer.can_add_managed_users_issues_proposes'):
-            return True
-        return super().has_add_permission(request)
-
-    def has_change_permission(self, request, obj=None):
-        if request.user.has_perm('marer.change_issuefinanceorgpropose'):
-            pass
-        elif request.user.has_perm('marer.can_view_managed_users_issues_proposes'):
-            if obj is None:
-                return True
-            elif obj.issue.user.manager_id == request.user.id:
-                self.readonly_fields += [
-                    'formalize_note',
-                    'final_decision',
-                    'final_note',
-                ]
-                return True
-        elif request.user.has_perm('marer.can_change_managed_finance_org_proposes'):
-            if obj is None:
-                return True
-            elif obj.finance_org.manager_id == request.user.id:
-                return True
-        return super().has_change_permission(request, obj)
-
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        if request.user.has_perm('marer.change_issuefinanceorgpropose'):
-            pass
-        elif request.user.has_perm('marer.can_view_managed_users_issues_proposes'):
-            qs = qs.filter(issue__user__manager=request.user)
-        elif request.user.has_perm('marer.can_change_managed_finance_org_proposes'):
-            qs = qs.filter(finance_org__manager_id=request.user.id)
-        return qs
-
-    def save_model(self, request, obj, form, change):
-        super().save_model(request, obj, form, change)
-        if change:
-            notify_about_fo_manager_updated_propose(obj)
-        else:
-            notify_user_about_issue_proposed_to_banks([obj])
-            notify_user_manager_about_issue_proposed_to_banks([obj])
-
-
-@register(FinanceOrganization)
-class FinanceOrganizationAdmin(ModelAdmin):
-    list_display = (
-        'name',
-        'manager',
-        'has_conditions',
-    )
-    list_filter = (
-        ('manager', ManagerListFilter),
-    )
-    inlines = (
-        FinanceOrgProductProposeDocumentInlineAdmin,
-    )
-
-    def has_conditions(self, obj):
-        return obj.products_conditions.exists()
-    has_conditions.short_description = 'есть условия'
-    has_conditions.boolean = True
-
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        if request.user.has_perm('marer.change_financeorganization'):
-            pass
-        elif request.user.has_perm('marer.can_change_managed_finance_orgs'):
-            qs = qs.filter(manager=request.user)
-        return qs
-
-    def has_change_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_change_managed_finance_orgs'):
-            return True
-        return super().has_change_permission(request, obj)
-
-
-@register(models.IssueFinanceOrgProposeClarification)
+@register(models.IssueClarification)
 class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
     list_display = (
         'humanized_id',
@@ -740,131 +589,7 @@ class LogEntryAdmin(ModelAdmin):
     is_deletion.boolean = True
 
 
-@register(FinanceOrgProductConditions)
-class FinanceOrgProductConditionsForProposeAdmin(ModelAdmin):
-    issue = None
+@register(FinanceOrgProductProposeDocument)
+class FinanceOrgProductProposeDocumentAdmin(ModelAdmin):
 
-    def get_changelist(self, request, **kwargs):
-        from django.contrib.admin.views.main import ChangeList
-
-        class CustomChangeList(ChangeList):
-
-            def __init__(self, *args, **kwargs):
-                super().__init__(*args, **kwargs)
-                self.title = 'Выберите условия финансовых организаций для подачи заявок'
-
-            def get_filters_params(self, params=None):
-                lookup_params = super().get_filters_params(params)
-
-                if 'issue_id' in lookup_params:
-                    del lookup_params['issue_id']
-
-                return lookup_params
-
-        return CustomChangeList
-
-    def has_add_permission(self, request):
-        return False
-
-    def has_module_permission(self, request):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False
-
-    def get_queryset(self, request):
-        issue_id = request.GET.get('issue_id', None)
-        if not issue_id:
-            self.message_user(request, 'Не указана заявка, по которой нужно выбрать условия', messages.WARNING)
-            return FinanceOrgProductConditions.objects.none()
-
-        issue = None
-        try:
-            issue = Issue.objects.get(id=issue_id)
-            self.issue = issue
-        except ObjectDoesNotExist:
-            pass
-        if not issue:
-            return FinanceOrgProductConditions.objects.none()
-
-        product = issue.get_product()
-        if not product:
-            return FinanceOrgProductConditions.objects.none()
-
-        return product.get_finance_orgs_conditions_list()
-
-    def get_list_display(self, request):
-        product_fields = []
-
-        issue_id = request.GET.get('issue_id', None)
-        if issue_id:
-            try:
-                issue = Issue.objects.get(id=issue_id)
-                product_fields = issue.get_product().get_finance_orgs_conditions_list_fields()
-                product_fields = [fld for fld, fld_name in product_fields]
-            except ObjectDoesNotExist:
-                pass
-
-        # todo get a tuple based on issue
-        final_fields = ['finance_org']
-        final_fields += product_fields
-        final_fields += ('is_proposed_to',)
-        return final_fields
-
-    def get_list_display_links(self, request, list_display):
-        return []
-
-    def get_action_choices(self, request, default_choices=BLANK_CHOICE_DASH):
-        return super().get_action_choices(request, [])
-
-    def get_actions(self, request):
-        return OrderedDict({'propose_to_fo': (
-            propose_to_fo,
-            'propose_to_fo',
-            'Предложить заявку в выбранные банки'
-        )})
-
-    def is_proposed_to(self, obj):
-        if not self.issue:
-            return False
-
-        if self.issue.proposes.filter(finance_org=obj.finance_org).exists():
-            return True
-        else:
-            return False
-    is_proposed_to.boolean = True
-    is_proposed_to.short_description = 'Отправлено в банк'
-
-
-def propose_to_fo(admin_cls: ModelAdmin, request, queryset):
-    issue_id = request.GET.get('issue_id', None)
-    if not issue_id:
-        admin_cls.message_user(request, 'Не указана заявка, по которой нужно выбрать условия', messages.WARNING)
-        return
-
-    issue = None
-    try:
-        issue = Issue.objects.get(id=issue_id)
-    except ObjectDoesNotExist:
-        pass
-    if not issue:
-        admin_cls.message_user(request, 'Указанная заявка не найдена', messages.WARNING)
-        return
-
-    banks_ids = queryset.values_list('finance_org', flat=True)
-    unique_banks_ids = []
-    for bid in banks_ids:
-        if bid not in unique_banks_ids:
-            unique_banks_ids.append(bid)
-    proposed_fo_ids = issue.proposes.values_list('finance_org', flat=True)
-    fo_to_propose = FinanceOrganization.objects.filter(id__in=unique_banks_ids).exclude(id__in=proposed_fo_ids)
-    proposes = []
-    for fo in fo_to_propose:
-        new_propose = IssueFinanceOrgPropose()
-        new_propose.issue = issue
-        new_propose.finance_org = fo
-        new_propose.save()
-        proposes.append(new_propose)
-    notify_fo_managers_about_issue_proposed_to_banks(proposes)
-    notify_user_about_issue_proposed_to_banks(proposes)
-    admin_cls.message_user(request, 'Заявки отправлены в %s банков' % fo_to_propose.count())
+    form = forms.FinanceOrgProductProposeDocumentForm

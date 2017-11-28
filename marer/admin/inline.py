@@ -10,9 +10,9 @@ from marer import models
 from marer.admin.forms import FinanceOrgProductProposeDocumentInlineAdminForm, IFOPFinalDocumentInlineAdminForm, \
     IFOPFormalizeDocumentInlineAdminForm, IssueDocumentInlineAdminForm, IssueProposeDocumentInlineAdminForm
 from marer.models.finance_org import FinanceOrgProductProposeDocument, FinanceOrgProductConditions
-from marer.models.issue import IssueFinanceOrgProposeFormalizeDocument, IssueFinanceOrgProposeFinalDocument, \
+from marer.models.issue import IssueProposeFormalizeDocument, IssueProposeFinalDocument, \
     IssueBGProdAffiliate, IssueBGProdFounderLegal, IssueBGProdFounderPhysical, IssueCreditPledge, \
-    IssueFinanceOrgProposeDocument, IssueLeasingProdAsset, IssueLeasingProdSupplier, IssueLeasingProdPayRule, \
+    IssueProposeDocument, IssueLeasingProdAsset, IssueLeasingProdSupplier, IssueLeasingProdPayRule, \
     IssueFactoringBuyer
 
 
@@ -87,56 +87,6 @@ class IssueFinanceOrgProposeFormSet(BaseInlineFormSet):
         return qs.order_by('-updated_at')[:3]
 
 
-class IssueFinanceOrgProposeInlineAdmin(TabularInline):
-    extra = 1
-    model = models.IssueFinanceOrgPropose
-    verbose_name_plural = 'Предложения заявки в банки (последние 3)'
-    fields = (
-        'id',
-        'finance_org',
-        'final_decision',
-        'created_at',
-        'updated_at',
-    )
-    readonly_fields = (
-        'id',
-        'finance_org',
-        'final_decision',
-        'created_at',
-        'updated_at',
-    )
-    formset = IssueFinanceOrgProposeFormSet
-
-    show_change_link = True
-    can_delete = False
-
-    def __init__(self, parent_model, admin_site):
-        super().__init__(parent_model, admin_site)
-
-    def has_add_permission(self, request):
-        return False
-
-    def has_change_permission(self, request, obj=None):
-        if request.user.has_perm('marer.can_change_managed_users_issues'):
-            if obj is None:
-                return True
-            elif obj.user.manager_id == request.user.id:
-                return True
-        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
-            return True
-        return super().has_change_permission(request, obj)
-
-    show_view_all_link = True
-    has_alter_add_url = True
-
-    def get_alter_add_url(self, parent_obj):
-        return '/admin/{app_label}/{model_name}/?issue_id={parent_obj_id}'.format(
-            app_label=self.model._meta.app_label,
-            model_name=FinanceOrgProductConditions._meta.model_name,
-            parent_obj_id=parent_obj.id,
-        )
-
-
 class IssueDocumentInlineAdmin(TabularInline, IssueInlineFormsetAdmin):
     extra = 0
     fields = (
@@ -155,7 +105,7 @@ class IssueDocumentInlineAdmin(TabularInline, IssueInlineFormsetAdmin):
 
 
 class IFOPClarificationInlineAdmin(TabularInline):
-    model = models.IssueFinanceOrgProposeClarification
+    model = models.IssueClarification
     show_change_link = True
     fields = (
         'humanized_id',
@@ -222,7 +172,7 @@ class IFOPClarificationInlineAdmin(TabularInline):
 
 class IFOPFormalizeDocumentInlineAdmin(TabularInline):
     extra = 1
-    model = IssueFinanceOrgProposeFormalizeDocument
+    model = IssueProposeFormalizeDocument
     show_change_link = True
     form = IFOPFormalizeDocumentInlineAdminForm
     fields = (
@@ -267,7 +217,7 @@ class IFOPFormalizeDocumentInlineAdmin(TabularInline):
 
 class IFOPFinalDocumentInlineAdmin(TabularInline):
     extra = 1
-    model = IssueFinanceOrgProposeFinalDocument
+    model = IssueProposeFinalDocument
     show_change_link = True
     form = IFOPFinalDocumentInlineAdminForm
     fields = (
@@ -333,7 +283,7 @@ class FinanceOrgProductProposeDocumentInlineAdmin(TabularInline):
 
 class IssueProposeDocumentInlineAdmin(TabularInline):
     extra = 1
-    model = IssueFinanceOrgProposeDocument
+    model = IssueProposeDocument
     show_change_link = True
     form = IssueProposeDocumentInlineAdminForm
     fields = (
@@ -351,7 +301,7 @@ class IssueProposeDocumentInlineAdmin(TabularInline):
 
 class IFOPClarificationMessageInlineAdmin(StackedInline):
     extra = 1
-    model = models.IssueFinanceOrgProposeClarificationMessage
+    model = models.IssueClarificationMessage
     show_change_link = True
     formfield_overrides = {
         TextField: dict(widget=forms.Textarea(dict(rows=4)))

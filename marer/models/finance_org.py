@@ -181,7 +181,6 @@ class FinanceOrgProductProposeDocument(models.Model):
         null=False,
         blank=False
     )
-    finance_org = models.ForeignKey(FinanceOrganization, null=False, blank=False, related_name='products_docs_samples')
     name = models.CharField(verbose_name='наименование', max_length=512, blank=False, null=False, default='')
     sample = models.ForeignKey(
         Document,
@@ -201,3 +200,6 @@ class FinanceOrgProductProposeDocument(models.Model):
         null=True,
         blank=True,
     )
+
+    def __str__(self):
+        return self.name or 'ДОКУМЕНТ БЕЗ НАЗВАНИЯ'

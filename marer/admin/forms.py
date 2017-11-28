@@ -5,8 +5,9 @@ from django.utils.translation import ugettext_lazy as _
 
 from marer import consts, models
 from marer.forms.widgets import ReadOnlyFileInput
-from marer.models import IssueFinanceOrgProposeClarificationMessage, Document, \
+from marer.models import IssueClarificationMessage, Document, \
     IssueFinanceOrgProposeClarificationMessageDocument
+from marer.models.finance_org import FinanceOrgProductProposeDocument
 from marer.utils.notify import notify_about_user_manager_adds_message, notify_about_user_manager_created_clarification, \
     notify_about_fo_manager_created_clarification, notify_about_fo_manager_adds_message
 
@@ -30,7 +31,7 @@ class IFOPClarificationAddForm(forms.ModelForm):
             self.instance.save()
             change = False
 
-        new_msg = IssueFinanceOrgProposeClarificationMessage()
+        new_msg = IssueClarificationMessage()
         new_msg.user = self.user
         new_msg.message = self.cleaned_data['message']
         new_msg.clarification = self.instance
@@ -212,4 +213,39 @@ class IssueProposeDocumentInlineAdminForm(forms.ModelForm):
             new_sample.file = self.cleaned_data['file_sample']
             new_sample.save()
             self.instance.sample = new_sample
+        return super().save(commit)
+
+
+class FinanceOrgProductProposeDocumentForm(forms.ModelForm):
+
+    class Meta:
+        model = FinanceOrgProductProposeDocument
+        fields = (
+            'finance_product',
+            'name',
+            'file_sample',
+            'code',
+        )
+
+    file_sample = forms.FileField(label='Образец', required=False)
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance', None)
+        if instance is not None:
+            initial = kwargs.get('initial', dict())
+            if instance.sample:
+                initial['file_sample'] = instance.sample.file
+            kwargs['initial'] = initial
+        super().__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        if 'file_sample' in self.cleaned_data:
+            if self.cleaned_data['file_sample']:
+                new_sample = Document()
+                new_sample.file = self.cleaned_data['file_sample']
+                new_sample.save()
+                self.instance.sample = new_sample
+            else:
+                self.instance.sample = None
+            # self.cleaned_data['sample'] = new_sample
         return super().save(commit)

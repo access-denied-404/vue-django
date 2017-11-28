@@ -12,8 +12,8 @@ from marer.products import get_finance_products_as_choices, FinanceProduct, get_
 from marer.utils import CustomJSONEncoder
 
 __all__ = [
-    'Issue', 'IssueDocument', 'IssueFinanceOrgPropose', 'IssueFinanceOrgProposeClarification',
-    'IssueFinanceOrgProposeClarificationMessage', 'IssueFinanceOrgProposeClarificationMessageDocument'
+    'Issue', 'IssueDocument', 'IssueClarification',
+    'IssueClarificationMessage', 'IssueFinanceOrgProposeClarificationMessageDocument'
 ]
 
 
@@ -170,6 +170,10 @@ class Issue(models.Model):
     prev_year_expected_sales_value = models.DecimalField(verbose_name='Ожидаемые продажи за прошлый год по экспорту, млн. рублей без НДС', max_digits=12, decimal_places=2, blank=True, null=True)
     curr_year_expected_sales_value_inc_deferment = models.DecimalField(verbose_name='Ожидаемые продажи за текущий год по экспорту в том числе с отсрочкой платежа, млн. рублей без НДС', max_digits=12, decimal_places=2, blank=True, null=True)
     prev_year_expected_sales_value_inc_deferment = models.DecimalField(verbose_name='Ожидаемые продажи за прошлый год по экспорту в том числе с отсрочкой платежа, млн. рублей без НДС', max_digits=12, decimal_places=2, blank=True, null=True)
+
+    formalize_note = models.TextField(verbose_name='подпись к документам для оформления', blank=True, null=False, default='')
+    final_note = models.TextField(verbose_name='подпись к итоговым документам', blank=True, null=False, default='')
+    final_decision = models.NullBooleanField(verbose_name='удовлетворена ли заявка', blank=True, null=True)
 
     @property
     def humanized_id(self):
@@ -332,6 +336,10 @@ class Issue(models.Model):
             issuer=self.get_issuer_name(),
         )
 
+    @property
+    def propose_documents_ordered(self):
+        return self.propose_documents.order_by('document_id')  # need null to be first
+
 
 class IssueDocument(models.Model):
     class Meta:
@@ -359,63 +367,13 @@ class IssueDocument(models.Model):
     )
 
 
-class IssueFinanceOrgPropose(models.Model):
-    class Meta:
-        unique_together = (('issue', 'finance_org'),)
-        verbose_name = 'предложение заявки в банк'
-        verbose_name_plural = 'предложения заявок в банки'
-
-    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False, related_name='proposes')
-    finance_org = models.ForeignKey(FinanceOrganization, verbose_name='финансовая организация', on_delete=models.CASCADE, blank=False, null=False)
-    updated_at = models.DateTimeField(verbose_name='время обновления', auto_now=True, null=False)
-    created_at = models.DateTimeField(verbose_name='время создания', auto_now_add=True, null=False)
-
-    formalize_note = models.TextField(verbose_name='подпись к документам для оформления', blank=True, null=False, default='')
-    final_note = models.TextField(verbose_name='подпись к итоговым документам', blank=True, null=False, default='')
-    final_decision = models.NullBooleanField(verbose_name='удовлетворена ли заявка', blank=True, null=True)
-
-    def __str__(self):
-        return 'Предложение заявки №{num} ({prod} на {sum} руб.) в {fin_org}'.format(
-            num=self.issue.id,
-            prod=self.issue.get_product().humanized_name,
-            sum=self.issue.bg_sum,
-            fin_org=self.finance_org.name
-        )
-
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        if not self.id and self.issue and self.issue.id and self.issue.status == consts.ISSUE_STATUS_REGISTERING and not self.issue.proposes.exists():
-            self.issue.status = consts.ISSUE_STATUS_REVIEW
-            self.issue.save()
-
-        if not self.id:
-            docs_samples = self.finance_org.products_docs_samples.filter(finance_product=self.issue.product)
-        else:
-            docs_samples = None
-
-        set_obj_update_time(self.issue)
-        super().save(force_insert, force_update, using, update_fields)
-
-        if docs_samples:
-            for ds in docs_samples:
-                pdoc = IssueFinanceOrgProposeDocument()
-                pdoc.propose = self
-                pdoc.name = ds.name
-                pdoc.sample = ds.sample
-                pdoc.code = ds.code
-                pdoc.save()
-
-    @property
-    def propose_documents_ordered(self):
-        return self.propose_documents.order_by('document_id')  # need null to be first
-
-
-class IssueFinanceOrgProposeDocument(models.Model):
+class IssueProposeDocument(models.Model):
     class Meta:
         verbose_name = 'документ для банка'
         verbose_name_plural = 'документы для банка'
 
-    propose = models.ForeignKey(
-        IssueFinanceOrgPropose,
+    issue = models.ForeignKey(
+        Issue,
         verbose_name='предложение заявки в банк',
         on_delete=models.CASCADE,
         blank=False,
@@ -448,27 +406,28 @@ class IssueFinanceOrgProposeDocument(models.Model):
     )
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None, chain_docs_update=False):
-        if not chain_docs_update and self.propose and self.propose.issue_id and self.document and self.document.file and self.code is not None and self.code != '':
-            other_proposes = self.propose.issue.proposes.all()
-            if self.id:
-                other_proposes = other_proposes.exclude(id=self.id)
-            for propose in other_proposes:
-                opdocs = propose.propose_documents.filter(code=self.code)
-                for opdoc in opdocs:
-                    opdoc.document = self.document
-                    opdoc.save(chain_docs_update=True)
+        # todo does it has any sense?
+        # if not chain_docs_update and self.propose and self.propose.issue_id and self.document and self.document.file and self.code is not None and self.code != '':
+        #     other_proposes = self.propose.issue.proposes.all()
+        #     if self.id:
+        #         other_proposes = other_proposes.exclude(id=self.id)
+        #     for propose in other_proposes:
+        #         opdocs = propose.propose_documents.filter(code=self.code)
+        #         for opdoc in opdocs:
+        #             opdoc.document = self.document
+        #             opdoc.save(chain_docs_update=True)
 
         super().save(force_insert, force_update, using, update_fields)
 
 
-class IssueFinanceOrgProposeClarification(models.Model):
+class IssueClarification(models.Model):
     class Meta:
         verbose_name = 'дозапрос'
         verbose_name_plural = 'дозапросы'
 
-    propose = models.ForeignKey(
-        IssueFinanceOrgPropose,
-        verbose_name='предложение заявки в банк',
+    issue = models.ForeignKey(
+        Issue,
+        verbose_name='заявка',
         on_delete=models.CASCADE,
         blank=False,
         null=False,
@@ -484,27 +443,23 @@ class IssueFinanceOrgProposeClarification(models.Model):
     def __str__(self):
         str_args = (
             self.id,
-            self.propose.issue.id,
-            self.propose.finance_org.name,
+            self.issue.id,
             self.created_at.strftime('%d.%m.%Y')
         )
-        if self.initiator == consts.IFOPC_INITIATOR_ISSUER:
-            return 'Дозапрос №{} по заявке №{} в {} от {}'.format(*str_args)
-        else:
-            return 'Дозапрос №{} по заявке №{} от {} от {}'.format(*str_args)
+        return 'Дозапрос №{} по заявке №{} от {}'.format(*str_args)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        set_obj_update_time(self.propose)
+        set_obj_update_time(self.issue)
         return super().save(force_insert, force_update, using, update_fields)
 
 
-class IssueFinanceOrgProposeClarificationMessage(models.Model):
+class IssueClarificationMessage(models.Model):
     class Meta:
         verbose_name = 'сообщение по дозапросу'
         verbose_name_plural = 'сообщения по дозапросу'
 
     clarification = models.ForeignKey(
-        IssueFinanceOrgProposeClarification,
+        IssueClarification,
         on_delete=models.CASCADE,
         blank=False,
         null=False,
@@ -528,7 +483,7 @@ class IssueFinanceOrgProposeClarificationMessage(models.Model):
 
 class IssueFinanceOrgProposeClarificationMessageDocument(models.Model):
     clarification_message = models.ForeignKey(
-        IssueFinanceOrgProposeClarificationMessage,
+        IssueClarificationMessage,
         on_delete=models.CASCADE,
         blank=False,
         null=False,
@@ -625,13 +580,13 @@ class IssueBGProdFounderPhysical(models.Model):
     passport_data = models.CharField(verbose_name='паспортные данные', max_length=512, blank=False, null=False, default='')
 
 
-class IssueFinanceOrgProposeFormalizeDocument(models.Model):
+class IssueProposeFormalizeDocument(models.Model):
     class Meta:
         verbose_name = 'документ для оформления'
         verbose_name_plural = 'документы для оформления'
 
-    propose = models.ForeignKey(
-        IssueFinanceOrgPropose,
+    issue = models.ForeignKey(
+        Issue,
         on_delete=models.CASCADE,
         blank=False,
         null=False,
@@ -643,17 +598,17 @@ class IssueFinanceOrgProposeFormalizeDocument(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='propose_formalize_links'
+        related_name='issue_formalize_links'
     )
 
 
-class IssueFinanceOrgProposeFinalDocument(models.Model):
+class IssueProposeFinalDocument(models.Model):
     class Meta:
         verbose_name = 'итоговый документ'
         verbose_name_plural = 'итоговые документы'
 
-    propose = models.ForeignKey(
-        IssueFinanceOrgPropose,
+    issue = models.ForeignKey(
+        Issue,
         on_delete=models.CASCADE,
         blank=False,
         null=False,
@@ -665,7 +620,7 @@ class IssueFinanceOrgProposeFinalDocument(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='propose_final_links'
+        related_name='issue_final_links'
     )
 
 

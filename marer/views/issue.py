@@ -7,11 +7,10 @@ from django.views.generic import TemplateView, RedirectView
 
 from marer import consts
 from marer.forms import IssueRegisteringForm, IFOPCMessageForm
-from marer.models import Issue, Issuer, Document
-from marer.models.finance_org import FinanceOrgProductConditions, FinanceOrganization
-from marer.models.issue import IssueFinanceOrgPropose, IssueFinanceOrgProposeClarificationMessage, \
-    IssueFinanceOrgProposeClarificationMessageDocument, IssueFinanceOrgProposeClarification, \
-    IssueFinanceOrgProposeDocument
+from marer.models import Issue, Document
+from marer.models.issue import IssueClarificationMessage, \
+    IssueFinanceOrgProposeClarificationMessageDocument, IssueClarification, \
+    IssueProposeDocument
 from marer.products import get_finance_products
 from marer.stub import create_stub_issuer
 from marer.utils.notify import notify_user_manager_about_user_created_issue, \
@@ -53,10 +52,7 @@ class IssueRedirectView(RedirectView):
         if issue.status == consts.ISSUE_STATUS_REGISTERING:
             self.pattern_name = 'issue_registering'
         elif issue.status == consts.ISSUE_STATUS_REVIEW:
-            if IssueFinanceOrgProposeClarification.objects.filter(propose__issue=issue).exists():
-                self.pattern_name = 'issue_additional_documents_requests'
-            else:
-                self.pattern_name = 'issue_scoring'
+            self.pattern_name = 'issue_additional_documents_requests'
         elif issue.status == consts.ISSUE_STATUS_FINISHED:
             self.pattern_name = 'issue_finished'
         elif issue.status == consts.ISSUE_STATUS_CANCELLED:
@@ -188,106 +184,13 @@ class IssueSurveyView(IssueView):
             return self.get(request, *args, **kwargs)
 
 
-class IssueScoringView(IssueView):
-    template_name = 'marer/issue/scoring.html'
-
-    def get(self, request, *args, **kwargs):
-
-        foc_fields = self.get_issue().get_product().get_finance_orgs_conditions_list_fields()
-
-        foc_list = self.get_issue().get_product().get_finance_orgs_conditions_list()
-        first_fld, _ = foc_fields[0]
-        foc_list = foc_list.order_by(first_fld)
-
-        # distinctize by finance org
-        foc_list = [x for x in foc_list]
-        fo_ids_used = []
-        distinctized_foc_list = []
-        for foc in foc_list:
-            if foc.finance_org_id not in fo_ids_used:
-                distinctized_foc_list.append(foc)
-                fo_ids_used.append(foc.finance_org_id)
-
-        foc_list_list = []
-        for foc in distinctized_foc_list:
-            ffields_val = []
-            for ffield, _ in foc_fields:
-                ffields_val.append(getattr(foc, ffield))
-            foc_list_list.append(dict(
-                finance_org=foc.finance_org,
-                values=ffields_val,
-            ))
-
-        # kwargs['foc_list'] = distinctized_foc_list
-        kwargs['foc_list'] = foc_list_list
-        kwargs['foc_fields'] = foc_fields
-        kwargs['proposed_fo_ids'] = IssueFinanceOrgPropose.objects.filter(
-            issue=self.get_issue()).values_list('finance_org_id', flat=True)
-        return super().get(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-
-        if self.get_issue() and 'issue_scoring' not in self.get_issue().editable_dashboard_views():
-            return self.get(request, *args, **kwargs)
-
-        new_proposes = []
-        send_to_all = request.POST.get('send_to_all', None)
-        foid = request.POST.get('foid', None)
-        if send_to_all:
-            foc_list = self.get_issue().get_product().get_finance_orgs_conditions_list()
-
-            # distinctize by finance org
-            foc_list = [x for x in foc_list]
-            fo_ids_used = []
-            distinctized_foc_list = []
-            for foc in foc_list:
-                if foc.finance_org_id not in fo_ids_used:
-                    distinctized_foc_list.append(foc)
-                    fo_ids_used.append(foc.finance_org_id)
-
-            for foc in distinctized_foc_list:
-                propose_qs = IssueFinanceOrgPropose.objects.filter(
-                    finance_org_id=foc.finance_org_id, issue=self.get_issue())
-                if not propose_qs.exists():
-                    new_propose = IssueFinanceOrgPropose()
-                    new_propose.finance_org = foc.finance_org
-                    new_propose.issue = self.get_issue()
-                    new_propose.save()
-                    new_proposes.append(new_propose)
-
-        elif foid:
-            propose_qs = IssueFinanceOrgPropose.objects.filter(
-                finance_org_id=foid, issue=self.get_issue())
-            if not propose_qs.exists():
-                new_propose = IssueFinanceOrgPropose()
-                new_propose.finance_org_id = foid
-                new_propose.issue = self.get_issue()
-                new_propose.save()
-                new_proposes.append(new_propose)
-
-        notify_fo_managers_about_issue_proposed_to_banks(new_proposes)
-        notify_user_manager_about_issue_proposed_to_banks(new_proposes)
-        url = reverse('issue_scoring', args=args, kwargs=kwargs)
-        get_params = request.GET.urlencode()
-        if get_params:
-            response = HttpResponseRedirect(url + '?' + get_params)
-        else:
-            response = HttpResponseRedirect(url)
-        return response
-
-
 class IssueAdditionalDocumentsRequestsView(IssueView):
     template_name = 'marer/issue/additional_documents_requests.html'
 
-    def get(self, request, *args, **kwargs):
-        proposes = IssueFinanceOrgPropose.objects.filter(issue=self.get_issue())
-        kwargs['proposes'] = proposes
-        return super().get(request, *args, **kwargs)
-
     def post(self, request, *args, **kwargs):
 
-        proposes_docs = IssueFinanceOrgProposeDocument.objects.filter(
-            propose__issue=self.get_issue())
+        proposes_docs = IssueProposeDocument.objects.filter(
+            issue=self.get_issue())
         for pdoc in proposes_docs:
             pdoc_files_key = 'propose_doc_%s' % pdoc.id
             pdoc_files_del_key = 'propose_doc_%s_del' % pdoc.id
@@ -317,7 +220,7 @@ class IssueAdditionalDocumentsRequestView(IssueView):
     def _get_clarification(self):
         clarif_id = self.kwargs.get('adrid', None)
         if clarif_id:
-            clarification = get_object_or_404(IssueFinanceOrgProposeClarification, id=clarif_id)
+            clarification = get_object_or_404(IssueClarification, id=clarif_id)
             return clarification
         return None
 
@@ -325,9 +228,6 @@ class IssueAdditionalDocumentsRequestView(IssueView):
         clarification = self._get_clarification()
         if clarification:
             kwargs['clarification'] = clarification
-        else:
-            propose_id = request.GET.get('pid', 0)
-            kwargs['propose'] = get_object_or_404(IssueFinanceOrgPropose, id=propose_id)
         kwargs['consts'] = consts
         if 'comment_form' not in kwargs:
             kwargs['comment_form'] = IFOPCMessageForm()
@@ -345,15 +245,14 @@ class IssueAdditionalDocumentsRequestView(IssueView):
             clarification_change = True
             if not clarification:
                 propose_id = request.GET.get('pid', 0)
-                propose = get_object_or_404(IssueFinanceOrgPropose, id=propose_id)
 
-                clarification = IssueFinanceOrgProposeClarification()
+                clarification = IssueClarification()
                 clarification.initiator = consts.IFOPC_INITIATOR_ISSUER
-                clarification.propose = propose
+                clarification.issue = self.get_issue()
                 clarification.save()
                 clarification_change = False
 
-            new_msg = IssueFinanceOrgProposeClarificationMessage()
+            new_msg = IssueClarificationMessage()
             new_msg.clarification = clarification
             new_msg.message = comment_form.cleaned_data['message']
             new_msg.user = request.user
@@ -390,28 +289,9 @@ class IssueAdditionalDocumentsRequestView(IssueView):
 class IssuePaymentsView(IssueView):
     template_name = 'marer/issue/payments.html'
 
-    def get(self, request, *args, **kwargs):
-        formalizing_proposes = IssueFinanceOrgPropose.objects.filter(
-            issue=self.get_issue(),
-        ).exclude(
-            formalize_note=''
-        ).exclude(
-            formalize_note__isnull=True
-        )
-        kwargs['formalizing_proposes'] = formalizing_proposes
-        return super().get(request, *args, **kwargs)
-
 
 class IssueFinishedView(IssueView):
     template_name = 'marer/issue/finished.html'
-
-    def get(self, request, *args, **kwargs):
-        final_proposes = IssueFinanceOrgPropose.objects.filter(
-            issue=self.get_issue(),
-            final_decision__isnull=False,
-        ).order_by('-final_decision')
-        kwargs['final_proposes'] = final_proposes
-        return super().get(request, *args, **kwargs)
 
 
 class IssueCancelledView(IssueView):
