@@ -6,6 +6,13 @@
         <div class="panel-body">
           <input type="hidden" name="csrfmiddlewaretoken" :value="csrf">
 
+          <input type="hidden" name="issuer_ogrn" :value="party_ogrn">
+          <input type="hidden" name="issuer_inn" :value="party_inn">
+          <input type="hidden" name="issuer_kpp" :value="party_kpp">
+          <input type="hidden" name="issuer_full_name" :value="party_full_name">
+          <input type="hidden" name="issuer_short_name" :value="party_short_name">
+          <input type="hidden" name="issuer_legal_address" :value="party_legal_address">
+
           <div class="row">
             <div class="col-md-6">
               <bs3-select-field
@@ -144,7 +151,7 @@
         party_legal_address: issuerLegalAddress,
         comment: document.getElementById('app').getAttribute('comment'),
 
-        org_add_data_visible: true
+        org_add_data_visible: false
       }
     },
     watch: {

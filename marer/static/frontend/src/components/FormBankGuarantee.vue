@@ -1,6 +1,17 @@
 <template>
   <div class="form-bank-guarantee">
 
+    <input type="hidden" name="tender_exec_law" :value="tender_exec_law">
+    <input type="hidden" name="tender_placement_type" :value="tender_placement_type">
+    <input type="hidden" name="tender_publish_date" :value="tender_publish_date">
+    <input type="hidden" name="tender_start_cost" :value="tender_start_cost">
+
+    <input type="hidden" name="tender_responsible_full_name" :value="tender_responsible_full_name">
+    <input type="hidden" name="tender_responsible_legal_address" :value="tender_responsible_legal_address">
+    <input type="hidden" name="tender_responsible_inn" :value="tender_responsible_inn">
+    <input type="hidden" name="tender_responsible_kpp" :value="tender_responsible_kpp">
+    <input type="hidden" name="tender_responsible_ogrn" :value="tender_responsible_ogrn">
+
     <div class="panel panel-info">
       <div class="panel-heading">Вид банковской гарантии</div>
       <div class="panel-body">
@@ -176,7 +187,7 @@
 
           is_tender_info_panel_visible: true,
           is_contract_info_panel_visible: false,
-          tender_add_data_visible: true
+          tender_add_data_visible: false
         }
       } else {
         return {
@@ -211,9 +222,9 @@
           bg_commercial_contract_sign_date: '',
           bg_commercial_contract_end_date: '',
 
-          is_tender_info_panel_visible: false,
+          is_tender_info_panel_visible: true,
           is_contract_info_panel_visible: false,
-          tender_add_data_visible: true
+          tender_add_data_visible: false
         }
       }
     },
