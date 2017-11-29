@@ -144,7 +144,7 @@
         party_legal_address: issuerLegalAddress,
         comment: document.getElementById('app').getAttribute('comment'),
 
-        org_add_data_visible: false
+        org_add_data_visible: true
       }
     },
     watch: {

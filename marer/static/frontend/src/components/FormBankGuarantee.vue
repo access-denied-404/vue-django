@@ -14,10 +14,7 @@
           :options="[
             {value: '44-fz', text:'44-ФЗ'},
             {value: '185-fz', text:'185-ФЗ'},
-            {value: '223-fz', text:'223-ФЗ'},
-            {value: 'commercial', text:'Коммерческая'},
-            {value: 'customs', text: 'Таможенная'},
-            {value: 'vat', text: 'Возврат НДС'}
+            {value: '223-fz', text:'223-ФЗ'}
           ]"
           :cols="4"
         ></bs3-radio-field>
@@ -179,7 +176,7 @@
 
           is_tender_info_panel_visible: true,
           is_contract_info_panel_visible: false,
-          tender_add_data_visible: false
+          tender_add_data_visible: true
         }
       } else {
         return {
@@ -214,9 +211,9 @@
           bg_commercial_contract_sign_date: '',
           bg_commercial_contract_end_date: '',
 
-          is_tender_info_panel_visible: true,
+          is_tender_info_panel_visible: false,
           is_contract_info_panel_visible: false,
-          tender_add_data_visible: false
+          tender_add_data_visible: true
         }
       }
     },
