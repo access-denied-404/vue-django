@@ -1,6 +1,7 @@
 import logging
 import warnings
 
+from dateutil import parser
 from dateutil.relativedelta import relativedelta
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
@@ -14,6 +15,7 @@ from marer.products.forms import BGFinProdRegForm, BGFinProdSurveyOrgCommonForm,
     AffiliatesForm, FounderLegalForm, FounderPhysicalForm, CreditFinProdRegForm, CreditPledgeForm, \
     FactoringFinProdRegForm, LeasingFinProdRegForm, LeasingAssetForm, LeasingSupplierForm, LeasingPayRuleForm, \
     FactoringBuyerForm, FactoringSalesAnalyzeForm
+from marer.utils import kontur
 from marer.utils.loadfoc import get_cell_value, get_cell_summ_range, get_cell_percentage, get_cell_bool, \
     get_cell_review_term_days, get_cell_ensure_condition, get_issue_and_interest_rates
 
@@ -180,6 +182,62 @@ class BankGuaranteeProduct(FinanceProduct):
 
     def get_registering_form_class(self):
         return BGFinProdRegForm
+
+    def process_registering_form(self, request):
+
+        inn = request.POST.get('issuer_inn', None)
+        ogrn = request.POST.get('issuer_ogrn', None)
+
+        inn_should_be_requested = inn is not None and inn != self._issue.issuer_inn
+        ogrn_should_should_be_requested = ogrn is not None and ogrn != self._issue.issuer_ogrn
+
+        super().process_registering_form(request)
+
+        if inn_should_be_requested or ogrn_should_should_be_requested:
+            self._issue.refresh_from_db()
+            kontur_req_data = kontur.req(inn=inn, ogrn=ogrn)
+            kontur_egrDetails_data = kontur.egrDetails(inn=inn, ogrn=ogrn)
+
+            self._issue.issuer_registration_date = parser.parse(kontur_req_data['UL']['registrationDate'])
+            self._issue.issuer_ifns_reg_date = parser.parse(kontur_egrDetails_data['UL']['nalogRegBody']['nalogRegDate']).date()
+            self._issue.issuer_okopf = kontur_req_data['UL']['okopf']
+            self._issue.issuer_okpo = kontur_req_data['UL']['okpo']
+            self._issue.issuer_okved = kontur_req_data['UL'].get('okved', '')
+
+            if len(kontur_req_data['UL']['heads']) > 0:
+                head_name_arr = kontur_req_data['UL']['heads'][0]['fio'].split(' ')
+                if len(head_name_arr) == 3:
+                    self._issue.issuer_head_last_name = head_name_arr[0]
+                    self._issue.issuer_head_first_name = head_name_arr[1]
+                    self._issue.issuer_head_middle_name = head_name_arr[2]
+                self._issue.issuer_head_org_position_and_permissions = kontur_req_data['UL']['heads'][0]['position']
+
+            from marer.models.issue import IssueBGProdAffiliate
+            affiliates = IssueBGProdAffiliate.objects.filter(issue=self._issue)
+            # affiliates.delete()
+            # todo fill affiliates
+
+            from marer.models.issue import IssueBGProdFounderLegal
+            founders_legal = IssueBGProdFounderLegal.objects.filter(issue=self._issue)
+            founders_legal.delete()
+            for fndr in kontur_egrDetails_data['UL'].get('foundersUL', []):
+                new_fndr = IssueBGProdFounderLegal()
+                new_fndr.issue = self._issue
+                new_fndr.name = fndr['fullName']
+                new_fndr.auth_capital_percentage = str(fndr['share']['percentagePlain']) + '%' if fndr['share']['percentagePlain'] else (str(fndr['share']['sum']) + ' руб.')
+                new_fndr.save()
+
+            from marer.models.issue import IssueBGProdFounderPhysical
+            founders_physical = IssueBGProdFounderPhysical.objects.filter(issue=self._issue)
+            founders_physical.delete()
+            for fndr in kontur_egrDetails_data['UL'].get('foundersFL', []):
+                new_fndr = IssueBGProdFounderPhysical()
+                new_fndr.issue = self._issue
+                new_fndr.fio = fndr['fio']
+                new_fndr.auth_capital_percentage = str(fndr['share']['percentagePlain']) + '%' if fndr['share']['percentagePlain'] else (str(fndr['share']['sum']) + ' руб.')
+                new_fndr.save()
+
+            self._issue.save()
 
     def get_survey_context_part(self):
         affiliates_formset = formset_factory(AffiliatesForm, extra=0)

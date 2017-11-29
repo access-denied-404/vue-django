@@ -187,6 +187,8 @@ DEFAULT_MANAGER_ID = 0
 
 AUTH_CERT_SIGN_CHECK_CLASS = ''
 
+KONTUR_FOCUS_API_KEY = ''
+
 include(
     optional('secrets.py'),
     optional('local_settings.py'),
