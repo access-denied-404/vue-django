@@ -118,48 +118,12 @@ class IssueRegisteringView(IssueView):
             product.set_issue(issue)
             product.process_registering_form(request)
 
-            url = reverse('issue_common_documents_request', args=[issue.id])
+            url = reverse('issue_survey', args=[issue.id])
             return HttpResponseRedirect(url)
 
         else:
             kwargs.update(dict(base_form=base_form))
             return self.get(request, *args, **kwargs)
-
-
-class IssueCommonDocumentsRequestView(IssueView):
-    template_name = 'marer/issue/common_documents_request.html'
-
-    def get(self, request, *args, **kwargs):
-        fp_documents = self.get_issue().get_product().get_documents_list()
-        fp_docs_codes = [fpd.code for fpd in fp_documents]
-        issue_documents = self.get_issue().common_documents.filter(code__in=fp_docs_codes)
-        for idoc in issue_documents:
-            for fp in fp_documents:
-                if idoc.code == fp.code:
-                    fp.set_document(idoc.document)
-        kwargs.update(dict(documents=fp_documents))
-        return super().get(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-
-        if self.get_issue() and 'issue_common_documents_request' not in self.get_issue().editable_dashboard_views():
-            return self.get(request, *args, **kwargs)
-
-        not_all_docs_loaded_flag = False
-        fp_documents = self.get_issue().get_product().get_documents_list()
-        for fpdoc in fp_documents:
-            post_file = request.FILES.get(fpdoc.code, None)
-            if post_file is not None:
-                self.get_issue().update_common_issue_doc(fpdoc.code, post_file)
-            else:
-                not_all_docs_loaded_flag = True
-
-        if not_all_docs_loaded_flag:
-            return self.get(request, *args, **kwargs)
-        else:
-            notify_user_manager_about_user_updated_issue(self.get_issue())
-            url = reverse('issue_survey', args=[self.get_issue().id])
-            return HttpResponseRedirect(url)
 
 
 class IssueSurveyView(IssueView):
