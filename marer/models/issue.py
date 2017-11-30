@@ -506,11 +506,11 @@ class IssueBGProdAffiliate(models.Model):
 
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False, related_name='issuer_affiliates')
     name = models.CharField(verbose_name='наименование', max_length=512, blank=False, null=False, default='')
-    legal_address = models.CharField(verbose_name='юридический адрес', max_length=512, blank=False, null=False, default='')
-    inn = models.CharField(verbose_name='ИНН', max_length=512, blank=False, null=False, default='')
-    activity_type = models.CharField(verbose_name='вид деятельности', max_length=512, blank=False, null=False, default='')
-    aff_percentage = models.CharField(verbose_name='доля участия', max_length=512, blank=False, null=False, default='')
-    aff_type = models.CharField(verbose_name='отношение к организации', max_length=512, blank=False, null=False, default='')
+    legal_address = models.CharField(verbose_name='юридический адрес', max_length=512, blank=True, null=False, default='')
+    inn = models.CharField(verbose_name='ИНН', max_length=512, blank=True, null=False, default='')
+    activity_type = models.CharField(verbose_name='вид деятельности', max_length=512, blank=True, null=False, default='')
+    aff_percentage = models.CharField(verbose_name='доля участия', max_length=512, blank=True, null=False, default='')
+    aff_type = models.CharField(verbose_name='отношение к организации', max_length=512, blank=True, null=False, default='')
 
 
 class IssueLeasingProdAsset(models.Model):
@@ -558,11 +558,11 @@ class IssueBGProdFounderLegal(models.Model):
 
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False, related_name='issuer_founders_legal')
     name = models.CharField(verbose_name='наименование', max_length=512, blank=False, null=False, default='')
-    add_date = models.CharField(verbose_name='дата внесения', max_length=512, blank=False, null=False, default='')
-    additional_business = models.CharField(verbose_name='наличие других видов бизнеса', max_length=512, blank=False, null=False, default='')
-    country = models.CharField(verbose_name='страна', max_length=512, blank=False, null=False, default='')
-    auth_capital_percentage = models.CharField(verbose_name='доля в уставном капитале', max_length=512, blank=False, null=False, default='')
-    legal_address = models.CharField(verbose_name='юридический адрес', max_length=512, blank=False, null=False, default='')
+    add_date = models.CharField(verbose_name='дата внесения', max_length=512, blank=True, null=False, default='')
+    additional_business = models.CharField(verbose_name='наличие других видов бизнеса', max_length=512, blank=True, null=False, default='')
+    country = models.CharField(verbose_name='страна', max_length=512, blank=True, null=False, default='')
+    auth_capital_percentage = models.CharField(verbose_name='доля в уставном капитале', max_length=512, blank=True, null=False, default='')
+    legal_address = models.CharField(verbose_name='юридический адрес', max_length=512, blank=True, null=False, default='')
 
 
 class IssueBGProdFounderPhysical(models.Model):
@@ -572,12 +572,12 @@ class IssueBGProdFounderPhysical(models.Model):
 
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False, related_name='issuer_founders_physical')
     fio = models.CharField(verbose_name='ФИО', max_length=512, blank=False, null=False, default='')
-    add_date = models.CharField(verbose_name='дата внесения', max_length=512, blank=False, null=False, default='')
-    additional_business = models.CharField(verbose_name='наличие других видов бизнеса', max_length=512, blank=False, null=False, default='')
-    country = models.CharField(verbose_name='страна', max_length=512, blank=False, null=False, default='')
-    auth_capital_percentage = models.CharField(verbose_name='доля в уставном капитале', max_length=512, blank=False, null=False, default='')
-    address = models.CharField(verbose_name='адрес проживания', max_length=512, blank=False, null=False, default='')
-    passport_data = models.CharField(verbose_name='паспортные данные', max_length=512, blank=False, null=False, default='')
+    add_date = models.CharField(verbose_name='дата внесения', max_length=512, blank=True, null=False, default='')
+    additional_business = models.CharField(verbose_name='наличие других видов бизнеса', max_length=512, blank=True, null=False, default='')
+    country = models.CharField(verbose_name='страна', max_length=512, blank=True, null=False, default='')
+    auth_capital_percentage = models.CharField(verbose_name='доля в уставном капитале', max_length=512, blank=True, null=False, default='')
+    address = models.CharField(verbose_name='адрес проживания', max_length=512, blank=True, null=False, default='')
+    passport_data = models.CharField(verbose_name='паспортные данные', max_length=512, blank=True, null=False, default='')
 
 
 class IssueProposeFormalizeDocument(models.Model):
