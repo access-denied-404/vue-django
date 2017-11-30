@@ -12,64 +12,66 @@
     <input type="hidden" name="tender_responsible_kpp" :value="tender_responsible_kpp">
     <input type="hidden" name="tender_responsible_ogrn" :value="tender_responsible_ogrn">
 
-    <div class="panel panel-info">
-      <div class="panel-heading">Вид банковской гарантии</div>
-      <div class="panel-body">
-
-    <div class="row">
-      <div class="col-md-12 text-center1">
-        <bs3-radio-field
-          :name="'tender_exec_law'"
-          v-model="tender_exec_law"
-          label=""
-          :options="[
-            {value: '44-fz', text:'44-ФЗ'},
-            {value: '185-fz', text:'185-ФЗ'},
-            {value: '223-fz', text:'223-ФЗ'}
-          ]"
-          :cols="4"
-        ></bs3-radio-field>
-        <!--<br/>-->
-      </div>
-    </div>
-
-      </div>
-    </div>
-
     <div class="panel panel-info" v-if="is_tender_info_panel_visible">
       <div class="panel-heading">Сведения о тендере</div>
       <div class="panel-body">
+
         <div class="row">
           <div class="col-md-12"><bs-input :name="'tender_gos_number'" v-model="tender_gos_number" label="Госномер тендера или ссылка на закупку" required></bs-input></div>
         </div>
-        <div class="row">
-          <div class="col-md-12 text-center">
-            <a class="btn btn-link" v-on:click="tender_add_data_visible = !tender_add_data_visible">{{tender_add_data_switch_caption}}</a>
+
+        <fieldset>
+          <legend>
+            <a class="btn btn-link btn-xs" v-on:click="tender_add_data_visible = !tender_add_data_visible">
+              <span class="glyphicon glyphicon-triangle-bottom" v-if="tender_add_data_visible"></span>
+              <span class="glyphicon glyphicon-triangle-right" v-else="tender_add_data_visible"></span>
+              Подробности
+            </a>
+          </legend>
+
+          <div class="row" v-if="tender_add_data_visible">
+            <div class="col-md-6">
+              <bs3-radio-field
+                :name="'tender_exec_law'"
+                v-model="tender_exec_law"
+                label="Закон исполнения торгов"
+                :options="[
+                  {value: '44-fz', text:'44-ФЗ'},
+                  {value: '223-fz', text:'223-ФЗ'},
+                  {value: '185-fz', text:'185-ФЗ'}
+                ]"
+                :cols="3"
+              ></bs3-radio-field>
+            </div>
           </div>
-        </div>
-        <div class="row" v-if="tender_add_data_visible">
-          <div class="col-md-5"><div class="form-group"><bs-input :name="'tender_placement_type'" v-model="tender_placement_type" label="Способ определения поставщика"></bs-input></div></div>
-          <div class="col-md-3"><label>Дата публикации</label><date-time-picker :name="'tender_publish_date'" v-model="tender_publish_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div>
-          <div class="col-md-4"><bs-input :name="'tender_start_cost'" v-model="tender_start_cost" label="Начальная цена контракта" :mask="currency"></bs-input></div>
-        </div>
-      </div>
-    </div>
 
-    <div class="panel panel-info" v-if="is_contract_info_panel_visible">
-      <div class="panel-heading">Сведения о контракте</div>
-      <div class="panel-body">
+          <div class="row" v-if="tender_add_data_visible">
 
-        <div class="row">
-          <div class="col-md-12"><bs-input :name="'bg_commercial_contract_subject'" v-model="bg_commercial_contract_subject" label="Предмет контракта"></bs-input></div>
-        </div>
-        <div class="row">
-          <div class="col-md-12"><bs-input :name="'bg_commercial_contract_place_of_work'" v-model="bg_commercial_contract_place_of_work" label="Место выполнения работ"></bs-input></div>
-        </div>
-        <div class="row">
-          <div class="col-md-4"><bs-input :name="'bg_commercial_contract_sum'" v-model="bg_commercial_contract_sum" label="Сумма контракта"></bs-input></div>
-          <div class="col-md-4"><label>Дата заключения договора</label><date-time-picker :name="'bg_commercial_contract_sign_date'" v-model="bg_commercial_contract_sign_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div>
-          <div class="col-md-4"><label>Дата завершения договора</label><date-time-picker :name="'bg_commercial_contract_end_date'" v-model="bg_commercial_contract_end_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div>
-        </div>
+            <div class="col-md-5"><div class="form-group"><bs-input :name="'tender_placement_type'" v-model="tender_placement_type" label="Способ определения поставщика"></bs-input></div></div>
+            <div class="col-md-3"><label>Дата публикации</label><date-time-picker :name="'tender_publish_date'" v-model="tender_publish_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div>
+            <div class="col-md-4"><bs-input :name="'tender_start_cost'" v-model="tender_start_cost" label="Начальная цена контракта" :mask="currency"></bs-input></div>
+          </div>
+
+
+          <fieldset v-if="tender_add_data_visible">
+            <legend>Организатор закупки</legend>
+
+
+            <div class="row">
+              <div class="col-md-12"><bs-input :name="'tender_responsible_full_name'" v-model="tender_responsible_full_name" label="Полное наименование организации"></bs-input></div>
+            </div>
+            <div class="row">
+              <div class="col-md-12"><bs-input :name="'tender_responsible_legal_address'" v-model="tender_responsible_legal_address" label="Юридический адрес"></bs-input></div>
+            </div>
+            <div class="row">
+              <div class="col-md-4"><bs-input :name="'tender_responsible_inn'" v-model="tender_responsible_inn" label="ИНН"></bs-input></div>
+              <div class="col-md-4"><bs-input :name="'tender_responsible_kpp'" v-model="tender_responsible_kpp" label="КПП"></bs-input></div>
+              <div class="col-md-4"><bs-input :name="'tender_responsible_ogrn'" v-model="tender_responsible_ogrn" label="ОГРН"></bs-input></div>
+            </div>
+
+          </fieldset>
+
+        </fieldset>
 
       </div>
     </div>
@@ -97,30 +99,11 @@
 
           <div class="col-md-4">
             <bs3-radio-field v-if="is_tender_info_panel_visible" :name="'bg_type'" v-model="bg_type" label="Тип БГ" :options="[{value: 'contract_execution', text:'Исполнение контракта'}, {value:'application_ensure', text:'Обеспечение заявки'}]"></bs3-radio-field>
-            <bs3-radio-field :name="'tender_contract_type'" v-model="tender_contract_type" label="Тип контракта" :options="[{value: 'supply', text:'поставка товара'},{value: 'service', text:'оказание услуг'},{value: 'works', text:'выполнение работ'}]"></bs3-radio-field>
             <checkbox :name="'tender_has_prepayment'" v-model="tender_has_prepayment" type="primary">Наличие аванса</checkbox>
           </div>
 
         </div>
 
-      </div>
-    </div>
-
-    <div class="panel panel-info" v-if="tender_add_data_visible && (is_tender_info_panel_visible || is_contract_info_panel_visible)">
-      <div class="panel-heading" v-if="is_tender_info_panel_visible">Сведения об организаторе тендера</div>
-      <div class="panel-heading" v-if="is_contract_info_panel_visible">Сведения о заказчике</div>
-      <div class="panel-body">
-        <div class="row">
-          <div class="col-md-12"><bs-input :name="'tender_responsible_full_name'" v-model="tender_responsible_full_name" label="Наименование — полное наименование организации"></bs-input></div>
-        </div>
-        <div class="row">
-          <div class="col-md-12"><bs-input :name="'tender_responsible_legal_address'" v-model="tender_responsible_legal_address" label="Адрес — юридический адрес организации"></bs-input></div>
-        </div>
-        <div class="row">
-          <div class="col-md-4"><bs-input :name="'tender_responsible_inn'" v-model="tender_responsible_inn" label="ИНН"></bs-input></div>
-          <div class="col-md-4"><bs-input :name="'tender_responsible_kpp'" v-model="tender_responsible_kpp" label="КПП"></bs-input></div>
-          <div class="col-md-4"><bs-input :name="'tender_responsible_ogrn'" v-model="tender_responsible_ogrn" label="ОГРН"></bs-input></div>
-        </div>
       </div>
     </div>
 
@@ -200,6 +183,10 @@
           tender_application_ensure_cost: '',
           tender_contract_execution_ensure_cost: '',
 
+          tender_collect_start_date: '',
+          tender_collect_end_date: '',
+          tender_finish_date: '',
+
           tender_has_prepayment: '',
           tender_contract_type: '',
 
@@ -261,7 +248,10 @@
         jQuery.getJSON('/rest/tender?format=json&gos_number=' + this.tender_gos_number, (data, status, xhr) => {
           this.tender_exec_law = data.law
           this.tender_placement_type = data.placement_type
-          this.tender_publish_date = data.publish_datetime
+          this.tender_publish_date = data.publish_date
+          this.tender_collect_start_date = data.collect_start_date
+          this.tender_collect_end_date = data.collect_end_date
+          this.tender_finish_date = data.finish_date
           this.tender_start_cost = data.start_cost
           this.tender_responsible_full_name = data.publisher.full_name
           this.tender_responsible_legal_address = data.publisher.legal_address
@@ -271,6 +261,7 @@
           this.tender_application_ensure_cost = data.application_ensure_cost
           this.tender_contract_execution_ensure_cost = data.contract_execution_ensure_cost
           this.bg_currency = data.currency_code
+          this.process_bg_type()
         })
       }, 1000),
       tender_exec_law: _.debounce(function () {
@@ -278,12 +269,7 @@
         this.is_contract_info_panel_visible = this.get_is_contract_info_panel_visible()
       }, 200),
       bg_type: _.debounce(function () {
-        if (this.bg_type === 'application_ensure') {
-          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === this.tender_contract_execution_ensure_cost) this.bg_sum = this.tender_application_ensure_cost
-        }
-        if (this.bg_type === 'contract_execution') {
-          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === this.tender_application_ensure_cost) this.bg_sum = this.tender_contract_execution_ensure_cost
-        }
+        this.process_bg_type()
       }, 200)
     },
     mounted () {
@@ -309,26 +295,24 @@
       },
       get_is_contract_info_panel_visible () {
         return this.tender_exec_law === 'commercial'
+      },
+      process_bg_type () {
+        if (this.bg_type === 'application_ensure') {
+          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === this.tender_contract_execution_ensure_cost) this.bg_sum = this.tender_application_ensure_cost
+
+          this.bg_deadline_date = moment(this.tender_collect_end_date, dateformat).subtract(1, 'days')
+          this.bg_start_date = moment(this.tender_collect_end_date, dateformat)
+          this.bg_end_date = moment(this.tender_collect_end_date, dateformat).add(90, 'days')
+        }
+        if (this.bg_type === 'contract_execution') {
+          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === this.tender_application_ensure_cost) if (this.tender_contract_execution_ensure_cost) this.bg_sum = this.tender_contract_execution_ensure_cost
+
+          if (this.tender_finish_date) {
+            this.bg_deadline_date = moment(this.tender_finish_date, dateformat).add(14, 'days')
+            this.bg_start_date = moment(this.tender_finish_date, dateformat).add(14, 'days')
+          }
+        }
       }
     }
   }
 </script>
-
-<style scoped>
-  fieldset {
-    border: 1px groove #ddd !important;
-    padding: 0 1.4em 1.4em 1.4em !important;
-    margin: 0 0 1.5em 0 !important;
-    -webkit-box-shadow: 0px 0px 0px 0px #000;
-    box-shadow: 0px 0px 0px 0px #000;
-  }
-
-  legend {
-    font-size: 1.2em !important;
-    font-weight: bold !important;
-    text-align: left !important;
-    width: auto;
-    padding: 0 10px;
-    border-bottom: none;
-  }
-</style>

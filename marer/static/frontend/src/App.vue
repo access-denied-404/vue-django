@@ -5,6 +5,7 @@
         <div class="panel-heading">Оформление заявки</div>
         <div class="panel-body">
           <input type="hidden" name="csrfmiddlewaretoken" :value="csrf">
+          <input type="hidden" name="product" :value="product">
 
           <input type="hidden" name="issuer_ogrn" :value="party_ogrn">
           <input type="hidden" name="issuer_inn" :value="party_inn">
@@ -14,91 +15,75 @@
           <input type="hidden" name="issuer_legal_address" :value="party_legal_address">
 
           <div class="row">
-            <div class="col-md-6">
-              <bs3-select-field
-                v-model="product"
-                :name="'product'"
-                :label="'Тип заявки'"
-                :options="products"
-              ></bs3-select-field>
-            </div>
-            <div class="col-md-6">
+            <div class="col-md-12">
               <bs-input
                 :name="'party'"
                 class="party"
-                :label="'Организация'"
+                :label="'Организация-заявитель'"
                 v-model="party"
               ></bs-input>
             </div>
           </div>
 
-          <div class="row">
-            <div class="col-md-12 text-center">
-              <a class="btn btn-link" v-on:click="org_add_data_visible = !org_add_data_visible">{{org_add_data_switch_caption}}</a>
-            </div>
-          </div>
+          <fieldset>
+            <legend>
+              <a class="btn btn-link btn-xs" v-on:click="org_add_data_visible = !org_add_data_visible">
+                <span class="glyphicon glyphicon-triangle-bottom" v-if="org_add_data_visible"></span>
+                <span class="glyphicon glyphicon-triangle-right" v-else="org_add_data_visible"></span>
+                Подробности
+              </a>
+            </legend>
 
-          <div class="row" v-if="org_add_data_visible">
-            <div class="col-md-8">
-              <bs-input
-                :name="'issuer_full_name'"
-                :label="'Полное наименование'"
-                v-model="party_full_name"
-              ></bs-input>
+            <div class="row" v-if="org_add_data_visible">
+              <div class="col-md-8">
+                <bs-input
+                  :name="'issuer_full_name'"
+                  :label="'Полное наименование'"
+                  v-model="party_full_name"
+                ></bs-input>
+              </div>
+              <div class="col-md-4">
+                <bs-input
+                  :name="'issuer_short_name'"
+                  :label="'Краткое наименование'"
+                  v-model="party_short_name"
+                ></bs-input>
+              </div>
             </div>
-            <div class="col-md-4">
-              <bs-input
-                :name="'issuer_short_name'"
-                :label="'Краткое наименование'"
-                v-model="party_short_name"
-              ></bs-input>
-            </div>
-          </div>
 
-          <div class="row" v-if="org_add_data_visible">
-            <div class="col-md-12">
-              <bs-input
-                :name="'issuer_legal_address'"
-                :label="'Юридический адрес'"
-                v-model="party_legal_address"
-              ></bs-input>
+            <div class="row" v-if="org_add_data_visible">
+              <div class="col-md-12">
+                <bs-input
+                  :name="'issuer_legal_address'"
+                  :label="'Юридический адрес'"
+                  v-model="party_legal_address"
+                ></bs-input>
+              </div>
             </div>
-          </div>
 
-          <div class="row" v-if="org_add_data_visible">
-            <div class="col-md-4">
-              <bs-input
-                :name="'issuer_ogrn'"
-                :label="'ОГРН'"
-                v-model="party_ogrn"
-              ></bs-input></div>
-            <div class="col-md-4">
-              <bs-input
-                :name="'issuer_inn'"
-                :label="'ИНН'"
-                v-model="party_inn"
-              ></bs-input>
+            <div class="row" v-if="org_add_data_visible">
+              <div class="col-md-4">
+                <bs-input
+                  :name="'issuer_ogrn'"
+                  :label="'ОГРН'"
+                  v-model="party_ogrn"
+                ></bs-input></div>
+              <div class="col-md-4">
+                <bs-input
+                  :name="'issuer_inn'"
+                  :label="'ИНН'"
+                  v-model="party_inn"
+                ></bs-input>
+              </div>
+              <div class="col-md-4">
+                <bs-input
+                  :name="'issuer_kpp'"
+                  :label="'КПП'"
+                  v-model="party_kpp"
+                ></bs-input>
+              </div>
             </div>
-            <div class="col-md-4">
-              <bs-input
-                :name="'issuer_kpp'"
-                :label="'КПП'"
-                v-model="party_kpp"
-              ></bs-input>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-12">
-              <bs-input
-                :name="'comment'"
-                :label="'Комментарий'"
-                :type="'textarea'"
-                :rows=2
-                v-model="comment"
-              ></bs-input>
-            </div>
-          </div>
+          </fieldset>
 
         </div>
       </div>
@@ -141,7 +126,7 @@
       }
 
       return {
-        product: document.getElementById('app').getAttribute('product'),
+        product: 'BankGuaranteeProduct',
         party: issuerShortName,
         party_ogrn: issuerOGRN,
         party_inn: issuerINN,
@@ -157,18 +142,6 @@
     watch: {
       product (e) {
         window.location.hash = '/' + this.product
-      }
-    },
-    computed: {
-      org_add_data_switch_caption: {
-        get () {
-          if (this.org_add_data_visible) {
-            return 'Скрыть'
-          } else {
-            return 'Подробнее'
-          }
-        },
-        set () {}
       }
     },
     created () {

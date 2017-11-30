@@ -7,6 +7,18 @@ from rest_framework.views import APIView
 from marer.forms import RestTenderForm
 
 
+def _move_date_to_field(obj: dict, src_field: str, dst_field: str, del_src_field=True):
+    src_date_raw = obj.get(src_field, None)
+    try:
+        src_date = parse_datetime(src_date_raw).strftime('%d.%m.%Y')
+    except TypeError:
+        src_date = None
+    obj[dst_field] = src_date
+
+    if del_src_field:
+        del obj[src_field]
+
+
 class TenderDataView(APIView):
     def get(self, request, format=None):
         rtform = RestTenderForm(request.GET)
@@ -20,5 +32,10 @@ class TenderDataView(APIView):
             return HttpResponseNotFound()
 
         tdata = req.json()
-        tdata['publish_datetime'] = parse_datetime(tdata['publish_datetime']).strftime('%d.%m.%Y')
+
+        _move_date_to_field(tdata, 'publish_datetime', 'publish_date')
+        _move_date_to_field(tdata, 'open_datetime', 'collect_start_date')
+        _move_date_to_field(tdata, 'close_datetime', 'collect_end_date')
+        _move_date_to_field(tdata, 'finish_datetime', 'finish_date')
+
         return Response(tdata)
