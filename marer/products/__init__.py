@@ -197,6 +197,7 @@ class BankGuaranteeProduct(FinanceProduct):
             self._issue.refresh_from_db()
             kontur_req_data = kontur.req(inn=inn, ogrn=ogrn)
             kontur_egrDetails_data = kontur.egrDetails(inn=inn, ogrn=ogrn)
+            kontur_aff_data = kontur.companyAffiliatesReq(inn=inn, ogrn=ogrn)
 
             self._issue.issuer_registration_date = parser.parse(kontur_req_data['UL']['registrationDate'])
             self._issue.issuer_ifns_reg_date = parser.parse(kontur_egrDetails_data['UL']['nalogRegBody']['nalogRegDate']).date()
@@ -214,8 +215,18 @@ class BankGuaranteeProduct(FinanceProduct):
 
             from marer.models.issue import IssueBGProdAffiliate
             affiliates = IssueBGProdAffiliate.objects.filter(issue=self._issue)
-            # affiliates.delete()
-            # todo fill affiliates
+            affiliates.delete()
+            for aff in kontur_aff_data:
+                new_aff = IssueBGProdAffiliate()
+                new_aff.issue = self._issue
+
+                if aff.get('UL', None):
+                    new_aff.name = aff['UL']['legalName']['short'] if aff['UL']['legalName'].get('short', None) else aff['UL']['legalName']['full']
+                elif aff.get('IP', None):
+                    new_aff.name = aff['IP']['fio']
+
+                new_aff.inn = aff['inn']
+                new_aff.save()
 
             from marer.models.issue import IssueBGProdFounderLegal
             founders_legal = IssueBGProdFounderLegal.objects.filter(issue=self._issue)
@@ -224,7 +235,7 @@ class BankGuaranteeProduct(FinanceProduct):
                 new_fndr = IssueBGProdFounderLegal()
                 new_fndr.issue = self._issue
                 new_fndr.name = fndr['fullName']
-                new_fndr.auth_capital_percentage = str(fndr['share']['percentagePlain']) + '%' if fndr['share']['percentagePlain'] else (str(fndr['share']['sum']) + ' руб.')
+                new_fndr.auth_capital_percentage = str(fndr['share']['percentagePlain']) + '%' if fndr['share'].get('percentagePlain', None) else (str(fndr['share']['sum']) + ' руб.')
                 new_fndr.save()
 
             from marer.models.issue import IssueBGProdFounderPhysical
@@ -234,7 +245,7 @@ class BankGuaranteeProduct(FinanceProduct):
                 new_fndr = IssueBGProdFounderPhysical()
                 new_fndr.issue = self._issue
                 new_fndr.fio = fndr['fio']
-                new_fndr.auth_capital_percentage = str(fndr['share']['percentagePlain']) + '%' if fndr['share']['percentagePlain'] else (str(fndr['share']['sum']) + ' руб.')
+                new_fndr.auth_capital_percentage = str(fndr['share']['percentagePlain']) + '%' if fndr['share'].get('percentagePlain', None) else (str(fndr['share']['sum']) + ' руб.')
                 new_fndr.save()
 
             self._issue.save()

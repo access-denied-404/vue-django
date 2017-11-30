@@ -36,3 +36,9 @@ def egrDetails(inn: str=None, ogrn: str=None):
     data = _api_request('egrDetails', inn=inn, ogrn=ogrn)
     return data[0] if len(data) == 1 else data
 
+
+def companyAffiliatesReq(inn: str=None, ogrn: str=None):
+    inn = inn or ''
+    ogrn = ogrn or ''
+    data = _api_request('companyAffiliates/req', inn=inn, ogrn=ogrn)
+    return data
