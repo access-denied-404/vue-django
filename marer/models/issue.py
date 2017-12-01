@@ -175,6 +175,38 @@ class Issue(models.Model):
     final_note = models.TextField(verbose_name='подпись к итоговым документам', blank=True, null=False, default='')
     final_decision = models.NullBooleanField(verbose_name='удовлетворена ли заявка', blank=True, null=True)
 
+    balance_code_1100_offset_0 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_1200_offset_0 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_1300_offset_0 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_1400_offset_0 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_1500_offset_0 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_1600_offset_0 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_1700_offset_0 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+
+    balance_code_2100_offset_0 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_2200_offset_0 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_2300_offset_0 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_2400_offset_0 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_2500_offset_0 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_2900_offset_0 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_2910_offset_0 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+
+    balance_code_1100_offset_1 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_1200_offset_1 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_1300_offset_1 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_1400_offset_1 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_1500_offset_1 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_1600_offset_1 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_1700_offset_1 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+
+    balance_code_2100_offset_1 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_2200_offset_1 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_2300_offset_1 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_2400_offset_1 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_2500_offset_1 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_2900_offset_1 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_2910_offset_1 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+
     @property
     def humanized_id(self):
         if self.id:

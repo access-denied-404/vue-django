@@ -1,25 +1,22 @@
 <div class="panel panel-info">
     <div class="panel-heading" data-toggle="collapse" data-target="#panel1">Бухгалтерский баланс</div>
-    <div class="panel-body collapse" id="panel1">
+    <div class="panel-body collapse in" id="panel1">
         <div class="container-fluid">
 
             <div class="row">
                 <div class="col-md-4 h4">Наименование показателя</div>
                 <div class="col-md-8">
-                    <div class="col-md-2 h5">Код строки</div>
-                    <div class="col-md-2 h6">На 2 квартал 2016 года</div>
-                    <div class="col-md-2 h6">На 3 квартал 2016 года</div>
-                    <div class="col-md-2 h6">На 4 квартал 2016 года</div>
-                    <div class="col-md-2 h6">На 1 квартал 2017 года</div>
-                    <div class="col-md-2 h6">На 2 квартал 2017 года</div>
+                    <div class="col-md-4 h5">Код строки</div>
+                    <div class="col-md-4 h6">На 1 квартал 2017 года</div>
+                    <div class="col-md-4 h6">На 2 квартал 2017 года</div>
                 </div>
             </div>
 
-            {% include 'marer/products/BankGuarantee/form_balance_1.html' %}
-            {% include 'marer/products/BankGuarantee/form_balance_2.html' %}
-            {% include 'marer/products/BankGuarantee/form_balance_3.html' %}
-            {% include 'marer/products/BankGuarantee/form_balance_4.html' %}
-            {% include 'marer/products/BankGuarantee/form_balance_5.html' %}
+            {% include 'marer/products/BankGuarantee/form_balance_1.html' with form=form %}
+            {% include 'marer/products/BankGuarantee/form_balance_2.html' with form=form %}
+            {% include 'marer/products/BankGuarantee/form_balance_3.html' with form=form %}
+            {% include 'marer/products/BankGuarantee/form_balance_4.html' with form=form %}
+            {% include 'marer/products/BankGuarantee/form_balance_5.html' with form=form %}
 
         </div>
     </div>

@@ -97,6 +97,40 @@ class CreditFinProdRegForm(Form):
     issuer_kpp = CharField(required=False)
 
 
+class AccountingBalanceForm(Form):
+    balance_code_1100_offset_0 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    balance_code_1200_offset_0 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    balance_code_1300_offset_0 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    balance_code_1400_offset_0 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    balance_code_1500_offset_0 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    balance_code_1600_offset_0 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    balance_code_1700_offset_0 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+
+    balance_code_2100_offset_0 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    balance_code_2200_offset_0 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    balance_code_2300_offset_0 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    balance_code_2400_offset_0 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    balance_code_2500_offset_0 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    balance_code_2900_offset_0 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    balance_code_2910_offset_0 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+
+    balance_code_1100_offset_1 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    balance_code_1200_offset_1 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    balance_code_1300_offset_1 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    balance_code_1400_offset_1 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    balance_code_1500_offset_1 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    balance_code_1600_offset_1 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    balance_code_1700_offset_1 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+
+    balance_code_2100_offset_1 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    balance_code_2200_offset_1 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    balance_code_2300_offset_1 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    balance_code_2400_offset_1 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    balance_code_2500_offset_1 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    balance_code_2900_offset_1 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    balance_code_2910_offset_1 = DecimalField(decimal_places=2, required=False, localize=True, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+
+
 class BGFinProdSurveyOrgCommonForm(Form):
     issuer_full_name = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
     issuer_short_name = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
