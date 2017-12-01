@@ -12,7 +12,7 @@
     <input type="hidden" name="tender_responsible_kpp" :value="tender_responsible_kpp">
     <input type="hidden" name="tender_responsible_ogrn" :value="tender_responsible_ogrn">
 
-    <div class="panel panel-info" v-if="is_tender_info_panel_visible">
+    <div class="panel panel-info">
       <div class="panel-heading">Сведения о тендере</div>
       <div class="panel-body">
 
@@ -98,7 +98,7 @@
           </div>
 
           <div class="col-md-4">
-            <bs3-radio-field v-if="is_tender_info_panel_visible" :name="'bg_type'" v-model="bg_type" label="Тип БГ" :options="[{value: 'contract_execution', text:'Исполнение контракта'}, {value:'application_ensure', text:'Обеспечение заявки'}]"></bs3-radio-field>
+            <bs3-radio-field :name="'bg_type'" v-model="bg_type" label="Тип БГ" :options="[{value: 'contract_execution', text:'Исполнение контракта'}, {value:'application_ensure', text:'Обеспечение заявки'}]"></bs3-radio-field>
             <checkbox :name="'tender_has_prepayment'" v-model="tender_has_prepayment" type="primary">Наличие аванса</checkbox>
           </div>
 
