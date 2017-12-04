@@ -7,10 +7,10 @@
   <h2>
       {{ inline_admin_formset.opts.verbose_name_plural|capfirst }}
 
-      {% if inline_admin_formset.opts.show_view_all_link %}
+      {% if inline_admin_formset.opts.show_view_all_link and original.id %}
         <a href="/admin/{{ inline_admin_formset.opts.opts.app_label }}/{{ inline_admin_formset.opts.opts.model_name }}/?{{ opts.model_name }}_id={{ original.id }}" class="changelink" target="_blank" style="background-color: white;">смотреть все</a>
       {% endif %}
-      {% if inline_admin_formset.opts.has_alter_add_url %}
+      {% if inline_admin_formset.opts.has_alter_add_url and original.id %}
         <a href="{{ inline_admin_formset.opts |alter_add_url:original }}" class="addlink" target="_blank" style="background-color: white;">создать</a>
       {% endif %}
   </h2>
