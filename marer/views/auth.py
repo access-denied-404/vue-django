@@ -43,6 +43,7 @@ class LoginView(TemplateView):
         if login_form.is_valid():
             login(request, user)
             url = reverse('cabinet_requests', args=args, kwargs=kwargs)
+            url = request.GET.get('next', url)
             return HttpResponseRedirect(url)
         else:
             kwargs.update(dict(login_form=login_form))

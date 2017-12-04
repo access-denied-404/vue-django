@@ -39,7 +39,7 @@ class IssueView(LoginRequiredMixin, TemplateView):
         return super().get_context_data(**kwargs)
 
 
-class IssueRedirectView(RedirectView):
+class IssueRedirectView(LoginRequiredMixin, RedirectView):
     permanent = False
 
     def get(self, request, *args, **kwargs):
