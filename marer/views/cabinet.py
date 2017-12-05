@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -25,7 +26,14 @@ class CabinetRequestsView(LoginRequiredMixin, TemplateView):
                 filtered_issues_qs = filtered_issues_qs.filter(type=filter_fgrp)
             if filter_status is not None and filter_status != '':
                 filtered_issues_qs = filtered_issues_qs.filter(status=filter_status)
-        paged_filtered_issues_qs = filtered_issues_qs  # fixme make pageable
+        paged_filtered_issues_qs = Paginator(filtered_issues_qs, 20)
+        page = request.GET.get('page', 1)
+        try:
+            paged_filtered_issues_qs = paged_filtered_issues_qs.page(page)
+        except PageNotAnInteger:
+            paged_filtered_issues_qs = paged_filtered_issues_qs.page(1)
+        except EmptyPage:
+            paged_filtered_issues_qs = paged_filtered_issues_qs.page(1)
         kwargs.update(dict(
             filter_form=filter_form,
             issues=paged_filtered_issues_qs

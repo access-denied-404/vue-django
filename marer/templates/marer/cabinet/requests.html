@@ -49,23 +49,49 @@
     </table>
 </div>
 
-{#<nav aria-label="Page navigation" class="text-center">#}
-{#    <ul class="pagination">#}
-{#        <li>#}
-{#            <a href="#" aria-label="Previous">#}
-{#                <span aria-hidden="true" class="glyphicon glyphicon glyphicon-chevron-left"></span>#}
-{#            </a>#}
-{#        </li>#}
-{#        <li class="active"><a href="#">1</a></li>#}
-{#        <li><a href="#">2</a></li>#}
-{#        <li><a href="#">3</a></li>#}
-{#        <li><a href="#">4</a></li>#}
-{#        <li><a href="#">5</a></li>#}
-{#        <li>#}
-{#            <a href="#" aria-label="Next">#}
-{#                <span aria-hidden="true" class="glyphicon glyphicon glyphicon-chevron-right"></span>#}
-{#            </a>#}
-{#        </li>#}
-{#    </ul>#}
-{#</nav>#}
+{% if issues.has_other_pages %}
+    <nav aria-label="Page navigation" class="text-center">
+        <ul class="pagination">
+            {% if issues.has_previous %}
+                <li>
+                    {% if issues.contacts.previous_page_number == 1 %}
+                        <a href="{% url 'cabinet_requests' %}" aria-label="Previous">
+                            <span aria-hidden="true" class="glyphicon glyphicon glyphicon-chevron-left"></span>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'cabinet_requests' %}?page={{ issues.previous_page_number }}" aria-label="Previous">
+                            <span aria-hidden="true" class="glyphicon glyphicon glyphicon-chevron-left"></span>
+                        </a>
+                    {% endif %}
+                </li>
+            {% else %}
+                <li class="disabled">
+                    <span aria-hidden="true" class="glyphicon glyphicon glyphicon-chevron-left"></span>
+                </li>
+            {% endif %}
+            {% for pagenum in issues.paginator.page_range %}
+                <li {% if issues.number == pagenum %}class="active"{% endif %}>
+                    <a
+                            {% if pagenum == 1 %}
+                                href="{% url 'cabinet_requests' %}"
+                            {% else %}
+                                href="{% url 'cabinet_requests' %}?page={{ pagenum }}"
+                            {% endif %}
+                    >{{ pagenum }}</a>
+                </li>
+            {% endfor %}
+            {% if issues.has_next %}
+                <li>
+                    <a href="{% url 'cabinet_requests' %}?page={{ issues.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true" class="glyphicon glyphicon glyphicon-chevron-right"></span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="disabled">
+                    <span aria-hidden="true" class="glyphicon glyphicon glyphicon-chevron-right"></span>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}
 {% endblock %}
