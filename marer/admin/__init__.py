@@ -19,6 +19,7 @@ from django.utils.encoding import force_text
 from django.utils.html import escape
 from django.utils.timezone import localtime
 from django.utils.translation import ugettext_lazy as _
+from mptt.admin import MPTTModelAdmin
 
 from marer import models
 from marer.admin.filters import ManagerListFilter, BrokerListFilter
@@ -27,7 +28,7 @@ from marer.admin.inline import IssueDocumentInlineAdmin, \
     IFOPClarificationInlineAdmin, IFOPClarificationMessageInlineAdmin, \
     IFOPFormalizeDocumentInlineAdmin, IFOPFinalDocumentInlineAdmin, IssueBGProdAffiliateInlineAdmin, \
     IssueBGProdFounderLegalInlineAdmin, IssueBGProdFounderPhysicalInlineAdmin, \
-    FinanceOrgProductProposeDocumentInlineAdmin, IssueProposeDocumentInlineAdmin
+    FinanceOrgProductProposeDocumentInlineAdmin, IssueProposeDocumentInlineAdmin, RegionKLADRCodeInlineAdmin
 from marer.models import Issue, User
 from marer.models.finance_org import FinanceOrganization, FinanceOrgProductConditions, FinanceOrgProductProposeDocument
 from marer.utils.notify import notify_user_about_manager_created_issue_for_user, \
@@ -37,6 +38,26 @@ from marer.utils.notify import notify_user_about_manager_created_issue_for_user,
 site.site_title = 'Управление сайтом'
 site.site_header = 'Управление площадкой'
 site.index_title = 'Управление площадкой'
+
+
+@register(models.Region)
+class RegionAdmin(MPTTModelAdmin):
+    list_display = (
+        'name',
+        'kladr_codes',
+        'okato_code',
+        'oktmo_code',
+    )
+    inlines = (
+        RegionKLADRCodeInlineAdmin,
+    )
+
+    def kladr_codes(self, obj=None):
+        if obj is not None and obj.kladr_codes.exists():
+            codes = obj.kladr_codes.values_list('code', flat=True)
+            return ', '.join([str(code) for code in codes])
+        return '—'
+    kladr_codes.short_description = 'Коды КЛАДР'
 
 
 @register(models.Issue)

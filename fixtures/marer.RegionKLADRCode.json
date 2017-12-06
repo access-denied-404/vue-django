@@ -1,0 +1,738 @@
+[
+{
+    "model": "marer.regionkladrcode",
+    "pk": 1,
+    "fields": {
+        "region": 55,
+        "code": "22"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 2,
+    "fields": {
+        "region": 46,
+        "code": "28"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 3,
+    "fields": {
+        "region": 29,
+        "code": "29"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 4,
+    "fields": {
+        "region": 40,
+        "code": "30"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 5,
+    "fields": {
+        "region": 96,
+        "code": "99"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 6,
+    "fields": {
+        "region": 11,
+        "code": "31"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 7,
+    "fields": {
+        "region": 12,
+        "code": "32"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 8,
+    "fields": {
+        "region": 13,
+        "code": "33"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 9,
+    "fields": {
+        "region": 41,
+        "code": "34"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 10,
+    "fields": {
+        "region": 30,
+        "code": "35"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 11,
+    "fields": {
+        "region": 14,
+        "code": "36"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 12,
+    "fields": {
+        "region": 94,
+        "code": "92"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 13,
+    "fields": {
+        "region": 47,
+        "code": "79"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 14,
+    "fields": {
+        "region": 56,
+        "code": "75"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 15,
+    "fields": {
+        "region": 56,
+        "code": "80"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 16,
+    "fields": {
+        "region": 15,
+        "code": "37"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 17,
+    "fields": {
+        "region": 57,
+        "code": "38"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 18,
+    "fields": {
+        "region": 57,
+        "code": "85"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 19,
+    "fields": {
+        "region": 31,
+        "code": "39"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 20,
+    "fields": {
+        "region": 16,
+        "code": "40"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 21,
+    "fields": {
+        "region": 48,
+        "code": "41"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 22,
+    "fields": {
+        "region": 48,
+        "code": "82"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 23,
+    "fields": {
+        "region": 58,
+        "code": "42"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 24,
+    "fields": {
+        "region": 73,
+        "code": "43"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 25,
+    "fields": {
+        "region": 17,
+        "code": "44"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 26,
+    "fields": {
+        "region": 42,
+        "code": "23"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 27,
+    "fields": {
+        "region": 59,
+        "code": "24"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 28,
+    "fields": {
+        "region": 59,
+        "code": "88"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 29,
+    "fields": {
+        "region": 59,
+        "code": "84"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 30,
+    "fields": {
+        "region": 67,
+        "code": "45"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 31,
+    "fields": {
+        "region": 18,
+        "code": "46"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 32,
+    "fields": {
+        "region": 32,
+        "code": "47"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 33,
+    "fields": {
+        "region": 19,
+        "code": "48"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 34,
+    "fields": {
+        "region": 49,
+        "code": "49"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 35,
+    "fields": {
+        "region": 10,
+        "code": "77"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 36,
+    "fields": {
+        "region": 20,
+        "code": "50"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 37,
+    "fields": {
+        "region": 33,
+        "code": "51"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 38,
+    "fields": {
+        "region": 34,
+        "code": "83"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 39,
+    "fields": {
+        "region": 72,
+        "code": "52"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 40,
+    "fields": {
+        "region": 35,
+        "code": "53"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 41,
+    "fields": {
+        "region": 54,
+        "code": "54"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 42,
+    "fields": {
+        "region": 60,
+        "code": "55"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 43,
+    "fields": {
+        "region": 74,
+        "code": "56"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 44,
+    "fields": {
+        "region": 21,
+        "code": "57"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 45,
+    "fields": {
+        "region": 75,
+        "code": "58"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 46,
+    "fields": {
+        "region": 76,
+        "code": "59"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 47,
+    "fields": {
+        "region": 76,
+        "code": "81"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 48,
+    "fields": {
+        "region": 50,
+        "code": "25"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 49,
+    "fields": {
+        "region": 36,
+        "code": "60"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 50,
+    "fields": {
+        "region": 43,
+        "code": "01"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 51,
+    "fields": {
+        "region": 61,
+        "code": "04"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 52,
+    "fields": {
+        "region": 77,
+        "code": "02"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 53,
+    "fields": {
+        "region": 62,
+        "code": "03"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 54,
+    "fields": {
+        "region": 87,
+        "code": "05"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 55,
+    "fields": {
+        "region": 88,
+        "code": "06"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 56,
+    "fields": {
+        "region": 89,
+        "code": "07"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 57,
+    "fields": {
+        "region": 44,
+        "code": "08"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 58,
+    "fields": {
+        "region": 90,
+        "code": "09"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 59,
+    "fields": {
+        "region": 37,
+        "code": "10"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 60,
+    "fields": {
+        "region": 38,
+        "code": "11"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 61,
+    "fields": {
+        "region": 95,
+        "code": "91"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 62,
+    "fields": {
+        "region": 78,
+        "code": "12"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 63,
+    "fields": {
+        "region": 79,
+        "code": "13"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 64,
+    "fields": {
+        "region": 51,
+        "code": "14"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 65,
+    "fields": {
+        "region": 91,
+        "code": "15"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 66,
+    "fields": {
+        "region": 80,
+        "code": "16"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 67,
+    "fields": {
+        "region": 63,
+        "code": "17"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 68,
+    "fields": {
+        "region": 81,
+        "code": "18"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 69,
+    "fields": {
+        "region": 64,
+        "code": "19"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 70,
+    "fields": {
+        "region": 92,
+        "code": "20"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 71,
+    "fields": {
+        "region": 82,
+        "code": "21"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 72,
+    "fields": {
+        "region": 39,
+        "code": "61"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 73,
+    "fields": {
+        "region": 22,
+        "code": "62"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 74,
+    "fields": {
+        "region": 83,
+        "code": "63"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 75,
+    "fields": {
+        "region": 28,
+        "code": "78"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 76,
+    "fields": {
+        "region": 84,
+        "code": "64"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 77,
+    "fields": {
+        "region": 52,
+        "code": "65"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 78,
+    "fields": {
+        "region": 66,
+        "code": "66"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 79,
+    "fields": {
+        "region": 23,
+        "code": "67"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 80,
+    "fields": {
+        "region": 86,
+        "code": "26"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 81,
+    "fields": {
+        "region": 24,
+        "code": "68"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 82,
+    "fields": {
+        "region": 25,
+        "code": "69"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 83,
+    "fields": {
+        "region": 65,
+        "code": "70"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 84,
+    "fields": {
+        "region": 26,
+        "code": "71"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 85,
+    "fields": {
+        "region": 68,
+        "code": "72"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 86,
+    "fields": {
+        "region": 85,
+        "code": "73"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 87,
+    "fields": {
+        "region": 45,
+        "code": "27"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 88,
+    "fields": {
+        "region": 69,
+        "code": "86"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 89,
+    "fields": {
+        "region": 70,
+        "code": "74"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 90,
+    "fields": {
+        "region": 53,
+        "code": "87"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 91,
+    "fields": {
+        "region": 71,
+        "code": "89"
+    }
+},
+{
+    "model": "marer.regionkladrcode",
+    "pk": 92,
+    "fields": {
+        "region": 27,
+        "code": "76"
+    }
+}
+]

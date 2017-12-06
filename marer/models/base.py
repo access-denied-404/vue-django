@@ -9,7 +9,7 @@ from django.utils import timezone
 from mptt import models as mptt_models
 from mptt.fields import TreeForeignKey
 
-__all__ = ['Document']
+__all__ = ['Document', 'Region', 'RegionKLADRCode']
 
 
 def documents_upload_path(instance, filename):
@@ -88,8 +88,26 @@ class OKVED2(mptt_models.MPTTModel):
 
 
 class Region(mptt_models.MPTTModel):
-    name = models.CharField(max_length=512, blank=False, null=False)
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='childrens')
+    class Meta:
+        verbose_name = 'регион'
+        verbose_name_plural = 'регионы'
+
+    name = models.CharField('название', max_length=512, blank=False, null=False)
+    parent = TreeForeignKey('self', verbose_name='Родительский регион', null=True, blank=True, related_name='childrens')
+    okato_code = models.CharField('код ОКАТО', max_length=32, blank=True, null=False, default='')
+    oktmo_code = models.CharField('код ОКТМО', max_length=32, blank=True, null=False, default='')
 
     def __str__(self):
         return self.name
+
+
+class RegionKLADRCode(models.Model):
+    class Meta:
+        verbose_name = 'код КЛАДР'
+        verbose_name_plural = 'коды КЛАДР'
+
+    region = TreeForeignKey(Region, verbose_name='регион', null=False, blank=False, related_name='kladr_codes')
+    code = models.CharField('код КЛАДР', max_length=2, blank=True, null=False, default='')
+
+    def __str__(self):
+        return 'код КЛАДР региона «{}»: {}'.format(self.region, self.code)

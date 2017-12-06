@@ -81,6 +81,11 @@ class IssueInlineFormsetAdmin(InlineModelAdmin):
         return formset
 
 
+class RegionKLADRCodeInlineAdmin(StackedInline):
+    extra = 1
+    model = models.RegionKLADRCode
+
+
 class IssueFinanceOrgProposeFormSet(BaseInlineFormSet):
     def get_queryset(self):
         qs = super().get_queryset()
