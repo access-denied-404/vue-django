@@ -313,25 +313,25 @@ class Issue(models.Model):
 
     @property
     def available_dashboard_views_names(self):
-        registering_views = [
-            'issue_registering',
-            'issue_common_documents_request',
-            'issue_survey',
-            'issue_scoring',
-        ]
-        review_views = registering_views + [
-            'issue_additional_documents_requests',
-            'issue_payments',
-            'issue_finished',
-        ]
-        if self.status == consts.ISSUE_STATUS_REGISTERING:
-            return registering_views
-        if self.status == consts.ISSUE_STATUS_REVIEW:
-            return review_views
-        if self.status in [consts.ISSUE_STATUS_FINISHED, consts.ISSUE_STATUS_CANCELLED]:
-            return review_views
+        available_views = ['issue_registering']
+
+        reg_form_class = self.get_product().get_registering_form_class()
+        reg_form = reg_form_class(self.__dict__)
+        if reg_form.is_valid():
+            available_views.append('issue_survey')
         else:
-            return ['issue_registering']
+            return available_views
+
+        if not self.status == consts.ISSUE_STATUS_REGISTERING:
+            available_views.append('issue_additional_documents_requests')
+
+        if self.formalize_documents.exists():
+            available_views.append('issue_payments')
+
+        if self.status in [consts.ISSUE_STATUS_FINISHED, consts.ISSUE_STATUS_CANCELLED]:
+            available_views.append('issue_finished')
+
+        return available_views
 
     def editable_dashboard_views(self):
         registering_views = [
