@@ -345,37 +345,15 @@ class BankGuaranteeProduct(FinanceProduct):
 
         form_balance = AccountingBalanceForm(request.POST)
         if form_balance.is_valid():
-            self._issue.balance_code_1100_offset_0 = form_balance.cleaned_data['balance_code_1100_offset_0']
-            self._issue.balance_code_1200_offset_0 = form_balance.cleaned_data['balance_code_1200_offset_0']
             self._issue.balance_code_1300_offset_0 = form_balance.cleaned_data['balance_code_1300_offset_0']
-            self._issue.balance_code_1400_offset_0 = form_balance.cleaned_data['balance_code_1400_offset_0']
-            self._issue.balance_code_1500_offset_0 = form_balance.cleaned_data['balance_code_1500_offset_0']
             self._issue.balance_code_1600_offset_0 = form_balance.cleaned_data['balance_code_1600_offset_0']
-            self._issue.balance_code_1700_offset_0 = form_balance.cleaned_data['balance_code_1700_offset_0']
-
-            self._issue.balance_code_2100_offset_0 = form_balance.cleaned_data['balance_code_2100_offset_0']
-            self._issue.balance_code_2200_offset_0 = form_balance.cleaned_data['balance_code_2200_offset_0']
-            self._issue.balance_code_2300_offset_0 = form_balance.cleaned_data['balance_code_2300_offset_0']
+            self._issue.balance_code_2110_offset_0 = form_balance.cleaned_data['balance_code_2110_offset_0']
             self._issue.balance_code_2400_offset_0 = form_balance.cleaned_data['balance_code_2400_offset_0']
-            self._issue.balance_code_2500_offset_0 = form_balance.cleaned_data['balance_code_2500_offset_0']
-            self._issue.balance_code_2900_offset_0 = form_balance.cleaned_data['balance_code_2900_offset_0']
-            self._issue.balance_code_2910_offset_0 = form_balance.cleaned_data['balance_code_2910_offset_0']
 
-            self._issue.balance_code_1100_offset_1 = form_balance.cleaned_data['balance_code_1100_offset_1']
-            self._issue.balance_code_1200_offset_1 = form_balance.cleaned_data['balance_code_1200_offset_1']
             self._issue.balance_code_1300_offset_1 = form_balance.cleaned_data['balance_code_1300_offset_1']
-            self._issue.balance_code_1400_offset_1 = form_balance.cleaned_data['balance_code_1400_offset_1']
-            self._issue.balance_code_1500_offset_1 = form_balance.cleaned_data['balance_code_1500_offset_1']
             self._issue.balance_code_1600_offset_1 = form_balance.cleaned_data['balance_code_1600_offset_1']
-            self._issue.balance_code_1700_offset_1 = form_balance.cleaned_data['balance_code_1700_offset_1']
-
-            self._issue.balance_code_2100_offset_1 = form_balance.cleaned_data['balance_code_2100_offset_1']
-            self._issue.balance_code_2200_offset_1 = form_balance.cleaned_data['balance_code_2200_offset_1']
-            self._issue.balance_code_2300_offset_1 = form_balance.cleaned_data['balance_code_2300_offset_1']
+            self._issue.balance_code_2110_offset_1 = form_balance.cleaned_data['balance_code_2110_offset_1']
             self._issue.balance_code_2400_offset_1 = form_balance.cleaned_data['balance_code_2400_offset_1']
-            self._issue.balance_code_2500_offset_1 = form_balance.cleaned_data['balance_code_2500_offset_1']
-            self._issue.balance_code_2900_offset_1 = form_balance.cleaned_data['balance_code_2900_offset_1']
-            self._issue.balance_code_2910_offset_1 = form_balance.cleaned_data['balance_code_2910_offset_1']
         else:
             processed_sucessfully_flag = False
 
