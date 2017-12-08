@@ -191,7 +191,7 @@ class BankGuaranteeProduct(FinanceProduct):
         inn_should_be_requested = inn is not None and inn != self._issue.issuer_inn
         ogrn_should_should_be_requested = ogrn is not None and ogrn != self._issue.issuer_ogrn
 
-        super().process_registering_form(request)
+        processed_valid = super().process_registering_form(request)
 
         if inn_should_be_requested or ogrn_should_should_be_requested:
             self._issue.refresh_from_db()
@@ -249,6 +249,7 @@ class BankGuaranteeProduct(FinanceProduct):
                 new_fndr.save()
 
             self._issue.save()
+        return processed_valid
 
     def get_survey_context_part(self):
         affiliates_formset = formset_factory(AffiliatesForm, extra=0)

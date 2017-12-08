@@ -1,6 +1,8 @@
 <template>
   <div class="form-bank-guarantee">
 
+    <input type="hidden" name="bg_currency" :value="bg_currency">
+
     <input type="hidden" name="tender_exec_law" :value="tender_exec_law">
     <input type="hidden" name="tender_placement_type" :value="tender_placement_type">
     <input type="hidden" name="tender_publish_date" :value="tender_publish_date">
@@ -84,15 +86,31 @@
           <div class="col-md-8">
 
             <div class="row">
-              <div class="col-md-4"><bs-input :name="'bg_sum'" v-model="bg_sum" label="Требуемая сумма" :mask="currency"></bs-input></div>
-              <div class="col-md-3"><bs3-select-field v-model="bg_currency" :name="'bg_currency'" :label="'Валюта'" :options="[{value: 'rur', text:'Рубль'},{value: 'usd', text:'Доллар'},{value: 'eur', text:'Евро'}]"></bs3-select-field></div>
+              <div class="col-md-7">
+                <bs-input
+                  :name="'bg_sum'"
+                  v-model="bg_sum"
+                  label="Требуемая сумма"
+                  :mask="currency"
+                  v-bind:class="{'has-error': !sum_is_appropriate}"
+                ></bs-input>
+              </div>
               <div class="col-md-5"><label>Крайний срок выдачи</label><date-time-picker :name="'bg_deadline_date'" v-model="bg_deadline_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div>
             </div>
 
             <div class="row">
-              <div class="col-md-4"><div class="form-group"><label>Сроки БГ с</label><date-time-picker :name="'bg_start_date'" v-model="bg_start_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div></div>
-              <div class="col-md-4"><div class="form-group"><label>Сроки БГ по</label><date-time-picker :name="'bg_end_date'" v-model="bg_end_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div></div>
-              <div class="col-md-4"><bs-input :name="'date_range'" v-model="date_range" label="Срок БГ, дней" readonly></bs-input></div>
+              <div class="col-md-4"><div class="form-group"><label>Сроки БГ с</label><date-time-picker :name="'bg_start_date'" v-model="bg_start_date" :config="{'format':'L','locale':'ru'}" required></date-time-picker></div></div>
+              <div class="col-md-4"><div class="form-group"><label>Сроки БГ по</label><date-time-picker :name="'bg_end_date'" v-model="bg_end_date" :config="{'format':'L','locale':'ru'}" required></date-time-picker></div></div>
+              <div class="col-md-4">
+                <bs-input
+                  :name="'date_range'"
+                  v-model="date_range"
+                  label="Срок БГ, дней"
+                  readonly
+                  required
+                  v-bind:class="{'has-error': !date_range_is_appropriate}"
+                ></bs-input>
+              </div>
             </div>
 
           </div>
@@ -157,7 +175,7 @@
 
           bg_sum: regData.formdata.bg_sum,
           bg_type: regData.formdata.bg_type,
-          bg_currency: regData.formdata.bg_currency,
+          bg_currency: 'rur',
           bg_start_date: moment(regData.formdata.bg_start_date, dateformat),
           bg_end_date: moment(regData.formdata.bg_end_date, dateformat),
           bg_deadline_date: regData.formdata.bg_deadline_date,
@@ -169,7 +187,6 @@
           bg_commercial_contract_end_date: moment(regData.formdata.bg_commercial_contract_end_date, dateformat),
 
           is_tender_info_panel_visible: true,
-          is_contract_info_panel_visible: false,
           tender_add_data_visible: false
         }
       } else {
@@ -198,7 +215,7 @@
 
           bg_sum: '',
           bg_type: '',
-          bg_currency: '',
+          bg_currency: 'rur',
           bg_start_date: '',
           bg_end_date: '',
           bg_deadline_date: '',
@@ -210,7 +227,6 @@
           bg_commercial_contract_end_date: '',
 
           is_tender_info_panel_visible: true,
-          is_contract_info_panel_visible: false,
           tender_add_data_visible: false
         }
       }
@@ -241,6 +257,16 @@
           }
         },
         set () {}
+      },
+      date_range_is_appropriate: {
+        get () {
+          return this.date_range > 0 && this.date_range <= 900
+        }
+      },
+      sum_is_appropriate: {
+        get () {
+          return this.bg_sum > 0 && this.bg_sum <= 15000000
+        }
       }
     },
     watch: {
@@ -260,13 +286,11 @@
           this.tender_responsible_ogrn = data.publisher.ogrn
           this.tender_application_ensure_cost = data.application_ensure_cost
           this.tender_contract_execution_ensure_cost = data.contract_execution_ensure_cost
-          this.bg_currency = data.currency_code
           this.process_bg_type()
         })
       }, 1000),
       tender_exec_law: _.debounce(function () {
         this.is_tender_info_panel_visible = this.get_if_tender_info_panel_visible()
-        this.is_contract_info_panel_visible = this.get_is_contract_info_panel_visible()
       }, 200),
       bg_type: _.debounce(function () {
         this.process_bg_type()
@@ -274,35 +298,22 @@
     },
     mounted () {
       this.is_tender_info_panel_visible = this.get_if_tender_info_panel_visible()
-      this.is_contract_info_panel_visible = this.get_is_contract_info_panel_visible()
     },
     methods: {
-      bg_currency (value) {
-        return value
-          .trim()
-          .slice(
-            0,
-            value.indexOf('.') === -1
-              ? value.length
-              : value.indexOf('.') + 3
-          )
-          .replace(/[^\d.]+/, '')
-      },
       get_if_tender_info_panel_visible () {
         return this.tender_exec_law === '44-fz' ||
           this.tender_exec_law === '223-fz' ||
           this.tender_exec_law === '185-fz'
       },
-      get_is_contract_info_panel_visible () {
-        return this.tender_exec_law === 'commercial'
-      },
       process_bg_type () {
         if (this.bg_type === 'application_ensure') {
           if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === this.tender_contract_execution_ensure_cost) this.bg_sum = this.tender_application_ensure_cost
 
-          this.bg_deadline_date = moment(this.tender_collect_end_date, dateformat).subtract(1, 'days')
-          this.bg_start_date = moment(this.tender_collect_end_date, dateformat)
-          this.bg_end_date = moment(this.tender_collect_end_date, dateformat).add(90, 'days')
+          if (this.tender_collect_end_date && this.tender_collect_end_date !== '') {
+            this.bg_deadline_date = moment(this.tender_collect_end_date, dateformat).subtract(1, 'days')
+            this.bg_start_date = moment(this.tender_collect_end_date, dateformat)
+            this.bg_end_date = moment(this.tender_collect_end_date, dateformat).add(90, 'days')
+          }
         }
         if (this.bg_type === 'contract_execution') {
           if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === this.tender_application_ensure_cost) if (this.tender_contract_execution_ensure_cost) this.bg_sum = this.tender_contract_execution_ensure_cost

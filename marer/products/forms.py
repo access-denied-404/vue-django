@@ -61,6 +61,14 @@ class BGFinProdRegForm(Form):
 
     tender_has_prepayment = BooleanField(required=False)
 
+    def clean(self):
+        if not 0 < self.cleaned_data['bg_sum'] < 15000000:
+            self.add_error(None, 'Неверная сумма запрашиваемой гарантии')
+
+        date_range = self.cleaned_data['bg_end_date'] - self.cleaned_data['bg_start_date']
+        if not 0 < date_range.days < 900:
+            self.add_error(None, 'Неверный срок действия запрашиваемой гарантии')
+
 
 class CreditFinProdRegForm(Form):
     credit_product_is_credit = BooleanField(required=False)

@@ -46,6 +46,7 @@ class FinanceProduct(object):
         for field in form.cleaned_data:
             setattr(self._issue, field, form.cleaned_data[field])
         self._issue.save()
+        return form.is_valid()
 
     @abstractmethod
     def get_admin_issue_fieldset(self):

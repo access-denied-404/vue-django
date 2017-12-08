@@ -1,6 +1,13 @@
 <template>
   <div id="app-root">
     <form method="post">
+
+      <div class="alert alert-danger" v-if="errors.__all__">
+        <ul>
+          <li v-for="err in errors.__all__">{{ err }}</li>
+        </ul>
+      </div>
+
       <div class="panel panel-info">
         <div class="panel-heading">Оформление заявки</div>
         <div class="panel-body">
@@ -115,6 +122,7 @@
       var issuerKPP = ''
       var issuerOGRN = ''
       var issuerLegalAddress = ''
+      var errors = false
 
       if (regData !== null && regData.formdata !== null) {
         issuerFullName = regData.formdata.issuer_full_name
@@ -123,6 +131,7 @@
         issuerKPP = regData.formdata.issuer_kpp
         issuerOGRN = regData.formdata.issuer_ogrn
         issuerLegalAddress = regData.formdata.issuer_legal_address
+        errors = regData.errors
       }
 
       return {
@@ -136,6 +145,7 @@
         party_legal_address: issuerLegalAddress,
         comment: document.getElementById('app').getAttribute('comment'),
 
+        errors: errors,
         org_add_data_visible: false
       }
     },

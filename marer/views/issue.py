@@ -116,14 +116,14 @@ class IssueRegisteringView(IssueView):
             # todo issue process registering form
             product = issue.get_product()
             product.set_issue(issue)
-            product.process_registering_form(request)
+            processed_valid = product.process_registering_form(request)
 
-            url = reverse('issue_survey', args=[issue.id])
-            return HttpResponseRedirect(url)
+            if processed_valid:
+                url = reverse('issue_survey', args=[issue.id])
+                return HttpResponseRedirect(url)
 
-        else:
-            kwargs.update(dict(base_form=base_form))
-            return self.get(request, *args, **kwargs)
+        kwargs.update(dict(base_form=base_form))
+        return self.get(request, *args, **kwargs)
 
 
 class IssueSurveyView(IssueView):
