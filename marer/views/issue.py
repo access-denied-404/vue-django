@@ -141,6 +141,11 @@ class IssueSurveyView(IssueView):
 
         all_ok = self.get_issue().get_product().process_survey_post_data(request)
         if all_ok:
+            # todo add issue form signing
+            self.get_issue().refresh_from_db()
+            if self.get_issue().status == consts.ISSUE_STATUS_REGISTERING:
+                self.get_issue().status = consts.ISSUE_STATUS_REVIEW
+                self.get_issue().save()
             notify_user_manager_about_user_updated_issue(self.get_issue())
             url = reverse('issue_additional_documents_requests', args=[self.get_issue().id])
             return HttpResponseRedirect(url)
