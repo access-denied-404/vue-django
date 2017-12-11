@@ -30,7 +30,6 @@
         <tr class="bg-info">
             <th>Номер</th>
             <th>Организация</th>
-            <th>Вид заявки</th>
             <th>Сумма</th>
             <th>Статус</th>
         </tr>
@@ -41,7 +40,6 @@
                 <a href="{% url 'cabinet_request' issue.id %}">{{ issue.humanized_id }}</a>
             </td>
             <td>{{ issue.get_issuer_name }}</td>
-            <td>{{ issue.get_product.humanized_name }}</td>
             <td>{{ issue.humanized_sum }}</td>
             <td>{{ issue.humanized_status }}</td>
         </tr>
