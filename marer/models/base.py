@@ -13,11 +13,9 @@ __all__ = ['Document', 'Region', 'RegionKLADRCode']
 
 
 def documents_upload_path(instance, filename):
-    filename_arr = str(filename).split('.')
-    ext = filename_arr[-1]
-    new_filename = 'documents/%Y/%m/%d/{file_name}.{file_ext}'.format(
-        file_name=uuid.uuid4(),
-        file_ext=ext,
+    new_filename = 'documents/%Y/%m/%d/{uuid}/{file_name}'.format(
+        uuid=uuid.uuid4(),
+        file_name=filename,
     )
     new_filename = force_str(new_filename)
     new_filename = datetime.datetime.now().strftime(new_filename)
