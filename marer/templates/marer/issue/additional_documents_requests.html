@@ -3,13 +3,11 @@
 {% block issue_content %}
 
     <div class="panel panel-info">
-        <div class="panel-heading">
-            Дозапросы
-        </div>
+        <div class="panel-heading">Дозапросы</div>
         <div class="panel-body">
 
             <div class="row">
-                <div class="col-md-{% if issue.propose_documents_ordered.exists %}6{% else %}12{% endif %}">
+                <div class="col-md-12">
                     <div class="h3">Запросы</div>
                         {% if issue.clarifications.exists %}
                         <table class="table">
@@ -41,56 +39,61 @@
                         </div>
 
                 </div>
-                {% if issue.propose_documents_ordered.exists %}
-                <div class="col-md-6">
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="h3">Документы</div>
-
-                        <table class="table table-condensed">
-                            {% for propose_doc in issue.propose_documents_ordered %}
-                                <tr>
-                                    <td class="h6">
-                                        {% if propose_doc.document and propose_doc.document.file %}
-                                            <button type="submit" class="btn btn-link btn-xs pull-right" form="propose_doc_{{ propose_doc.id }}_del_form">
-                                                <span class="glyphicon glyphicon-remove text-danger"></span>
-                                            </button>
-                                        {% elif propose_doc.sample and propose_doc.sample.file %}
-                                            <a
-                                                    href="{{ propose_doc.sample.file.url }}"
-                                                    class="btn btn-link btn-xs pull-right">
-                                                Образец <span class="glyphicon glyphicon-download-alt"></span>
-                                            </a>
-                                        {% endif %}
-                                        {% if propose_doc.document and propose_doc.document.file %}
-                                            <a href="{{ propose_doc.document.file.url }}">
-                                                {{ propose_doc.name }}
-                                            </a>
-                                        {% else %}
-                                            <div>{{ propose_doc.name }}</div>
-                                            <input
-                                                    type="file"
-                                                    name="propose_doc_{{ propose_doc.id }}"
-                                                    class="input-sm pull-right" />
-                                        {% endif %}
-                                        <div class="clearfix"></div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-
-                        </table>
-
-                        <button type="submit" class="btn btn-primary center-block">
-                            Сохранить
-                        </button>
-
-                    </form>
-                </div>
-                {% endif %}
             </div>
-
         </div>
     </div>
+    {% if issue.propose_documents_ordered.exists %}
+        <div class="panel panel-info">
+            <div class="panel-heading">Пакет документов</div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="h3">Документы</div>
+                            <table class="table table-condensed">
+                                {% for propose_doc in issue.propose_documents_ordered %}
+                                    <tr>
+                                        <td class="h6">
+                                            {% if propose_doc.document and propose_doc.document.file %}
+                                                <a href="{{ propose_doc.document.file.url }}">
+                                                    {{ propose_doc.name }}
+                                                </a>
+                                            {% else %}
+                                                <div>{{ propose_doc.name }}</div>
+                                                <input
+                                                        type="file"
+                                                        name="propose_doc_{{ propose_doc.id }}"
+                                                        class="input-sm pull-right" />
+                                            {% endif %}
+                                            {% if propose_doc.document and propose_doc.document.file %}
+                                                <button type="submit" class="btn btn-link btn-xs pull-right" form="propose_doc_{{ propose_doc.id }}_del_form">
+                                                    <span class="glyphicon glyphicon-remove text-danger"></span>
+                                                </button>
+                                            {% elif propose_doc.sample and propose_doc.sample.file %}
+                                                <a
+                                                        href="{{ propose_doc.sample.file.url }}"
+                                                        class="btn btn-link btn-xs pull-right">
+                                                    Образец <span class="glyphicon glyphicon-download-alt"></span>
+                                                </a>
+                                            {% endif %}
+                                            <div class="clearfix"></div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                            </table>
+
+                            <button type="submit" class="btn btn-primary center-block">
+                                Сохранить
+                            </button>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
     {% for propose_doc in issue.propose_documents_ordered %}
         <form
                 class="hidden"
