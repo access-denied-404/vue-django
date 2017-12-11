@@ -180,13 +180,14 @@ class IssueAdmin(ModelAdmin):
         if obj is None:
             self.inlines = []
         else:
-            self.inlines = [
-                IssueDocumentInlineAdmin,
-                IssueProposeDocumentInlineAdmin,
-                IFOPFinalDocumentInlineAdmin,
-                IFOPFormalizeDocumentInlineAdmin,
+            self.inlines = [IssueDocumentInlineAdmin]
+            self.inlines += obj.get_product().get_admin_issue_inlnes()
+            self.inlines += [
                 IFOPClarificationInlineAdmin,
-            ] + obj.get_product().get_admin_issue_inlnes()
+                IssueProposeDocumentInlineAdmin,
+                IFOPFormalizeDocumentInlineAdmin,
+                IFOPFinalDocumentInlineAdmin,
+            ]
         return super().get_inline_instances(request, obj)
 
     def get_form(self, request, obj=None, **kwargs):
