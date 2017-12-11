@@ -141,16 +141,29 @@ class IssueSurveyView(IssueView):
 
         all_ok = self.get_issue().get_product().process_survey_post_data(request)
         if all_ok:
-            # todo add issue form signing
-            self.get_issue().refresh_from_db()
-            if self.get_issue().status == consts.ISSUE_STATUS_REGISTERING:
-                self.get_issue().status = consts.ISSUE_STATUS_REVIEW
-                self.get_issue().save()
             notify_user_manager_about_user_updated_issue(self.get_issue())
-            url = reverse('issue_additional_documents_requests', args=[self.get_issue().id])
+            url = reverse('issue_scoring', args=[self.get_issue().id])
             return HttpResponseRedirect(url)
         else:
             return self.get(request, *args, **kwargs)
+
+
+class IssueScoringView(IssueView):
+    template_name = 'marer/issue/scoring.html'
+
+    def post(self, request, *args, **kwargs):
+
+        if self.get_issue() and 'issue_scoring' not in self.get_issue().editable_dashboard_views():
+            return self.get(request, *args, **kwargs)
+
+        # todo add issue form signing
+        self.get_issue().refresh_from_db()
+        if self.get_issue().status == consts.ISSUE_STATUS_REGISTERING:
+            self.get_issue().status = consts.ISSUE_STATUS_REVIEW
+            self.get_issue().save()
+        notify_user_manager_about_user_updated_issue(self.get_issue())
+        url = reverse('issue_scoring', args=[self.get_issue().id])
+        return HttpResponseRedirect(url)
 
 
 class IssueAdditionalDocumentsRequestsView(IssueView):
@@ -253,10 +266,6 @@ class IssueAdditionalDocumentsRequestView(IssueView):
         else:
             kwargs['comment_form'] = comment_form
         return self.get(request, *args, **kwargs)
-
-
-class IssuePaymentsView(IssueView):
-    template_name = 'marer/issue/payments.html'
 
 
 class IssueFinishedView(IssueView):

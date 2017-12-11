@@ -297,14 +297,12 @@ class Issue(models.Model):
         reg_form = reg_form_class(self.__dict__)
         if reg_form.is_valid():
             available_views.append('issue_survey')
+            available_views.append('issue_scoring')
         else:
             return available_views
 
         if not self.status == consts.ISSUE_STATUS_REGISTERING:
             available_views.append('issue_additional_documents_requests')
-
-        if self.formalize_documents.exists():
-            available_views.append('issue_payments')
 
         if self.status in [consts.ISSUE_STATUS_FINISHED, consts.ISSUE_STATUS_CANCELLED]:
             available_views.append('issue_finished')
@@ -319,9 +317,7 @@ class Issue(models.Model):
             'issue_scoring',
         ]
         review_views = [
-            'issue_scoring',
             'issue_additional_documents_requests',
-            'issue_payments',
             'issue_finished',
         ]
 

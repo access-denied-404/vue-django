@@ -1,55 +1,32 @@
 {% extends 'marer/issue/layout.html' %}
 
 {% block issue_content %}
-<table class="table table-hover table-condensed">
-    <tr>
-        <th class="bg-info">&nbsp;</th>
-
-        {% for _, fname in foc_fields %}
-            <th class="bg-info h6"><b>{{ fname }}</b></th>
-        {% endfor %}
-
-        <th class="bg-info text-center h6">
-            <b>Заявка</b>
-            <form method="post">
-                {% csrf_token %}
-                <input type="hidden" name="send_to_all" value="1"/>
-                <button type="submit" class="btn btn-primary btn-xs">Отправить всем</button>
-            </form>
-        </th>
-    </tr>
-    {% for foc in foc_list %}
-        <tr{% if foc.finance_org.id in proposed_fo_ids %} class="bg-success"{% endif %}>
-            <td class="h6"><b>{{ foc.finance_org.name }}</b></td>
-
-            {% for foc_val in foc.values %}
-                <td class="h6">{{ foc_val |default_if_none:"&mdash;" }}</td>
-            {% endfor %}
-
-            <td class="text-center">
-                <form method="post">
-                    {% if foc.finance_org.id in proposed_fo_ids %}
-                        <button type="button" class="btn btn-default btn-xs" disabled>Отправлена</button>
-                    {% else %}
+    <div class="panel panel-info">
+        <div class="panel-heading">Резултьтаты прохождения экспресс-анализа</div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="alert alert-success h1 text-center">Анализ пройден</div>
+{#                    <div class="alert alert-danger h1 text-center">Анализ не пройден</div>#}
+                </div>
+                <div class="col-md-6">
+                    <div class="h1 text-center">
+                        Комиссия банка
+                        <br/>
+                        100500 руб.
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <form method="post">
                         {% csrf_token %}
-                        <input type="hidden" name="foid" value="{{ foc.finance_org.id }}"/>
-                        <button type="submit" class="btn btn-primary btn-xs">Отправить</button>
-                    {% endif %}
-                </form>
-            </td>
-        </tr>
-    {% endfor %}
-</table>
-
-{#<nav aria-label="Page navigation" class="text-center">#}
-{#    <ul class="pagination">#}
-{#        <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>#}
-{#        <li><a href="#">1</a></li>#}
-{#        <li><a href="#">2</a></li>#}
-{#        <li><a href="#">3</a></li>#}
-{#        <li><a href="#">4</a></li>#}
-{#        <li><a href="#">5</a></li>#}
-{#        <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>#}
-{#    </ul>#}
-{#</nav>#}
+                        <button type="submit" class="btn btn-success btn-lg">
+                            Подписать и отправить заявку
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
