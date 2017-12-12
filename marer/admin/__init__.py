@@ -26,7 +26,7 @@ from marer.admin.filters import ManagerListFilter, BrokerListFilter
 from marer.admin.forms import IFOPClarificationAddForm, MarerUserChangeForm, UserCreationForm
 from marer.admin.inline import IssueDocumentInlineAdmin, \
     IFOPClarificationInlineAdmin, IFOPClarificationMessageInlineAdmin, \
-    IFOPFormalizeDocumentInlineAdmin, IFOPFinalDocumentInlineAdmin, IssueBGProdAffiliateInlineAdmin, \
+    IFOPFinalDocumentInlineAdmin, IssueBGProdAffiliateInlineAdmin, \
     IssueBGProdFounderLegalInlineAdmin, IssueBGProdFounderPhysicalInlineAdmin, \
     FinanceOrgProductProposeDocumentInlineAdmin, IssueProposeDocumentInlineAdmin, RegionKLADRCodeInlineAdmin
 from marer.models import Issue, User
@@ -180,7 +180,6 @@ class IssueAdmin(ModelAdmin):
             self.inlines += [
                 IFOPClarificationInlineAdmin,
                 IssueProposeDocumentInlineAdmin,
-                IFOPFormalizeDocumentInlineAdmin,
                 IFOPFinalDocumentInlineAdmin,
             ]
         return super().get_inline_instances(request, obj)
