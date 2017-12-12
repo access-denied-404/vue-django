@@ -6,7 +6,7 @@ from django.utils.formats import number_format
 
 from marer import consts
 from marer.models.base import Document, set_obj_update_time
-from marer.models.finance_org import FinanceOrganization
+from marer.models.finance_org import FinanceOrganization, FinanceOrgProductProposeDocument
 from marer.models.issuer import Issuer, IssuerDocument
 from marer.products import get_finance_products_as_choices, FinanceProduct, get_finance_products
 from marer.utils import CustomJSONEncoder
@@ -345,6 +345,22 @@ class Issue(models.Model):
     @property
     def propose_documents_ordered(self):
         return self.propose_documents.order_by('document_id')  # need null to be first
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        super().save(force_insert, force_update, using, update_fields)
+
+        pdocs = FinanceOrgProductProposeDocument.objects.all()
+        if self.status == consts.ISSUE_STATUS_REVIEW \
+                and not self.propose_documents.exists() \
+                and pdocs.exists():
+            for pdoc in pdocs:
+                new_doc = IssueProposeDocument()
+                new_doc.issue = self
+                new_doc.name = pdoc.name
+                new_doc.code = pdoc.code
+                if pdoc.sample:
+                    new_doc.sample = pdoc.sample
+                new_doc.save()
 
 
 class IssueDocument(models.Model):
