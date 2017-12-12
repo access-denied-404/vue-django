@@ -5,7 +5,9 @@
     <div class="row">
         {% if issue and issue.id %}
             <h1 class="text-center">Заявка №{{ issue.humanized_id }}</h1>
-            <div class="h4 text-center"><b>{{ issue.get_product.humanized_name }}</b> для <b>{{ issue.get_issuer_name }}</b></div>
+            <div class="h4 text-center"><b>{{ issue.get_product.humanized_name }}</b>
+                {% if issue.short_name %}для <b>{{ issue.get_issuer_name }}</b>{% endif %}
+            </div>
         {% else %}
             <h1 class="text-center">Новая заявка</h1>
         {% endif %}
