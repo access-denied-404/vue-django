@@ -130,7 +130,6 @@ class IssueAdmin(ModelAdmin):
                     'user',
                     'private_comment',
                     'comment',
-                    'formalize_note',
                     'final_note',
                 ))),
             ]
