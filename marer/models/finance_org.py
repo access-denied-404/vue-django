@@ -3,7 +3,7 @@ from django.db import models
 
 from marer import consts
 from marer.models.base import OKVED2, Region, Document
-from marer.products import get_finance_products_as_choices
+from marer.products import get_finance_products_as_choices, BankGuaranteeProduct
 
 
 class FinanceOrganization(models.Model):
@@ -200,6 +200,11 @@ class FinanceOrgProductProposeDocument(models.Model):
         null=True,
         blank=True,
     )
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if not self.finance_product or self.finance_product == '':
+            self.finance_product = BankGuaranteeProduct().name
+        super().save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
         return self.name or 'ДОКУМЕНТ БЕЗ НАЗВАНИЯ'

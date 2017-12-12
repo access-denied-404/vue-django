@@ -65,7 +65,6 @@ class IssueAdmin(ModelAdmin):
     list_display = (
         'humanized_id',
         'shortened_user',
-        'product',
         'issuer_name',
         'issuer_inn',
         'status',
@@ -78,7 +77,6 @@ class IssueAdmin(ModelAdmin):
     list_filter = (
         ('user__manager', ManagerListFilter),
         ('user', BrokerListFilter),
-        'product',
         'status',
     )
     formfield_overrides = {
@@ -120,7 +118,6 @@ class IssueAdmin(ModelAdmin):
         if obj is None:
             result_fieldset = [
                 (None, dict(fields=(
-                    'product',
                     'user',
                     'private_comment',
                     'comment',
@@ -129,7 +126,6 @@ class IssueAdmin(ModelAdmin):
         else:
             result_fieldset = [
                 (None, dict(fields=(
-                    'product',
                     'status',
                     'user',
                     'private_comment',
@@ -613,5 +609,9 @@ class LogEntryAdmin(ModelAdmin):
 
 @register(FinanceOrgProductProposeDocument)
 class FinanceOrgProductProposeDocumentAdmin(ModelAdmin):
+
+    exclude = (
+        'finance_product',
+    )
 
     form = forms.FinanceOrgProductProposeDocumentForm

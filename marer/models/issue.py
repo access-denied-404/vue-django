@@ -8,7 +8,7 @@ from marer import consts
 from marer.models.base import Document, set_obj_update_time
 from marer.models.finance_org import FinanceOrganization, FinanceOrgProductProposeDocument
 from marer.models.issuer import Issuer, IssuerDocument
-from marer.products import get_finance_products_as_choices, FinanceProduct, get_finance_products
+from marer.products import get_finance_products_as_choices, FinanceProduct, get_finance_products, BankGuaranteeProduct
 from marer.utils import CustomJSONEncoder
 
 __all__ = [
@@ -347,6 +347,8 @@ class Issue(models.Model):
         return self.propose_documents.order_by('document_id')  # need null to be first
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if not self.product or self.product == '':
+            self.product = BankGuaranteeProduct().name
         super().save(force_insert, force_update, using, update_fields)
 
         pdocs = FinanceOrgProductProposeDocument.objects.all()
