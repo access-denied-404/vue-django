@@ -56,7 +56,7 @@ class IssueRedirectView(LoginRequiredMixin, RedirectView):
         elif issue.status == consts.ISSUE_STATUS_FINISHED:
             self.pattern_name = 'issue_finished'
         elif issue.status == consts.ISSUE_STATUS_CANCELLED:
-            self.pattern_name = 'issue_cancelled'
+            self.pattern_name = 'issue_finished'
 
         return super().get(request, *args, **kwargs)
 
