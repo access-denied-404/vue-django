@@ -3,8 +3,12 @@
 {% block cabinet_content %}
 <div class="container">
     <div class="row">
-        <h1 class="text-center">Заявка №{{ issue.humanized_id }}</h1>
-        <div class="h4 text-center"><b>{{ issue.get_product.humanized_name }}</b> для <b>{{ issue.get_issuer_name }}</b></div>
+        {% if issue and issue.id %}
+            <h1 class="text-center">Заявка №{{ issue.humanized_id }}</h1>
+            <div class="h4 text-center"><b>{{ issue.get_product.humanized_name }}</b> для <b>{{ issue.get_issuer_name }}</b></div>
+        {% else %}
+            <h1 class="text-center">Новая заявка</h1>
+        {% endif %}
     </div>
     <div class="row">
         <div class="col-md-3">
