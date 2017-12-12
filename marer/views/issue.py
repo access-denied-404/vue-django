@@ -271,6 +271,10 @@ class IssueAdditionalDocumentsRequestView(IssueView):
 class IssueFinishedView(IssueView):
     template_name = 'marer/issue/finished.html'
 
+    def get_context_data(self, **kwargs):
+        kwargs['consts'] = consts
+        return super().get_context_data(**kwargs)
+
 
 class IssueCancelledView(IssueView):
     template_name = 'marer/issue/cancelled.html'

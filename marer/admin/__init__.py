@@ -132,7 +132,6 @@ class IssueAdmin(ModelAdmin):
                     'comment',
                     'formalize_note',
                     'final_note',
-                    'final_decision',
                 ))),
             ]
             product_fieldset_part = obj.get_product().get_admin_issue_fieldset()

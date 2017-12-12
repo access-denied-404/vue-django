@@ -173,7 +173,6 @@ class Issue(models.Model):
 
     formalize_note = models.TextField(verbose_name='подпись к документам для оформления', blank=True, null=False, default='')
     final_note = models.TextField(verbose_name='подпись к итоговым документам', blank=True, null=False, default='')
-    final_decision = models.NullBooleanField(verbose_name='удовлетворена ли заявка', blank=True, null=True)
 
     balance_code_1300_offset_0 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
     balance_code_1600_offset_0 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)

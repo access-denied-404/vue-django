@@ -2,7 +2,7 @@
 
 {% block issue_content %}
 
-    <div class="panel {% if issue.final_decision == True %}panel-success{% elif propose.final_decision == False %}panel-danger{% endif %}">
+    <div class="panel {% if issue.status == consts.ISSUE_STATUS_FINISHED %}panel-success{% elif issue.status == consts.ISSUE_STATUS_CANCELLED %}panel-danger{% endif %}">
         <div class="panel-heading">
             Итоговые документы по заявке
         </div>
@@ -10,11 +10,11 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="alert {% if issue.final_decision == True %}alert-info{% elif issue.final_decision == False %}alert-danger{% endif %} text-center">
+                        <div class="alert {% if issue.status == consts.ISSUE_STATUS_FINISHED %}alert-info{% elif issue.status == consts.ISSUE_STATUS_CANCELLED %}alert-danger{% endif %} text-center">
                             <span class="h1">
-                                {% if issue.final_decision == True %}
+                                {% if issue.status == consts.ISSUE_STATUS_FINISHED %}
                                     Банковская гарантия выдана
-                                {% elif issue.final_decision == False %}
+                                {% elif issue.status == consts.ISSUE_STATUS_CANCELLED %}
                                     Банковская гарантия не выдана
                                 {% else %}
                                     Решение по заявке еще не принято
