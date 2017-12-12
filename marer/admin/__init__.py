@@ -226,7 +226,8 @@ class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
         if obj is None:
             self.readonly_fields = ()
             self.fields = (
-                'propose',
+                'issue',
+                # 'propose',
                 'message',
                 (
                     'doc1',
@@ -242,7 +243,6 @@ class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
         else:
             self.fields = (
                 'issue_change_link',
-                'finance_org_propose_change_link',
                 'initiator',
                 'get_messages',
                 'message',
@@ -259,7 +259,6 @@ class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
             )
             self.readonly_fields = (
                 'issue_change_link',
-                'finance_org_propose_change_link',
                 'initiator',
                 'get_messages',
             )
@@ -267,14 +266,14 @@ class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
         form = super().get_form(request, obj, **kwargs)
         if request.user.has_perm('marer.change_issuefinanceorgproposeclarification'):
             pass
-        elif request.user.has_perm('marer.can_add_managed_users_issues_proposes_clarifications'):
-            if 'propose' in form.base_fields:
-                ufield = form.base_fields['propose']
-                ufield._queryset = ufield._queryset.filter(issue__user__manager=request.user)
-        elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_clarifications'):
-            if 'propose' in form.base_fields:
-                ufield = form.base_fields['propose']
-                ufield._queryset = ufield._queryset.filter(finance_org__manager=request.user)
+        # elif request.user.has_perm('marer.can_add_managed_users_issues_proposes_clarifications'):
+        #     if 'propose' in form.base_fields:
+        #         ufield = form.base_fields['propose']
+        #         ufield._queryset = ufield._queryset.filter(issue__user__manager=request.user)
+        # elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_clarifications'):
+        #     if 'propose' in form.base_fields:
+        #         ufield = form.base_fields['propose']
+        #         ufield._queryset = ufield._queryset.filter(finance_org__manager=request.user)
 
         return form
 
@@ -314,16 +313,10 @@ class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
         return super().save_form(request, form, change)
 
     def issue_change_link(self, obj):
-        change_url = reverse('admin:marer_issue_change', args=(obj.propose.issue_id,))
-        return '<a href="{}">{}</a>'.format(change_url, obj.propose.issue)
+        change_url = reverse('admin:marer_issue_change', args=(obj.issue_id,))
+        return '<a href="{}">{}</a>'.format(change_url, obj.issue)
     issue_change_link.short_description = 'Заявка'
     issue_change_link.allow_tags = True
-
-    def finance_org_propose_change_link(self, obj):
-        change_url = reverse('admin:marer_issuefinanceorgpropose_change', args=(obj.propose_id,))
-        return '<a href="{}">{}</a>'.format(change_url, obj.propose)
-    finance_org_propose_change_link.short_description = 'Предложения заявки в финансовую организацию'
-    finance_org_propose_change_link.allow_tags = True
 
     # todo filter queryset basing on permissions
     # todo save messages as fo or issuer based on permissions if not set in form

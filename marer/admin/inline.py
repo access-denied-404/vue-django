@@ -168,7 +168,7 @@ class IFOPClarificationInlineAdmin(TabularInline):
     has_alter_add_url = True
 
     def get_alter_add_url(self, parent_obj):
-        return '/admin/{app_label}/{model_name}/add/?propose={parent_obj_id}'.format(
+        return '/admin/{app_label}/{model_name}/add/?issue={parent_obj_id}'.format(
             app_label=self.model._meta.app_label,
             model_name=self.model._meta.model_name,
             parent_obj_id=parent_obj.id,

@@ -50,16 +50,16 @@ class IFOPClarificationAddForm(forms.ModelForm):
             new_ifopcmd.document = new_ifopcmd_doc
             new_ifopcmd.save()
 
-        if change:
-            if self.user.id == self.instance.propose.issue.user.manager_id:
-                notify_about_user_manager_adds_message(new_msg)
-            else:
-                notify_about_fo_manager_adds_message(new_msg)
-        else:
-            if self.user.id == self.instance.propose.issue.user.manager_id:
-                notify_about_user_manager_created_clarification(self.instance)
-            else:
-                notify_about_fo_manager_created_clarification(self.instance)
+        # if change:
+        #     if self.user.id == self.instance.propose.issue.user.manager_id:
+        #         notify_about_user_manager_adds_message(new_msg)
+        #     else:
+        #         notify_about_fo_manager_adds_message(new_msg)
+        # else:
+        #     if self.user.id == self.instance.propose.issue.user.manager_id:
+        #         notify_about_user_manager_created_clarification(self.instance)
+        #     else:
+        #         notify_about_fo_manager_created_clarification(self.instance)
 
         return super().save(commit)
 
