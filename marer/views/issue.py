@@ -162,7 +162,7 @@ class IssueScoringView(IssueView):
             self.get_issue().status = consts.ISSUE_STATUS_REVIEW
             self.get_issue().save()
         notify_user_manager_about_user_updated_issue(self.get_issue())
-        url = reverse('issue_scoring', args=[self.get_issue().id])
+        url = reverse('issue_additional_documents_requests', args=[self.get_issue().id])
         return HttpResponseRedirect(url)
 
 
