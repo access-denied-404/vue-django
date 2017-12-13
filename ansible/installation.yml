@@ -21,6 +21,13 @@
         - gettext
       become: true
 
+    - name: Setting locale
+      command: "{{ item }}"
+      with_items:
+        - locale-gen ru_RU.UTF-8
+        - localectl set-locale LANG=ru_RU.UTF-8
+      become: true
+
     - name: Install bower to manage static files packages
       npm:
         name: "{{ item }}"
@@ -31,7 +38,7 @@
         - grunt
 
     - name: Prepare project directory tree
-      file: state=directory path=/srv/marer/
+      file: state=directory path=/srv/marer/ owner=www-data group=www-data
       become: true
 
     - name: Clone repository
