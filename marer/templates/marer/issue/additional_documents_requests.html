@@ -1,6 +1,12 @@
 {% extends 'marer/issue/layout.html' %}
 
+{% load staticfiles %}
+
 {% block issue_content %}
+
+    <script type="text/javascript">
+        var filesB64ForSign = [];
+    </script>
 
     <div class="panel panel-info">
         <div class="panel-heading">Дозапросы</div>
@@ -70,6 +76,37 @@
                                                 <button type="submit" class="btn btn-link btn-xs pull-right" form="propose_doc_{{ propose_doc.id }}_del_form">
                                                     <span class="glyphicon glyphicon-remove text-danger"></span>
                                                 </button>
+
+                                                {% if user.cert_hash != '' or propose_doc.document.sign_state == consts.DOCUMENT_SIGN_VERIFIED %}
+                                                    <script type="text/javascript">
+                                                        filesB64ForSign[{{ propose_doc.document.id }}] = "{{ propose_doc.document.base64_content }}";
+                                                    </script>
+
+                                                    <a
+                                                            href="#" id="btn-sign-file-id{{ propose_doc.document.id }}"
+                                                            class="btn btn-primary btn-xs pull-right {% if propose_doc.document.sign_state != consts.DOCUMENT_SIGN_NONE %}hidden{% endif %}"
+                                                            onclick="signFile({{ propose_doc.document.id }});return false;">
+                                                        <span class="glyphicon glyphicon-certificate"></span>
+                                                        Подписать
+                                                    </a>
+
+                                                    <a
+                                                            href="#" id="btn-signed-file-id{{ propose_doc.document.id }}"
+                                                            class="btn btn-xs pull-right btn-success {% if propose_doc.document.sign_state != consts.DOCUMENT_SIGN_VERIFIED %}hidden{% endif %}"
+                                                            onclick="return false;">
+                                                        <span class="glyphicon glyphicon-ok-sign"></span>
+                                                        Подписано
+                                                    </a>
+
+                                                    <a
+                                                            href="#" id="btn-resign-file-id{{ propose_doc.document.id }}"
+                                                            class="btn btn-xs pull-right btn-danger {% if propose_doc.document.sign_state != consts.DOCUMENT_SIGN_CORRUPTED %}hidden{% endif %}"
+                                                            onclick="signFile({{ propose_doc.document.id }});return false;">
+                                                        <span class="glyphicon glyphicon-exclamation-sign"></span>
+                                                        Переподписать
+                                                    </a>
+                                                {% endif %}
+
                                             {% elif propose_doc.sample and propose_doc.sample.file %}
                                                 <a
                                                         href="{{ propose_doc.sample.file.url }}"
@@ -106,5 +143,83 @@
                     value="true" />
         </form>
     {% endfor %}
+
+    {% if user.cert_hash != '' %}
+        <script language="javascript" src="{% static '/marer/js/signing/es6-promise.min.js' %}"></script>
+        <script language="javascript" src="{% static '/marer/js/signing/ie_eventlistner_polyfill.js' %}"></script>
+        <script language="javascript">window.allow_firefox_cadesplugin_async=1</script>
+        <script src="{% static '/marer/js/signing/cadesplugin_api.js' %}" type="text/javascript"></script>
+        <script src="{% static '/marer/js/signing/Code.js' %}" type="text/javascript"></script>
+
+        <script language="javascript">
+            window.userCertHash = '{{ user.cert_hash }}';
+
+            var canPromise = !!window.Promise;
+            if(canPromise) {
+                cadesplugin.then(function () {
+                        Common_CheckForPlugIn();
+                    },
+                    function(error) {}
+                );
+            } else {
+                window.addEventListener("message", function (event) {
+                    if (event.data == "cadesplugin_loaded") {
+                        CheckForPlugIn_NPAPI();
+                    } else if(event.data == "cadesplugin_load_error") {
+                        // todo alert for error
+                    }
+                    },
+                    false);
+                window.postMessage("cadesplugin_echo_request", "*");
+            }
+
+            function signFile(docID) {
+                var docData = filesB64ForSign[docID];
+                var canAsync = !!cadesplugin.CreateObjectAsync;
+                if (canAsync) {
+                    include_async_code().then(function () {
+                        SignCadesBES_Async_File(docData).then(function (sign) {
+                            finalizeSignature(docID, sign)
+                        }).catch(function () {
+                            // todo set an error
+                            alert("Error occurs!")
+                        });
+                    });
+                } else {
+                    var sign = SignCadesBES_NPAPI_File(docData);
+                    finalizeSignature(docID, sign);
+                }
+            }
+
+            function finalizeSignature(docID, signature) {
+                var sendParams = Object();
+                sendParams.document = docID;
+                sendParams.signature = signature;
+                $.post('{% url 'issue_adr_file_sign' issue.id %}', sendParams, function (data) {
+                    var sign_btn = $('#btn-sign-file-id' + data.document);
+                    var signed_btn = $('#btn-signed-file-id' + data.document);
+                    var resign_btn = $('#btn-resign-file-id' + data.document);
+                    switch (data.sign_state) {
+
+                        case '{{ consts.DOCUMENT_SIGN_VERIFIED }}':
+                            sign_btn.addClass('hidden');
+                            resign_btn.addClass('hidden');
+                            signed_btn.removeClass('hidden');
+                            break;
+                        case '{{ consts.DOCUMENT_SIGN_CORRUPTED }}':
+                            sign_btn.addClass('hidden');
+                            signed_btn.addClass('hidden');
+                            resign_btn.removeClass('hidden');
+                            break;
+                        case '{{ consts.DOCUMENT_SIGN_NONE }}':
+                            signed_btn.addClass('hidden');
+                            resign_btn.addClass('hidden');
+                            sign_btn.removeClass('hidden');
+                            break;
+                    }
+                }, 'json');
+            }
+        </script>
+    {% endif %}
 
 {% endblock %}

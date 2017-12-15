@@ -162,15 +162,8 @@ function Common_Decrypt(id) {
     }
 }
 
-function GetCertificate_NPAPI(certListBoxId) {
-    var e = document.getElementById(certListBoxId);
-    var selectedCertID = e.selectedIndex;
-    if (selectedCertID == -1) {
-        alert("Select certificate");
-        return;
-    }
-
-    var thumbprint = e.options[selectedCertID].value.split(" ").reverse().join("").replace(/\s/g, "").toUpperCase();
+function GetCertificate_NPAPI(certThumb) {
+    var thumbprint = certThumb.toUpperCase();
     try {
         var oStore = cadesplugin.CreateObject("CAdESCOM.Store");
         oStore.Open();
@@ -435,26 +428,15 @@ function SignCadesBES_NPAPI(certListBoxId, data, setDisplayData) {
 }
 
 function SignCadesBES_NPAPI_File(certListBoxId) {
-    var certificate = GetCertificate_NPAPI(certListBoxId);
-    var dataToSign = fileContent;
-    var x = GetSignatureTitleElement();
+    var certificate = GetCertificate_NPAPI(window.userCertHash);
+    var dataToSign = certListBoxId;
     try {
         FillCertInfo_NPAPI(certificate);
-        var StartTime = Date.now();
         var setDisplayData;
         var signature = MakeCadesBesSign_NPAPI(dataToSign, certificate, setDisplayData, 1);
-        var EndTime = Date.now();
-        document.getElementsByName('TimeTitle')[0].innerHTML = "Время выполнения: " + (EndTime - StartTime) + " мс";
-        document.getElementById("SignatureTxtBox").innerHTML = signature;
-        if (x != null) {
-            x.innerHTML = "Подпись сформирована успешно:";
-        }
+        return signature;
     }
     catch (err) {
-        if (x != null) {
-            x.innerHTML = "Возникла ошибка:";
-        }
-        document.getElementById("SignatureTxtBox").innerHTML = err;
     }
 }
 

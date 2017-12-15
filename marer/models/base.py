@@ -1,13 +1,18 @@
+import base64
 import datetime
+import importlib
 import os
 import uuid
 from logging import warning
 
+from django.conf import settings
 from django.db import models
 from django.utils.encoding import force_str, force_text
 from django.utils import timezone
 from mptt import models as mptt_models
 from mptt.fields import TreeForeignKey
+
+from marer import consts
 
 __all__ = ['Document', 'Region', 'RegionKLADRCode']
 
@@ -76,7 +81,44 @@ def set_obj_update_time(obj, updated_at_field='updated_at'):
 
 
 class Document(models.Model):
-    file = models.FileField(upload_to=documents_upload_path)
+    file = models.FileField(upload_to=documents_upload_path, max_length=512)
+    sign = models.FileField(upload_to=documents_upload_path, max_length=512, null=True, blank=True)
+    sign_state = models.CharField(max_length=32, blank=True, null=False, default=consts.DOCUMENT_SIGN_NONE, choices=[
+        (consts.DOCUMENT_SIGN_NONE, 'Отсутствует'),
+        (consts.DOCUMENT_SIGN_CORRUPTED, 'Неверна'),
+        (consts.DOCUMENT_SIGN_VERIFIED, 'Проверена'),
+    ])
+
+    def base64_content(self):
+        if self.file and os.path.exists(self.file.path) and os.path.isfile(self.file.path):
+            content = self.file.read()
+            return base64.standard_b64encode(content)
+        else:
+            return ''
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        super().save(force_insert, force_update, using, update_fields)
+        if not self.sign and self.sign_state != consts.DOCUMENT_SIGN_NONE:
+            self.sign_state = consts.DOCUMENT_SIGN_NONE
+            self.save()
+        elif self.sign:
+            sign_is_correct = False
+            raw_check_sign_class = settings.FILE_SIGN_CHECK_CLASS
+            if raw_check_sign_class is not None and raw_check_sign_class != '':
+                raw_check_sign_class = str(raw_check_sign_class)
+                check_sign_module_name, check_sign_class_name = raw_check_sign_class.rsplit('.', 1)
+                check_sign_module = importlib.import_module(check_sign_module_name)
+                check_sign_class = getattr(check_sign_module, check_sign_class_name)
+                try:
+                    sign_is_correct = check_sign_class.check_file_sign(self.file.path, self.sign.path)
+                except Exception:
+                    sign_is_correct = False
+            if sign_is_correct and self.sign_state != consts.DOCUMENT_SIGN_VERIFIED:
+                self.sign_state = consts.DOCUMENT_SIGN_VERIFIED
+                self.save()
+            elif not sign_is_correct and self.sign_state != consts.DOCUMENT_SIGN_CORRUPTED:
+                self.sign_state = consts.DOCUMENT_SIGN_CORRUPTED
+                self.save()
 
 
 class OKVED2(mptt_models.MPTTModel):

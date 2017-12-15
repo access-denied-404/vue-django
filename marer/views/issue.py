@@ -1,9 +1,19 @@
+import importlib
+import json
+from tempfile import NamedTemporaryFile
+
+import os
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect
+from django.core.files.base import ContentFile
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView, RedirectView
+from django.views.generic.base import ContextMixin
 
 from marer import consts
 from marer.forms import IssueRegisteringForm, IFOPCMessageForm
@@ -169,6 +179,10 @@ class IssueScoringView(IssueView):
 class IssueAdditionalDocumentsRequestsView(IssueView):
     template_name = 'marer/issue/additional_documents_requests.html'
 
+    def get_context_data(self, **kwargs):
+        kwargs['consts'] = consts
+        return super().get_context_data(**kwargs)
+
     def post(self, request, *args, **kwargs):
 
         proposes_docs = IssueProposeDocument.objects.filter(
@@ -278,3 +292,64 @@ class IssueFinishedView(IssueView):
 
 class IssueCancelledView(IssueView):
     template_name = 'marer/issue/cancelled.html'
+
+
+class IssueAdditionalDocumentSignView(LoginRequiredMixin, ContextMixin, View):
+    _issue = None
+
+    def get_issue(self):
+        if self._issue is not None:
+            return self._issue
+
+        iid = self.kwargs.get('iid', None)
+        if iid is not None:
+            # fixme maybe make error 403?
+            issue = get_object_or_404(Issue, id=iid, user_id=self.request.user.id)
+            self._issue = issue
+            return issue
+
+    def get_context_data(self, **kwargs):
+        kwargs.update(dict(issue=self.get_issue()))
+        return super().get_context_data(**kwargs)
+
+    def post(self, request, *args, **kwargs):
+        doc_id = request.POST.get('document', None)
+        doc = None
+        sign = request.POST.get('signature', '')
+        response_dict = dict(
+            document=doc_id,
+            sign_state=consts.DOCUMENT_SIGN_NONE,
+        )
+        if doc_id and self.get_issue().propose_documents.filter(document_id=doc_id).exists():
+            pdoc = IssueProposeDocument.objects.filter(document_id=doc_id)[0]
+            doc = pdoc.document
+
+        raw_check_sign_class = settings.FILE_SIGN_CHECK_CLASS
+        if raw_check_sign_class is not None and raw_check_sign_class != '':
+            raw_check_sign_class = str(raw_check_sign_class)
+            check_sign_module_name, check_sign_class_name = raw_check_sign_class.rsplit('.', 1)
+            check_sign_module = importlib.import_module(check_sign_module_name)
+            check_sign_class = getattr(check_sign_module, check_sign_class_name)
+
+            temp_sign_file = NamedTemporaryFile(delete=False)
+            sign_bytes = sign.encode('utf-8')
+            temp_sign_file.write(sign_bytes)
+            try:
+                sign_is_correct = check_sign_class.check_file_sign(doc.file.path, temp_sign_file.name)
+            except Exception:
+                sign_is_correct = False
+            if sign_is_correct:
+                final_sign_file = ContentFile(sign_bytes)
+                final_sign_file.name = os.path.basename(doc.file.name) + '.sig'
+                doc.sign = final_sign_file
+                doc.save()
+                response_dict['sign_state'] = consts.DOCUMENT_SIGN_VERIFIED
+            else:
+                response_dict['sign_state'] = consts.DOCUMENT_SIGN_CORRUPTED
+            temp_sign_file.close()
+            os.unlink(temp_sign_file.name)
+        return HttpResponse(json.dumps(response_dict), content_type="application/json")
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
