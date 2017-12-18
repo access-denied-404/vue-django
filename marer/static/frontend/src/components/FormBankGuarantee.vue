@@ -214,7 +214,7 @@
           tender_responsible_ogrn: '',
 
           bg_sum: '',
-          bg_type: '',
+          bg_type: 'contract_execution',
           bg_currency: 'rur',
           bg_start_date: '',
           bg_end_date: '',
