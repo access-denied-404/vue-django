@@ -1,5 +1,7 @@
 import json
 
+import os
+
 from django.conf import settings
 from django.db import models
 from django.utils.formats import number_format
@@ -184,6 +186,14 @@ class Issue(models.Model):
     balance_code_2110_offset_1 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
     balance_code_2400_offset_1 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
 
+    application_doc = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='application_docs_links'
+    )
+
     @property
     def humanized_id(self):
         if self.id:
@@ -219,6 +229,14 @@ class Issue(models.Model):
     @property
     def humanized_status(self):
         return self.get_status_display()
+
+    @property
+    def humanized_issuer_registration_date(self):
+        return self.issuer_registration_date.strftime('%d.%m.%Y') if self.issuer_registration_date else ''
+
+    @property
+    def humanized_bg_end_date(self):
+        return self.bg_end_date.strftime('%d.%m.%Y') if self.bg_end_date else ''
 
     @property
     def max_state_available(self):
@@ -344,6 +362,26 @@ class Issue(models.Model):
     @property
     def propose_documents_ordered(self):
         return self.propose_documents.order_by('document_id')  # need null to be first
+
+    def fill_application_doc(self):
+        template_path = os.path.join(
+            settings.BASE_DIR,
+            'marer',
+            'templates',
+            'documents',
+            'issue_application_doc.xlsx'
+        )
+
+        from marer.utils.documents import fill_xlsx_file_with_issue_data
+        application_doc_file = fill_xlsx_file_with_issue_data(template_path, self)
+        application_doc_file.name = 'application.xlsx'
+        app_doc = Document()
+        app_doc.file = application_doc_file
+        app_doc.save()
+        self.refresh_from_db()
+        self.application_doc = app_doc
+        self.save()
+        application_doc_file.close()
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self.product or self.product == '':
