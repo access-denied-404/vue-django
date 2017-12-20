@@ -52,6 +52,9 @@ class FinanceProduct(object):
     def get_admin_issue_fieldset(self):
         raise NotImplementedError("Method is not implemented")
 
+    def get_admin_issue_read_only_fields(self):
+        return []
+
     @abstractmethod
     def get_admin_issue_inlnes(self):
         raise NotImplementedError("Method is not implemented")

@@ -137,6 +137,12 @@ class IssueAdmin(ModelAdmin):
             result_fieldset.extend(product_fieldset_part)
         return result_fieldset
 
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return obj.get_product().get_admin_issue_read_only_fields()
+        else:
+            return []
+
     def get_manager(self, obj):
         return obj.user.manager or '—'
     get_manager.short_description = 'Менеджер'
