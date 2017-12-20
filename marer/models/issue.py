@@ -329,6 +329,20 @@ class Issue(models.Model):
     def humanized_issuer_bank_relations_term(self):
         return self.get_issuer_bank_relations_term_display() or ''
 
+    def application_doc_admin_field(self):
+        field_parts = []
+        if self.application_doc:
+            if self.application_doc.file:
+                field_parts.append('<b><a href="{}">скачать</a></b>'.format(self.application_doc.file.url))
+            if self.application_doc.sign:
+                field_parts.append('<b><a href="{}">ЭЦП</a></b>'.format(self.application_doc.sign.url))
+        if len(field_parts) > 0:
+            return ', '.join(field_parts)
+        else:
+            return 'отсутствует'
+    application_doc_admin_field.short_description = 'файл заявки'
+    application_doc_admin_field.allow_tags = True
+
     @property
     def issuer_head_passport_info(self):
         info_arr = []
