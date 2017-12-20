@@ -14,7 +14,7 @@ from marer.products.base import FinanceProduct, FinanceProductDocumentItem
 from marer.products.forms import BGFinProdRegForm, BGFinProdSurveyOrgCommonForm, BGFinProdSurveyOrgHeadForm, \
     AffiliatesForm, FounderLegalForm, FounderPhysicalForm, CreditFinProdRegForm, CreditPledgeForm, \
     FactoringFinProdRegForm, LeasingFinProdRegForm, LeasingAssetForm, LeasingSupplierForm, LeasingPayRuleForm, \
-    FactoringBuyerForm, FactoringSalesAnalyzeForm, AccountingBalanceForm
+    FactoringBuyerForm, FactoringSalesAnalyzeForm, AccountingBalanceForm, BGFinProdSurveyOrgManagementForm
 from marer.utils import kontur
 from marer.utils.loadfoc import get_cell_value, get_cell_summ_range, get_cell_percentage, get_cell_bool, \
     get_cell_review_term_days, get_cell_ensure_condition, get_issue_and_interest_rates
@@ -284,6 +284,7 @@ class BankGuaranteeProduct(FinanceProduct):
         return dict(
             form_org_common=BGFinProdSurveyOrgCommonForm(initial=self._issue.__dict__),
             form_org_head=BGFinProdSurveyOrgHeadForm(initial=self._issue.__dict__),
+            form_org_management=BGFinProdSurveyOrgManagementForm(initial=self._issue.__dict__),
             form_balance=AccountingBalanceForm(initial=self._issue.__dict__),
             affiliates_formset=affiliates_formset,
             formset_founders_legal=formset_founders_legal,
@@ -340,6 +341,17 @@ class BankGuaranteeProduct(FinanceProduct):
             self._issue.issuer_head_industry_work_experience = form_org_head.cleaned_data[
                 'issuer_head_industry_work_experience']
             self._issue.issuer_prev_org_info = form_org_head.cleaned_data['issuer_prev_org_info']
+        else:
+            processed_sucessfully_flag = False
+
+        form_org_management = BGFinProdSurveyOrgManagementForm(request.POST)
+        if form_org_management.is_valid():
+            self._issue.issuer_org_management_collegial_executive_name = form_org_management.cleaned_data['issuer_org_management_collegial_executive_name'] or ''
+            self._issue.issuer_org_management_collegial_executive_fio = form_org_management.cleaned_data['issuer_org_management_collegial_executive_fio'] or ''
+            self._issue.issuer_org_management_directors_or_supervisory_board_name = form_org_management.cleaned_data['issuer_org_management_directors_or_supervisory_board_name'] or ''
+            self._issue.issuer_org_management_directors_or_supervisory_board_fio = form_org_management.cleaned_data['issuer_org_management_directors_or_supervisory_board_fio'] or ''
+            self._issue.issuer_org_management_other_name = form_org_management.cleaned_data['issuer_org_management_other_name'] or ''
+            self._issue.issuer_org_management_other_fio = form_org_management.cleaned_data['issuer_org_management_other_fio'] or ''
         else:
             processed_sucessfully_flag = False
 

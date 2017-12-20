@@ -154,6 +154,15 @@ class BGFinProdSurveyOrgHeadForm(Form):
     issuer_prev_org_info = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
 
 
+class BGFinProdSurveyOrgManagementForm(Form):
+    issuer_org_management_collegial_executive_name = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_org_management_collegial_executive_fio = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_org_management_directors_or_supervisory_board_name = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_org_management_directors_or_supervisory_board_fio = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_org_management_other_name = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_org_management_other_fio = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+
+
 class AffiliatesForm(Form):
     id = IntegerField(required=False, widget=HiddenInput())
     name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))

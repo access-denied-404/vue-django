@@ -48,6 +48,7 @@ class Issue(models.Model):
     issuer_legal_address = models.CharField(verbose_name='юридическй адрес заявителя', max_length=512, blank=True, null=False, default='')
     issuer_fact_address = models.CharField(verbose_name='фактический адрес заявителя', max_length=512, blank=True, null=False, default='')
     issuer_okpo = models.CharField(verbose_name='код ОКПО заявителя', max_length=32, blank=True, null=False, default='')
+    issuer_okato = models.CharField(verbose_name='код ОКАТО заявителя', max_length=32, blank=True, null=False, default='')
     issuer_registration_date = models.DateField(verbose_name='дата регистрации', blank=True, null=True)
     issuer_ifns_reg_date = models.DateField(verbose_name='дата постановки на учет в ИФНС', blank=True, null=True)
     issuer_ifns_reg_cert_number = models.CharField(verbose_name='номер свидетельства о постановке на учет ИФНС', max_length=32, blank=True, null=False, default='')
@@ -186,6 +187,48 @@ class Issue(models.Model):
     balance_code_2110_offset_1 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
     balance_code_2400_offset_1 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
 
+    avg_employees_cnt_for_prev_year = models.IntegerField(verbose_name='Средняя численность работников за предшествующий календарный год', blank=False, null=False, default=1)
+    issuer_web_site = models.CharField(verbose_name='Web-сайт', max_length=512, blank=True, null=False, default='')
+    issuer_accountant_org_or_person = models.CharField(verbose_name='ФИО гл.бухгалтера / наименование организации, осуществляющей ведение бух.учёта', max_length=512, blank=True, null=False, default='')
+    issuer_post_address = models.CharField(verbose_name='почтовый адрес заявителя (с индексом) в т.ч. для отправки банковской гарантии', max_length=512, blank=True, null=False, default='')
+    bg_is_benefeciary_form = models.NullBooleanField(verbose_name='БГ по форме Бенефециара', blank=True, null=True)
+    is_indisputable_charge_off = models.NullBooleanField(verbose_name='право на бесспорное списание', blank=True, null=True)
+    tender_contract_subject = models.CharField(verbose_name='предмет контракта', max_length=512, blank=True, null=False, default='')
+    issuer_has_overdue_debts_for_last_180_days = models.NullBooleanField(verbose_name='Наличие просроченной задолженности по всем кредитам за последние 180 дней', blank=True, null=True)
+    issuer_overdue_debts_info = models.TextField(verbose_name='Причины и обстоятельства просрочек', blank=True, null=False, default='')
+
+    deal_has_beneficiary = models.CharField(verbose_name='бенефециар', max_length=32, blank=True, null=True, choices=[
+        (False, 'Отсутствует'),
+        (True, 'Присутствует'),
+    ])
+    issuer_bank_relations_term = models.CharField(verbose_name='срок отношений с Банком', max_length=32, blank=True, null=True, choices=[
+        (consts.ISSUE_DEAL_BANK_RELATIONS_TERM_SHORT, 'Краткосрочные'),
+        (consts.ISSUE_DEAL_BANK_RELATIONS_TERM_LONG, 'Долгосрочные'),
+    ])
+    issuer_activity_objective = models.CharField(verbose_name='цели финансово-хозяйственной детяельности', max_length=32, blank=True, null=True, choices=[
+        (consts.ISSUE_ISSUER_ACTIVITY_OBJECTIVE_PROFIT_MAKING, 'Получение прибыли'),
+        (consts.ISSUE_ISSUER_ACTIVITY_OBJECTIVE_OTHER, 'Иное'),
+    ])
+    issuer_finance_situation = models.CharField(verbose_name='финансовое положение', max_length=32, blank=True, null=True, choices=[
+        (consts.ISSUE_ISSUER_FINANCE_SITUATION_SATISFIED, 'Удовлетворительное'),
+        (consts.ISSUE_ISSUER_FINANCE_SITUATION_UNSATISFIED, 'Неудовлетворительное'),
+    ])
+    issuer_business_reputation = models.CharField(verbose_name='деловая репутация', max_length=32, blank=True, null=True, choices=[
+        (consts.ISSUE_ISSUER_BUSINESS_REPUTATION_POSITIVE, 'Положительная'),
+        (consts.ISSUE_ISSUER_BUSINESS_REPUTATION_NOT_PRESENT, 'Отсутствует'),
+    ])
+    issuer_funds_source = models.CharField(verbose_name='источник происхождения денежных средств', max_length=32, blank=True, null=True, choices=[
+        (consts.ISSUER_FUNDS_SOURCE_LOAN_FUNDS, 'Заемные средства'),
+        (consts.ISSUER_FUNDS_SOURCE_OTHER, 'Иное'),
+    ])
+
+    issuer_org_management_collegial_executive_name = models.CharField(verbose_name='Коллегиальный исполнительный орган: наименование', max_length=512, blank=True, null=False, default='')
+    issuer_org_management_collegial_executive_fio = models.CharField(verbose_name='Коллегиальный исполнительный орган: ФИО', max_length=512, blank=True, null=False, default='')
+    issuer_org_management_directors_or_supervisory_board_name = models.CharField(verbose_name='Совет директоров (наблюдательный совет): наименование', max_length=512, blank=True, null=False, default='')
+    issuer_org_management_directors_or_supervisory_board_fio = models.CharField(verbose_name='Совет директоров (наблюдательный совет): ФИО', max_length=512, blank=True, null=False, default='')
+    issuer_org_management_other_name = models.CharField(verbose_name='Иной орган управления организации заявителя: наименование', max_length=512, blank=True, null=False, default='')
+    issuer_org_management_other_fio = models.CharField(verbose_name='Иной орган управления организации заявителя: ФИО', max_length=512, blank=True, null=False, default='')
+
     application_doc = models.ForeignKey(
         Document,
         on_delete=models.SET_NULL,
@@ -228,7 +271,7 @@ class Issue(models.Model):
 
     @property
     def humanized_status(self):
-        return self.get_status_display()
+        return self.get_status_display() or ''
 
     @property
     def humanized_issuer_registration_date(self):
@@ -237,6 +280,65 @@ class Issue(models.Model):
     @property
     def humanized_bg_end_date(self):
         return self.bg_end_date.strftime('%d.%m.%Y') if self.bg_end_date else ''
+    
+    @property
+    def humanized_bg_type(self):
+        return self.get_bg_type_display() or ''
+
+    @property
+    def humanized_bg_is_benefeciary_form(self):
+        return 'Да' if self.bg_is_benefeciary_form else 'Нет'
+
+    @property
+    def humanized_is_indisputable_charge_off(self):
+        return 'Да' if self.is_indisputable_charge_off else 'Нет'
+
+    @property
+    def humanized_issuer_has_overdue_debts_for_last_180_days(self):
+        return 'Да' if self.issuer_has_overdue_debts_for_last_180_days else 'Нет'
+
+    @property
+    def humanized_tender_has_prepayment(self):
+        return 'Да' if self.tender_has_prepayment else 'Нет'
+
+    @property
+    def humanized_tender_exec_law(self):
+        return self.get_tender_exec_law_display() or ''
+
+    @property
+    def humanized_issuer_funds_source(self):
+        return self.get_issuer_funds_source_display() or ''
+
+    @property
+    def humanized_issuer_business_reputation(self):
+        return self.get_issuer_business_reputation_display() or ''
+
+    @property
+    def humanized_issuer_activity_objective(self):
+        return self.get_issuer_activity_objective_display() or ''
+
+    @property
+    def humanized_deal_has_beneficiary(self):
+        return self.get_deal_has_beneficiary_display() or ''
+
+    @property
+    def humanized_issuer_finance_siuation(self):
+        return self.get_issuer_finance_situation_display() or ''
+
+    @property
+    def humanized_issuer_bank_relations_term(self):
+        return self.get_issuer_bank_relations_term_display() or ''
+
+    @property
+    def issuer_head_passport_info(self):
+        info_arr = []
+        if self.issuer_head_passport_series and self.issuer_head_passport_number:
+            info_arr.append('Паспорт серии {} №{}'.format(
+                self.issuer_head_passport_series, self.issuer_head_passport_number))
+            if self.issuer_head_passport_issued_by and self.issuer_head_passport_issue_date:
+                info_arr.append('выдан {}, {}'.format(
+                    self.issuer_head_passport_issued_by, self.issuer_head_passport_issue_date.strftime('%d.%m.%Y')))
+        return ', '.join(info_arr)
 
     @property
     def max_state_available(self):

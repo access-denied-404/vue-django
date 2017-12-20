@@ -1,0 +1,60 @@
+<div class="panel panel-info">
+    <div class="panel-heading" data-toggle="collapse" data-target="#panel-org-management">Состав органов правления компании</div>
+    <div class="panel-body collapse" id="panel-org-management">
+
+        <fieldset>
+            <legend>Коллегиальный исполнительный орган</legend>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Наименование</label>
+                        {{ form.issuer_org_management_collegial_executive_name }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>ФИО</label>
+                        {{ form.issuer_org_management_collegial_executive_fio }}
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Совет директоров (наблюдательный совет)</legend>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Наименование</label>
+                        {{ form.issuer_org_management_directors_or_supervisory_board_name }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>ФИО</label>
+                        {{ form.issuer_org_management_directors_or_supervisory_board_fio }}
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Иной орган управления организации</legend>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Наименование</label>
+                        {{ form.issuer_org_management_other_name }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>ФИО</label>
+                        {{ form.issuer_org_management_other_fio }}
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+    </div>
+</div>
