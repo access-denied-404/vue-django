@@ -15,7 +15,7 @@ from marer.products.forms import BGFinProdRegForm, BGFinProdSurveyOrgCommonForm,
     AffiliatesForm, FounderLegalForm, FounderPhysicalForm, CreditFinProdRegForm, CreditPledgeForm, \
     FactoringFinProdRegForm, LeasingFinProdRegForm, LeasingAssetForm, LeasingSupplierForm, LeasingPayRuleForm, \
     FactoringBuyerForm, FactoringSalesAnalyzeForm, AccountingBalanceForm, BGFinProdSurveyOrgManagementForm, \
-    OrgBeneficiaryOwnerForm
+    OrgBeneficiaryOwnerForm, OrgBankAccountForm
 from marer.utils import kontur
 from marer.utils.loadfoc import get_cell_value, get_cell_summ_range, get_cell_percentage, get_cell_bool, \
     get_cell_review_term_days, get_cell_ensure_condition, get_issue_and_interest_rates
@@ -276,6 +276,11 @@ class BankGuaranteeProduct(FinanceProduct):
         b_owners = IssueOrgBeneficiaryOwner.objects.filter(issue=self._issue).order_by('id')
         beneficiary_owners_formset = beneficiary_owners_formset(initial=[bo.__dict__ for bo in b_owners], prefix='bo')
 
+        bank_accounts_formset = formset_factory(OrgBankAccountForm, extra=0)
+        from marer.models.issue import IssueOrgBankAccount
+        b_accounts = IssueOrgBankAccount.objects.filter(issue=self._issue).order_by('id')
+        bank_accounts_formset = bank_accounts_formset(initial=[ba.__dict__ for ba in b_accounts], prefix='ba')
+
         formset_founders_legal = formset_factory(FounderLegalForm, extra=0)
         from marer.models.issue import IssueBGProdFounderLegal
         founders_legal = IssueBGProdFounderLegal.objects.filter(issue=self._issue)
@@ -305,6 +310,7 @@ class BankGuaranteeProduct(FinanceProduct):
             form_org_head=BGFinProdSurveyOrgHeadForm(initial=self._issue.__dict__),
             form_org_management=BGFinProdSurveyOrgManagementForm(initial=self._issue.__dict__),
             form_balance=AccountingBalanceForm(initial=self._issue.__dict__),
+            bank_accounts_formset=bank_accounts_formset,
             affiliates_formset=affiliates_formset,
             beneficiary_owners_formset=beneficiary_owners_formset,
             formset_founders_legal=formset_founders_legal,
@@ -501,6 +507,30 @@ class BankGuaranteeProduct(FinanceProduct):
                     new_bo.on_belong_to_pub_persons_info = bo_data.get('on_belong_to_pub_persons_info', '')
                     new_bo.issue = self._issue
                     new_bo.save()
+        else:
+            processed_sucessfully_flag = False
+
+        # processing banks accounts
+        from marer.models.issue import IssueOrgBankAccount
+        ba_formset = formset_factory(OrgBankAccountForm, extra=0)
+        ba_formset = ba_formset(request.POST, prefix='ba')
+        if ba_formset.is_valid():
+            for ba_data in ba_formset.cleaned_data:
+                ba_data_id = ba_data.get('id', None)
+                ba_data_name = str(ba_data.get('name', '')).strip()
+                if ba_data_id and ba_data.get('DELETE', False):
+                    try:
+                        aff = IssueOrgBankAccount.objects.get(id=ba_data['id'], issue=self._issue)
+                        aff.delete()
+                    except ObjectDoesNotExist:
+                        pass  # nothing to do
+
+                elif not ba_data_id and ba_data_name != '':
+                    new_ba = IssueOrgBankAccount()
+                    new_ba.name = ba_data_name
+                    new_ba.bik = ba_data.get('bik', '')
+                    new_ba.issue = self._issue
+                    new_ba.save()
         else:
             processed_sucessfully_flag = False
 

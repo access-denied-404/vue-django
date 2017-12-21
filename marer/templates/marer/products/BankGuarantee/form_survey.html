@@ -2,6 +2,7 @@
 {% include 'marer/products/BankGuarantee/form_org_common.html' with form=form_org_common %}
 {% include 'marer/products/BankGuarantee/form_org_head.html' with form=form_org_head %}
 {% include 'marer/products/BankGuarantee/form_org_management.html' with form=form_org_management %}
+{% include 'marer/products/BankGuarantee/form_org_bank_accounts.html' with formset=bank_accounts_formset %}
 {% if issue.tender_exec_law == consts.TENDER_EXEC_LAW_COMMERCIAL %}
     {% include 'marer/products/BankGuarantee/form_pledge.html' with formset=formset_pledges %}
 {% endif %}

@@ -354,6 +354,20 @@ class Issue(models.Model):
         else:
             return IssueOrgBeneficiaryOwner()
 
+    @property
+    def bank_account_1(self):
+        if self.org_bank_accounts.count() > 0:
+            return self.org_bank_accounts.order_by('id')[0]
+        else:
+            return IssueOrgBankAccount()
+
+    @property
+    def bank_account_2(self):
+        if self.org_bank_accounts.count() > 1:
+            return self.org_bank_accounts.order_by('id')[1]
+        else:
+            return IssueOrgBankAccount()
+
     def application_doc_admin_field(self):
         field_parts = []
         if self.application_doc:
@@ -870,3 +884,13 @@ class IssueOrgBeneficiaryOwner(models.Model):
     post_address = models.CharField(verbose_name='почтовый адрес', max_length=512, blank=False, null=False, default='')
     inn_or_snils = models.CharField(verbose_name='ИНН/СНИЛС (при наличии)', max_length=512, blank=False, null=False, default='')
     on_belong_to_pub_persons_info = models.CharField(verbose_name='сведения о принадлежности к публичным лицам', max_length=512, blank=False, null=False, default='')
+
+
+class IssueOrgBankAccount(models.Model):
+    class Meta:
+        verbose_name = 'банковский счет принципала'
+        verbose_name_plural = 'банковские счета принципала'
+
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False, related_name='org_bank_accounts')
+    name = models.CharField(verbose_name='наименование', max_length=512, blank=False, null=False, default='')
+    bik = models.CharField(verbose_name='БИК', max_length=512, blank=False, null=False, default='')

@@ -191,6 +191,16 @@ class OrgBeneficiaryOwnerForm(Form):
         js = formset_media_js
 
 
+class OrgBankAccountForm(Form):
+    id = IntegerField(required=False, widget=HiddenInput())
+    name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    bik = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden'}))
+
+    class Media(object):
+        js = formset_media_js
+
+
 class FounderLegalForm(Form):
     id = IntegerField(required=False, widget=HiddenInput())
     name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
