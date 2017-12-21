@@ -340,6 +340,14 @@ class BankGuaranteeProduct(FinanceProduct):
             self._issue.issuer_ifns_reg_cert_number = form_org_common.cleaned_data['issuer_ifns_reg_cert_number']
             self._issue.issuer_okopf = form_org_common.cleaned_data['issuer_okopf']
             self._issue.issuer_okved = form_org_common.cleaned_data['issuer_okved']
+
+            self._issue.avg_employees_cnt_for_prev_year = form_org_common.cleaned_data['avg_employees_cnt_for_prev_year']
+            self._issue.issuer_web_site = form_org_common.cleaned_data['issuer_web_site']
+            self._issue.issuer_accountant_org_or_person = form_org_common.cleaned_data['issuer_accountant_org_or_person']
+            self._issue.issuer_post_address = form_org_common.cleaned_data['issuer_post_address']
+            self._issue.issuer_has_overdue_debts_for_last_180_days = form_org_common.cleaned_data['issuer_has_overdue_debts_for_last_180_days']
+            self._issue.issuer_overdue_debts_info = form_org_common.cleaned_data['issuer_overdue_debts_info']
+
         else:
             processed_sucessfully_flag = False
 

@@ -1,5 +1,5 @@
 from django.forms import Form, CharField, ChoiceField, DateField, DecimalField, BooleanField, TextInput, DateInput, \
-    IntegerField, HiddenInput, CheckboxInput, Select
+    IntegerField, HiddenInput, CheckboxInput, Select, NumberInput, Textarea
 from djangoformsetjs.utils import formset_media_js
 
 from marer import consts
@@ -133,6 +133,16 @@ class BGFinProdSurveyOrgCommonForm(Form):
     issuer_ifns_reg_cert_number = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
     issuer_okopf = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
     issuer_okved = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+
+    avg_employees_cnt_for_prev_year = IntegerField(required=False, widget=NumberInput(attrs={'class': 'form-control'}))
+    issuer_web_site = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_accountant_org_or_person = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_post_address = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_has_overdue_debts_for_last_180_days = BooleanField(required=False, widget=Select(attrs={'class': 'form-control'}, choices=[
+        (True, 'Да'),
+        (False, 'Нет'),
+    ]))
+    issuer_overdue_debts_info = CharField(required=False, widget=Textarea(attrs={'class': 'form-control', 'rows': 3}))
 
 
 class BGFinProdSurveyOrgHeadForm(Form):
