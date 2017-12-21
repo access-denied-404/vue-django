@@ -173,6 +173,42 @@ class BGFinProdSurveyOrgManagementForm(Form):
     issuer_org_management_other_fio = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
 
 
+class BGFinProdSurveyDealParamsForm(Form):
+    bg_is_benefeciary_form = BooleanField(required=False, widget=Select(attrs={'class': 'form-control'}, choices=[
+        (True, 'Да'),
+        (False, 'Нет'),
+    ]))
+    is_indisputable_charge_off = BooleanField(required=False, widget=Select(attrs={'class': 'form-control'}, choices=[
+        (True, 'Да'),
+        (False, 'Нет'),
+    ]))
+    tender_contract_subject = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    deal_has_beneficiary = ChoiceField(required=False, widget=Select(attrs={'class': 'form-control'}), choices=[
+        (True, 'Присутствует'),
+        (False, 'Отсутствует'),
+    ])
+    issuer_bank_relations_term = ChoiceField(required=False, widget=Select(attrs={'class': 'form-control'}), choices=[
+        (consts.ISSUE_DEAL_BANK_RELATIONS_TERM_SHORT, 'Краткосрочные'),
+        (consts.ISSUE_DEAL_BANK_RELATIONS_TERM_LONG, 'Долгосрочные'),
+    ])
+    issuer_activity_objective = ChoiceField(required=False, widget=Select(attrs={'class': 'form-control'}), choices=[
+        (consts.ISSUE_ISSUER_ACTIVITY_OBJECTIVE_PROFIT_MAKING, 'Получение прибыли'),
+        (consts.ISSUE_ISSUER_ACTIVITY_OBJECTIVE_OTHER, 'Иное'),
+    ])
+    issuer_finance_situation = ChoiceField(required=False, widget=Select(attrs={'class': 'form-control'}), choices=[
+        (consts.ISSUE_ISSUER_FINANCE_SITUATION_SATISFIED, 'Удовлетворительное'),
+        (consts.ISSUE_ISSUER_FINANCE_SITUATION_UNSATISFIED, 'Неудовлетворительное'),
+    ])
+    issuer_business_reputation = ChoiceField(required=False, widget=Select(attrs={'class': 'form-control'}), choices=[
+        (consts.ISSUE_ISSUER_BUSINESS_REPUTATION_POSITIVE, 'Положительная'),
+        (consts.ISSUE_ISSUER_BUSINESS_REPUTATION_NOT_PRESENT, 'Отсутствует'),
+    ])
+    issuer_funds_source = ChoiceField(required=False, widget=Select(attrs={'class': 'form-control'}), choices=[
+        (consts.ISSUER_FUNDS_SOURCE_LOAN_FUNDS, 'Заемные средства'),
+        (consts.ISSUER_FUNDS_SOURCE_OTHER, 'Иное'),
+    ])
+
+
 class AffiliatesForm(Form):
     id = IntegerField(required=False, widget=HiddenInput())
     name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))

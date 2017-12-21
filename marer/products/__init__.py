@@ -15,7 +15,7 @@ from marer.products.forms import BGFinProdRegForm, BGFinProdSurveyOrgCommonForm,
     AffiliatesForm, FounderLegalForm, FounderPhysicalForm, CreditFinProdRegForm, CreditPledgeForm, \
     FactoringFinProdRegForm, LeasingFinProdRegForm, LeasingAssetForm, LeasingSupplierForm, LeasingPayRuleForm, \
     FactoringBuyerForm, FactoringSalesAnalyzeForm, AccountingBalanceForm, BGFinProdSurveyOrgManagementForm, \
-    OrgBeneficiaryOwnerForm, OrgBankAccountForm
+    OrgBeneficiaryOwnerForm, OrgBankAccountForm, BGFinProdSurveyDealParamsForm
 from marer.utils import kontur
 from marer.utils.loadfoc import get_cell_value, get_cell_summ_range, get_cell_percentage, get_cell_bool, \
     get_cell_review_term_days, get_cell_ensure_condition, get_issue_and_interest_rates
@@ -310,6 +310,7 @@ class BankGuaranteeProduct(FinanceProduct):
             form_org_head=BGFinProdSurveyOrgHeadForm(initial=self._issue.__dict__),
             form_org_management=BGFinProdSurveyOrgManagementForm(initial=self._issue.__dict__),
             form_balance=AccountingBalanceForm(initial=self._issue.__dict__),
+            form_deal_params=BGFinProdSurveyDealParamsForm(initial=self._issue.__dict__),
             bank_accounts_formset=bank_accounts_formset,
             affiliates_formset=affiliates_formset,
             beneficiary_owners_formset=beneficiary_owners_formset,
@@ -400,6 +401,23 @@ class BankGuaranteeProduct(FinanceProduct):
             self._issue.balance_code_1600_offset_1 = form_balance.cleaned_data['balance_code_1600_offset_1']
             self._issue.balance_code_2110_offset_1 = form_balance.cleaned_data['balance_code_2110_offset_1']
             self._issue.balance_code_2400_offset_1 = form_balance.cleaned_data['balance_code_2400_offset_1']
+        else:
+            processed_sucessfully_flag = False
+
+        form_deal_params = BGFinProdSurveyDealParamsForm(request.POST)
+        if form_deal_params.is_valid():
+
+            self._issue.bg_is_benefeciary_form = form_deal_params.cleaned_data['bg_is_benefeciary_form']
+            self._issue.is_indisputable_charge_off = form_deal_params.cleaned_data['is_indisputable_charge_off']
+            self._issue.tender_contract_subject = form_deal_params.cleaned_data['tender_contract_subject']
+            self._issue.deal_has_beneficiary = form_deal_params.cleaned_data['deal_has_beneficiary']
+
+            self._issue.issuer_bank_relations_term = form_deal_params.cleaned_data['issuer_bank_relations_term']
+            self._issue.issuer_activity_objective = form_deal_params.cleaned_data['issuer_activity_objective']
+            self._issue.issuer_finance_situation = form_deal_params.cleaned_data['issuer_finance_situation']
+            self._issue.issuer_business_reputation = form_deal_params.cleaned_data['issuer_business_reputation']
+            self._issue.issuer_funds_source = form_deal_params.cleaned_data['issuer_funds_source']
+
         else:
             processed_sucessfully_flag = False
 
