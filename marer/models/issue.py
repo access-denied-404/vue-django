@@ -518,7 +518,7 @@ class Issue(models.Model):
     def propose_documents_ordered(self):
         return self.propose_documents.order_by('document_id')  # need null to be first
 
-    def fill_application_doc(self):
+    def fill_application_doc(self, commit=True):
         template_path = os.path.join(
             settings.BASE_DIR,
             'marer',
@@ -533,9 +533,9 @@ class Issue(models.Model):
         app_doc = Document()
         app_doc.file = application_doc_file
         app_doc.save()
-        self.refresh_from_db()
         self.application_doc = app_doc
-        self.save()
+        if commit:
+            self.save()
         application_doc_file.close()
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
