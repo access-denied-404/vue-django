@@ -1,0 +1,81 @@
+{% load formset_tags %}
+
+<div class="panel panel-info">
+    <div class="panel-heading" data-toggle="collapse" data-target="#panel-{{ formset.prefix }}">Бенефициарные владельцы компании</div>
+    <div class="panel-body collapse formset" id="panel-{{ formset.prefix }}" data-formset-prefix="{{ formset.prefix }}">
+        <div class="container-fluid">
+            <div class="row">
+
+                {{ formset.management_form }}
+
+                <!-- The empty form template. By wrapping this in a <script> tag, the
+                __prefix__ placeholder can easily be replaced in both attributes and
+                any scripts -->
+                <script type="form-template" data-formset-empty-form>
+                    {% escapescript %}
+
+                        <tr data-formset-form>
+                            <td class="h6">
+                                {{ formset.empty_form.id }}
+                                {{ formset.empty_form.fio }}
+                            </td>
+                            <td class="h6">{{ formset.empty_form.legal_address }}</td>
+                            <td class="h6">{{ formset.empty_form.fact_address }}</td>
+                            <td class="h6">{{ formset.empty_form.post_address }}</td>
+                            <td class="h6">{{ formset.empty_form.inn_or_snils }}</td>
+                            <td class="h6">{{ formset.empty_form.on_belong_to_pub_persons_info }}</td>
+                            <td class="h6">
+                                {{ formset.empty_form.DELETE }}
+                                <button type="button" class="btn btn-link btn-xs" data-formset-delete-button>
+                                    <span class="glyphicon glyphicon-remove text-danger"></span>
+                                </button>
+                            </td>
+                        </tr>
+
+                    {% endescapescript %}
+                </script>
+
+                <table class="table">
+                    <tr>
+                        <th class="h6"><b>ФИО</b></th>
+                        <th class="h6"><b>Адрес регистрации</b></th>
+                        <th class="h6"><b>Адрес пребывания</b></th>
+                        <th class="h6"><b>Почтовый адрес</b></th>
+                        <th class="h6"><b>ИНН/СНИЛС<br/>(при наличии)</b></th>
+                        <th class="h6"><b>Сведения о принадлежности к<br/>публичным должностным лицам</b></th>
+                        <th>&nbsp;</th>
+                    </tr>
+                    <tbody data-formset-body>
+                    {% for form in formset %}
+                        <tr data-formset-form>
+                            <td class="h6">
+                                {{ form.id }}
+                                {{ form.fio.value }}
+                            </td>
+                            <td class="h6">{{ form.legal_address.value }}</td>
+                            <td class="h6">{{ form.fact_address.value }}</td>
+                            <td class="h6">{{ form.post_address.value }}</td>
+                            <td class="h6">{{ form.inn_or_snils.value }}</td>
+                            <td class="h6">{{ form.on_belong_to_pub_persons_info.value }}</td>
+                            <td class="h6">
+                                {{ form.DELETE }}
+                                <button type="button" class="btn btn-link btn-xs" data-formset-delete-button>
+                                    <span class="glyphicon glyphicon-remove text-danger"></span>
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tr>
+                        <td colspan="7" class="text-center">
+                            <button type="button" class="btn btn-primary" data-formset-add>
+                                Добавить аффилированную компанию
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>

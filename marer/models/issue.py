@@ -197,10 +197,7 @@ class Issue(models.Model):
     issuer_has_overdue_debts_for_last_180_days = models.NullBooleanField(verbose_name='Наличие просроченной задолженности по всем кредитам за последние 180 дней', blank=True, null=True)
     issuer_overdue_debts_info = models.TextField(verbose_name='Причины и обстоятельства просрочек', blank=True, null=False, default='')
 
-    deal_has_beneficiary = models.CharField(verbose_name='бенефециар', max_length=32, blank=True, null=True, choices=[
-        (False, 'Отсутствует'),
-        (True, 'Присутствует'),
-    ])
+    deal_has_beneficiary = models.NullBooleanField(verbose_name='наличие бенефициара по сделке', blank=True, null=True)
     issuer_bank_relations_term = models.CharField(verbose_name='срок отношений с Банком', max_length=32, blank=True, null=True, choices=[
         (consts.ISSUE_DEAL_BANK_RELATIONS_TERM_SHORT, 'Краткосрочные'),
         (consts.ISSUE_DEAL_BANK_RELATIONS_TERM_LONG, 'Долгосрочные'),
@@ -319,7 +316,7 @@ class Issue(models.Model):
 
     @property
     def humanized_deal_has_beneficiary(self):
-        return self.get_deal_has_beneficiary_display() or ''
+        return 'Присутствует' if self.bg_is_benefeciary_form else 'Отсутствует'
 
     @property
     def humanized_issuer_finance_siuation(self):
@@ -328,6 +325,34 @@ class Issue(models.Model):
     @property
     def humanized_issuer_bank_relations_term(self):
         return self.get_issuer_bank_relations_term_display() or ''
+    
+    @property
+    def beneficiary_owner_1(self):
+        if self.org_beneficiary_owners.count() > 0:
+            return self.org_beneficiary_owners.order_by('id')[0]
+        else:
+            return IssueOrgBeneficiaryOwner()
+
+    @property
+    def beneficiary_owner_2(self):
+        if self.org_beneficiary_owners.count() > 1:
+            return self.org_beneficiary_owners.order_by('id')[1]
+        else:
+            return IssueOrgBeneficiaryOwner()
+
+    @property
+    def beneficiary_owner_3(self):
+        if self.org_beneficiary_owners.count() > 2:
+            return self.org_beneficiary_owners.order_by('id')[2]
+        else:
+            return IssueOrgBeneficiaryOwner()
+
+    @property
+    def beneficiary_owner_4(self):
+        if self.org_beneficiary_owners.count() > 3:
+            return self.org_beneficiary_owners.order_by('id')[3]
+        else:
+            return IssueOrgBeneficiaryOwner()
 
     def application_doc_admin_field(self):
         field_parts = []
@@ -831,3 +856,17 @@ class IssueFactoringBuyer(models.Model):
     debitor_share = models.CharField(verbose_name='доля дебитора', max_length=512, blank=True, null=False, default='')
     average_delay_days = models.IntegerField(verbose_name='средние просрочки за 12 месяцев, дней', blank=True, null=True)
     sales_volume = models.CharField(verbose_name='объем продаж за последние 12 месяцев (млн руб. без НДС)', max_length=512, blank=True, null=False, default='')
+
+
+class IssueOrgBeneficiaryOwner(models.Model):
+    class Meta:
+        verbose_name = 'сведения о бенефициарном владельце'
+        verbose_name_plural = 'сведения о бенефициарных владельцах'
+
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False, related_name='org_beneficiary_owners')
+    fio = models.CharField(verbose_name='ФИО', max_length=512, blank=False, null=False, default='')
+    legal_address = models.CharField(verbose_name='адрес регистрации', max_length=512, blank=False, null=False, default='')
+    fact_address = models.CharField(verbose_name='адрес фактического пребывания', max_length=512, blank=False, null=False, default='')
+    post_address = models.CharField(verbose_name='почтовый адрес', max_length=512, blank=False, null=False, default='')
+    inn_or_snils = models.CharField(verbose_name='ИНН/СНИЛС (при наличии)', max_length=512, blank=False, null=False, default='')
+    on_belong_to_pub_persons_info = models.CharField(verbose_name='сведения о принадлежности к публичным лицам', max_length=512, blank=False, null=False, default='')

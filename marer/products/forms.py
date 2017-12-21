@@ -177,6 +177,20 @@ class AffiliatesForm(Form):
         js = formset_media_js
 
 
+class OrgBeneficiaryOwnerForm(Form):
+    id = IntegerField(required=False, widget=HiddenInput())
+    fio = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    legal_address = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    fact_address = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    post_address = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    inn_or_snils = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    on_belong_to_pub_persons_info = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden'}))
+
+    class Media(object):
+        js = formset_media_js
+
+
 class FounderLegalForm(Form):
     id = IntegerField(required=False, widget=HiddenInput())
     name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
