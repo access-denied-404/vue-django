@@ -250,11 +250,6 @@ class BankGuaranteeProduct(FinanceProduct):
         return processed_valid
 
     def get_survey_context_part(self):
-        affiliates_formset = formset_factory(AffiliatesForm, extra=0)
-        from marer.models.issue import IssueBGProdAffiliate
-        affiliates = IssueBGProdAffiliate.objects.filter(issue=self._issue)
-        affiliates_formset = affiliates_formset(initial=[aff.__dict__ for aff in affiliates], prefix='aff')
-
         beneficiary_owners_formset = formset_factory(OrgBeneficiaryOwnerForm, extra=0)
         from marer.models.issue import IssueOrgBeneficiaryOwner
         b_owners = IssueOrgBeneficiaryOwner.objects.filter(issue=self._issue).order_by('id')
@@ -296,7 +291,6 @@ class BankGuaranteeProduct(FinanceProduct):
             form_balance=AccountingBalanceForm(initial=self._issue.__dict__),
             form_deal_params=BGFinProdSurveyDealParamsForm(initial=self._issue.__dict__),
             bank_accounts_formset=bank_accounts_formset,
-            affiliates_formset=affiliates_formset,
             beneficiary_owners_formset=beneficiary_owners_formset,
             formset_founders_legal=formset_founders_legal,
             formset_founders_physical=formset_founders_physical,
@@ -461,34 +455,6 @@ class BankGuaranteeProduct(FinanceProduct):
                     new_pf.passport_data = afdata.get('passport_data', '')
                     new_pf.issue = self._issue
                     new_pf.save()
-        else:
-            processed_sucessfully_flag = False
-
-        # processing affiliates
-        from marer.models.issue import IssueBGProdAffiliate
-        affiliates_formset = formset_factory(AffiliatesForm, extra=0)
-        aff_formset = affiliates_formset(request.POST, prefix='aff')
-        if aff_formset.is_valid():
-            for afdata in aff_formset.cleaned_data:
-                afdata_id = afdata.get('id', None)
-                afdata_name = str(afdata.get('name', '')).strip()
-                if afdata_id and afdata.get('DELETE', False):
-                    try:
-                        aff = IssueBGProdAffiliate.objects.get(id=afdata['id'], issue=self._issue)
-                        aff.delete()
-                    except ObjectDoesNotExist:
-                        pass  # nothing to do
-
-                elif not afdata_id and afdata_name != '':
-                    new_aff = IssueBGProdAffiliate()
-                    new_aff.name = afdata_name
-                    new_aff.legal_address = afdata.get('legal_address', '')
-                    new_aff.inn = afdata.get('inn', '')
-                    new_aff.activity_type = afdata.get('activity_type', '')
-                    new_aff.aff_percentage = afdata.get('aff_percentage', '')
-                    new_aff.aff_type = afdata.get('aff_type', '')
-                    new_aff.issue = self._issue
-                    new_aff.save()
         else:
             processed_sucessfully_flag = False
 
