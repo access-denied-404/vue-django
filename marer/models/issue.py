@@ -233,6 +233,13 @@ class Issue(models.Model):
         blank=True,
         related_name='application_docs_links'
     )
+    doc_ops_mgmt_conclusion_doc = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='doc_ops_mgmt_conclusion_docs_links'
+    )
 
     @property
     def humanized_id(self):
@@ -524,12 +531,13 @@ class Issue(models.Model):
             'marer',
             'templates',
             'documents',
-            'issue_application_doc.xlsx'
+            'issue_application_doc.docx',
         )
 
-        from marer.utils.documents import fill_xlsx_file_with_issue_data
-        application_doc_file = fill_xlsx_file_with_issue_data(template_path, self)
-        application_doc_file.name = 'application.xlsx'
+        from marer.utils.documents import fill_docx_file_with_issue_data
+        application_doc_file = fill_docx_file_with_issue_data(template_path, self)
+        application_doc_file.name = 'application.docx'
+
         app_doc = Document()
         app_doc.file = application_doc_file
         app_doc.save()
@@ -537,6 +545,26 @@ class Issue(models.Model):
         if commit:
             self.save()
         application_doc_file.close()
+
+    def fill_doc_ops_mgmt_conclusion(self, commit=True):
+        template_path = os.path.join(
+            settings.BASE_DIR,
+            'marer',
+            'templates',
+            'documents',
+            'issue_doc_ops_mgmt_conclusion.docx'
+        )
+
+        from marer.utils.documents import fill_docx_file_with_issue_data
+        doc_ops_mgmt_conclusion_file = fill_docx_file_with_issue_data(template_path, self)
+        doc_ops_mgmt_conclusion_file.name = 'doc_ops_mgmt_conclusion.docx'
+        domc_doc = Document()
+        domc_doc.file = doc_ops_mgmt_conclusion_file
+        domc_doc.save()
+        self.doc_ops_mgmt_conclusion_doc = domc_doc
+        if commit:
+            self.save()
+        doc_ops_mgmt_conclusion_file.close()
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self.product or self.product == '':

@@ -10,5 +10,6 @@ Pillow==4.2.1
 pyasn1==0.4.2
 pyOpenSSL==17.4.0
 python-dateutil==2.6.1
+python-docx==0.8.6
 pytz==2017.2
 requests==2.18.4
