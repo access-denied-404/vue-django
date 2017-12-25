@@ -4,6 +4,7 @@ import os
 
 from django.conf import settings
 from django.db import models
+from django.urls import reverse
 from django.utils.formats import number_format
 
 from marer import consts
@@ -241,6 +242,14 @@ class Issue(models.Model):
         related_name='doc_ops_mgmt_conclusion_docs_links'
     )
 
+    sec_dep_conclusion_doc = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='sec_dep_conclusion_docs_links'
+    )
+
     @property
     def humanized_id(self):
         if self.id:
@@ -323,7 +332,7 @@ class Issue(models.Model):
 
     @property
     def humanized_deal_has_beneficiary(self):
-        return 'Присутствует' if self.bg_is_benefeciary_form else 'Отсутствует'
+        return 'Присутствует' if self.deal_has_beneficiary else 'Отсутствует'
 
     @property
     def humanized_issuer_finance_siuation(self):
@@ -388,6 +397,40 @@ class Issue(models.Model):
             return 'отсутствует'
     application_doc_admin_field.short_description = 'файл заявки'
     application_doc_admin_field.allow_tags = True
+
+    def doc_ops_mgmt_conclusion_doc_admin_field(self):
+        field_parts = []
+        if not self.doc_ops_mgmt_conclusion_doc:
+            url = reverse('admin:marer_issue_generate_doc_ops_mgmt_conclusion_doc', args=(self.id,))
+            field_parts.append('<b><a href="{}">сформировать</a></b>'.format(url))
+        else:
+            if self.doc_ops_mgmt_conclusion_doc.file:
+                field_parts.append('<b><a href="{}">скачать</a></b>'.format(self.doc_ops_mgmt_conclusion_doc.file.url))
+            if self.doc_ops_mgmt_conclusion_doc.sign:
+                field_parts.append('<b><a href="{}">ЭЦП</a></b>'.format(self.doc_ops_mgmt_conclusion_doc.sign.url))
+        if len(field_parts) > 0:
+            return ', '.join(field_parts)
+        else:
+            return 'отсутствует'
+    doc_ops_mgmt_conclusion_doc_admin_field.short_description = 'файл заключения УРДО'
+    doc_ops_mgmt_conclusion_doc_admin_field.allow_tags = True
+
+    def sec_dep_conclusion_doc_admin_field(self):
+        field_parts = []
+        if not self.sec_dep_conclusion_doc:
+            url = reverse('admin:marer_issue_generate_sec_dep_conclusion_doc', args=(self.id,))
+            field_parts.append('<b><a href="{}">сформировать</a></b>'.format(url))
+        else:
+            if self.sec_dep_conclusion_doc.file:
+                field_parts.append('<b><a href="{}">скачать</a></b>'.format(self.sec_dep_conclusion_doc.file.url))
+            if self.sec_dep_conclusion_doc.sign:
+                field_parts.append('<b><a href="{}">ЭЦП</a></b>'.format(self.sec_dep_conclusion_doc.sign.url))
+        if len(field_parts) > 0:
+            return ', '.join(field_parts)
+        else:
+            return 'отсутствует'
+    sec_dep_conclusion_doc_admin_field.short_description = 'файл заключения ДБ'
+    sec_dep_conclusion_doc_admin_field.allow_tags = True
 
     @property
     def issuer_head_passport_info(self):
@@ -547,6 +590,9 @@ class Issue(models.Model):
         application_doc_file.close()
 
     def fill_doc_ops_mgmt_conclusion(self, commit=True):
+
+        # todo validation!!
+
         template_path = os.path.join(
             settings.BASE_DIR,
             'marer',
@@ -565,6 +611,29 @@ class Issue(models.Model):
         if commit:
             self.save()
         doc_ops_mgmt_conclusion_file.close()
+
+    def fill_sec_dep_conclusion_doc(self, commit=True):
+
+        # todo validation!!
+
+        template_path = os.path.join(
+            settings.BASE_DIR,
+            'marer',
+            'templates',
+            'documents',
+            'issue_sec_dep_conclusion.docx'
+        )
+
+        from marer.utils.documents import fill_docx_file_with_issue_data
+        sec_dep_conclusion_file = fill_docx_file_with_issue_data(template_path, self)
+        sec_dep_conclusion_file.name = 'sec_dep_conclusion.docx'
+        new_doc = Document()
+        new_doc.file = sec_dep_conclusion_file
+        new_doc.save()
+        self.sec_dep_conclusion_doc = new_doc
+        if commit:
+            self.save()
+        sec_dep_conclusion_file.close()
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self.product or self.product == '':

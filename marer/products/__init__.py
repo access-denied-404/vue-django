@@ -547,6 +547,8 @@ class BankGuaranteeProduct(FinanceProduct):
                 'bg_deadline_date',
                 ('tender_exec_law', 'bg_type',),
                 'application_doc_admin_field',
+                'doc_ops_mgmt_conclusion_doc_admin_field',
+                'sec_dep_conclusion_doc_admin_field',
             ))),
 
             ('Сведения о тендере', dict(classes=('collapse',), fields=(
@@ -597,7 +599,11 @@ class BankGuaranteeProduct(FinanceProduct):
         return fieldset
 
     def get_admin_issue_read_only_fields(self):
-        return ['application_doc_admin_field']
+        return [
+            'application_doc_admin_field',
+            'doc_ops_mgmt_conclusion_doc_admin_field',
+            'sec_dep_conclusion_doc_admin_field',
+        ]
 
     def get_admin_issue_inlnes(self):
         from marer.admin import IssueBGProdAffiliateInlineAdmin

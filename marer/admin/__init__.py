@@ -8,7 +8,7 @@ from django.contrib.admin.models import LogEntry
 from django.contrib.admin.options import IS_POPUP_VAR
 from django.contrib.admin.utils import unquote
 from django.contrib.auth.admin import UserAdmin
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.exceptions import PermissionDenied
 from django.db.models import TextField, BLANK_CHOICE_DASH
 from django.forms import Textarea
@@ -147,6 +147,70 @@ class IssueAdmin(ModelAdmin):
         return obj.user.manager or '—'
     get_manager.short_description = 'Менеджер'
     get_manager.admin_order_field = 'user__manager_id'
+
+    def get_urls(self):
+        return [
+            url(
+                r'^(.+)/generate/doc_ops_mgmt_conclusion_doc/$',
+                self.admin_site.admin_view(self.generate_doc_ops_mgmt_conclusion_doc),
+                name='marer_issue_generate_doc_ops_mgmt_conclusion_doc',
+            ),
+            url(
+                r'^(.+)/generate/sec_dep_conclusion_doc/$',
+                self.admin_site.admin_view(self.generate_sec_dep_conclusion_doc),
+                name='marer_issue_generate_sec_dep_conclusion_doc',
+            ),
+        ] + super().get_urls()
+
+    def generate_doc_ops_mgmt_conclusion_doc(self, request, id, form_url=''):
+        issue_id = unquote(id)
+        try:
+            issue = Issue.objects.get(id=issue_id)
+        except ObjectDoesNotExist:
+            return self._get_obj_does_not_exist_redirect(request, Issue._meta, issue_id)
+
+        try:
+            issue.fill_doc_ops_mgmt_conclusion()
+        except ValidationError as ve:
+            self.message_user(request, 'Заключение УРДО заполнить невозможно', level=messages.ERROR)
+        else:
+            self.message_user(request, 'Заключение УРДО заполнено успешно')
+
+        return HttpResponseRedirect(
+            reverse(
+                '%s:%s_%s_change' % (
+                    self.admin_site.name,
+                    Issue._meta.app_label,
+                    Issue._meta.model_name,
+                ),
+                args=(issue.id,),
+            )
+        )
+
+    def generate_sec_dep_conclusion_doc(self, request, id, form_url=''):
+        issue_id = unquote(id)
+        try:
+            issue = Issue.objects.get(id=issue_id)
+        except ObjectDoesNotExist:
+            return self._get_obj_does_not_exist_redirect(request, Issue._meta, issue_id)
+
+        try:
+            issue.fill_sec_dep_conclusion_doc()
+        except ValidationError as ve:
+            self.message_user(request, 'Заключение ДБ заполнить невозможно', level=messages.ERROR)
+        else:
+            self.message_user(request, 'Заключение ДБ заполнено успешно')
+
+        return HttpResponseRedirect(
+            reverse(
+                '%s:%s_%s_change' % (
+                    self.admin_site.name,
+                    Issue._meta.app_label,
+                    Issue._meta.model_name,
+                ),
+                args=(issue.id,),
+            )
+        )
 
     def has_change_permission(self, request, obj=None):
         if request.user.has_perm('marer.change_issue'):
