@@ -2,9 +2,12 @@ import json
 
 import os
 
+from dateutil.relativedelta import relativedelta
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.formats import number_format
 
 from marer import consts
@@ -591,7 +594,17 @@ class Issue(models.Model):
 
     def fill_doc_ops_mgmt_conclusion(self, commit=True):
 
-        # todo validation!!
+        ve = ValidationError(None)
+        ve.error_list = []
+        issuer_reg_delta = relativedelta(
+            timezone.localdate(timezone.now(), timezone.get_current_timezone()),
+            self.issuer_registration_date,
+        )
+        if issuer_reg_delta.years <= 0 and issuer_reg_delta.months <= 6:
+            ve.error_list.append('Клиент зарегистрирован менее 6 месяцев назад')
+
+        if len(ve.error_list) > 0:
+            raise ve
 
         template_path = os.path.join(
             settings.BASE_DIR,
@@ -614,7 +627,17 @@ class Issue(models.Model):
 
     def fill_sec_dep_conclusion_doc(self, commit=True):
 
-        # todo validation!!
+        ve = ValidationError(None)
+        ve.error_list = []
+        issuer_reg_delta = relativedelta(
+            timezone.localdate(timezone.now(), timezone.get_current_timezone()),
+            self.issuer_registration_date,
+        )
+        if issuer_reg_delta.years <= 0 and issuer_reg_delta.months <= 6:
+            ve.error_list.append('Клиент зарегистрирован менее 6 месяцев назад')
+
+        if len(ve.error_list) > 0:
+            raise ve
 
         template_path = os.path.join(
             settings.BASE_DIR,

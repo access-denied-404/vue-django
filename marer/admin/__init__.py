@@ -172,7 +172,11 @@ class IssueAdmin(ModelAdmin):
         try:
             issue.fill_doc_ops_mgmt_conclusion()
         except ValidationError as ve:
-            self.message_user(request, 'Заключение УРДО заполнить невозможно', level=messages.ERROR)
+            if len(ve.error_list) > 0:
+                for err in ve.error_list:
+                    self.message_user(request, err, level=messages.ERROR)
+            else:
+                self.message_user(request, 'Заключение УРДО заполнить невозможно', level=messages.ERROR)
         else:
             self.message_user(request, 'Заключение УРДО заполнено успешно')
 
@@ -197,7 +201,11 @@ class IssueAdmin(ModelAdmin):
         try:
             issue.fill_sec_dep_conclusion_doc()
         except ValidationError as ve:
-            self.message_user(request, 'Заключение ДБ заполнить невозможно', level=messages.ERROR)
+            if len(ve.error_list) > 0:
+                for err in ve.error_list:
+                    self.message_user(request, err, level=messages.ERROR)
+            else:
+                self.message_user(request, 'Заключение УРДО заполнить невозможно', level=messages.ERROR)
         else:
             self.message_user(request, 'Заключение ДБ заполнено успешно')
 
