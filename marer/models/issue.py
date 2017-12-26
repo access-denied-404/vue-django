@@ -601,7 +601,7 @@ class Issue(models.Model):
             self.issuer_registration_date,
         )
         if issuer_reg_delta.years <= 0 and issuer_reg_delta.months <= 6:
-            ve.error_list.append('Клиент зарегистрирован менее 6 месяцев назад')
+            ve.error_list.append('Обнаружен стоп-фактор: организация зарегистрирована менее 6 месецев назад')
 
         if len(ve.error_list) > 0:
             raise ve
@@ -634,7 +634,7 @@ class Issue(models.Model):
             self.issuer_registration_date,
         )
         if issuer_reg_delta.years <= 0 and issuer_reg_delta.months <= 6:
-            ve.error_list.append('Клиент зарегистрирован менее 6 месяцев назад')
+            ve.error_list.append('Обнаружен стоп-фактор: организация зарегистрирована менее 6 месецев назад')
 
         if len(ve.error_list) > 0:
             raise ve
