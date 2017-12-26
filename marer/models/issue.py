@@ -603,6 +603,9 @@ class Issue(models.Model):
         if issuer_reg_delta.years <= 0 and issuer_reg_delta.months <= 6:
             ve.error_list.append('Обнаружен стоп-фактор: организация зарегистрирована менее 6 месецев назад')
 
+        if self.sec_dep_conclusion_doc is None or self.sec_dep_conclusion_doc.file is None:
+            ve.error_list.append('Отсутствует заключение ДБ')
+
         if len(ve.error_list) > 0:
             raise ve
 
