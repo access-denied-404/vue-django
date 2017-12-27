@@ -27,6 +27,7 @@ class Issue(models.Model):
     class Meta:
         verbose_name = 'заявка'
         verbose_name_plural = 'заявки'
+        ordering = ('-id',)
 
     product = models.CharField(verbose_name='банковский продукт', max_length=32, blank=False, null=False, choices=get_finance_products_as_choices())
     status = models.CharField(verbose_name='статус заявки', max_length=32, blank=False, null=False, choices=[
