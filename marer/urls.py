@@ -40,4 +40,9 @@ urlpatterns = [
 
     url(r'^rest/tender$', rest.TenderDataView.as_view(), name='rest_tender'),
     url(r'^rest/bank_commission$', csrf_exempt(rest.IssueBankCommissionView.as_view()), name='rest_bank_commission'),
+
+    url(r'^rest/issues', rest.IssuesView.as_view(), name='rest_issues'),
+    url(r'^rest/issue/(?P<iid>\d+)', rest.IssueView.as_view(), name='rest_issue'),
+    url(r'^rest/profile', rest.ProfileView.as_view(), name='rest_profile'),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
