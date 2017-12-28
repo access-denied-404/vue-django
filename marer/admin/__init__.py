@@ -60,6 +60,18 @@ class RegionAdmin(MPTTModelAdmin):
     kladr_codes.short_description = 'Коды КЛАДР'
 
 
+@register(models.BankMinimalCommission)
+class BankMinimalCommissionAdmin(ModelAdmin):
+    list_display = (
+        'id',
+        'sum_min',
+        'sum_max',
+        'term_months_min',
+        'term_months_max',
+        'commission',
+    )
+
+
 @register(models.Issue)
 class IssueAdmin(ModelAdmin):
     list_display = (

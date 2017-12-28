@@ -14,7 +14,7 @@ from mptt.fields import TreeForeignKey
 
 from marer import consts
 
-__all__ = ['Document', 'Region', 'RegionKLADRCode']
+__all__ = ['Document', 'Region', 'RegionKLADRCode', 'BankMinimalCommission']
 
 
 def documents_upload_path(instance, filename):
@@ -151,3 +151,24 @@ class RegionKLADRCode(models.Model):
 
     def __str__(self):
         return 'код КЛАДР региона «{}»: {}'.format(self.region, self.code)
+
+
+class BankMinimalCommission(models.Model):
+    class Meta:
+        verbose_name = 'уровень минимальной комиссии банка'
+        verbose_name_plural = 'уровни минимальной комиссии банка'
+
+    sum_min = models.DecimalField(verbose_name='сумма продукта от', max_digits=12, decimal_places=2, blank=False, null=False)
+    sum_max = models.DecimalField(verbose_name='сумма продукта по', max_digits=12, decimal_places=2, blank=False, null=False)
+    commission = models.DecimalField(verbose_name='минимальная комиссия', max_digits=12, decimal_places=2, blank=False, null=False)
+    term_months_min = models.IntegerField(verbose_name='срок действия продукта от, мес.', blank=False, null=False)
+    term_months_max = models.IntegerField(verbose_name='срок действия продукта по, мес.', blank=False, null=False)
+
+    def __str__(self):
+        return '{} руб. при сумме с {} руб. по {} руб. c {} по {} мес.'.format(
+            self.commission,
+            self.sum_min,
+            self.sum_max,
+            self.term_months_min,
+            self.term_months_max,
+        )
