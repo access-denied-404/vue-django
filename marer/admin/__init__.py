@@ -80,7 +80,8 @@ class IssueAdmin(ModelAdmin):
         'issuer_name',
         'issuer_inn',
         'status',
-        'get_manager',
+        'get_user_manager',
+        'get_issue_manager',
         'user_is_broker',
         'humanized_sum',
         'created_at',
@@ -88,6 +89,7 @@ class IssueAdmin(ModelAdmin):
     )
     list_filter = (
         ('user__manager', ManagerListFilter),
+        ('manager', ManagerListFilter),
         ('user', BrokerListFilter),
         'status',
     )
@@ -131,6 +133,7 @@ class IssueAdmin(ModelAdmin):
             result_fieldset = [
                 (None, dict(fields=(
                     'user',
+                    'manager',
                     'private_comment',
                     'comment',
                 ))),
@@ -140,6 +143,7 @@ class IssueAdmin(ModelAdmin):
                 (None, dict(fields=(
                     'status',
                     'user',
+                    'manager',
                     'private_comment',
                     'comment',
                     'final_note',
@@ -155,10 +159,22 @@ class IssueAdmin(ModelAdmin):
         else:
             return []
 
-    def get_manager(self, obj):
+    def get_user_manager(self, obj):
         return obj.user.manager or '—'
-    get_manager.short_description = 'Менеджер'
-    get_manager.admin_order_field = 'user__manager_id'
+    get_user_manager.short_description = 'Менеджер пользователя'
+    get_user_manager.admin_order_field = 'user__manager_id'
+
+    def get_issue_manager(self, obj):
+        if not obj.manager:
+            return '—'
+        return '{} {},<br>{}'.format(
+            obj.manager.first_name or '',
+            obj.manager.last_name or '',
+            obj.manager.email or '',
+        )
+    get_issue_manager.short_description = 'Менеджер по заявке'
+    get_issue_manager.admin_order_field = 'manager__first_name'
+    get_issue_manager.allow_tags = True
 
     def get_urls(self):
         return [

@@ -33,7 +33,7 @@ class User(AbstractUser):
     phone = models.CharField(_('contact phone'), max_length=30, blank=True)
     manager = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        verbose_name='менеджер',
+        verbose_name='менеджер пользователя',
         on_delete=models.DO_NOTHING,
         blank=True,
         null=True

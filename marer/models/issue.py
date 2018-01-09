@@ -38,6 +38,14 @@ class Issue(models.Model):
         (consts.ISSUE_STATUS_CANCELLED, 'Отменена'),
     ], default=consts.ISSUE_STATUS_REGISTERING)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='пользователь', on_delete=models.DO_NOTHING, null=False)
+    manager = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name='менеджер по заявке',
+        on_delete=models.DO_NOTHING,
+        blank=True,
+        null=True,
+        related_name='managed_issues'
+    )
     comment = models.TextField(verbose_name='комментарий к заявке', blank=True, null=False, default='')
     private_comment = models.TextField(verbose_name='приватный комментарий к заявке', blank=True, null=False, default='')
     updated_at = models.DateTimeField(verbose_name='время обновления', auto_now=True, null=False)
