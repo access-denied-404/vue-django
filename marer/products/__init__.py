@@ -200,44 +200,51 @@ class BankGuaranteeProduct(FinanceProduct):
             kontur_egrDetails_data = kontur.egrDetails(inn=inn, ogrn=ogrn)
             kontur_beneficialOwners = kontur.beneficialOwners(inn=inn, ogrn=ogrn)
 
-            self._issue.issuer_registration_date = parser.parse(kontur_req_data['UL']['registrationDate'])
-            self._issue.issuer_ifns_reg_date = parser.parse(kontur_egrDetails_data['UL']['nalogRegBody']['nalogRegDate']).date()
-            self._issue.issuer_okopf = kontur_req_data['UL']['okopf']
-            self._issue.issuer_okpo = kontur_req_data['UL']['okpo']
-            self._issue.issuer_okved = kontur_req_data['UL'].get('okved', '')
+            self._issue.issuer_registration_date = parser.parse(kontur_req_data['UL']['registrationDate'] if 'UL' in kontur_req_data else kontur_req_data['IP']['registrationDate'])
+            self._issue.issuer_ifns_reg_date = parser.parse(kontur_egrDetails_data['UL']['nalogRegBody']['nalogRegDate'] if 'UL' in kontur_egrDetails_data else kontur_egrDetails_data['IP']['nalogRegBody']['nalogRegDate']).date()
+            self._issue.issuer_okopf = kontur_req_data['UL']['okopf'] if 'UL' in kontur_req_data else kontur_req_data['IP']['okopf']
+            self._issue.issuer_okpo = kontur_req_data['UL'].get('okpo', '') if 'UL' in kontur_req_data else kontur_req_data['IP'].get('okpo', '')
 
-            if len(kontur_req_data['UL']['heads']) > 0:
+            if 'UL' in kontur_req_data and len(kontur_req_data['UL']['heads']) > 0:
                 head_name_arr = kontur_req_data['UL']['heads'][0]['fio'].split(' ')
                 if len(head_name_arr) == 3:
                     self._issue.issuer_head_last_name = head_name_arr[0]
                     self._issue.issuer_head_first_name = head_name_arr[1]
                     self._issue.issuer_head_middle_name = head_name_arr[2]
                 self._issue.issuer_head_org_position_and_permissions = kontur_req_data['UL']['heads'][0]['position']
+            elif 'IP' in kontur_req_data:
+                head_name_arr = kontur_req_data['IP']['fio'].split(' ')
+                if len(head_name_arr) == 3:
+                    self._issue.issuer_head_last_name = head_name_arr[0]
+                    self._issue.issuer_head_first_name = head_name_arr[1]
+                    self._issue.issuer_head_middle_name = head_name_arr[2]
 
             from marer.models.issue import IssueBGProdFounderLegal
             founders_legal = IssueBGProdFounderLegal.objects.filter(issue=self._issue)
             founders_legal.delete()
-            for fndr in kontur_egrDetails_data['UL'].get('foundersUL', []):
-                new_fndr = IssueBGProdFounderLegal()
-                new_fndr.issue = self._issue
-                new_fndr.name = fndr['fullName']
-                new_fndr.auth_capital_percentage = str(fndr['share']['percentagePlain']) + '%' if fndr['share'].get('percentagePlain', None) else (str(fndr['share']['sum']) + ' руб.')
-                new_fndr.save()
+            if 'UL' in kontur_egrDetails_data:
+                for fndr in kontur_egrDetails_data['UL'].get('foundersUL', []):
+                    new_fndr = IssueBGProdFounderLegal()
+                    new_fndr.issue = self._issue
+                    new_fndr.name = fndr['fullName']
+                    new_fndr.auth_capital_percentage = str(fndr['share']['percentagePlain']) + '%' if fndr['share'].get('percentagePlain', None) else (str(fndr['share']['sum']) + ' руб.')
+                    new_fndr.save()
 
             from marer.models.issue import IssueBGProdFounderPhysical
             founders_physical = IssueBGProdFounderPhysical.objects.filter(issue=self._issue)
             founders_physical.delete()
-            for fndr in kontur_egrDetails_data['UL'].get('foundersFL', []):
-                new_fndr = IssueBGProdFounderPhysical()
-                new_fndr.issue = self._issue
-                new_fndr.fio = fndr['fio']
-                new_fndr.auth_capital_percentage = str(fndr['share']['percentagePlain']) + '%' if fndr['share'].get('percentagePlain', None) else (str(fndr['share']['sum']) + ' руб.')
-                new_fndr.save()
+            if 'UL' in kontur_egrDetails_data:
+                for fndr in kontur_egrDetails_data['UL'].get('foundersFL', []):
+                    new_fndr = IssueBGProdFounderPhysical()
+                    new_fndr.issue = self._issue
+                    new_fndr.fio = fndr['fio']
+                    new_fndr.auth_capital_percentage = str(fndr['share']['percentagePlain']) + '%' if fndr['share'].get('percentagePlain', None) else (str(fndr['share']['sum']) + ' руб.')
+                    new_fndr.save()
 
             from marer.models.issue import IssueOrgBeneficiaryOwner
             b_owners = IssueOrgBeneficiaryOwner.objects.filter(issue=self._issue)
             b_owners.delete()
-            b_owners_fl = list(kontur_beneficialOwners['beneficialOwners']['beneficialOwnersFL'])
+            b_owners_fl = list(kontur_beneficialOwners['beneficialOwners'].get('beneficialOwnersFL', []))
             b_owners_fl.sort(key=lambda x: x.get('share', 0), reverse=True)
             for b_owner in b_owners_fl:
                 new_bo = IssueOrgBeneficiaryOwner()
