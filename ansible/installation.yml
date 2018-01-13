@@ -45,9 +45,9 @@
       git:
         dest=/srv/marer/
         force=no
-        repo=git@bitbucket.org:vladi-z/marer.git
+        repo={{git_repo}}
         accept_hostkey=true
-        version={{git_branch}}
+        version=master
       become: true
 
     - name: Install requirements
