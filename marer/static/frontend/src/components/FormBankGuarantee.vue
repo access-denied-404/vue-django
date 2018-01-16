@@ -105,7 +105,7 @@
                 <bs-input
                   :name="'date_range'"
                   v-model="date_range"
-                  label="Срок БГ, дней"
+                  label="Срок БГ, месяцев"
                   readonly
                   required
                   v-bind:class="{'has-error': !date_range_is_appropriate}"
@@ -236,7 +236,9 @@
         get () {
           if (this.bg_start_date && this.bg_end_date) {
             let val
-            val = Math.ceil((this.bg_end_date - this.bg_start_date) / 3600 / 24 / 1000)
+            let start = this.bg_start_date
+            let end = this.bg_end_date
+            val = 1 + (end.year() - start.year()) * 12 + end.month() - start.month()
             if (isNaN(val)) {
               return ''
             } else {
