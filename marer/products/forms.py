@@ -3,6 +3,7 @@ from django.forms import Form, CharField, ChoiceField, DateField, DecimalField, 
 from djangoformsetjs.utils import formset_media_js
 
 from marer import consts
+from marer.utils import kontur
 
 
 class BGFinProdRegForm(Form):
@@ -69,6 +70,37 @@ class BGFinProdRegForm(Form):
         bg_end = self.cleaned_data['bg_end_date']
         if not bg_start or not bg_end or not 0 < (bg_end - bg_start).days < 900:
             self.add_error(None, 'Неверный срок действия запрашиваемой гарантии')
+
+        try:
+            inn = self.cleaned_data.get('issuer_inn', None)
+            ogrn = self.cleaned_data.get('issuer_ogrn', None)
+            benefitiar_inn = self.cleaned_data.get('tender_responsible_inn', None)
+            benefitiar_ogrn = self.cleaned_data.get('tender_responsible_ogrn', None)
+            kontur_benefitiar_analytics_data = kontur.analytics(inn=benefitiar_inn, ogrn=benefitiar_ogrn)
+            kontur_principal_analytics_data = kontur.analytics(inn=inn, ogrn=ogrn)
+
+            stop_factors = []  # list of bools, any True in stops means that issue can not be executed
+
+            # principal stop factors
+            stop_factors.append(kontur_principal_analytics_data.get('m4001', False))  # RNP
+            stop_factors.append(kontur_principal_analytics_data.get('m7003', False))  # registered less than 6 months ago
+            stop_factors.append(kontur_principal_analytics_data.get('m5004', False))  # has taxes pay terms violations
+            for bl_inn_start in ['09', '01', '05', '06', '07', '15', '17', '20', '91', '92', '2632']:
+                stop_factors.append(str(inn).startswith(bl_inn_start))
+
+            # benefitiar stop factors
+            if self.cleaned_data.get('tender_exec_law', None) in [consts.TENDER_EXEC_LAW_44_FZ, consts.TENDER_EXEC_LAW_223_FZ]:
+                stop_factors.append(kontur_benefitiar_analytics_data.get('q4005', 0) > 0)
+            for bl_inn_start in ['91', '92']:
+                stop_factors.append(str(benefitiar_inn).startswith(bl_inn_start))
+
+            for sf in stop_factors:
+                if sf:
+                    self.add_error(None, 'Заявка не в рамках продукта')
+                    break
+
+        except Exception:
+            self.add_error(None, 'Не удалось проверить заявку')
 
 
 class CreditFinProdRegForm(Form):
