@@ -1,4 +1,6 @@
 from django.conf.urls import url
+from django.conf.urls.static import static
+from django.conf import settings
 
 from marer.views import auth
 from marer.views import cabinet
@@ -32,4 +34,4 @@ urlpatterns = [
     url(r'^cabinet/requests/(?P<iid>\d+)/cancelled$', issue.IssueCancelledView.as_view(), name='issue_cancelled'),
 
     url(r'^rest/tender$', rest.TenderDataView.as_view(), name='rest_tender')
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
