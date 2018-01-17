@@ -16,7 +16,7 @@ from marer.models.base import Document, set_obj_update_time, BankMinimalCommissi
 from marer.models.finance_org import FinanceOrganization, FinanceOrgProductProposeDocument
 from marer.models.issuer import Issuer, IssuerDocument
 from marer.products import get_finance_products_as_choices, FinanceProduct, get_finance_products, BankGuaranteeProduct
-from marer.utils import CustomJSONEncoder
+from marer.utils import CustomJSONEncoder, kontur
 
 __all__ = [
     'Issue', 'IssueDocument', 'IssueClarification',
@@ -720,6 +720,54 @@ class Issue(models.Model):
         if commit:
             self.save()
         sec_dep_conclusion_file.close()
+
+    def validate_stop_factors(self):
+        ve = ValidationError(None)
+        ve.error_list = []
+
+        try:
+            kontur_benefitiar_analytics_data = kontur.analytics(inn=self.tender_responsible_inn, ogrn=self.tender_responsible_ogrn)
+            kontur_principal_analytics_data = kontur.analytics(inn=self.issuer_inn, ogrn=self.issuer_ogrn)
+
+            # principal stop factors
+            if kontur_principal_analytics_data.get('m4001', False):
+                ve.error_list.append(
+                    'Исполнитель найден в реестре недобросоветных поставщиков. '
+                    'Рассмотрение заявки невозможно до устранения стоп-фактора.'
+                )
+            if kontur_principal_analytics_data.get('m7003', False):
+                ve.error_list.append('Обнаружен стоп-фактор: организация зарегистрирована менее 6 месецев назад')
+            if kontur_principal_analytics_data.get('m5004', False):
+                ve.error_list.append(
+                    'Организация была найдена в списке юридических лиц, имеющих задолженность по уплате налогов.')
+            for bl_inn_start in ['09', '01', '05', '06', '07', '15', '17', '20', '91', '92', '2632']:
+                if self.issuer_inn.startswith(bl_inn_start):
+                    ve.error_list.append('Обнаружен стоп-фактор: исполнитель находится в необслуживаемом регионе')
+                    break
+
+            # benefitiar stop factors
+            if self.tender_exec_law in [consts.TENDER_EXEC_LAW_44_FZ, consts.TENDER_EXEC_LAW_223_FZ]:
+                if kontur_benefitiar_analytics_data.get('q4005', 0) > 0:
+                    ve.error_list.append('Бенефициар не найден в реестре государственных заказчиков')
+            for bl_inn_start in ['91', '92']:
+                if self.tender_responsible_inn.startswith(bl_inn_start):
+                    ve.error_list.append('Обнаружен стоп-фактор: заказчик находится в необслуживаемом регионе')
+                    break
+
+        except Exception:
+            ve.error_list.append('Не удалось проверить заявку на стоп-факторы')
+
+        if len(ve.error_list) > 0:
+            raise ve
+
+    @cached_property
+    def check_stop_factors_validity(self):
+        try:
+            self.validate_stop_factors()
+        except ValidationError:
+            return False
+        else:
+            return True
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self.product or self.product == '':

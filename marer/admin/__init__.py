@@ -287,6 +287,16 @@ class IssueAdmin(ModelAdmin):
 
         return form
 
+    def get_object(self, request, object_id, from_field=None):
+        obj = super().get_object(request, object_id, from_field)
+        try:
+            obj.validate_stop_factors()
+        except ValidationError as ve:
+            if len(ve.error_list) > 0:
+                for err in ve.error_list:
+                    self.message_user(request, err, level=messages.ERROR)
+        return obj
+
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
         if change:

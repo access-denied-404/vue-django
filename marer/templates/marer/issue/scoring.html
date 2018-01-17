@@ -6,7 +6,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-6">
-                    {% if issue.bank_commission %}
+                    {% if issue.bank_commission and issue.check_stop_factors_validity %}
                         <div class="alert alert-success h1 text-center">Анализ пройден</div>
                     {% else %}
                         <div class="alert alert-danger h1 text-center">Анализ не пройден</div>
@@ -16,7 +16,7 @@
                     <div class="h1 text-center">
                         Комиссия банка
                         <br/>
-                        {% if issue.bank_commission %}
+                        {% if issue.bank_commission and issue.check_stop_factors_validity %}
                             {{ issue.bank_commission |floatformat:2 }} руб.
                         {% else %}
                             <span class="text-danger h3">Не в рамках продукта</span>
@@ -26,7 +26,7 @@
             </div>
             <div class="row">
                 <div class="col-md-12 text-center">
-                    {% if issue.bank_commission %}
+                    {% if issue.bank_commission and issue.check_stop_factors_validity %}
                         <form method="post">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-success btn-lg">
