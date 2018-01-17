@@ -30,6 +30,13 @@ def req(inn: str=None, ogrn: str=None):
     return data[0] if len(data) == 1 else data
 
 
+def analytics(inn: str=None, ogrn: str=None):
+    inn = inn or ''
+    ogrn = ogrn or ''
+    data = _api_request('analytics', inn=inn, ogrn=ogrn)
+    return data[0] if len(data) == 1 else data
+
+
 def egrDetails(inn: str=None, ogrn: str=None):
     inn = inn or ''
     ogrn = ogrn or ''
