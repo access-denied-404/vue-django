@@ -26,7 +26,7 @@ class TenderDataView(APIView):
             return HttpResponseNotFound()
 
         gos_number = rtform.cleaned_data['gos_number']
-        req = requests.get('https://inspectrum.su/rest/tender/' + gos_number)
+        req = requests.get('https://tender.marer.ru/rest/tender/' + gos_number)
 
         if req.status_code != 200:
             return HttpResponseNotFound()
