@@ -3,6 +3,7 @@ from django.forms import Form, CharField, ChoiceField, DateField, DecimalField, 
 from djangoformsetjs.utils import formset_media_js
 
 from marer import consts
+from marer.models import BankMinimalCommission
 
 
 class BGFinProdRegForm(Form):
@@ -62,12 +63,15 @@ class BGFinProdRegForm(Form):
     tender_has_prepayment = BooleanField(required=False)
 
     def clean(self):
-        if not self.cleaned_data['bg_sum'] or not 0 < self.cleaned_data['bg_sum'] < 15000000:
+        bg_sum_min = BankMinimalCommission.objects.order_by('sum_min').first().sum_min
+        bg_sum_max = BankMinimalCommission.objects.order_by('-sum_max').first().sum_max
+        if not self.cleaned_data['bg_sum'] or not bg_sum_min < self.cleaned_data['bg_sum'] < bg_sum_max:
             self.add_error(None, 'Неверная сумма запрашиваемой гарантии')
 
         bg_start = self.cleaned_data['bg_start_date']
         bg_end = self.cleaned_data['bg_end_date']
-        if not bg_start or not bg_end or not 0 < (bg_end - bg_start).days < 900:
+        bg_months_diff = 1 + (bg_end.year - bg_start.year) * 12 + bg_end.month - bg_start.month
+        if not bg_start or not bg_end or not 0 < bg_months_diff < 30:
             self.add_error(None, 'Неверный срок действия запрашиваемой гарантии')
 
 
