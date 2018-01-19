@@ -124,7 +124,7 @@ class Issue(models.Model):
         (consts.CURRENCY_USD, 'Доллар'),
         (consts.CURRENCY_EUR, 'Евро'),
     ])
-    bg_start_date = models.DateField(verbose_name='дата начала действия банковской гарантии', blank=True, null=True, auto_now_add=True)
+    bg_start_date = models.DateField(verbose_name='дата начала действия банковской гарантии', blank=True, null=True)
     bg_end_date = models.DateField(verbose_name='дата завершения действия банковской гарантии', blank=True, null=True)
     bg_deadline_date = models.DateField(verbose_name='крайний срок выдачи банковской гарантии', blank=True, null=True)
     bg_type = models.CharField(verbose_name='тип банковской гарантии', max_length=32, blank=True, null=True, choices=[
