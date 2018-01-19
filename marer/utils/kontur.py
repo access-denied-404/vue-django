@@ -16,10 +16,12 @@ def _api_request(method: str, **kwargs):
 
     if 200 <= result.status_code < 300:
         logger.debug('Request finished successfully, status code: {}'.format(result.status_code))
+        json_data = json.loads(result.text)
     else:
         logger.warning('Error in response, status code: {}'.format(result.status_code))
+        json_data = {}
+
     logger.debug('Result data: ' + result.text)
-    json_data = json.loads(result.text)
     return json_data
 
 
