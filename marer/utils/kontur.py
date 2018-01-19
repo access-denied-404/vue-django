@@ -12,14 +12,16 @@ def _api_request(method: str, **kwargs):
 
     get_addr = 'https://focus-api.kontur.ru/api3/{}?key={}'.format(method, api_key)
     kwargs_strings = ['&' + str(k) + '=' + kwargs[k] for k in kwargs]
-    result = requests.get(get_addr + ''.join(kwargs_strings))
+    result = requests.get(get_addr + ''.join(kwargs_strings), )
 
     if 200 <= result.status_code < 300:
         logger.debug('Request finished successfully, status code: {}'.format(result.status_code))
+        json_data = json.loads(result.text)
     else:
         logger.warning('Error in response, status code: {}'.format(result.status_code))
+        json_data = {}
+
     logger.debug('Result data: ' + result.text)
-    json_data = json.loads(result.text)
     return json_data
 
 

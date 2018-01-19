@@ -3,6 +3,7 @@ from django.http import HttpResponseNotFound
 from django.utils.dateparse import parse_datetime
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from urllib3.exceptions import MaxRetryError
 
 from marer.forms import RestTenderForm
 
@@ -26,9 +27,12 @@ class TenderDataView(APIView):
             return HttpResponseNotFound()
 
         gos_number = rtform.cleaned_data['gos_number']
-        req = requests.get('https://inspectrum.su/rest/tender/' + gos_number)
+        try:
+            req = requests.get('https://inspectrum.su/rest/tender/' + gos_number)
+        except MaxRetryError:
+            req = None
 
-        if req.status_code != 200:
+        if req and req.status_code != 200:
             return HttpResponseNotFound()
 
         tdata = req.json()

@@ -404,48 +404,33 @@ class Issue(models.Model):
     @property
     def humanized_issuer_bank_relations_term(self):
         return self.get_issuer_bank_relations_term_display() or ''
-    
-    @property
-    def beneficiary_owner_1(self):
-        if self.org_beneficiary_owners.count() > 0:
-            return self.org_beneficiary_owners.order_by('id')[0]
-        else:
-            return IssueOrgBeneficiaryOwner()
 
-    @property
-    def beneficiary_owner_2(self):
-        if self.org_beneficiary_owners.count() > 1:
-            return self.org_beneficiary_owners.order_by('id')[1]
-        else:
-            return IssueOrgBeneficiaryOwner()
+    @cached_property
+    def beneficiaries_owner(self):
+        return list(self.org_beneficiary_owners.order_by('id').all())
 
-    @property
-    def beneficiary_owner_3(self):
-        if self.org_beneficiary_owners.count() > 2:
-            return self.org_beneficiary_owners.order_by('id')[2]
-        else:
-            return IssueOrgBeneficiaryOwner()
+    @cached_property
+    def bank_accounts(self):
+        return list(self.org_bank_accounts.order_by('id').all())
 
-    @property
-    def beneficiary_owner_4(self):
-        if self.org_beneficiary_owners.count() > 3:
-            return self.org_beneficiary_owners.order_by('id')[3]
-        else:
-            return IssueOrgBeneficiaryOwner()
-
-    @property
-    def bank_account_1(self):
-        if self.org_bank_accounts.count() > 0:
-            return self.org_bank_accounts.order_by('id')[0]
-        else:
-            return IssueOrgBankAccount()
-
-    @property
-    def bank_account_2(self):
-        if self.org_bank_accounts.count() > 1:
-            return self.org_bank_accounts.order_by('id')[1]
-        else:
-            return IssueOrgBankAccount()
+    @cached_property
+    def founders_with_25_share(self):
+        def convert_float(v):
+            try:
+                return float(v)
+            except ValueError:
+                return 0
+        limit = 4
+        legal = self.issuer_founders_legal.all().values('name', 'auth_capital_percentage')
+        data = [l for l in legal[:limit] if convert_float(l['auth_capital_percentage']) > 25]
+        if len(data) < limit:
+            physical = self.issuer_founders_physical.all().values('fio', 'auth_capital_percentage')
+            # добираем данные с переименовкой поля для одинакового вывода
+            data += [{
+                'name': f['fio'],
+                'auth_capital_percentage': f['auth_capital_percentage']
+            } for f in physical[:(limit-len(data))] if convert_float(f['auth_capital_percentage']) > 25]
+        return data
 
     def application_doc_admin_field(self):
         field_parts = []
@@ -574,7 +559,7 @@ class Issue(models.Model):
         ), cls=CustomJSONEncoder)
         return json_data
 
-    @property
+    @cached_property
     def available_dashboard_views_names(self):
         available_views = ['issue_registering']
 

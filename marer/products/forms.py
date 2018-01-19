@@ -2,6 +2,7 @@ from django.forms import Form, CharField, ChoiceField, DateField, DecimalField, 
     IntegerField, HiddenInput, CheckboxInput, Select, NumberInput, Textarea
 from djangoformsetjs.utils import formset_media_js
 
+import settings
 from marer import consts
 from marer.utils import kontur
 
@@ -98,7 +99,7 @@ class BGFinProdRegForm(Form):
                 if sf:
                     self.add_error(None, 'Заявка не в рамках продукта')
                     break
-
+            return self.cleaned_data
         except Exception:
             self.add_error(None, 'Не удалось проверить заявку')
 
