@@ -2,7 +2,6 @@ from django.forms import Form, CharField, ChoiceField, DateField, DecimalField, 
     IntegerField, HiddenInput, CheckboxInput, Select, NumberInput, Textarea
 from djangoformsetjs.utils import formset_media_js
 
-import settings
 from marer import consts
 from marer.utils import kontur
 
