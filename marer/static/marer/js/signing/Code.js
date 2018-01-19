@@ -77,9 +77,10 @@ function Common_SignCadesBES(id, text, setDisplayData)
         });
     }else
     {
-        var ret = SignCadesBES_NPAPI(id, text, setDisplayData);
+        var signature = SignCadesBES_NPAPI(id, text, setDisplayData);
+        document.getElementById("id_signature").setAttribute('value', signature);
         btn.disabled = false;
-        return ret;
+        return signature;
     }
 }
 
@@ -400,41 +401,28 @@ function GetSignatureTitleElement()
 }
 
 function SignCadesBES_NPAPI(certListBoxId, data, setDisplayData) {
-    var certificate = GetCertificate_NPAPI(certListBoxId);
-    var dataToSign = document.getElementById("DataToSignTxtBox").value;
-    if(typeof(data) != 'undefined')
-    {
+    var e = document.getElementById(certListBoxId);
+    var selectedCertID = e.selectedIndex;
+    if (selectedCertID == -1) {
+        alert("Select certificate");
+        return;
+    }
+    var thumbprint = e.options[selectedCertID].value.split(" ").reverse().join("").replace(/\s/g, "").toUpperCase();
+    var certificate = GetCertificate_NPAPI(thumbprint);
+
+    var dataToSign = "";
+    if(typeof(data) != 'undefined') {
         dataToSign = data;
-    }
-    var x = GetSignatureTitleElement();
-    try
-    {
-        FillCertInfo_NPAPI(certificate);
-        var signature = MakeCadesBesSign_NPAPI(dataToSign, certificate, setDisplayData);
-        document.getElementById("SignatureTxtBox").innerHTML = signature;
-        if(x!=null)
-        {
-            x.innerHTML = "Подпись сформирована успешно:";
-        }
-    }
-    catch(err)
-    {
-        if(x!=null)
-        {
-            x.innerHTML = "Возникла ошибка:";
-        }
-        document.getElementById("SignatureTxtBox").innerHTML = err;
-    }
+    } try {
+        return MakeCadesBesSign_NPAPI(dataToSign, certificate, setDisplayData);
+    } catch(err) {}
 }
 
 function SignCadesBES_NPAPI_File(certListBoxId) {
     var certificate = GetCertificate_NPAPI(window.userCertHash);
     var dataToSign = certListBoxId;
     try {
-        FillCertInfo_NPAPI(certificate);
-        var setDisplayData;
-        var signature = MakeCadesBesSign_NPAPI(dataToSign, certificate, setDisplayData, 1);
-        return signature;
+        return MakeCadesBesSign_NPAPI(dataToSign, certificate, "", 1);
     }
     catch (err) {
     }
@@ -500,106 +488,6 @@ function MakeVersionString(oVer)
 }
 
 function CheckForPlugIn_NPAPI() {
-    function VersionCompare_NPAPI(StringVersion, ObjectVersion)
-    {
-        if(typeof(ObjectVersion) == "string")
-            return -1;
-        var arr = StringVersion.split('.');
-
-        if(ObjectVersion.MajorVersion == parseInt(arr[0]))
-        {
-            if(ObjectVersion.MinorVersion == parseInt(arr[1]))
-            {
-                if(ObjectVersion.BuildVersion == parseInt(arr[2]))
-                {
-                    return 0;
-                }
-                else if(ObjectVersion.BuildVersion < parseInt(arr[2]))
-                {
-                    return -1;
-                }
-            }else if(ObjectVersion.MinorVersion < parseInt(arr[1]))
-            {
-                return -1;
-            }
-        }else if(ObjectVersion.MajorVersion < parseInt(arr[0]))
-        {
-            return -1;
-        }
-
-        return 1;
-    }
-
-    function GetCSPVersion_NPAPI() {
-        try {
-           var oAbout = cadesplugin.CreateObject("CAdESCOM.About");
-        } catch (err) {
-            alert('Failed to create CAdESCOM.About: ' + cadesplugin.getLastError(err));
-            return;
-        }
-        var ver = oAbout.CSPVersion("", 75);
-        return ver.MajorVersion + "." + ver.MinorVersion + "." + ver.BuildVersion;
-    }
-
-    function GetCSPName_NPAPI() {
-        var sCSPName = "";
-        try {
-            var oAbout = cadesplugin.CreateObject("CAdESCOM.About");
-            sCSPName = oAbout.CSPName(75);
-
-        } catch (err) {
-        }
-        return sCSPName;
-    }
-
-    function ShowCSPVersion_NPAPI(CurrentPluginVersion)
-    {
-        if(typeof(CurrentPluginVersion) != "string")
-        {
-            document.getElementById('CSPVersionTxt').innerHTML = "Версия криптопровайдера: " + GetCSPVersion_NPAPI();
-        }
-        var sCSPName = GetCSPName_NPAPI();
-        if(sCSPName!="")
-        {
-            document.getElementById('CSPNameTxt').innerHTML = "Криптопровайдер: " + sCSPName;
-        }
-    }
-    function GetLatestVersion_NPAPI(CurrentPluginVersion) {
-        var xmlhttp = getXmlHttp();
-        xmlhttp.open("GET", "/sites/default/files/products/cades/latest_2_0.txt", true);
-        xmlhttp.onreadystatechange = function() {
-            var PluginBaseVersion;
-            if (xmlhttp.readyState == 4) {
-                if(xmlhttp.status == 200) {
-                    PluginBaseVersion = xmlhttp.responseText;
-                    if (isPluginWorked) { // плагин работает, объекты создаются
-                        if (VersionCompare_NPAPI(PluginBaseVersion, CurrentPluginVersion)<0) {
-                            document.getElementById('PluginEnabledImg').setAttribute("src", "Img/yellow_dot.png");
-                            document.getElementById('PlugInEnabledTxt').innerHTML = "Плагин загружен, но есть более свежая версия.";
-                        }
-                    }
-                    else { // плагин не работает, объекты не создаются
-                        if (isPluginLoaded) { // плагин загружен
-                            if (!isPluginEnabled) { // плагин загружен, но отключен
-                                document.getElementById('PluginEnabledImg').setAttribute("src", "Img/red_dot.png");
-                                document.getElementById('PlugInEnabledTxt').innerHTML = "Плагин загружен, но отключен в настройках браузера.";
-                            }
-                            else { // плагин загружен и включен, но объекты не создаются
-                                document.getElementById('PluginEnabledImg').setAttribute("src", "Img/red_dot.png");
-                                document.getElementById('PlugInEnabledTxt').innerHTML = "Плагин загружен, но не удается создать объекты. Проверьте настройки браузера.";
-                            }
-                        }
-                        else { // плагин не загружен
-                            document.getElementById('PluginEnabledImg').setAttribute("src", "Img/red_dot.png");
-                            document.getElementById('PlugInEnabledTxt').innerHTML = "Плагин не загружен.";
-                        }
-                    }
-                }
-            }
-        }
-        xmlhttp.send(null);
-    }
-
     var isPluginLoaded = false;
     var isPluginWorked = false;
     var isActualVersion = false;
@@ -613,11 +501,6 @@ function CheckForPlugIn_NPAPI() {
         var CurrentPluginVersion = oAbout.PluginVersion;
         if( typeof(CurrentPluginVersion) == "undefined")
             CurrentPluginVersion = oAbout.Version;
-
-        document.getElementById('PluginEnabledImg').setAttribute("src", "Img/green_dot.png");
-        document.getElementById('PlugInEnabledTxt').innerHTML = "Плагин загружен.";
-        document.getElementById('PlugInVersionTxt').innerHTML = "Версия плагина: " + MakeVersionString(CurrentPluginVersion);
-        ShowCSPVersion_NPAPI(CurrentPluginVersion);
     }
     catch (err) {
         // Объект создать не удалось, проверим, установлен ли
@@ -631,13 +514,7 @@ function CheckForPlugIn_NPAPI() {
             }
         }
     }
-    GetLatestVersion_NPAPI(CurrentPluginVersion);
-    if(location.pathname.indexOf("symalgo_sample.html")>=0){
-        FillCertList_NPAPI('CertListBox1');
-        FillCertList_NPAPI('CertListBox2');
-    } else{
-        FillCertList_NPAPI('CertListBox');
-    }
+    FillCertList_NPAPI('id_cert');
 }
 
 function CertificateObj(certObj)
