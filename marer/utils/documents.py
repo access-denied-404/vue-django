@@ -65,6 +65,8 @@ def _fill_docx_paragraph_with_dict(paragraph: Paragraph, data: dict) -> None:
             pass
         except ValueError:
             pass
+        except IndexError:
+            pass
         else:
             if old_text != new_text:
                 run.text = new_text
