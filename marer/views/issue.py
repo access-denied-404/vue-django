@@ -16,7 +16,7 @@ from django.views.generic import TemplateView, RedirectView
 from django.views.generic.base import ContextMixin
 
 from marer import consts
-from marer.forms import IssueRegisteringForm, IFOPCMessageForm
+from marer.forms import IssueRegisteringForm, IFOPCMessageForm, LoginSignForm
 from marer.models import Issue, Document
 from marer.models.issue import IssueClarificationMessage, \
     IssueFinanceOrgProposeClarificationMessageDocument, IssueClarification, \
@@ -156,6 +156,74 @@ class IssueSurveyView(IssueView):
             return HttpResponseRedirect(url)
         else:
             return self.get(request, *args, **kwargs)
+
+
+class IssueRemoteSignView(TemplateView, ContextMixin, View):
+    _issue = None
+
+    def get_context_data(self, **kwargs):
+        kwargs['cert_hash'] = self.get_cert_thumb()
+        kwargs['consts'] = consts
+        kwargs['issue'] = self.get_issue()
+        return super().get_context_data(**kwargs)
+
+    def get_issue(self):
+        if self._issue is not None:
+            return self._issue
+
+        iid = self.kwargs.get('iid', None)
+        if iid is not None:
+            # fixme maybe make error 403?
+            issue = get_object_or_404(Issue, id=iid)
+            self._issue = issue
+            return issue
+
+    def get_cert_thumb(self):
+        dta = self.request.COOKIES.get('cert_thumb', None)
+        if not dta:
+            dta = self.request.session.get('cert_thumb', None)
+        return dta
+
+    def get_cert_sign(self):
+        dta = self.request.COOKIES.get('cert_sign', None)
+        if not dta:
+            dta = self.request.session.get('cert_sign', None)
+        return dta
+
+    def is_authenticated_by_cert(self):
+        thumb = self.get_cert_thumb()
+        sign = self.get_cert_sign()
+        # todo check INN for cert and issue issuer
+        if thumb and sign:
+            return True
+        else:
+            return False
+
+    def get(self, request, *args, **kwargs):
+        if not self.is_authenticated_by_cert():
+            self.template_name = 'marer/auth/remote_sign_login.html'
+            login_form = LoginSignForm()
+            if 'login_form' not in kwargs:
+                kwargs.update(dict(login_form=login_form))
+        else:
+            self.template_name = 'marer/issue/remote_sign_docs.html'
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if not self.is_authenticated_by_cert():
+            login_form = LoginSignForm(request.POST)
+            if login_form.is_valid():
+                request.COOKIES['cert_thumb'] = login_form.cleaned_data['cert']
+                request.COOKIES['cert_sign'] = login_form.cleaned_data['signature']
+                request.session['cert_thumb'] = login_form.cleaned_data['cert']
+                request.session['cert_sign'] = login_form.cleaned_data['signature']
+
+                url = reverse('issue_remote_sign', args=[self.get_issue().id])
+                response = HttpResponseRedirect(url)
+                # response.set_cookie('cert_thumb', login_form.cleaned_data['cert'])
+                # response.set_cookie('cert_thumb', login_form.cleaned_data['signature'])
+                return response
+        return self.get(request, args, kwargs)
 
 
 class IssueScoringView(IssueView):
@@ -306,6 +374,67 @@ class IssueAdditionalDocumentSignView(LoginRequiredMixin, ContextMixin, View):
         if iid is not None:
             # fixme maybe make error 403?
             issue = get_object_or_404(Issue, id=iid, user_id=self.request.user.id)
+            self._issue = issue
+            return issue
+
+    def get_context_data(self, **kwargs):
+        kwargs.update(dict(issue=self.get_issue()))
+        return super().get_context_data(**kwargs)
+
+    def post(self, request, *args, **kwargs):
+        doc_id = request.POST.get('document', None)
+        doc = None
+        sign = request.POST.get('signature', '')
+        response_dict = dict(
+            document=doc_id,
+            sign_state=consts.DOCUMENT_SIGN_NONE,
+        )
+        if doc_id and self.get_issue().propose_documents.filter(document_id=doc_id).exists():
+            pdoc = IssueProposeDocument.objects.filter(document_id=doc_id)[0]
+            doc = pdoc.document
+
+        raw_check_sign_class = settings.FILE_SIGN_CHECK_CLASS
+        if raw_check_sign_class is not None and raw_check_sign_class != '':
+            raw_check_sign_class = str(raw_check_sign_class)
+            check_sign_module_name, check_sign_class_name = raw_check_sign_class.rsplit('.', 1)
+            check_sign_module = importlib.import_module(check_sign_module_name)
+            check_sign_class = getattr(check_sign_module, check_sign_class_name)
+
+            temp_sign_file = NamedTemporaryFile(delete=False)
+            sign_bytes = sign.encode('utf-8')
+            temp_sign_file.write(sign_bytes)
+            try:
+                sign_is_correct = check_sign_class.check_file_sign(doc.file.path, temp_sign_file.name)
+            except Exception:
+                sign_is_correct = False
+            if sign_is_correct:
+                final_sign_file = ContentFile(sign_bytes)
+                final_sign_file.name = os.path.basename(doc.file.name) + '.sig'
+                doc.sign = final_sign_file
+                doc.save()
+                response_dict['sign_state'] = consts.DOCUMENT_SIGN_VERIFIED
+            else:
+                response_dict['sign_state'] = consts.DOCUMENT_SIGN_CORRUPTED
+            temp_sign_file.close()
+            os.unlink(temp_sign_file.name)
+        return HttpResponse(json.dumps(response_dict), content_type="application/json")
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+
+class IssueRemoteDocumentSignView(ContextMixin, View):
+    _issue = None
+
+    def get_issue(self):
+        if self._issue is not None:
+            return self._issue
+
+        iid = self.kwargs.get('iid', None)
+        if iid is not None:
+            # fixme maybe make error 403?
+            issue = get_object_or_404(Issue, id=iid)
             self._issue = issue
             return issue
 
