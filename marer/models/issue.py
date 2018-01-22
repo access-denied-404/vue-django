@@ -265,6 +265,10 @@ class Issue(models.Model):
     )
 
     @cached_property
+    def passed_prescoring(self):
+        return self.bank_commission and self.check_stop_factors_validity
+
+    @cached_property
     def bank_commission(self):
 
         Q25 = 0.0027  # Процент: 0,27% (процент чего?)
@@ -558,6 +562,8 @@ class Issue(models.Model):
         reg_form_class = self.get_product().get_registering_form_class()
         reg_form = reg_form_class(self.__dict__)
         reg_form.full_clean()
+        if not self.passed_prescoring and not reg_form.errors:
+            reg_form.add_error(None, 'Не в рамках продукта')
         json_data = json.dumps(dict(
             formdata=reg_form.cleaned_data,
             errors=reg_form.errors,

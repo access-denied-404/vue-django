@@ -90,6 +90,10 @@ class IssueRegisteringView(IssueView):
         kwargs['dadata_token'] = settings.DADATA_TOKEN
         return super().get(request, *args, **kwargs)
 
+    def return_errors(self, base_form, *args, **kwargs):
+        kwargs.update(dict(base_form=base_form))
+        return self.get(self.request, *args, **kwargs)
+
     def post(self, request, *args, **kwargs):
 
         if self.get_issue() and 'issue_registering' not in self.get_issue().editable_dashboard_views():
@@ -118,6 +122,7 @@ class IssueRegisteringView(IssueView):
             issue.comment = base_form.cleaned_data['comment']
             issue.product = base_form.cleaned_data['product']
             issue.save()
+
             if need_to_notify_for_issue_create:
                 notify_user_manager_about_user_created_issue(issue)
             else:
@@ -128,12 +133,14 @@ class IssueRegisteringView(IssueView):
             product.set_issue(issue)
             processed_valid = product.process_registering_form(request)
 
+            if not issue.passed_prescoring:
+                return self.return_errors(base_form, *args, **kwargs)
+
             if processed_valid:
                 url = reverse('issue_survey', args=[issue.id])
                 return HttpResponseRedirect(url)
 
-        kwargs.update(dict(base_form=base_form))
-        return self.get(request, *args, **kwargs)
+        return self.return_errors(base_form, *args, **kwargs)
 
 
 class IssueSurveyView(IssueView):
