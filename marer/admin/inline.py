@@ -293,9 +293,9 @@ class IssueProposeDocumentInlineAdmin(TabularInline):
     form = IssueProposeDocumentInlineAdminForm
     fields = (
         'name',
-        'code',
         'file_sample',
         'file',
+        'is_approved_by_manager',
     )
     classes = ('collapse',)
 

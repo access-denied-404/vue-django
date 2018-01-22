@@ -838,6 +838,11 @@ class IssueProposeDocument(models.Model):
         null=True,
         blank=True,
     )
+    is_approved_by_manager = models.NullBooleanField('проверка менеджером', choices=[
+        (None, 'Не проверен'),
+        (True, 'Подтвержден'),
+        (False, 'Забракован'),
+    ], null=True, blank=True)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None, chain_docs_update=False):
         # todo does it has any sense?
