@@ -191,8 +191,14 @@ class WordDocumentHelper:
                         # скрываем признаки начала и конца цикла, заменяем obj на переменную с индексом
                         for key, value in replace_dict.items():
                             new_text = new_text.replace(bytes(key, encoding='utf-8'), bytes(value, encoding='utf-8'))
-                        new_text = new_text.replace(bytes('{obj', encoding='utf-8'),
-                                                    bytes('{' + data[2] + '[%s]' % index, encoding='utf-8'))
+                        if data[4]: # если данные имеются,
+                            new_text = new_text.replace(bytes('{obj', encoding='utf-8'),
+                                                        bytes('{' + data[2] + '[%s]' % index, encoding='utf-8'))
+                        else:
+                            found = re.findall('{obj[^{}]*}', str(old_text))
+                            for f in found:
+                                new_text = new_text.replace(bytes(f, encoding='utf-8'),
+                                                            bytes('', encoding='utf-8'))
                         # заменяем содержимое ячейки на новое содержимое
                         table._tbl[row_idx][i + 1] = etree.fromstring(new_text)
 

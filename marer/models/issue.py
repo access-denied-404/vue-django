@@ -423,21 +423,13 @@ class Issue(models.Model):
 
     @cached_property
     def founders_with_25_share(self):
-        def convert_float(v):
-            try:
-                return float(v)
-            except ValueError:
-                return 0
-        limit = 4
-        legal = self.issuer_founders_legal.all().values('name', 'auth_capital_percentage')
-        data = [l for l in legal[:limit] if convert_float(l['auth_capital_percentage']) > 25]
-        if len(data) < limit:
-            physical = self.issuer_founders_physical.all().values('fio', 'auth_capital_percentage')
-            # добираем данные с переименовкой поля для одинакового вывода
-            data += [{
-                'name': f['fio'],
-                'auth_capital_percentage': f['auth_capital_percentage']
-            } for f in physical[:(limit-len(data))] if convert_float(f['auth_capital_percentage']) > 25]
+        data = list(self.issuer_founders_legal.all().values('name', 'auth_capital_percentage'))
+        physical = list(self.issuer_founders_physical.all().values('fio', 'auth_capital_percentage'))
+        # добираем данные с переименовкой поля для одинакового вывода
+        data += [{
+            'name': f['fio'],
+            'auth_capital_percentage': f['auth_capital_percentage']
+        } for f in physical]
         return data
 
     def application_doc_admin_field(self):
