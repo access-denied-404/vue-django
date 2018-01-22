@@ -578,6 +578,7 @@ class BankGuaranteeProduct(FinanceProduct):
 
             ('Сведения о тендере', dict(classes=('collapse',), fields=(
                 'tender_gos_number',
+                'tender_gos_number_link',
                 'tender_placement_type',
                 'tender_publish_date',
                 'tender_start_cost',
@@ -628,6 +629,7 @@ class BankGuaranteeProduct(FinanceProduct):
             'application_doc_admin_field',
             'doc_ops_mgmt_conclusion_doc_admin_field',
             'sec_dep_conclusion_doc_admin_field',
+            'tender_gos_number_link',
         ]
 
     def get_admin_issue_inlnes(self):
