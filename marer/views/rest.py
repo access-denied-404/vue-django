@@ -27,19 +27,19 @@ class TenderDataView(APIView):
             return HttpResponseNotFound()
 
         gos_number = rtform.cleaned_data['gos_number']
+        tdata = {}
         try:
             req = requests.get('https://tender.marer.ru/rest/tender/' + gos_number)
+            if req and req.status_code != 200:
+                return HttpResponseNotFound()
+            if req.text:
+                tdata = req.json()
+
+                _move_date_to_field(tdata, 'publish_datetime', 'publish_date')
+                _move_date_to_field(tdata, 'open_datetime', 'collect_start_date')
+                _move_date_to_field(tdata, 'close_datetime', 'collect_end_date')
+                _move_date_to_field(tdata, 'finish_datetime', 'finish_date')
         except MaxRetryError:
-            req = None
-
-        if req and req.status_code != 200:
-            return HttpResponseNotFound()
-
-        tdata = req.json()
-
-        _move_date_to_field(tdata, 'publish_datetime', 'publish_date')
-        _move_date_to_field(tdata, 'open_datetime', 'collect_start_date')
-        _move_date_to_field(tdata, 'close_datetime', 'collect_end_date')
-        _move_date_to_field(tdata, 'finish_datetime', 'finish_date')
+            pass
 
         return Response(tdata)

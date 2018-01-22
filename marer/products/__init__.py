@@ -20,7 +20,6 @@ from marer.utils import kontur
 from marer.utils.loadfoc import get_cell_value, get_cell_summ_range, get_cell_percentage, get_cell_bool, \
     get_cell_review_term_days, get_cell_ensure_condition, get_issue_and_interest_rates
 
-
 logger = logging.getLogger('django')
 
 _admin_issue_fieldset_issuer_part = (
@@ -38,6 +37,7 @@ _admin_issue_fieldset_issuer_part = (
             'issuer_fact_address',
 
             'issuer_okpo',
+            'issuer_okato',
             'issuer_registration_date',
             'issuer_ifns_reg_date',
             'issuer_ifns_reg_cert_number',
@@ -199,6 +199,7 @@ class BankGuaranteeProduct(FinanceProduct):
             kontur_req_data = kontur.req(inn=inn, ogrn=ogrn)
             kontur_egrDetails_data = kontur.egrDetails(inn=inn, ogrn=ogrn)
             kontur_beneficialOwners = kontur.beneficialOwners(inn=inn, ogrn=ogrn)
+            kontur_licences = kontur.licences(inn=inn, ogrn=ogrn)
 
             self._issue.issuer_registration_date = parser.parse(kontur_req_data['UL']['registrationDate'] if 'UL' in kontur_req_data else kontur_req_data['IP']['registrationDate'])
             self._issue.issuer_ifns_reg_date = parser.parse(kontur_egrDetails_data['UL']['nalogRegBody']['nalogRegDate'] if 'UL' in kontur_egrDetails_data else kontur_egrDetails_data['IP']['nalogRegBody']['nalogRegDate']).date()
@@ -252,6 +253,23 @@ class BankGuaranteeProduct(FinanceProduct):
                 new_bo.fio = b_owner['fio']
                 new_bo.inn_or_snils = b_owner.get('innfl', '')
                 new_bo.save()
+
+            from marer.models.issue import IssuerLicences
+            licences = IssuerLicences.objects.filter(issue=self._issue)
+            licences.delete()
+            licences_data = list(kontur_licences.get('licenses', []))
+            for data in licences_data:
+                active = data.get('statusDescription') == 'Действующая'
+                if active:
+                    number = data.get('officialNum')
+                    activity = data.get('activity', '\n'.join(data.get('services', [])))
+                    IssuerLicences.objects.create(
+                        issue=self._issue,
+                        number=number,
+                        activity=activity,
+                        date_from=data.get('dateStart'),
+                        date_to=data.get('dateEnd'),
+                    )
 
             self._issue.save()
         return processed_valid
@@ -617,10 +635,12 @@ class BankGuaranteeProduct(FinanceProduct):
         from marer.admin import IssueBGProdFounderLegalInlineAdmin
         from marer.admin import IssueBGProdFounderPhysicalInlineAdmin
         from marer.admin.inline import IssueCreditPledgeInlineAdmin
+        from marer.admin.inline import IssueLicencesInlineAdmin
         inlines = [
             IssueBGProdFounderLegalInlineAdmin,
             IssueBGProdFounderPhysicalInlineAdmin,
             IssueBGProdAffiliateInlineAdmin,
+            IssueLicencesInlineAdmin
         ]
         if self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_COMMERCIAL:
             inlines.append(IssueCreditPledgeInlineAdmin)

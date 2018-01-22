@@ -58,3 +58,10 @@ def beneficialOwners(inn: str=None, ogrn: str=None):
     ogrn = ogrn or ''
     data = _api_request('beneficialOwners', inn=inn, ogrn=ogrn)
     return data[0] if len(data) == 1 else data
+
+
+def licences(inn: str=None, ogrn: str=None):
+    inn = inn or ''
+    ogrn = ogrn or ''
+    data = _api_request('licences', inn=inn, ogrn=ogrn)
+    return data[0] if len(data) == 1 else data

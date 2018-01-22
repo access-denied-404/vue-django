@@ -14,6 +14,7 @@
     <input type="hidden" name="tender_responsible_inn" :value="tender_responsible_inn">
     <input type="hidden" name="tender_responsible_kpp" :value="tender_responsible_kpp">
     <input type="hidden" name="tender_responsible_ogrn" :value="tender_responsible_ogrn">
+    <input type="hidden" name="tender_contract_subject" :value="tender_contract_subject"></input>
 
     <div class="panel panel-info">
       <div class="panel-heading">Сведения о тендере</div>
@@ -172,6 +173,7 @@
 
           tender_has_prepayment: regData.formdata.tender_has_prepayment,
           tender_contract_type: regData.formdata.tender_contract_type,
+          tender_contract_subject: regData.formdata.tender_contract_subject,
 
           tender_responsible_full_name: regData.formdata.tender_responsible_full_name,
           tender_responsible_legal_address: regData.formdata.tender_responsible_legal_address,
@@ -211,6 +213,7 @@
 
           tender_has_prepayment: '',
           tender_contract_type: '',
+          tender_contract_subject: '',
 
           tender_responsible_full_name: '',
           tender_responsible_legal_address: '',
@@ -292,6 +295,7 @@
           this.tender_responsible_ogrn = data.publisher.ogrn
           this.tender_application_ensure_cost = data.application_ensure_cost
           this.tender_contract_execution_ensure_cost = data.contract_execution_ensure_cost
+          this.tender_contract_subject = data.description
           this.process_bg_type()
         })
       }, 1000),

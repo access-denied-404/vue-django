@@ -59,6 +59,7 @@ class BGFinProdRegForm(Form):
         (consts.TENDER_CONTRACT_TYPE_SERVICE_CONTRACT, 'Оказание услуг'),
         (consts.TENDER_CONTRACT_TYPE_WORKS_CONTRACT, 'Выполнение работ'),
     ])
+    tender_contract_subject = CharField(widget=Textarea(), required=False)
 
     tender_has_prepayment = BooleanField(required=False)
 

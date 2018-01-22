@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.formats import number_format
 from django.utils.functional import cached_property
+from django.utils.timezone import now
 
 from marer import consts
 from marer.models.base import Document, set_obj_update_time, BankMinimalCommission
@@ -431,6 +432,10 @@ class Issue(models.Model):
             'auth_capital_percentage': f['auth_capital_percentage']
         } for f in physical]
         return data
+
+    @cached_property
+    def licences_as_string(self):
+        return '\n'.join(['%s от %s' % (l.number, l.date_from.strftime('%d.%m.%Y')) for l in self.issuer_licences.all() if l.is_active()])
 
     def application_doc_admin_field(self):
         field_parts = []
@@ -1012,6 +1017,35 @@ class IssueBGProdFounderPhysical(models.Model):
     auth_capital_percentage = models.CharField(verbose_name='доля в уставном капитале', max_length=512, blank=True, null=False, default='')
     address = models.CharField(verbose_name='адрес проживания', max_length=512, blank=True, null=False, default='')
     passport_data = models.CharField(verbose_name='паспортные данные', max_length=512, blank=True, null=False, default='')
+
+
+class IssuerLicences(models.Model):
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False,
+                              related_name='issuer_licences')
+    number = models.CharField(verbose_name="номер", max_length=50, null=False, blank=False)
+    activity = models.TextField(verbose_name="деятельность", null=False, blank=False, max_length=1024)
+    date_from = models.DateField(verbose_name="действительна с", blank=False, null=False)
+    date_to = models.DateField(verbose_name="действительна по", blank=True, null=True)
+    active = models.BooleanField(verbose_name='активна', default=True)
+
+    def is_active(self):
+        return self.active and now().date() < self.date_to
+
+    def __str__(self):
+        return self.number
+
+    @classmethod
+    def cr(cls, data: dict, issue: Issue):
+        active = data.get('statusDescription') == 'Действующая'
+        if active:
+            number = data.get('officialNum')
+            activity = data.get('activity', '\n'.join(data.get('services', [])))
+            licence, created = IssuerLicences.objects.get_or_create(issue=issue, number=number, defaults=dict(
+                activity=activity,
+                date_from=data.get('dateStart'),
+                date_to=data.get('dateEnd'),
+            ))
+            return licence
 
 
 class IssueProposeFormalizeDocument(models.Model):
