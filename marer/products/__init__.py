@@ -227,7 +227,14 @@ class BankGuaranteeProduct(FinanceProduct):
                     new_fndr = IssueBGProdFounderLegal()
                     new_fndr.issue = self._issue
                     new_fndr.name = fndr['fullName']
-                    new_fndr.auth_capital_percentage = str(fndr['share']['percentagePlain']) + '%' if fndr['share'].get('percentagePlain', None) else (str(fndr['share']['sum']) + ' руб.')
+                    fndr_share_info = fndr.get('share', {})
+                    if fndr_share_info.get('percentagePlain', False):
+                        fndr_share_size = str(fndr['share']['percentagePlain']) + '%'
+                    elif fndr_share_info.get('sum', False):
+                        fndr_share_size = str(fndr['share']['sum']) + ' руб.'
+                    else:
+                        fndr_share_size = '-'
+                    new_fndr.auth_capital_percentage = fndr_share_size
                     new_fndr.save()
 
             from marer.models.issue import IssueBGProdFounderPhysical
@@ -238,7 +245,14 @@ class BankGuaranteeProduct(FinanceProduct):
                     new_fndr = IssueBGProdFounderPhysical()
                     new_fndr.issue = self._issue
                     new_fndr.fio = fndr['fio']
-                    new_fndr.auth_capital_percentage = str(fndr['share']['percentagePlain']) + '%' if fndr['share'].get('percentagePlain', None) else (str(fndr['share']['sum']) + ' руб.')
+                    fndr_share_info = fndr.get('share', {})
+                    if fndr_share_info.get('percentagePlain', False):
+                        fndr_share_size = str(fndr['share']['percentagePlain']) + '%'
+                    elif fndr_share_info.get('sum', False):
+                        fndr_share_size = str(fndr['share']['sum']) + ' руб.'
+                    else:
+                        fndr_share_size = '-'
+                    new_fndr.auth_capital_percentage = fndr_share_size
                     new_fndr.save()
 
             from marer.models.issue import IssueOrgBeneficiaryOwner
