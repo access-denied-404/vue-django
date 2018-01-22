@@ -616,6 +616,14 @@ class Issue(models.Model):
     def propose_documents_ordered(self):
         return self.propose_documents.order_by('document_id')  # need null to be first
 
+    @property
+    def propose_documents_for_remote_sign(self):
+        return self.propose_documents.filter(
+            is_approved_by_manager=True
+        ).exclude(
+            document__sign_state=consts.DOCUMENT_SIGN_VERIFIED
+        ).order_by('name')
+
     def fill_application_doc(self, commit=True):
         template_path = os.path.join(
             settings.BASE_DIR,

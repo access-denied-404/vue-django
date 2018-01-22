@@ -48,7 +48,7 @@
                     var filesB64ForSign = [];
                 </script>
 
-                {% if issue.propose_documents_ordered.exists %}
+                {% if issue.propose_documents_for_remote_sign.exists %}
                     <div class="panel panel-info">
                         <div class="panel-body">
                             <div class="row">
@@ -57,7 +57,7 @@
                                         {% csrf_token %}
                                         <div class="h3">Документы для подписания</div>
                                         <table class="table table-condensed">
-                                            {% for propose_doc in issue.propose_documents_ordered %}
+                                            {% for propose_doc in issue.propose_documents_for_remote_sign %}
                                                 <tr>
                                                     <td class="h6">
                                                         {% if propose_doc.document and propose_doc.document.file %}
@@ -127,6 +127,19 @@
                                             Подписать все
                                         </button>
 
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="panel panel-info">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <form method="post" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="h3 text-center">Документы для подписания отсутствуют</div>
                                     </form>
                                 </div>
                             </div>
