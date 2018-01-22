@@ -193,7 +193,7 @@
 
                         function signAllFiles() {
                             {% for propose_doc in issue.propose_documents_ordered %}
-                                {% if propose_doc.document and propose_doc.document.file %}
+                                {% if propose_doc.document and propose_doc.document.file and propose_doc.document.sign_state != consts.DOCUMENT_SIGN_VERIFIED %}
                                     signFile({{ propose_doc.document.id }})
                                 {% endif %}
                             {% endfor %}
