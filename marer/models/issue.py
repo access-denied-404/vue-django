@@ -629,11 +629,19 @@ class Issue(models.Model):
 
     @property
     def propose_documents_for_remote_sign(self):
-        return self.propose_documents.filter(
+        docs = []
+        if self.application_doc and self.application_doc.file and self.application_doc.sign_state != consts.DOCUMENT_SIGN_VERIFIED:
+            app_doc = IssueProposeDocument()
+            app_doc.name = 'Заявление на предоставление банковской гарантии'
+            app_doc.document = self.application_doc
+            docs.append(app_doc)
+        pdocs = self.propose_documents.filter(
             is_approved_by_manager=True
         ).exclude(
             document__sign_state=consts.DOCUMENT_SIGN_VERIFIED
         ).order_by('name')
+        docs.extend(pdocs)
+        return docs
 
     def fill_application_doc(self, commit=True):
         template_path = os.path.join(
