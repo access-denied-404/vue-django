@@ -11,7 +11,7 @@ import mptt.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('marer', '0081_issue_manager'),
+        ('marer', '0082_issueproposedocument_is_approved_by_manager'),
     ]
 
     operations = [
