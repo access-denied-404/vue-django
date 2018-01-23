@@ -457,7 +457,9 @@ class IssueRemoteDocumentSignView(ContextMixin, View):
             document=doc_id,
             sign_state=consts.DOCUMENT_SIGN_NONE,
         )
-        if doc_id and self.get_issue().propose_documents.filter(document_id=doc_id).exists():
+        if doc_id == self.get_issue().application_doc_id:
+            doc = self.get_issue().application_doc
+        elif doc_id and self.get_issue().propose_documents.filter(document_id=doc_id).exists():
             pdoc = IssueProposeDocument.objects.filter(document_id=doc_id)[0]
             doc = pdoc.document
 
