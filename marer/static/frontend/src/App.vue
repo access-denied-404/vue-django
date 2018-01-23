@@ -2,6 +2,12 @@
   <div id="app-root">
     <form method="post">
 
+      <div class="alert alert-danger" v-if="errors.stop_factors">
+        <p v-for="err in errors.stop_factors" class="text-center">
+          <span class="h2">{{ err }}</span>
+        </p>
+      </div>
+
       <div class="alert alert-danger" v-if="errors.__all__">
         <ul>
           <li v-for="err in errors.__all__">{{ err }}</li>

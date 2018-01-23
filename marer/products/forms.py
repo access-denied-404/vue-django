@@ -1,5 +1,5 @@
 from django.forms import Form, CharField, ChoiceField, DateField, DecimalField, BooleanField, TextInput, DateInput, \
-    IntegerField, HiddenInput, CheckboxInput, Select, NumberInput, Textarea
+    IntegerField, HiddenInput, CheckboxInput, Select, NumberInput, Textarea, Field
 from djangoformsetjs.utils import formset_media_js
 
 from marer import consts
@@ -60,7 +60,7 @@ class BGFinProdRegForm(Form):
         (consts.TENDER_CONTRACT_TYPE_WORKS_CONTRACT, 'Выполнение работ'),
     ])
     tender_contract_subject = CharField(widget=Textarea(), required=False)
-
+    stop_factors = Field(required=False)
     tender_has_prepayment = BooleanField(required=False)
 
     def clean(self):

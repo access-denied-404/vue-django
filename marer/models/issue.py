@@ -563,7 +563,7 @@ class Issue(models.Model):
         reg_form = reg_form_class(self.__dict__)
         reg_form.full_clean()
         if not self.passed_prescoring and not reg_form.errors:
-            reg_form.add_error(None, 'Не в рамках продукта')
+            reg_form.add_error('stop_factors', 'Не в рамках продукта')
         json_data = json.dumps(dict(
             formdata=reg_form.cleaned_data,
             errors=reg_form.errors,
