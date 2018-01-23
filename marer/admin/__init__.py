@@ -21,7 +21,7 @@ from django.utils.timezone import localtime
 from django.utils.translation import ugettext_lazy as _
 from mptt.admin import MPTTModelAdmin
 
-from consts import TENDER_EXEC_LAW_44_FZ, TENDER_EXEC_LAW_223_FZ
+from marer.consts import TENDER_EXEC_LAW_44_FZ, TENDER_EXEC_LAW_223_FZ
 from marer import models
 from marer.admin.filters import ManagerListFilter, BrokerListFilter
 from marer.admin.forms import IFOPClarificationAddForm, MarerUserChangeForm, UserCreationForm
