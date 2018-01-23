@@ -218,7 +218,7 @@ class IssueRemoteSignView(TemplateView, ContextMixin, View):
                 request.session['cert_thumb'] = login_form.cleaned_data['cert']
                 request.session['cert_sign'] = login_form.cleaned_data['signature']
 
-                url = reverse('issue_remote_sign', args=[self.get_issue().id])
+                url = reverse('issue_remote_for_sign', args=[self.get_issue().id])
                 response = HttpResponseRedirect(url)
                 # response.set_cookie('cert_thumb', login_form.cleaned_data['cert'])
                 # response.set_cookie('cert_thumb', login_form.cleaned_data['signature'])
