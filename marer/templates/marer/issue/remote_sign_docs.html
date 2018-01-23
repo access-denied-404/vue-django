@@ -205,7 +205,7 @@
                         }
 
                         function signAllFiles() {
-                            {% for propose_doc in issue.propose_documents_ordered %}
+                            {% for propose_doc in issue.propose_documents_for_remote_sign %}
                                 {% if propose_doc.document and propose_doc.document.file and propose_doc.document.sign_state != consts.DOCUMENT_SIGN_VERIFIED %}
                                     signFile({{ propose_doc.document.id }})
                                 {% endif %}
