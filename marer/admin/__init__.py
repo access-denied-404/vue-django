@@ -21,6 +21,7 @@ from django.utils.timezone import localtime
 from django.utils.translation import ugettext_lazy as _
 from mptt.admin import MPTTModelAdmin
 
+from consts import TENDER_EXEC_LAW_44_FZ, TENDER_EXEC_LAW_223_FZ
 from marer import models
 from marer.admin.filters import ManagerListFilter, BrokerListFilter
 from marer.admin.forms import IFOPClarificationAddForm, MarerUserChangeForm, UserCreationForm
@@ -175,6 +176,18 @@ class IssueAdmin(ModelAdmin):
     get_issue_manager.short_description = 'Менеджер по заявке'
     get_issue_manager.admin_order_field = 'manager__first_name'
     get_issue_manager.allow_tags = True
+
+    def tender_gos_number_link(self, obj):
+        link = obj.tender_gos_number
+        if obj.tender_gos_number.isnumeric():
+            if obj.tender_exec_law == TENDER_EXEC_LAW_44_FZ:
+                link = "http://zakupki.gov.ru/epz/order/notice/ea44/view/common-info.html?regNumber=%s" % obj.tender_gos_number
+            if obj.tender_exec_law == TENDER_EXEC_LAW_223_FZ:
+                link = "http://zakupki.gov.ru/223/purchase/public/purchase/info/common-info.html?regNumber=%s" % obj.tender_gos_number
+
+        return '<a target="_blank" href="%s">Ссылка на конкурс</a>' % link
+    tender_gos_number_link.allow_tags = True
+    tender_gos_number_link.short_description = 'Ссылка на конкурс'
 
     def get_urls(self):
         return [
