@@ -35,14 +35,22 @@
         </tr>
 
         {% for issue in issues %}
-        <tr>
-            <td>
-                <a href="{% url 'cabinet_request' issue.id %}">{{ issue.humanized_id }}</a>
-            </td>
-            <td>{{ issue.get_issuer_name }}</td>
-            <td>{{ issue.humanized_sum }}</td>
-            <td>{{ issue.humanized_status }}</td>
-        </tr>
+            {% if issue.humanized_status == 'Оформление заявки' %}
+                <tr class="bg-warning">
+            {% elif issue.humanized_status == 'Завершена' %}
+                <tr class="bg-success">
+            {% elif issue.humanized_status == 'Отменена' %}
+                <tr class="bg-danger">
+            {% else %}
+                <tr>
+            {% endif %}
+                <td>
+                    <a href="{% url 'cabinet_request' issue.id %}">{{ issue.humanized_id }}</a>
+                </td>
+                <td>{{ issue.get_issuer_name }}</td>
+                <td>{{ issue.humanized_sum }}</td>
+                <td>{{ issue.humanized_status }}</td>
+            </tr>
         {% endfor %}
     </table>
 </div>
