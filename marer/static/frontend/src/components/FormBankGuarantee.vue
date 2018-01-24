@@ -14,7 +14,6 @@
     <input type="hidden" name="tender_responsible_inn" :value="tender_responsible_inn">
     <input type="hidden" name="tender_responsible_kpp" :value="tender_responsible_kpp">
     <input type="hidden" name="tender_responsible_ogrn" :value="tender_responsible_ogrn">
-    <input type="hidden" name="tender_contract_subject" :value="tender_contract_subject"></input>
 
     <div class="panel panel-info">
       <div class="panel-heading">Сведения о тендере</div>
@@ -71,6 +70,9 @@
               <div class="col-md-4"><bs-input :name="'tender_responsible_inn'" v-model="tender_responsible_inn" label="ИНН"></bs-input></div>
               <div class="col-md-4"><bs-input :name="'tender_responsible_kpp'" v-model="tender_responsible_kpp" label="КПП"></bs-input></div>
               <div class="col-md-4"><bs-input :name="'tender_responsible_ogrn'" v-model="tender_responsible_ogrn" label="ОГРН"></bs-input></div>
+            </div>
+            <div class="row">
+              <div class="col-md-12"><bs-input :name="'tender_contract_subject'" v-model="tender_contract_subject" label="Предмет контракта"></bs-input></div>
             </div>
 
           </fieldset>
