@@ -6,6 +6,7 @@ from django.forms import BaseInlineFormSet
 from django.forms.formsets import ManagementForm, TOTAL_FORM_COUNT, INITIAL_FORM_COUNT, MAX_NUM_FORM_COUNT, \
     MIN_NUM_FORM_COUNT
 
+from marer.consts import DOCUMENT_SIGN_LABELS
 from marer import models
 from marer.admin.forms import FinanceOrgProductProposeDocumentInlineAdminForm, IFOPFinalDocumentInlineAdminForm, \
     IFOPFormalizeDocumentInlineAdminForm, IssueDocumentInlineAdminForm, IssueProposeDocumentInlineAdminForm
@@ -293,15 +294,28 @@ class IssueProposeDocumentInlineAdmin(TabularInline):
     form = IssueProposeDocumentInlineAdminForm
     fields = (
         'name',
+        'cert_info',
         'file_sample',
         'file',
         'is_approved_by_manager',
     )
+    readonly_fields = ['cert_info']
     classes = ('collapse',)
 
+    def cert_info(self, obj):
+        output = []
+        if obj.document:
+            output = [
+                'Статус подписи: <b>%s</b>' % DOCUMENT_SIGN_LABELS.get(obj.document.sign_state, '-'),
+                ('Подпись: <a href="%s" >скачать</a>' % obj.document.sign.url) if obj.document.sign else ''
+            ]
+        return '<br>'.join(output)
+    cert_info.short_description = 'Данные сертификата'
+    cert_info.allow_tags = True
     # todo check add permission
     # todo check change permission
     # todo check del permission
+
 
 
 class IFOPClarificationMessageInlineAdmin(StackedInline):
