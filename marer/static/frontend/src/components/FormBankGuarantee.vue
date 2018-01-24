@@ -132,6 +132,75 @@
       </div>
     </div>
 
+    <div class="panel panel-info">
+    <div class="panel-heading" data-toggle="collapse" data-target="#panel1">Бухгалтерская отчетность</div>
+    <div class="panel-body collapse in" id="panel1">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-4 h4">Наименование показателя</div>
+                <div class="col-md-8">
+                    <div class="col-md-4 h5">Код строки</div>
+                    <div class="col-md-4 h6">За последний отчётный период (2016 г.)</div>
+                    <div class="col-md-4 h6">Результат за последний квартал (2017 г.)</div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">Чистые активы</div>
+                <div class="col-md-8">
+                    <div class="col-md-4">1300</div>
+                    <div class="col-md-4">
+                      <input class="form-control input-sm" name="balance_code_1300_offset_1" v-model="balance_code_1300_offset_1" />
+                    </div>
+                    <div class="col-md-4">
+                      <input class="form-control input-sm" name="balance_code_1300_offset_0" v-model="balance_code_1300_offset_0" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">Валюта баланса</div>
+                <div class="col-md-8">
+                    <div class="col-md-4">1600</div>
+                    <div class="col-md-4">
+                      <input class="form-control input-sm" name="balance_code_1600_offset_1" v-model="balance_code_1600_offset_1" />
+                    </div>
+                    <div class="col-md-4">
+                      <input class="form-control input-sm" name="balance_code_1600_offset_0" v-model="balance_code_1600_offset_0" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">Выручка</div>
+                <div class="col-md-8">
+                    <div class="col-md-4">2110</div>
+                    <div class="col-md-4">
+                      <input class="form-control input-sm" name="balance_code_2110_offset_1" v-model="balance_code_2110_offset_1" />
+                    </div>
+                    <div class="col-md-4">
+                      <input class="form-control input-sm" name="balance_code_2110_offset_0" v-model="balance_code_2110_offset_0" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">Прибыль</div>
+                <div class="col-md-8">
+                    <div class="col-md-4">2400</div>
+                    <div class="col-md-4">
+                      <input class="form-control input-sm" name="balance_code_2400_offset_1" v-model="balance_code_2400_offset_1" />
+                    </div>
+                    <div class="col-md-4">
+                      <input class="form-control input-sm" name="balance_code_2400_offset_0" v-model="balance_code_2400_offset_0" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
   </div>
 </template>
 
@@ -180,6 +249,15 @@
           tender_responsible_inn: regData.formdata.tender_responsible_inn,
           tender_responsible_kpp: regData.formdata.tender_responsible_kpp,
           tender_responsible_ogrn: regData.formdata.tender_responsible_ogrn,
+
+          balance_code_1300_offset_1: regData.formdata.balance_code_1300_offset_1,
+          balance_code_1300_offset_0: regData.formdata.balance_code_1300_offset_0,
+          balance_code_1600_offset_1: regData.formdata.balance_code_1600_offset_1,
+          balance_code_1600_offset_0: regData.formdata.balance_code_1600_offset_0,
+          balance_code_2110_offset_1: regData.formdata.balance_code_2110_offset_1,
+          balance_code_2110_offset_0: regData.formdata.balance_code_2110_offset_0,
+          balance_code_2400_offset_1: regData.formdata.balance_code_2400_offset_1,
+          balance_code_2400_offset_0: regData.formdata.balance_code_2400_offset_0,
 
           bg_sum: regData.formdata.bg_sum,
           bg_type: regData.formdata.bg_type,
@@ -233,6 +311,14 @@
           bg_commercial_contract_sign_date: '',
           bg_commercial_contract_end_date: '',
 
+          balance_code_1300_offset_1: '',
+          balance_code_1300_offset_0: '',
+          balance_code_1600_offset_1: '',
+          balance_code_1600_offset_0: '',
+          balance_code_2110_offset_1: '',
+          balance_code_2110_offset_0: '',
+          balance_code_2400_offset_1: '',
+          balance_code_2400_offset_0: '',
           is_tender_info_panel_visible: true,
           tender_add_data_visible: false
         }

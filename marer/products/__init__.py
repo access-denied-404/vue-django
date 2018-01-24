@@ -14,7 +14,7 @@ from marer.products.base import FinanceProduct, FinanceProductDocumentItem
 from marer.products.forms import BGFinProdRegForm, BGFinProdSurveyOrgCommonForm, BGFinProdSurveyOrgHeadForm, \
     AffiliatesForm, FounderLegalForm, FounderPhysicalForm, CreditFinProdRegForm, CreditPledgeForm, \
     FactoringFinProdRegForm, LeasingFinProdRegForm, LeasingAssetForm, LeasingSupplierForm, LeasingPayRuleForm, \
-    FactoringBuyerForm, FactoringSalesAnalyzeForm, AccountingBalanceForm, BGFinProdSurveyOrgManagementForm, \
+    FactoringBuyerForm, FactoringSalesAnalyzeForm, BGFinProdSurveyOrgManagementForm, \
     OrgBeneficiaryOwnerForm, OrgBankAccountForm, BGFinProdSurveyDealParamsForm
 from marer.utils import kontur
 from marer.utils.loadfoc import get_cell_value, get_cell_summ_range, get_cell_percentage, get_cell_bool, \
@@ -313,7 +313,6 @@ class BankGuaranteeProduct(FinanceProduct):
             form_org_common=BGFinProdSurveyOrgCommonForm(initial=self._issue.__dict__),
             form_org_head=BGFinProdSurveyOrgHeadForm(initial=self._issue.__dict__),
             form_org_management=BGFinProdSurveyOrgManagementForm(initial=self._issue.__dict__),
-            form_balance=AccountingBalanceForm(initial=self._issue.__dict__),
             form_deal_params=BGFinProdSurveyDealParamsForm(initial=self._issue.__dict__),
             bank_accounts_formset=bank_accounts_formset,
             beneficiary_owners_formset=beneficiary_owners_formset,
@@ -390,20 +389,6 @@ class BankGuaranteeProduct(FinanceProduct):
             self._issue.issuer_org_management_directors_or_supervisory_board_fio = form_org_management.cleaned_data['issuer_org_management_directors_or_supervisory_board_fio'] or ''
             self._issue.issuer_org_management_other_name = form_org_management.cleaned_data['issuer_org_management_other_name'] or ''
             self._issue.issuer_org_management_other_fio = form_org_management.cleaned_data['issuer_org_management_other_fio'] or ''
-        else:
-            processed_sucessfully_flag = False
-
-        form_balance = AccountingBalanceForm(request.POST)
-        if form_balance.is_valid():
-            self._issue.balance_code_1300_offset_0 = form_balance.cleaned_data['balance_code_1300_offset_0']
-            self._issue.balance_code_1600_offset_0 = form_balance.cleaned_data['balance_code_1600_offset_0']
-            self._issue.balance_code_2110_offset_0 = form_balance.cleaned_data['balance_code_2110_offset_0']
-            self._issue.balance_code_2400_offset_0 = form_balance.cleaned_data['balance_code_2400_offset_0']
-
-            self._issue.balance_code_1300_offset_1 = form_balance.cleaned_data['balance_code_1300_offset_1']
-            self._issue.balance_code_1600_offset_1 = form_balance.cleaned_data['balance_code_1600_offset_1']
-            self._issue.balance_code_2110_offset_1 = form_balance.cleaned_data['balance_code_2110_offset_1']
-            self._issue.balance_code_2400_offset_1 = form_balance.cleaned_data['balance_code_2400_offset_1']
         else:
             processed_sucessfully_flag = False
 
