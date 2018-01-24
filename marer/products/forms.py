@@ -144,8 +144,8 @@ class BGFinProdSurveyOrgCommonForm(Form):
     issuer_accountant_org_or_person = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
     issuer_post_address = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
     issuer_has_overdue_debts_for_last_180_days = BooleanField(required=False, widget=Select(attrs={'class': 'form-control'}, choices=[
-        (True, 'Да'),
         (False, 'Нет'),
+        (True, 'Да'),
     ]))
     issuer_overdue_debts_info = CharField(required=False, widget=Textarea(attrs={'class': 'form-control', 'rows': 3}))
 
