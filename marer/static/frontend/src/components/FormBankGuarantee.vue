@@ -311,14 +311,14 @@
           bg_commercial_contract_sign_date: '',
           bg_commercial_contract_end_date: '',
 
-          balance_code_1300_offset_1: '',
-          balance_code_1300_offset_0: '',
-          balance_code_1600_offset_1: '',
-          balance_code_1600_offset_0: '',
-          balance_code_2110_offset_1: '',
-          balance_code_2110_offset_0: '',
-          balance_code_2400_offset_1: '',
-          balance_code_2400_offset_0: '',
+          balance_code_1300_offset_1: '0',
+          balance_code_1300_offset_0: '0',
+          balance_code_1600_offset_1: '0',
+          balance_code_1600_offset_0: '0',
+          balance_code_2110_offset_1: '0',
+          balance_code_2110_offset_0: '0',
+          balance_code_2400_offset_1: '0',
+          balance_code_2400_offset_0: '0',
           is_tender_info_panel_visible: true,
           tender_add_data_visible: false
         }

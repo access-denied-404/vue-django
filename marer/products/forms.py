@@ -49,7 +49,6 @@ class BGFinProdRegForm(Form):
     balance_code_2400_offset_1 = DecimalField(decimal_places=2, required=False, localize=True)
     balance_code_2400_offset_0 = DecimalField(decimal_places=2, required=False, localize=True)
 
-
     bg_sum = DecimalField(decimal_places=2, required=False, localize=True)
     bg_currency = ChoiceField(required=False, choices=[
         (consts.CURRENCY_RUR, 'Рубль'),
@@ -85,8 +84,8 @@ class BGFinProdRegForm(Form):
         if not bg_start or not bg_end or not 0 < bg_months_diff < 30:
             self.add_error(None, 'Неверный срок действия запрашиваемой гарантии')
 
-        bo_1600_last_period = self.cleaned_data['balance_code_1600_offset_1']
-        bo_1600_last_year = self.cleaned_data['balance_code_1600_offset_0']
+        bo_1600_last_period = self.cleaned_data['balance_code_1600_offset_1'] or 0
+        bo_1600_last_year = self.cleaned_data['balance_code_1600_offset_0'] or 0
         if bo_1600_last_period < 0 or bo_1600_last_year < 0:
             self.add_error(None, 'Отрицательный баланс')
 
