@@ -4,6 +4,7 @@ from tempfile import NamedTemporaryFile
 
 import os
 from django.conf import settings
+from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.files.base import ContentFile
 from django.http import HttpResponseRedirect, HttpResponse
@@ -208,6 +209,9 @@ class IssueRemoteSignView(TemplateView, ContextMixin, View):
             return False
 
     def get(self, request, *args, **kwargs):
+        if 'logout' in request.GET:
+            logout(request)
+
         if not self.is_authenticated_by_cert():
             self.template_name = 'marer/auth/remote_sign_login.html'
             login_form = LoginSignForm()
@@ -276,6 +280,9 @@ class IssueRemoteSurveyView(TemplateView, ContextMixin, View):
             return False
 
     def get(self, request, *args, **kwargs):
+        if 'logout' in request.GET:
+            logout(request)
+
         if not self.is_authenticated_by_cert():
             self.template_name = 'marer/auth/remote_sign_login.html'
             login_form = LoginSignForm()
