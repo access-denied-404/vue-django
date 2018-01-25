@@ -12,7 +12,9 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-6">
-                    {% if issue.passed_prescoring %}
+                    {% if issue.status == consts.ISSUE_STATUS_REVIEW %}
+                        <div class="alert alert-success h1 text-center">Заявка на рассмотрении</div>
+                    {% elif issue.passed_prescoring %}
                         <div class="alert alert-success h1 text-center">Анализ пройден</div>
                     {% else %}
                         <div class="alert alert-danger h1 text-center">Анализ не пройден</div>
@@ -171,7 +173,7 @@
 
                     </form>
 
-                    {% if issue.can_send_for_review %}
+                    {% if issue.can_send_for_review and issue.status == consts.ISSUE_STATUS_REGISTERING %}
                         <form method="post">
                             {% csrf_token %}
                             <input type="hidden" name="action" value="send_to_review"/>
