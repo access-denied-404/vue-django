@@ -160,10 +160,6 @@
                             {% endfor %}
 
                         </table>
-                        <pre>
-                            can_send_for_review: {{ issue.can_send_for_review  }}
-                            is_all_propose_docs_filled: {{ issue.is_all_propose_docs_filled }}
-                        </pre>
 
                         {% if not issue.can_send_for_review %}
                             {% if not issue.is_all_propose_docs_filled %}
