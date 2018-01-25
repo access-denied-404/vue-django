@@ -131,8 +131,8 @@ class Issue(models.Model):
     bg_type = models.CharField(verbose_name='тип банковской гарантии', max_length=32, blank=True, null=True, choices=[
         (consts.BG_TYPE_APPLICATION_ENSURE, 'Обеспечение заявки'),
         (consts.BG_TYPE_CONTRACT_EXECUTION, 'Исполнение контракта'),
-        (consts.BG_TYPE_TENDER_GUARANTEE, 'Тендерная гарантия'),
-        (consts.BG_TYPE_QUALITY, 'Гарантия качества'),
+        (consts.BG_TYPE_REFUND_OF_ADVANCE, 'Возврат аванса'),
+        (consts.BG_TYPE_WARRANTY_ENSURE, 'Обеспечение гарантийных обязательств'),
     ])
 
     credit_product_is_credit = models.NullBooleanField(verbose_name='кредит', blank=True, null=True)
@@ -311,7 +311,7 @@ class Issue(models.Model):
             + (M13 if F20 else 0)
             + (M15 if F21 else 0)
             + (M14 if F22 else 0)
-            + (M13 if F20 else 0)
+            # + (M13 if F20 else 0)
             # + (M16 if F23 else 0)
         )
         try:

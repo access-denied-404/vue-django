@@ -127,9 +127,9 @@
           <div class="col-md-4">
             <bs3-radio-field :name="'bg_type'" v-model="bg_type" label="Тип БГ" :options="[
             {value: 'contract_execution', text:'Исполнение обязательств по контракту'},
-            {value:'tender_guarantee', text:'Для обеспечения заявки на участие в конкурсе (тендерная гарантия)'},
-            {value: 'application_ensure', text:'Возврат аванса'},
-            {value: 'quality', text:'Обеспечение гарантийных обязательств'}]"></bs3-radio-field>
+            {value:'application_ensure', text:'Для обеспечения заявки на участие в конкурсе (тендерная гарантия)'},
+            {value: 'refund_of_advance', text:'Возврат аванса'},
+            {value: 'warranty_ensure', text:'Обеспечение гарантийных обязательств'}]"></bs3-radio-field>
             <checkbox :name="'tender_has_prepayment'" v-model="tender_has_prepayment" type="primary">Наличие аванса</checkbox>
             <checkbox :name="'bg_is_benefeciary_form'" v-model="bg_is_benefeciary_form" type="primary">БГ по форме Бенефециара</checkbox>
           </div>
@@ -290,9 +290,9 @@
           var M12 = 0
           var M13 = 0
           if (this.bg_is_benefeciary_form) M10 = 0.1
-          if (this.tender_has_prepayment) M11 = 0.1
+          if (this.bg_type === 'refund_of_advance') M11 = 0.1
           if (this.tender_exec_law === '185-fz') M12 = 0.05
-          if (this.bg_type === 'quality') M13 = 0.1
+          if (this.bg_type === 'warranty_ensure') M13 = 0.1
 
           var nOfMonths = this.date_range
           var simpleComission = this.bg_sum * nOfMonths * Q25
@@ -303,7 +303,7 @@
       },
       total_sum: {
         get () {
-          return (parseFloat(this.bg_sum) + parseFloat(this.comission)).toFixed(2)
+          return (parseFloat(this.bg_sum) + parseFloat(this.comission)).toFixed(2)./
         },
         set () {}
       },
@@ -376,12 +376,12 @@
         if (this.bg_type === 'contract_execution') {
           if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === this.tender_application_ensure_cost) if (this.tender_contract_execution_ensure_cost) this.bg_sum = this.tender_contract_execution_ensure_cost
         }
-        if (this.bg_type === 'tender_guarantee') {
+        if (this.bg_type === 'refund_of_advance') {
           if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === this.tender_contract_execution_ensure_cost) {
             this.bg_sum = this.tender_contract_execution_ensure_cost
           }
         }
-        if (this.bg_type === 'quality') {
+        if (this.bg_type === 'warranty_ensure') {
           if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === this.tender_contract_execution_ensure_cost) {
             this.bg_sum = this.tender_contract_execution_ensure_cost
           }
