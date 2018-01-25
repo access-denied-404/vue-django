@@ -1,44 +1,15 @@
 <div class="panel panel-info">
-    <div class="panel-heading" data-toggle="collapse" data-target="#panel-org-head">Руководитель компании</div>
-    <div class="panel-body collapse" id="panel-org-head">
+    <div class="panel-heading">Сведения о компании-заявителе</div>
+    <div class="panel-body">
         <div class="container-fluid">
-            <div class="row">
-
                 <div class="row">
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Фамилия</label>
-                            {{ form.issuer_head_last_name }}
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Имя</label>
-                            {{ form.issuer_head_first_name }}
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Отчество</label>
-                            {{ form.issuer_head_middle_name }}
-                        </div>
-                    </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label>Дата рождения</label>
                             {{ form.issuer_head_birthday }}
                         </div>
                     </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-9">
-                        <div class="form-group">
-                            <label>Должность, полномочия</label>
-                            {{ form.issuer_head_org_position_and_permissions }}
-                        </div>
-                    </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label>Телефон</label>
                             {{ form.issuer_head_phone }}
@@ -81,6 +52,42 @@
                         </div>
                     </div>
                 </div>
+
+        </div>
+        <div data-toggle="collapse" data-target="#panel-org-common-1">
+            <a class="btn btn-link btn-xs">
+              Подробности
+            </a>
+        </div>
+        <div class="collapse" id="panel-org-common-1">
+            <div class="container-fluid">
+
+                    <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Фамилия</label>
+                            {{ form.issuer_head_last_name }}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Имя</label>
+                            {{ form.issuer_head_first_name }}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Отчество</label>
+                            {{ form.issuer_head_middle_name }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Должность, полномочия</label>
+                            {{ form.issuer_head_org_position_and_permissions }}
+                        </div>
+                    </div>
 
             </div>
         </div>
