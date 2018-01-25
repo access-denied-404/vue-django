@@ -1,0 +1,36 @@
+{% extends 'marer/cabinet/layout.html' %}
+
+{% block cabinet_content %}
+<div class="container">
+    <div class="row">
+        {% if issue and issue.id %}
+            <h1 class="text-center">Заявка №{{ issue.humanized_id }}</h1>
+            <div class="h4 text-center"><b>{{ issue.get_product.humanized_name }}</b>
+                {% if issue.short_name %}для <b>{{ issue.get_issuer_name }}</b>{% endif %}
+            </div>
+        {% else %}
+            <h1 class="text-center">Новая заявка</h1>
+        {% endif %}
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+
+            {% if survey_template %}
+                <form method="post">
+                    {% csrf_token %}
+                    {% include survey_template %}
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <button class="btn btn-primary" type="submit">Сохранить</button>
+                        </div>
+                    </div>
+                </form>
+            {% endif %}
+
+        </div>
+    </div>
+    <div class="row">
+        &nbsp;
+    </div>
+</div>
+{% endblock %}

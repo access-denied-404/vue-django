@@ -5,6 +5,23 @@
     {% if survey_template %}
         <form method="post">
             {% csrf_token %}
+            <div class="row">
+                <div class="col-md-12">
+
+                    {% if not request.user.cert_hash or request.user.cert_hash == '' %}
+                        <div class="well well-sm text-center">
+                            Ссылка для дополнения информации клиентом:
+                            <strong>
+                                http://sgbmarertest.ru{% url 'issue_remote_survey' issue.id %}
+                            </strong>
+                            <a class="btn btn-link btn-xs" href="{% url 'issue_remote_for_sign' issue.id %}" target="_blank">
+                                <span class="glyphicon glyphicon glyphicon-new-window"></span>
+                            </a>
+                        </div>
+                    {% endif %}
+
+                </div>
+            </div>
             {% include survey_template %}
             <div class="row">
                 <div class="col-md-12 text-center">

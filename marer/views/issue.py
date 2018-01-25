@@ -234,6 +234,84 @@ class IssueRemoteSignView(TemplateView, ContextMixin, View):
         return self.get(request, args, kwargs)
 
 
+class IssueRemoteSurveyView(TemplateView, ContextMixin, View):
+    _issue = None
+
+    def get_context_data(self, **kwargs):
+        kwargs['cert_hash'] = self.get_cert_thumb()
+        kwargs['consts'] = consts
+        kwargs['issue'] = self.get_issue()
+        return super().get_context_data(**kwargs)
+
+    def get_issue(self):
+        if self._issue is not None:
+            return self._issue
+
+        iid = self.kwargs.get('iid', None)
+        if iid is not None:
+            # fixme maybe make error 403?
+            issue = get_object_or_404(Issue, id=iid)
+            self._issue = issue
+            return issue
+
+    def get_cert_thumb(self):
+        dta = self.request.COOKIES.get('cert_thumb', None)
+        if not dta:
+            dta = self.request.session.get('cert_thumb', None)
+        return dta
+
+    def get_cert_sign(self):
+        dta = self.request.COOKIES.get('cert_sign', None)
+        if not dta:
+            dta = self.request.session.get('cert_sign', None)
+        return dta
+
+    def is_authenticated_by_cert(self):
+        thumb = self.get_cert_thumb()
+        sign = self.get_cert_sign()
+        # todo check INN for cert and issue issuer
+        if thumb and sign:
+            return True
+        else:
+            return False
+
+    def get(self, request, *args, **kwargs):
+        if not self.is_authenticated_by_cert():
+            self.template_name = 'marer/auth/remote_sign_login.html'
+            login_form = LoginSignForm()
+            if 'login_form' not in kwargs:
+                kwargs.update(dict(login_form=login_form))
+        else:
+            self.template_name = 'marer/issue/remote_survey.html'
+            kwargs['survey_template'] = self.get_issue().get_product().survey_template_name
+            kwargs.update(self.get_issue().get_product().get_survey_context_part())
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if not self.is_authenticated_by_cert():
+            login_form = LoginSignForm(request.POST)
+            if login_form.is_valid():
+                request.COOKIES['cert_thumb'] = login_form.cleaned_data['cert']
+                request.COOKIES['cert_sign'] = login_form.cleaned_data['signature']
+                request.session['cert_thumb'] = login_form.cleaned_data['cert']
+                request.session['cert_sign'] = login_form.cleaned_data['signature']
+
+                url = reverse('issue_remote_survey', args=[self.get_issue().id])
+                response = HttpResponseRedirect(url)
+                # response.set_cookie('cert_thumb', login_form.cleaned_data['cert'])
+                # response.set_cookie('cert_thumb', login_form.cleaned_data['signature'])
+                return response
+        else:
+            if self.get_issue() and 'issue_survey' not in self.get_issue().editable_dashboard_views():
+                return self.get(request, *args, **kwargs)
+
+            all_ok = self.get_issue().get_product().process_survey_post_data(request)
+            if all_ok:
+                self.get_issue().fill_application_doc(commit=True)
+                notify_user_manager_about_user_updated_issue(self.get_issue())
+        return self.get(request, args, kwargs)
+
+
 class IssueScoringView(IssueView):
     template_name = 'marer/issue/scoring.html'
 
