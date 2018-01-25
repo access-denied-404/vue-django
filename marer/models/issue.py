@@ -131,6 +131,8 @@ class Issue(models.Model):
     bg_type = models.CharField(verbose_name='тип банковской гарантии', max_length=32, blank=True, null=True, choices=[
         (consts.BG_TYPE_APPLICATION_ENSURE, 'Обеспечение заявки'),
         (consts.BG_TYPE_CONTRACT_EXECUTION, 'Исполнение контракта'),
+        (consts.BG_TYPE_TENDER_GUARANTEE, 'Тендерная гарантия'),
+        (consts.BG_TYPE_QUALITY, 'Гарантия качества'),
     ])
 
     credit_product_is_credit = models.NullBooleanField(verbose_name='кредит', blank=True, null=True)
@@ -285,7 +287,7 @@ class Issue(models.Model):
         F17 = self.bg_is_benefeciary_form
         F18 = self.tender_has_prepayment
         F19 = self.tender_exec_law == consts.TENDER_EXEC_LAW_185_FZ  # Гарантия в рамках 185-ФЗ: +/-
-        F20 = False  # Гарантия качества: +/-
+        F20 = self.bg_type == consts.BG_TYPE_QUALITY  # Гарантия качества: +/-
         F21 = False  # Подтверждение опыта исполнения контрактов (более 5 документов): +/-
         F22 = False  # Увеличение/продление срока контракта: +/-
 
@@ -309,7 +311,7 @@ class Issue(models.Model):
             + (M13 if F20 else 0)
             + (M15 if F21 else 0)
             + (M14 if F22 else 0)
-            # + (M130 if F20 else 0)
+            + (M13 if F20 else 0)
             # + (M16 if F23 else 0)
         )
         try:

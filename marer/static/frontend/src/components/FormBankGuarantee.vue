@@ -125,8 +125,30 @@
           </div>
 
           <div class="col-md-4">
-            <bs3-radio-field :name="'bg_type'" v-model="bg_type" label="Тип БГ" :options="[{value: 'contract_execution', text:'Исполнение контракта'}, {value:'application_ensure', text:'Обеспечение заявки'}]"></bs3-radio-field>
+            <bs3-radio-field :name="'bg_type'" v-model="bg_type" label="Тип БГ" :options="[
+            {value: 'contract_execution', text:'Исполнение обязательств по контракту'},
+            {value:'tender_guarantee', text:'Для обеспечения заявки на участие в конкурсе (тендерная гарантия)'},
+            {value: 'application_ensure', text:'Возврат аванса'},
+            {value: 'quality', text:'Обеспечение гарантийных обязательств'}]"></bs3-radio-field>
             <checkbox :name="'tender_has_prepayment'" v-model="tender_has_prepayment" type="primary">Наличие аванса</checkbox>
+            <checkbox :name="'bg_is_benefeciary_form'" v-model="bg_is_benefeciary_form" type="primary">БГ по форме Бенефециара</checkbox>
+          </div>
+
+          <div class="col-md-4">
+            <bs-input
+              :name="total_sum"
+              v-model="total_sum"
+              label="Общая сумма, руб"
+              readonly
+            ></bs-input>
+          </div>
+          <div class="col-md-4">
+            <bs-input
+              :name="comission"
+              v-model="comission"
+              label="Комиссия, руб"
+              readonly
+            ></bs-input>
           </div>
 
         </div>
@@ -134,7 +156,6 @@
       </div>
     </div>
 
-  </div>
 </template>
 
 <script>
@@ -174,6 +195,7 @@
           tender_contract_execution_ensure_cost: regData.formdata.tender_contract_execution_ensure_cost,
 
           tender_has_prepayment: regData.formdata.tender_has_prepayment,
+          bg_is_benefeciary_form: regData.formdata.bg_is_benefeciary_form,
           tender_contract_type: regData.formdata.tender_contract_type,
           tender_contract_subject: regData.formdata.tender_contract_subject,
 
@@ -214,6 +236,7 @@
           tender_finish_date: '',
 
           tender_has_prepayment: '',
+          bg_is_benefeciary_form: '',
           tender_contract_type: '',
           tender_contract_subject: '',
 
@@ -258,6 +281,31 @@
         },
         set () {
         }
+      },
+      comission: {
+        get () {
+          var Q25 = 0.0027
+          var M10 = 0
+          var M11 = 0
+          var M12 = 0
+          var M13 = 0
+          if (this.bg_is_benefeciary_form) M10 = 0.1
+          if (this.tender_has_prepayment) M11 = 0.1
+          if (this.tender_exec_law === '185-fz') M12 = 0.05
+          if (this.bg_type === 'quality') M13 = 0.1
+
+          var nOfMonths = this.date_range
+          var simpleComission = this.bg_sum * nOfMonths * Q25
+          var comission = simpleComission * (1 + M10 + M11 + M12 + M13)
+          return comission.toFixed(2)
+        },
+        set () {}
+      },
+      total_sum: {
+        get () {
+          return parseFloat(this.bg_sum) + parseFloat(this.comission)
+        },
+        set () {}
       },
       tender_add_data_switch_caption: {
         get () {
@@ -327,6 +375,16 @@
         }
         if (this.bg_type === 'contract_execution') {
           if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === this.tender_application_ensure_cost) if (this.tender_contract_execution_ensure_cost) this.bg_sum = this.tender_contract_execution_ensure_cost
+        }
+        if (this.bg_type === 'tender_guarantee') {
+          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === this.tender_contract_execution_ensure_cost) {
+            this.bg_sum = this.tender_contract_execution_ensure_cost
+          }
+        }
+        if (this.bg_type === 'quality') {
+          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === this.tender_contract_execution_ensure_cost) {
+            this.bg_sum = this.tender_contract_execution_ensure_cost
+          }
         }
       }
     }

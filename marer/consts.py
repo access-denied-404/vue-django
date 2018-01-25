@@ -17,6 +17,8 @@ TENDER_CONTRACT_TYPE_WORKS_CONTRACT = 'works'
 
 BG_TYPE_APPLICATION_ENSURE = 'application_ensure'
 BG_TYPE_CONTRACT_EXECUTION = 'contract_execution'
+BG_TYPE_TENDER_GUARANTEE = 'tender_guarantee'
+BG_TYPE_QUALITY = 'quality'
 
 CURRENCY_RUR = 'rur'
 CURRENCY_USD = 'usd'
