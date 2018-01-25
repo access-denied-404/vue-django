@@ -6,6 +6,7 @@ from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db import models
+from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.formats import number_format
@@ -642,6 +643,22 @@ class Issue(models.Model):
         ).order_by('name')
         docs.extend(pdocs)
         return docs
+
+    @property
+    def is_application_filled(self):
+        return bool(self.application_doc.id and self.application_doc.file)
+
+    @property
+    def is_application_signed(self):
+        return self.application_doc.id and self.application_doc.sign and self.application_doc.sign_state == consts.DOCUMENT_SIGN_VERIFIED
+
+    @property
+    def is_all_propose_docs_filled(self):
+        return not self.propose_documents.filter(Q(document__file__isnull=True) | Q(document__file='')).exists()
+
+    @property
+    def can_send_for_review(self):
+        return self.is_application_filled and self.is_application_signed and self.is_all_propose_docs_filled
 
     def fill_application_doc(self, commit=True):
         template_path = os.path.join(

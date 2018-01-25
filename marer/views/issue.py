@@ -158,6 +158,7 @@ class IssueSurveyView(IssueView):
 
         all_ok = self.get_issue().get_product().process_survey_post_data(request)
         if all_ok:
+            self.get_issue().fill_application_doc(commit=True)
             notify_user_manager_about_user_updated_issue(self.get_issue())
             url = reverse('issue_scoring', args=[self.get_issue().id])
             return HttpResponseRedirect(url)
@@ -236,20 +237,45 @@ class IssueRemoteSignView(TemplateView, ContextMixin, View):
 class IssueScoringView(IssueView):
     template_name = 'marer/issue/scoring.html'
 
+    def get_context_data(self, **kwargs):
+        kwargs['consts'] = consts
+        return super().get_context_data(**kwargs)
+
     def post(self, request, *args, **kwargs):
 
         if self.get_issue() and 'issue_scoring' not in self.get_issue().editable_dashboard_views():
             return self.get(request, *args, **kwargs)
 
-        # todo add issue form signing
-        self.get_issue().refresh_from_db()
-        if self.get_issue().status == consts.ISSUE_STATUS_REGISTERING:
+        proposes_docs = IssueProposeDocument.objects.filter(
+            issue=self.get_issue())
+        for pdoc in proposes_docs:
+            pdoc_files_key = 'propose_doc_%s' % pdoc.id
+            pdoc_files_del_key = 'propose_doc_%s_del' % pdoc.id
+            pdoc_file = request.FILES.get(pdoc_files_key, None)
+            pdoc_del_mark = request.POST.get(pdoc_files_del_key, None)
+            if pdoc_file:
+                if pdoc.document:
+                    pdoc.document.file = pdoc_file
+                    pdoc.document.save()
+                else:
+                    new_doc = Document()
+                    new_doc.file = pdoc_file
+                    new_doc.save()
+                    pdoc.document = new_doc
+                pdoc.save()
+
+            if pdoc_del_mark:
+                pdoc.document = None
+                pdoc.save(chain_docs_update=False)
+
+        if request.POST.get('action', '') == 'send_to_review' and self.get_issue().can_send_for_review:
             self.get_issue().status = consts.ISSUE_STATUS_REVIEW
-            self.get_issue().fill_application_doc(commit=False)
             self.get_issue().save()
-        notify_user_manager_about_user_updated_issue(self.get_issue())
-        url = reverse('issue_additional_documents_requests', args=[self.get_issue().id])
-        return HttpResponseRedirect(url)
+            notify_user_manager_about_user_updated_issue(self.get_issue())
+            url = reverse('issue_additional_documents_requests', args=[self.get_issue().id])
+            return HttpResponseRedirect(url)
+
+        return self.get(request, *args, **kwargs)
 
 
 class IssueAdditionalDocumentsRequestsView(IssueView):
