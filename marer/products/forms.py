@@ -2,7 +2,7 @@ from django.forms import Form, CharField, ChoiceField, DateField, DecimalField, 
     IntegerField, HiddenInput, CheckboxInput, Select, NumberInput, Textarea, Field
 from djangoformsetjs.utils import formset_media_js
 
-from marer.forms.fields import BalanceCodeDecimalField
+from marer.fields import BalanceCodeDecimalField
 from marer import consts
 from marer.models import BankMinimalCommission
 
