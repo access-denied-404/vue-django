@@ -2,6 +2,7 @@ from django.forms import Form, CharField, ChoiceField, DateField, DecimalField, 
     IntegerField, HiddenInput, CheckboxInput, Select, NumberInput, Textarea, Field
 from djangoformsetjs.utils import formset_media_js
 
+from marer.forms.fields import BalanceCodeDecimalField
 from marer import consts
 from marer.models import BankMinimalCommission
 
@@ -40,13 +41,13 @@ class BGFinProdRegForm(Form):
     bg_commercial_contract_sign_date = DateField(required=False)
     bg_commercial_contract_end_date = DateField(required=False)
 
-    balance_code_1300_offset_1 = DecimalField(decimal_places=2, required=False, localize=True)
-    balance_code_1300_offset_0 = DecimalField(decimal_places=2, required=False, localize=True)
-    balance_code_1600_offset_1 = DecimalField(decimal_places=2, required=False, localize=True)
-    balance_code_1600_offset_0 = DecimalField(decimal_places=2, required=False, localize=True)
+    balance_code_1300_offset_1 = BalanceCodeDecimalField(decimal_places=2, required=False, localize=True)
+    balance_code_1300_offset_0 = BalanceCodeDecimalField(decimal_places=2, required=False, localize=True)
+    balance_code_1600_offset_1 = BalanceCodeDecimalField(decimal_places=2, required=False, localize=True)
+    balance_code_1600_offset_0 = BalanceCodeDecimalField(decimal_places=2, required=False, localize=True)
 
-    balance_code_2400_offset_1 = DecimalField(decimal_places=2, required=False, localize=True)
-    balance_code_2400_offset_0 = DecimalField(decimal_places=2, required=False, localize=True)
+    balance_code_2400_offset_1 = BalanceCodeDecimalField(decimal_places=2, required=False, localize=True)
+    balance_code_2400_offset_0 = BalanceCodeDecimalField(decimal_places=2, required=False, localize=True)
 
     bg_sum = DecimalField(decimal_places=2, required=False, localize=True)
     bg_currency = ChoiceField(required=False, choices=[

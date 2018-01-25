@@ -11,3 +11,4 @@ project/local_settings.py
 project/secrets.py
 static/**
 db.sqlite3
+env/
