@@ -303,7 +303,7 @@
       },
       total_sum: {
         get () {
-          return parseFloat(this.bg_sum) + parseFloat(this.comission)
+          return (parseFloat(this.bg_sum) + parseFloat(this.comission)).toFixed(2)
         },
         set () {}
       },
