@@ -636,21 +636,22 @@ class Issue(models.Model):
             app_doc.name = 'Заявление на предоставление банковской гарантии'
             app_doc.document = self.application_doc
             docs.append(app_doc)
-        pdocs = self.propose_documents.filter(
-            is_approved_by_manager=True
-        ).exclude(
-            document__sign_state=consts.DOCUMENT_SIGN_VERIFIED
-        ).order_by('name')
-        docs.extend(pdocs)
+        if self.status == consts.ISSUE_STATUS_REVIEW:
+            pdocs = self.propose_documents.filter(
+                is_approved_by_manager=True
+            ).exclude(
+                document__sign_state=consts.DOCUMENT_SIGN_VERIFIED
+            ).order_by('name')
+            docs.extend(pdocs)
         return docs
 
     @property
     def is_application_filled(self):
-        return bool(self.application_doc.id and self.application_doc.file)
+        return bool(self.application_doc_id and self.application_doc.file)
 
     @property
     def is_application_signed(self):
-        return self.application_doc.id and self.application_doc.sign and self.application_doc.sign_state == consts.DOCUMENT_SIGN_VERIFIED
+        return self.application_doc_id and self.application_doc.sign and self.application_doc.sign_state == consts.DOCUMENT_SIGN_VERIFIED
 
     @property
     def is_all_propose_docs_filled(self):
