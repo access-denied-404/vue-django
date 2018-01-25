@@ -800,16 +800,18 @@ class Issue(models.Model):
             return True
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if not self.id:
+            adding_new = True
+        else:
+            adding_new = False
         if not self.bg_start_date:
             self.bg_start_date = timezone.now()
         if not self.product or self.product == '':
             self.product = BankGuaranteeProduct().name
         super().save(force_insert, force_update, using, update_fields)
 
-        pdocs = FinanceOrgProductProposeDocument.objects.all()
-        if self.status == consts.ISSUE_STATUS_REVIEW \
-                and not self.propose_documents.exists() \
-                and pdocs.exists():
+        if adding_new:
+            pdocs = FinanceOrgProductProposeDocument.objects.all()
             for pdoc in pdocs:
                 new_doc = IssueProposeDocument()
                 new_doc.issue = self
