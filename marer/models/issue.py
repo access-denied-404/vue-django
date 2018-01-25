@@ -287,7 +287,7 @@ class Issue(models.Model):
         F17 = self.bg_is_benefeciary_form
         F18 = self.tender_has_prepayment
         F19 = self.tender_exec_law == consts.TENDER_EXEC_LAW_185_FZ  # Гарантия в рамках 185-ФЗ: +/-
-        F20 = self.bg_type == consts.BG_TYPE_QUALITY  # Гарантия качества: +/-
+        F20 = self.bg_type == consts.BG_TYPE_WARRANTY_ENSURE  # Гарантия качества: +/-
         F21 = False  # Подтверждение опыта исполнения контрактов (более 5 документов): +/-
         F22 = False  # Увеличение/продление срока контракта: +/-
 
