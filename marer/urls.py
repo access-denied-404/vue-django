@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from django.conf.urls.static import static
 from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
 
 from marer.views import auth
 from marer.views import cabinet
@@ -35,5 +36,6 @@ urlpatterns = [
     url(r'^cabinet/requests/(?P<iid>\d+)/finished$', issue.IssueFinishedView.as_view(), name='issue_finished'),
     url(r'^cabinet/requests/(?P<iid>\d+)/cancelled$', issue.IssueCancelledView.as_view(), name='issue_cancelled'),
 
-    url(r'^rest/tender$', rest.TenderDataView.as_view(), name='rest_tender')
+    url(r'^rest/tender$', rest.TenderDataView.as_view(), name='rest_tender'),
+    url(r'^rest/bank_commission$', csrf_exempt(rest.IssueBankCommissionView.as_view()), name='rest_bank_commission'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -5,7 +5,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from urllib3.exceptions import MaxRetryError
 
-from marer.forms import RestTenderForm
+from marer.forms import RestTenderForm, IssueBankCommissionForm
+from marer.utils.issue import bank_commission
 
 
 def _move_date_to_field(obj: dict, src_field: str, dst_field: str, del_src_field=True):
@@ -43,3 +44,27 @@ class TenderDataView(APIView):
             pass
 
         return Response(tdata)
+
+
+class IssueBankCommissionView(APIView):
+    def get(self, request, format=None):
+        form = IssueBankCommissionForm(request.GET)
+        if form.is_valid():
+            commission = bank_commission(
+                form.cleaned_data['bg_start_date'],
+                form.cleaned_data['bg_end_date'],
+                form.cleaned_data['bg_sum'],
+                form.cleaned_data['bg_is_benefeciary_form'],
+                form.cleaned_data['tender_has_prepayment'],
+                form.cleaned_data['tender_exec_law'],
+            )
+            return Response({
+                'status': True,
+                "commission": commission
+            })
+        else:
+
+            return Response({
+                'status': False,
+                'errors': form.errors,
+            })

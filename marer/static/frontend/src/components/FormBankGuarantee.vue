@@ -130,66 +130,86 @@
           </div>
 
         </div>
-
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="id_bg_is_benefeciary_form" style="display: block;">БГ по форме Бенефециара</label>
+              <bs-select id="id_bg_is_benefeciary_form"  v-model="bg_is_benefeciary_form"
+                         :name="'bg_is_benefeciary_form'" :options-value="'val'"
+                         :options="[{val:'true', label: 'Да'}, {val:'false', label: 'Нет'}]"></bs-select>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="panel panel-info">
-    <div class="panel-heading" data-toggle="collapse" data-target="#panel1">Бухгалтерская отчетность</div>
-    <div class="panel-body collapse in" id="panel1">
+      <div class="panel-heading" data-toggle="collapse" data-target="#panel1">Бухгалтерская отчетность</div>
+      <div class="panel-body collapse in" id="panel1">
         <div class="container-fluid">
 
-            <div class="row">
-                <div class="col-md-4 h4">Наименование показателя</div>
-                <div class="col-md-8">
-                    <div class="col-md-4 h5">Код строки</div>
-                    <div class="col-md-4 h6">За последний отчётный период (2016 г.)</div>
-                    <div class="col-md-4 h6">Результат за последний квартал (2017 г.)</div>
-                </div>
+          <div class="row">
+            <div class="col-md-4 h4">Наименование показателя</div>
+            <div class="col-md-8">
+              <div class="col-md-4 h5">Код строки</div>
+              <div class="col-md-4 h6">За последний отчётный период (2016 г.)</div>
+              <div class="col-md-4 h6">Результат за последний квартал (2017 г.)</div>
             </div>
+          </div>
 
-            <div class="row">
-                <div class="col-md-4">Чистые активы</div>
-                <div class="col-md-8">
-                    <div class="col-md-4">1300</div>
-                    <div class="col-md-4">
-                      <input class="form-control input-sm" name="balance_code_1300_offset_1" v-model="balance_code_1300_offset_1" />
-                    </div>
-                    <div class="col-md-4">
-                      <input class="form-control input-sm" name="balance_code_1300_offset_0" v-model="balance_code_1300_offset_0" />
-                    </div>
-                </div>
+          <div class="row">
+            <div class="col-md-4">Чистые активы</div>
+            <div class="col-md-8">
+              <div class="col-md-4">1300</div>
+              <div class="col-md-4">
+                <input class="form-control input-sm" name="balance_code_1300_offset_1"
+                       v-model="balance_code_1300_offset_1"/>
+              </div>
+              <div class="col-md-4">
+                <input class="form-control input-sm" name="balance_code_1300_offset_0"
+                       v-model="balance_code_1300_offset_0"/>
+              </div>
             </div>
+          </div>
 
-            <div class="row">
-                <div class="col-md-4">Валюта баланса</div>
-                <div class="col-md-8">
-                    <div class="col-md-4">1600</div>
-                    <div class="col-md-4">
-                      <input class="form-control input-sm" name="balance_code_1600_offset_1" v-model="balance_code_1600_offset_1" />
-                    </div>
-                    <div class="col-md-4">
-                      <input class="form-control input-sm" name="balance_code_1600_offset_0" v-model="balance_code_1600_offset_0" />
-                    </div>
-                </div>
+          <div class="row">
+            <div class="col-md-4">Валюта баланса</div>
+            <div class="col-md-8">
+              <div class="col-md-4">1600</div>
+              <div class="col-md-4">
+                <input class="form-control input-sm" name="balance_code_1600_offset_1"
+                       v-model="balance_code_1600_offset_1"/>
+              </div>
+              <div class="col-md-4">
+                <input class="form-control input-sm" name="balance_code_1600_offset_0"
+                       v-model="balance_code_1600_offset_0"/>
+              </div>
             </div>
+          </div>
 
-            <div class="row">
-                <div class="col-md-4">Прибыль</div>
-                <div class="col-md-8">
-                    <div class="col-md-4">2400</div>
-                    <div class="col-md-4">
-                      <input class="form-control input-sm" name="balance_code_2400_offset_1" v-model="balance_code_2400_offset_1" />
-                    </div>
-                    <div class="col-md-4">
-                      <input class="form-control input-sm" name="balance_code_2400_offset_0" v-model="balance_code_2400_offset_0" />
-                    </div>
-                </div>
+          <div class="row">
+            <div class="col-md-4">Прибыль</div>
+            <div class="col-md-8">
+              <div class="col-md-4">2400</div>
+              <div class="col-md-4">
+                <input class="form-control input-sm" name="balance_code_2400_offset_1"
+                       v-model="balance_code_2400_offset_1"/>
+              </div>
+              <div class="col-md-4">
+                <input class="form-control input-sm" name="balance_code_2400_offset_0"
+                       v-model="balance_code_2400_offset_0"/>
+              </div>
             </div>
+          </div>
 
         </div>
+      </div>
     </div>
-</div>
+    <div v-if="bank_commission" class="h1 text-center">
+      Коммисия банка
+      <br>
+      {{ bank_commission }} руб.
+    </div>
   </div>
 </template>
 
@@ -197,7 +217,7 @@
   import jQuery from 'jquery'
   import moment from 'moment'
   import _ from 'lodash'
-  import {input, checkbox} from 'vue-strap'
+  import {input, checkbox, select} from 'vue-strap'
   import DateTimePicker from 'vue-bootstrap-datetimepicker'
   import BS3SelectField from '@/components/inputs/BS3SelectField'
   import BS3RadioField from '@/components/inputs/BS3RadioField'
@@ -209,6 +229,7 @@
   export default {
     name: 'form-bank-guarantee',
     components: {
+      'bs-select': select,
       'bs-input': input,
       'checkbox': checkbox,
       'bs3-select-field': BS3SelectField,
@@ -216,10 +237,10 @@
       'date-time-picker': DateTimePicker
     },
     data () {
-      var regData = JSON.parse(window.regdata)
-
+      let regData = JSON.parse(window.regdata)
+      let formData = {}
       if (regData !== null && regData.formdata !== null) {
-        return {
+        formData = {
           tender_gos_number: regData.formdata.tender_gos_number,
           tender_exec_law: regData.formdata.tender_exec_law,
           tender_placement_type: regData.formdata.tender_placement_type,
@@ -251,18 +272,16 @@
           bg_currency: 'rur',
           bg_start_date: regData.formdata.bg_start_date,
           bg_end_date: moment(regData.formdata.bg_end_date, dateformat),
+          bg_is_benefeciary_form: regData.formdata.bg_is_benefeciary_form.toString(),
 
           bg_commercial_contract_subject: regData.formdata.bg_commercial_contract_subject,
           bg_commercial_contract_place_of_work: regData.formdata.bg_commercial_contract_place_of_work,
           bg_commercial_contract_sum: regData.formdata.bg_commercial_contract_sum,
           bg_commercial_contract_sign_date: moment(regData.formdata.bg_commercial_contract_sign_date, dateformat),
-          bg_commercial_contract_end_date: moment(regData.formdata.bg_commercial_contract_end_date, dateformat),
-
-          is_tender_info_panel_visible: true,
-          tender_add_data_visible: false
+          bg_commercial_contract_end_date: moment(regData.formdata.bg_commercial_contract_end_date, dateformat)
         }
       } else {
-        return {
+        formData = {
           tender_gos_number: '',
           tender_exec_law: '',
           tender_placement_type: '',
@@ -291,6 +310,7 @@
           bg_currency: 'rur',
           bg_start_date: moment().format(dateformat),
           bg_end_date: '',
+          bg_is_benefeciary_form: 'True',
 
           bg_commercial_contract_subject: '',
           bg_commercial_contract_place_of_work: '',
@@ -303,11 +323,16 @@
           balance_code_1600_offset_1: '0',
           balance_code_1600_offset_0: '0',
           balance_code_2400_offset_1: '0',
-          balance_code_2400_offset_0: '0',
-          is_tender_info_panel_visible: true,
-          tender_add_data_visible: false
+          balance_code_2400_offset_0: '0'
         }
       }
+      let defaultData = {
+        bank_commission: null,
+        is_tender_info_panel_visible: true,
+        tender_add_data_visible: false
+      }
+      jQuery.extend(defaultData, formData)
+      return defaultData
     },
     computed: {
       date_range: {
@@ -350,6 +375,21 @@
       }
     },
     watch: {
+      bg_start_date: _.debounce(function () {
+        this.get_commission()
+      }, 1000),
+      bg_end_date: _.debounce(function () {
+        this.get_commission()
+      }, 1000),
+      bg_sum: _.debounce(function () {
+        this.get_commission()
+      }, 1000),
+      bg_is_benefeciary_form: _.debounce(function () {
+        this.get_commission()
+      }, 1000),
+      tender_has_prepayment: _.debounce(function () {
+        this.get_commission()
+      }, 1000),
       tender_gos_number: _.debounce(function () {
         jQuery.getJSON('/rest/tender?format=json&gos_number=' + this.tender_gos_number, (data, status, xhr) => {
           this.tender_exec_law = data.law
@@ -372,15 +412,22 @@
       }, 1000),
       tender_exec_law: _.debounce(function () {
         this.is_tender_info_panel_visible = this.get_if_tender_info_panel_visible()
+        this.get_commission()
       }, 200),
       bg_type: _.debounce(function () {
         this.process_bg_type()
       }, 200)
     },
     mounted () {
+      this.get_commission()
       this.is_tender_info_panel_visible = this.get_if_tender_info_panel_visible()
     },
     methods: {
+      get_commission () {
+        jQuery.getJSON('/rest/bank_commission?bg_start_date=' + this.bg_start_date + '&bg_end_date=' + this.bg_end_date.format('DD.MM.YYYY') + '&bg_sum=' + this.bg_sum + '&bg_is_benefeciary_form=' + this.bg_is_benefeciary_form + '&tender_has_prepayment=' + this.tender_has_prepayment + '&tender_exec_law=' + this.tender_exec_law, (data, status, xhr) => {
+          this.bank_commission = data.commission
+        })
+      },
       get_if_tender_info_panel_visible () {
         return this.tender_exec_law === '44-fz' ||
           this.tender_exec_law === '223-fz' ||

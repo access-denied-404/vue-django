@@ -62,6 +62,10 @@ class BGFinProdRegForm(Form):
         (consts.BG_TYPE_APPLICATION_ENSURE, 'Обеспечение заявки'),
         (consts.BG_TYPE_CONTRACT_EXECUTION, 'Исполнение контракта'),
     ])
+    bg_is_benefeciary_form = BooleanField(required=False, widget=Select(attrs={'class': 'form-control'}, choices=[
+        (True, 'Да'),
+        (False, 'Нет'),
+    ]))
 
     tender_contract_type = ChoiceField(required=False, choices=[
         (consts.TENDER_CONTRACT_TYPE_SUPPLY_CONTRACT, 'Поставка товара'),
