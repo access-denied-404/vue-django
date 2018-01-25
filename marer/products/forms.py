@@ -44,8 +44,7 @@ class BGFinProdRegForm(Form):
     balance_code_1300_offset_0 = DecimalField(decimal_places=2, required=False, localize=True)
     balance_code_1600_offset_1 = DecimalField(decimal_places=2, required=False, localize=True)
     balance_code_1600_offset_0 = DecimalField(decimal_places=2, required=False, localize=True)
-    balance_code_2110_offset_1 = DecimalField(decimal_places=2, required=False, localize=True)
-    balance_code_2110_offset_0 = DecimalField(decimal_places=2, required=False, localize=True)
+
     balance_code_2400_offset_1 = DecimalField(decimal_places=2, required=False, localize=True)
     balance_code_2400_offset_0 = DecimalField(decimal_places=2, required=False, localize=True)
 

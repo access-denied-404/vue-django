@@ -173,19 +173,6 @@
             </div>
 
             <div class="row">
-                <div class="col-md-4">Выручка</div>
-                <div class="col-md-8">
-                    <div class="col-md-4">2110</div>
-                    <div class="col-md-4">
-                      <input class="form-control input-sm" name="balance_code_2110_offset_1" v-model="balance_code_2110_offset_1" />
-                    </div>
-                    <div class="col-md-4">
-                      <input class="form-control input-sm" name="balance_code_2110_offset_0" v-model="balance_code_2110_offset_0" />
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
                 <div class="col-md-4">Прибыль</div>
                 <div class="col-md-8">
                     <div class="col-md-4">2400</div>
@@ -254,8 +241,6 @@
           balance_code_1300_offset_0: regData.formdata.balance_code_1300_offset_0,
           balance_code_1600_offset_1: regData.formdata.balance_code_1600_offset_1,
           balance_code_1600_offset_0: regData.formdata.balance_code_1600_offset_0,
-          balance_code_2110_offset_1: regData.formdata.balance_code_2110_offset_1,
-          balance_code_2110_offset_0: regData.formdata.balance_code_2110_offset_0,
           balance_code_2400_offset_1: regData.formdata.balance_code_2400_offset_1,
           balance_code_2400_offset_0: regData.formdata.balance_code_2400_offset_0,
 
@@ -315,8 +300,6 @@
           balance_code_1300_offset_0: '0',
           balance_code_1600_offset_1: '0',
           balance_code_1600_offset_0: '0',
-          balance_code_2110_offset_1: '0',
-          balance_code_2110_offset_0: '0',
           balance_code_2400_offset_1: '0',
           balance_code_2400_offset_0: '0',
           is_tender_info_panel_visible: true,
