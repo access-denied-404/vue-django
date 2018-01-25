@@ -579,9 +579,11 @@ class Issue(models.Model):
         reg_form = reg_form_class(self.__dict__)
         if reg_form.is_valid():
             available_views.append('issue_survey')
-            available_views.append('issue_scoring')
         else:
             return available_views
+
+        if self.application_doc_id is not None:
+            available_views.append('issue_scoring')
 
         if not self.status == consts.ISSUE_STATUS_REGISTERING:
             available_views.append('issue_additional_documents_requests')
