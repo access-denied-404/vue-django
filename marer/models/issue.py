@@ -271,7 +271,11 @@ class Issue(models.Model):
     def finished_contracts_count(self):
         url = 'http://zakupki.gov.ru/epz/contract/extendedsearch/rss?openMode=USE_DEFAULT_PARAMS&pageNumber=1&sortDirection=false&recordsPerPage=_50&sortBy=PO_DATE_OBNOVLENIJA&fz44=on&fz94=on&priceFrom=0&priceTo=200000000000&advancePercentFrom=hint&advancePercentTo=hint&contractStageList_1=on&contractStageList=1&supplierTitle=%s' % self.issuer_inn
         data = feedparser.parse(url)
-        return len(data['entries'])
+        fz_44_contracts = len(data['entries'])
+        url = 'http://zakupki.gov.ru/epz/contractfz223/extendedSearch/rss?morphology=on&pageNumber=1&sortDirection=false&recordsPerPage=_10&statuses_1=on&statuses=1&supplierTitle=%s&currencyId=1&sortBy=BY_UPDATE_DATE' % self.issuer_inn
+        data = feedparser.parse(url)
+        fz_223_contracts = len(data['entries'])
+        return fz_44_contracts + fz_223_contracts
 
     @cached_property
     def passed_prescoring(self):
