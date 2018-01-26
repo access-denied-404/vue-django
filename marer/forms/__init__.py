@@ -1,4 +1,4 @@
-from django.forms import Form
+from django.forms import Form, DecimalField, DateField, BooleanField, ChoiceField
 from django.forms import fields
 from django.forms.widgets import TextInput, PasswordInput, EmailInput, Select, Textarea, HiddenInput
 
@@ -284,6 +284,25 @@ class IssueRegisteringForm(Form):
 
 class RestTenderForm(Form):
     gos_number = fields.CharField(required=True, max_length=512)
+
+
+class IssueBankCommissionForm(Form):
+    bg_sum = DecimalField(decimal_places=2, required=True, localize=True)
+    bg_start_date = DateField(required=True)
+    bg_end_date = DateField(required=True)
+    bg_is_benefeciary_form = BooleanField(required=False, widget=Select(attrs={'class': 'form-control'}, choices=[
+        (True, 'Да'),
+        (False, 'Нет'),
+    ]))
+    tender_has_prepayment = BooleanField(required=False)
+    tender_exec_law = ChoiceField(required=True, choices=[
+        (consts.TENDER_EXEC_LAW_44_FZ, '44-ФЗ'),
+        (consts.TENDER_EXEC_LAW_223_FZ, '223-ФЗ'),
+        (consts.TENDER_EXEC_LAW_185_FZ, '185-ФЗ'),
+        (consts.TENDER_EXEC_LAW_COMMERCIAL, 'Коммерческий'),
+        (consts.TENDER_EXEC_LAW_CUSTOMS, 'Таможенная'),
+        (consts.TENDER_EXEC_LAW_VAT, 'Возврат НДС'),
+    ])
 
 
 class IFOPCMessageForm(Form):
