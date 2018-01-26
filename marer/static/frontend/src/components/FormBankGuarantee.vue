@@ -375,7 +375,7 @@
       bg_is_benefeciary_form: _.debounce(function () {
         this.get_commission()
       }, 1000),
-      tender_has_prepayment: _.debounce(function () {
+      bg_type: _.debounce(function () {
         this.get_commission()
       }, 1000),
       tender_gos_number: _.debounce(function () {
