@@ -375,9 +375,6 @@
       bg_is_benefeciary_form: _.debounce(function () {
         this.get_commission()
       }, 1000),
-      bg_type: _.debounce(function () {
-        this.get_commission()
-      }, 1000),
       tender_gos_number: _.debounce(function () {
         jQuery.getJSON('/rest/tender?format=json&gos_number=' + this.tender_gos_number, (data, status, xhr) => {
           this.tender_exec_law = data.law
@@ -404,7 +401,8 @@
       }, 200),
       bg_type: _.debounce(function () {
         this.process_bg_type()
-      }, 200)
+        this.get_commission()
+      }, 1000)
     },
     mounted () {
       this.get_commission()
