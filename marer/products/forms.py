@@ -61,6 +61,8 @@ class BGFinProdRegForm(Form):
     bg_type = ChoiceField(required=False, choices=[
         (consts.BG_TYPE_APPLICATION_ENSURE, 'Обеспечение заявки'),
         (consts.BG_TYPE_CONTRACT_EXECUTION, 'Исполнение контракта'),
+        (consts.BG_TYPE_REFUND_OF_ADVANCE, 'Возврат аванса'),
+        (consts.BG_TYPE_WARRANTY_ENSURE, 'Обеспечение гарантийных обязательств'),
     ])
     bg_is_benefeciary_form = BooleanField(required=False, widget=Select(attrs={'class': 'form-control'}, choices=[
         (True, 'Да'),
