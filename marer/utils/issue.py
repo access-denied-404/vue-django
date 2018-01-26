@@ -4,14 +4,14 @@ from marer import consts
 from marer.models import BankMinimalCommission
 
 
-def bank_commission(bg_start_date, bg_end_date, bg_sum, bg_is_benefeciary_form, tender_has_prepayment, tender_exec_law):
+def bank_commission(bg_start_date, bg_end_date, bg_sum, bg_is_benefeciary_form, bg_type, tender_exec_law):
     """
     Расчет банковской комиссии
     :param bg_start_date:
     :param bg_end_date:
     :param bg_sum:
     :param bg_is_benefeciary_form:
-    :param tender_has_prepayment:
+    :param bg_type:
     :param tender_exec_law:
     :return:
     """
@@ -27,9 +27,9 @@ def bank_commission(bg_start_date, bg_end_date, bg_sum, bg_is_benefeciary_form, 
     F10 = bg_sum
     F11 = bg_end_date
     F17 = bg_is_benefeciary_form
-    F18 = tender_has_prepayment
+    F18 = bg_type == consts.BG_TYPE_REFUND_OF_ADVANCE
     F19 = tender_exec_law == consts.TENDER_EXEC_LAW_185_FZ  # Гарантия в рамках 185-ФЗ: +/-
-    F20 = False  # Гарантия качества: +/-
+    F20 = bg_type == consts.BG_TYPE_WARRANTY_ENSURE
     F21 = False  # Подтверждение опыта исполнения контрактов (более 5 документов): +/-
     F22 = False  # Увеличение/продление срока контракта: +/-
 

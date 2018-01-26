@@ -279,7 +279,7 @@ class Issue(models.Model):
             self.bg_end_date,
             self.bg_sum,
             self.bg_is_benefeciary_form,
-            self.tender_has_prepayment,
+            self.bg_type,
             self.tender_exec_law
         )
 

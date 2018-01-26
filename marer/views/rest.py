@@ -55,7 +55,7 @@ class IssueBankCommissionView(APIView):
                 form.cleaned_data['bg_end_date'],
                 form.cleaned_data['bg_sum'],
                 form.cleaned_data['bg_is_benefeciary_form'],
-                form.cleaned_data['tender_has_prepayment'],
+                form.cleaned_data['bg_type'],
                 form.cleaned_data['tender_exec_law'],
             )
             return Response({

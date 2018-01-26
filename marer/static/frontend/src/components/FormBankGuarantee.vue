@@ -198,7 +198,6 @@
     </div>
     <div v-if="bank_commission" class="h1 text-center">
       Коммисия банка
-      <br>
       {{ bank_commission }} руб.
     </div>
   </div>
@@ -413,7 +412,7 @@
     },
     methods: {
       get_commission () {
-        jQuery.getJSON('/rest/bank_commission?bg_start_date=' + this.bg_start_date + '&bg_end_date=' + this.bg_end_date.format('DD.MM.YYYY') + '&bg_sum=' + this.bg_sum + '&bg_is_benefeciary_form=' + this.bg_is_benefeciary_form + '&tender_has_prepayment=' + this.tender_has_prepayment + '&tender_exec_law=' + this.tender_exec_law, (data, status, xhr) => {
+        jQuery.getJSON('/rest/bank_commission?bg_start_date=' + this.bg_start_date + '&bg_end_date=' + this.bg_end_date.format('DD.MM.YYYY') + '&bg_sum=' + this.bg_sum + '&bg_is_benefeciary_form=' + this.bg_is_benefeciary_form + '&bg_type=' + this.bg_type + '&tender_exec_law=' + this.tender_exec_law, (data, status, xhr) => {
           this.bank_commission = data.commission
         })
       },
