@@ -8,6 +8,7 @@
     <input type="hidden" name="tender_placement_type" :value="tender_placement_type">
     <input type="hidden" name="tender_publish_date" :value="tender_publish_date">
     <input type="hidden" name="tender_start_cost" :value="tender_start_cost">
+    <input type="hidden" name="tender_contract_subject" :value="tender_contract_subject"/>
 
     <input type="hidden" name="tender_responsible_full_name" :value="tender_responsible_full_name">
     <input type="hidden" name="tender_responsible_legal_address" :value="tender_responsible_legal_address">
