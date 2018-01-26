@@ -221,23 +221,23 @@ class Issue(models.Model):
     issuer_bank_relations_term = models.CharField(verbose_name='срок отношений с Банком', max_length=32, blank=True, null=True, choices=[
         (consts.ISSUE_DEAL_BANK_RELATIONS_TERM_SHORT, 'Краткосрочные'),
         (consts.ISSUE_DEAL_BANK_RELATIONS_TERM_LONG, 'Долгосрочные'),
-    ])
+    ], default=consts.ISSUE_DEAL_BANK_RELATIONS_TERM_LONG)
     issuer_activity_objective = models.CharField(verbose_name='цели финансово-хозяйственной детяельности', max_length=32, blank=True, null=True, choices=[
         (consts.ISSUE_ISSUER_ACTIVITY_OBJECTIVE_PROFIT_MAKING, 'Получение прибыли'),
         (consts.ISSUE_ISSUER_ACTIVITY_OBJECTIVE_OTHER, 'Иное'),
-    ])
+    ], default=consts.ISSUE_ISSUER_ACTIVITY_OBJECTIVE_PROFIT_MAKING)
     issuer_finance_situation = models.CharField(verbose_name='финансовое положение', max_length=32, blank=True, null=True, choices=[
         (consts.ISSUE_ISSUER_FINANCE_SITUATION_SATISFIED, 'Удовлетворительное'),
         (consts.ISSUE_ISSUER_FINANCE_SITUATION_UNSATISFIED, 'Неудовлетворительное'),
-    ])
+    ], default=consts.ISSUE_ISSUER_FINANCE_SITUATION_SATISFIED)
     issuer_business_reputation = models.CharField(verbose_name='деловая репутация', max_length=32, blank=True, null=True, choices=[
         (consts.ISSUE_ISSUER_BUSINESS_REPUTATION_POSITIVE, 'Положительная'),
         (consts.ISSUE_ISSUER_BUSINESS_REPUTATION_NOT_PRESENT, 'Отсутствует'),
-    ])
+    ], default=consts.ISSUE_ISSUER_BUSINESS_REPUTATION_POSITIVE)
     issuer_funds_source = models.CharField(verbose_name='источник происхождения денежных средств', max_length=32, blank=True, null=True, choices=[
         (consts.ISSUER_FUNDS_SOURCE_LOAN_FUNDS, 'Заемные средства'),
         (consts.ISSUER_FUNDS_SOURCE_OTHER, 'Иное'),
-    ])
+    ], default=consts.ISSUER_FUNDS_SOURCE_LOAN_FUNDS)
 
     issuer_org_management_collegial_executive_name = models.CharField(verbose_name='Коллегиальный исполнительный орган: наименование', max_length=512, blank=True, null=False, default='')
     issuer_org_management_collegial_executive_fio = models.CharField(verbose_name='Коллегиальный исполнительный орган: ФИО', max_length=512, blank=True, null=False, default='')
