@@ -86,58 +86,49 @@
       <div class="panel-heading">Сведения об истребуемой гарантии</div>
       <div class="panel-body">
         <div class="row">
-
-          <div class="col-md-8">
-
-            <div class="row">
-              <div class="col-md-4">
-                <bs-input
-                  :name="'bg_sum'"
-                  v-model="bg_sum"
-                  label="Требуемая сумма"
-                  :mask="currency"
-                  v-bind:class="{'has-error': !sum_is_appropriate}"
-                ></bs-input>
-              </div>
-              <div class="col-md-4">
-                <div class="form-group">
-                  <label>Сроки БГ, по</label>
-                  <date-time-picker
-                    :name="'bg_end_date'"
-                    v-model="bg_end_date"
-                    :config="{'format':'L','locale':'ru'}"
-                    required
-                  ></date-time-picker>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <bs-input
-                  :name="'date_range'"
-                  v-model="date_range"
-                  label="Срок БГ, месяцев"
-                  readonly
-                  required
-                  v-bind:class="{'has-error': !date_range_is_appropriate}"
-                ></bs-input>
-              </div>
-            </div>
-
-          </div>
-
           <div class="col-md-4">
-            <bs3-radio-field :name="'bg_type'" v-model="bg_type" label="Тип БГ" :options="[{value: 'contract_execution', text:'Исполнение контракта'}, {value:'application_ensure', text:'Обеспечение заявки'}]"></bs3-radio-field>
-            <checkbox :name="'tender_has_prepayment'" v-model="tender_has_prepayment" type="primary">Наличие аванса</checkbox>
+            <bs-input
+              :name="'bg_sum'"
+              v-model="bg_sum"
+              label="Требуемая сумма"
+              :mask="currency"
+              v-bind:class="{'has-error': !sum_is_appropriate}"
+            ></bs-input>
           </div>
-
-        </div>
-        <div class="row">
           <div class="col-md-4">
             <div class="form-group">
-              <label for="id_bg_is_benefeciary_form" style="display: block;">БГ по форме Бенефециара</label>
-              <bs-select id="id_bg_is_benefeciary_form"  v-model="bg_is_benefeciary_form"
-                         :name="'bg_is_benefeciary_form'" :options-value="'val'"
-                         :options="[{val:'true', label: 'Да'}, {val:'false', label: 'Нет'}]"></bs-select>
+              <label>Сроки БГ, по</label>
+              <date-time-picker
+                :name="'bg_end_date'"
+                v-model="bg_end_date"
+                :config="{'format':'L','locale':'ru'}"
+                required
+              ></date-time-picker>
             </div>
+          </div>
+          <div class="col-md-4">
+            <bs-input
+              :name="'date_range'"
+              v-model="date_range"
+              label="Срок БГ, месяцев"
+              readonly
+              required
+              v-bind:class="{'has-error': !date_range_is_appropriate}"
+            ></bs-input>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-8">
+            <bs3-radio-field :name="'bg_type'" v-model="bg_type" label="Тип БГ" :options="[
+            {value: 'contract_execution', text:'Исполнение обязательств по контракту'},
+            {value:'application_ensure', text:'Для обеспечения заявки на участие в конкурсе (тендерная гарантия)'},
+            {value: 'refund_of_advance', text:'Возврат аванса'},
+            {value: 'warranty_ensure', text:'Обеспечение гарантийных обязательств'}]"></bs3-radio-field>
+          </div>
+
+          <div class="col-md-4">
+            <checkbox :name="'bg_is_benefeciary_form'" v-model="bg_is_benefeciary_form" type="primary">БГ по форме Бенефециара</checkbox>
           </div>
         </div>
       </div>
@@ -211,13 +202,14 @@
       {{ bank_commission }} руб.
     </div>
   </div>
+
 </template>
 
 <script>
   import jQuery from 'jquery'
   import moment from 'moment'
   import _ from 'lodash'
-  import {input, checkbox, select} from 'vue-strap'
+  import {input, checkbox} from 'vue-strap'
   import DateTimePicker from 'vue-bootstrap-datetimepicker'
   import BS3SelectField from '@/components/inputs/BS3SelectField'
   import BS3RadioField from '@/components/inputs/BS3RadioField'
@@ -229,7 +221,6 @@
   export default {
     name: 'form-bank-guarantee',
     components: {
-      'bs-select': select,
       'bs-input': input,
       'checkbox': checkbox,
       'bs3-select-field': BS3SelectField,
@@ -250,7 +241,7 @@
           tender_application_ensure_cost: regData.formdata.tender_application_ensure_cost,
           tender_contract_execution_ensure_cost: regData.formdata.tender_contract_execution_ensure_cost,
 
-          tender_has_prepayment: regData.formdata.tender_has_prepayment,
+          bg_is_benefeciary_form: regData.formdata.bg_is_benefeciary_form,
           tender_contract_type: regData.formdata.tender_contract_type,
           tender_contract_subject: regData.formdata.tender_contract_subject,
 
@@ -272,7 +263,6 @@
           bg_currency: 'rur',
           bg_start_date: regData.formdata.bg_start_date,
           bg_end_date: moment(regData.formdata.bg_end_date, dateformat),
-          bg_is_benefeciary_form: regData.formdata.bg_is_benefeciary_form.toString(),
 
           bg_commercial_contract_subject: regData.formdata.bg_commercial_contract_subject,
           bg_commercial_contract_place_of_work: regData.formdata.bg_commercial_contract_place_of_work,
@@ -295,7 +285,7 @@
           tender_collect_end_date: '',
           tender_finish_date: '',
 
-          tender_has_prepayment: '',
+          bg_is_benefeciary_form: '',
           tender_contract_type: '',
           tender_contract_subject: '',
 
@@ -310,7 +300,6 @@
           bg_currency: 'rur',
           bg_start_date: moment().format(dateformat),
           bg_end_date: '',
-          bg_is_benefeciary_form: 'True',
 
           bg_commercial_contract_subject: '',
           bg_commercial_contract_place_of_work: '',
@@ -443,6 +432,16 @@
         }
         if (this.bg_type === 'contract_execution') {
           if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === this.tender_application_ensure_cost) if (this.tender_contract_execution_ensure_cost) this.bg_sum = this.tender_contract_execution_ensure_cost
+        }
+        if (this.bg_type === 'refund_of_advance') {
+          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === this.tender_contract_execution_ensure_cost) {
+            this.bg_sum = this.tender_contract_execution_ensure_cost
+          }
+        }
+        if (this.bg_type === 'warranty_ensure') {
+          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === this.tender_contract_execution_ensure_cost) {
+            this.bg_sum = this.tender_contract_execution_ensure_cost
+          }
         }
       }
     }

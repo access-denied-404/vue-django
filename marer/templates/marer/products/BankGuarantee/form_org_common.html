@@ -1,7 +1,67 @@
 <div class="panel panel-info">
-    <div class="panel-heading" data-toggle="collapse" data-target="#panel-org-common">Сведения о компании-заявителе</div>
-    <div class="panel-body collapse" id="panel-org-common">
-        <div class="container-fluid">
+	<div class="panel-heading">Сведения о компании-заявителе</div>
+	<div class="panel-body">
+		<div class="container-fluid">
+
+			<div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Фактический адрес</label>
+                        {{ form.issuer_fact_address }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Почтовый адрес (для отправки банковской гарантии)</label>
+                        {{ form.issuer_post_address }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+            	<div class="col-md-4">
+            		<div class="form-group">
+                        <label>Номер свидетельства о постановке</label>
+                        {{ form.issuer_ifns_reg_cert_number }}
+                    </div>
+            	</div>
+                <div class="col-md-5">
+            		<div class="form-group">
+                        <label>Основной вид деятельности (код ОКВЭД)</label>
+                        {{ form.issuer_okved }}
+                    </div>
+            	</div>
+                <div class="col-md-3">
+            		<div class="form-group">
+                        <label>Web-сайт</label>
+                        {{ form.issuer_web_site }}
+                    </div>
+            	</div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>ФИО главного бухгалтера / наименование организации, осуществляющей ведение бухгалтерского учёта</label>
+                        {{ form.issuer_accountant_org_or_person }}
+                    </div>
+            	</div>
+                <div class="col-md-6">
+            		<div class="form-group">
+                        <label>Средняя численность работников за предшествующий календарный год</label>
+                        {{ form.avg_employees_cnt_for_prev_year }}
+                    </div>
+            	</div>
+            </div>
+
+		</div>
+        <div data-toggle="collapse" data-target="#panel-org-common">
+            <a class="btn btn-link btn-xs">
+              Подробности
+            </a>
+        </div>
+        <div class="collapse" id="panel-org-common">
+            <div class="container-fluid">
             <div class="row">
                 <div class="col-md-8">
                     <div class="form-group">
@@ -17,26 +77,16 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <div class="form-group">
                         <label>Юридический адрес</label>
                         {{ form.issuer_legal_address }}
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <div class="form-group">
-                        <label>Фактический адрес</label>
-                        {{ form.issuer_fact_address }}
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label>Почтовый адрес (в т.ч. для отправки банковской гарантии)</label>
-                        {{ form.issuer_post_address }}
+                        <label>Форма собственности (код ОКОПФ)</label>
+                        {{ form.issuer_okopf }}
                     </div>
                 </div>
             </div>
@@ -67,83 +117,29 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label>Дата регистрации компании</label>
                         {{ form.issuer_registration_date }}
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label>Дата постановки на учет в ИФНС</label>
                         {{ form.issuer_ifns_reg_date }}
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>Номер свидетельства о постановке</label>
-                        {{ form.issuer_ifns_reg_cert_number }}
-                    </div>
-                </div>
-            </div>
-            <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label>Форма собственности (код ОКОПФ)</label>
-                        {{ form.issuer_okopf }}
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Основной вид деятельности (код ОКВЭД)</label>
-                        {{ form.issuer_okved }}
+                        <label>Наличие просроченной задолженности по всем кредитам за последние 180 дней</label>
+                        {{ form.issuer_has_overdue_debts_for_last_180_days }}
                     </div>
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-md-12">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label>Средняя численность работников за предшествующий календарный год</label>
-                                {{ form.avg_employees_cnt_for_prev_year }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label>Web-сайт</label>
-                                {{ form.issuer_web_site }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-7">
-                            <div class="form-group">
-                                <label>ФИО главного бухгалтера / наименование организации, осуществляющей ведение бухгалтерского учёта</label>
-                                {{ form.issuer_accountant_org_or_person }}
-                            </div>
-                        </div>
-                        <div class="col-md-5">
-                            <div class="form-group">
-                                <label>Наличие просроченной задолженности по всем кредитам за последние 180 дней</label>
-                                {{ form.issuer_has_overdue_debts_for_last_180_days }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label>Причины и обстоятельства просрочек</label>
-                                {{ form.issuer_overdue_debts_info }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
-
+            </div>
         </div>
     </div>
 </div>
