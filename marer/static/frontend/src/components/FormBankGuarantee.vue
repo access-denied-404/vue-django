@@ -86,75 +86,54 @@
       <div class="panel-heading">Сведения об истребуемой гарантии</div>
       <div class="panel-body">
         <div class="row">
-
-          <div class="col-md-8">
-
-            <div class="row">
-              <div class="col-md-4">
-                <bs-input
-                  :name="'bg_sum'"
-                  v-model="bg_sum"
-                  label="Требуемая сумма"
-                  :mask="currency"
-                  v-bind:class="{'has-error': !sum_is_appropriate}"
-                ></bs-input>
-              </div>
-              <div class="col-md-4">
-                <div class="form-group">
-                  <label>Сроки БГ, по</label>
-                  <date-time-picker
-                    :name="'bg_end_date'"
-                    v-model="bg_end_date"
-                    :config="{'format':'L','locale':'ru'}"
-                    required
-                  ></date-time-picker>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <bs-input
-                  :name="'date_range'"
-                  v-model="date_range"
-                  label="Срок БГ, месяцев"
-                  readonly
-                  required
-                  v-bind:class="{'has-error': !date_range_is_appropriate}"
-                ></bs-input>
-              </div>
-            </div>
-
-          </div>
-
           <div class="col-md-4">
+            <bs-input
+              :name="'bg_sum'"
+              v-model="bg_sum"
+              label="Требуемая сумма"
+              :mask="currency"
+              v-bind:class="{'has-error': !sum_is_appropriate}"
+            ></bs-input>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Сроки БГ, по</label>
+              <date-time-picker
+                :name="'bg_end_date'"
+                v-model="bg_end_date"
+                :config="{'format':'L','locale':'ru'}"
+                required
+              ></date-time-picker>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <bs-input
+              :name="'date_range'"
+              v-model="date_range"
+              label="Срок БГ, месяцев"
+              readonly
+              required
+              v-bind:class="{'has-error': !date_range_is_appropriate}"
+            ></bs-input>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-8">
             <bs3-radio-field :name="'bg_type'" v-model="bg_type" label="Тип БГ" :options="[
             {value: 'contract_execution', text:'Исполнение обязательств по контракту'},
             {value:'application_ensure', text:'Для обеспечения заявки на участие в конкурсе (тендерная гарантия)'},
             {value: 'refund_of_advance', text:'Возврат аванса'},
             {value: 'warranty_ensure', text:'Обеспечение гарантийных обязательств'}]"></bs3-radio-field>
-            <checkbox :name="'tender_has_prepayment'" v-model="tender_has_prepayment" type="primary">Наличие аванса</checkbox>
+          </div>
+
+          <div class="col-md-4">
             <checkbox :name="'bg_is_benefeciary_form'" v-model="bg_is_benefeciary_form" type="primary">БГ по форме Бенефециара</checkbox>
           </div>
-
-          <div class="col-md-4">
-            <bs-input
-              :name="total_sum"
-              v-model="total_sum"
-              label="Общая сумма, руб"
-              readonly
-            ></bs-input>
-          </div>
-          <div class="col-md-4">
-            <bs-input
-              :name="comission"
-              v-model="comission"
-              label="Комиссия, руб"
-              readonly
-            ></bs-input>
-          </div>
-
         </div>
-
       </div>
     </div>
+  </div>
 
 </template>
 
@@ -194,7 +173,6 @@
           tender_application_ensure_cost: regData.formdata.tender_application_ensure_cost,
           tender_contract_execution_ensure_cost: regData.formdata.tender_contract_execution_ensure_cost,
 
-          tender_has_prepayment: regData.formdata.tender_has_prepayment,
           bg_is_benefeciary_form: regData.formdata.bg_is_benefeciary_form,
           tender_contract_type: regData.formdata.tender_contract_type,
           tender_contract_subject: regData.formdata.tender_contract_subject,
@@ -235,7 +213,6 @@
           tender_collect_end_date: '',
           tender_finish_date: '',
 
-          tender_has_prepayment: '',
           bg_is_benefeciary_form: '',
           tender_contract_type: '',
           tender_contract_subject: '',
@@ -281,31 +258,6 @@
         },
         set () {
         }
-      },
-      comission: {
-        get () {
-          var Q25 = 0.0027
-          var M10 = 0
-          var M11 = 0
-          var M12 = 0
-          var M13 = 0
-          if (this.bg_is_benefeciary_form) M10 = 0.1
-          if (this.bg_type === 'refund_of_advance') M11 = 0.1
-          if (this.tender_exec_law === '185-fz') M12 = 0.05
-          if (this.bg_type === 'warranty_ensure') M13 = 0.1
-
-          var nOfMonths = this.date_range
-          var simpleComission = this.bg_sum * nOfMonths * Q25
-          var comission = simpleComission * (1 + M10 + M11 + M12 + M13)
-          return comission.toFixed(2)
-        },
-        set () {}
-      },
-      total_sum: {
-        get () {
-          return (parseFloat(this.bg_sum) + parseFloat(this.comission)).toFixed(2)
-        },
-        set () {}
       },
       tender_add_data_switch_caption: {
         get () {
