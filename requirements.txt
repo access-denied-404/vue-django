@@ -5,6 +5,7 @@ django-mptt==0.8.7
 django-pipeline==1.6.13
 django-split-settings==0.2.5
 djangorestframework==3.6.4
+feedparser==5.2.1
 openpyxl==2.4.9
 Pillow==4.2.1
 pyasn1==0.4.2

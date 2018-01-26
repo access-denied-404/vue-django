@@ -2,6 +2,7 @@ import json
 
 import os
 
+import feedparser
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
@@ -265,6 +266,12 @@ class Issue(models.Model):
         blank=True,
         related_name='sec_dep_conclusion_docs_links'
     )
+
+    @cached_property
+    def finished_contracts_count(self):
+        url = 'http://zakupki.gov.ru/epz/contract/extendedsearch/rss?openMode=USE_DEFAULT_PARAMS&pageNumber=1&sortDirection=false&recordsPerPage=_50&sortBy=PO_DATE_OBNOVLENIJA&fz44=on&fz94=on&priceFrom=0&priceTo=200000000000&advancePercentFrom=hint&advancePercentTo=hint&contractStageList_1=on&contractStageList=1&supplierTitle=%s' % self.issuer_inn
+        data = feedparser.parse(url)
+        return len(data['entries'])
 
     @cached_property
     def passed_prescoring(self):
@@ -737,6 +744,9 @@ class Issue(models.Model):
                 if self.tender_responsible_inn.startswith(bl_inn_start):
                     ve.error_list.append('Обнаружен стоп-фактор: заказчик находится в необслуживаемом регионе')
                     break
+
+            if self.finished_contracts_count == 0:
+                ve.error_list.append('Обнаружен стоп-фактор: нет опыта исполненных контрактов')
 
         except Exception:
             ve.error_list.append('Не удалось проверить заявку на стоп-факторы')
