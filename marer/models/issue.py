@@ -743,6 +743,9 @@ class Issue(models.Model):
                 if self.issuer_inn.startswith(bl_inn_start):
                     ve.error_list.append('Обнаружен стоп-фактор: исполнитель находится в необслуживаемом регионе')
                     break
+            if kontur_principal_analytics_data.get('m5006', False):
+                ve.error_list.append(
+                    'Обнаружен стоп-фактор: указан недостоверный адрес исполнителя')
 
             # benefitiar stop factors
             if self.tender_exec_law in [consts.TENDER_EXEC_LAW_44_FZ, consts.TENDER_EXEC_LAW_223_FZ]:
