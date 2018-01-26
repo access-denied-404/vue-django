@@ -1,18 +1,24 @@
 <div class="panel panel-info">
-    <div class="panel-heading">Сведения о компании-заявителе</div>
+    <div class="panel-heading">Руководитель компании</div>
     <div class="panel-body">
         <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>Дата рождения</label>
                             {{ form.issuer_head_birthday }}
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>Телефон</label>
                             {{ form.issuer_head_phone }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Адрес прописки</label>
+                            {{ form.issuer_head_residence_address }}
                         </div>
                     </div>
                 </div>
@@ -45,12 +51,6 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label>Адрес прописки</label>
-                            {{ form.issuer_head_residence_address }}
-                        </div>
-                    </div>
                 </div>
 
         </div>
@@ -91,5 +91,6 @@
 
             </div>
         </div>
+    </div>
     </div>
 </div>
