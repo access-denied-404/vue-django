@@ -916,11 +916,11 @@ class IssueClarification(models.Model):
 
 class IssueClarificationMessage(models.Model):
     class Meta:
-        verbose_name = 'сообщение по дозапросу'
-        verbose_name_plural = 'сообщения по дозапросу'
+        verbose_name = 'сообщение по заявке'
+        verbose_name_plural = 'сообщения по заявке'
 
-    clarification = models.ForeignKey(
-        IssueClarification,
+    issue = models.ForeignKey(
+        Issue,
         on_delete=models.CASCADE,
         blank=False,
         null=False,
@@ -931,14 +931,14 @@ class IssueClarificationMessage(models.Model):
     created_at = models.DateTimeField(verbose_name='время создания', auto_now_add=True, null=False)
 
     def __str__(self):
-        return 'Сообщение по дозапросу №{num} от пользователя {user} в {created}'.format(
-            num=self.clarification_id,
+        return 'Сообщение по заявке №{num} от пользователя {user} в {created}'.format(
+            num=self.issue_id,
             user=self.user,
             created=self.created_at,
         )
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        set_obj_update_time(self.clarification)
+        set_obj_update_time(self.issue)
         return super().save(force_insert, force_update, using, update_fields)
 
 

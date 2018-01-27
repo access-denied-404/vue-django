@@ -368,31 +368,37 @@ class IssueAdditionalDocumentsRequestsView(IssueView):
 
     def get_context_data(self, **kwargs):
         kwargs['consts'] = consts
+        if 'comment_form' not in kwargs:
+            kwargs['comment_form'] = IFOPCMessageForm()
         return super().get_context_data(**kwargs)
 
     def post(self, request, *args, **kwargs):
 
-        proposes_docs = IssueProposeDocument.objects.filter(
-            issue=self.get_issue())
-        for pdoc in proposes_docs:
-            pdoc_files_key = 'propose_doc_%s' % pdoc.id
-            pdoc_files_del_key = 'propose_doc_%s_del' % pdoc.id
-            pdoc_file = request.FILES.get(pdoc_files_key, None)
-            pdoc_del_mark = request.POST.get(pdoc_files_del_key, None)
-            if pdoc_file:
-                if pdoc.document:
-                    pdoc.document.file = pdoc_file
-                    pdoc.document.save()
-                else:
-                    new_doc = Document()
-                    new_doc.file = pdoc_file
-                    new_doc.save()
-                    pdoc.document = new_doc
-                pdoc.save()
+        comment_form = IFOPCMessageForm(request.POST, request.FILES)
 
-            if pdoc_del_mark:
-                pdoc.document = None
-                pdoc.save(chain_docs_update=False)
+        if comment_form.is_valid():
+
+            if self.get_issue() and 'issue_additional_documents_requests' not in self.get_issue().editable_dashboard_views():
+                return self.get(request, *args, **kwargs)
+
+            new_msg = IssueClarificationMessage()
+            new_msg.issue = self.get_issue()
+            new_msg.message = comment_form.cleaned_data['message']
+            new_msg.user = request.user
+            new_msg.save()
+
+            for ffield in ['doc%s' % dnum for dnum in range(1, 9)]:
+                ffile = comment_form.cleaned_data[ffield]
+                if ffile:
+                    new_doc = Document()
+                    new_doc.file = ffile
+                    new_doc.save()
+
+                    new_clarif_doc_link = IssueFinanceOrgProposeClarificationMessageDocument()
+                    new_clarif_doc_link.clarification_message = new_msg
+                    new_clarif_doc_link.name = ffile.name
+                    new_clarif_doc_link.document = new_doc
+                    new_clarif_doc_link.save()
 
         return self.get(request, *args, **kwargs)
 
