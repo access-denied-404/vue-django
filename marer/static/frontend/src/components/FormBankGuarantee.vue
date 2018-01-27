@@ -142,43 +142,55 @@
 
           <div class="row">
             <div class="col-md-4 h4">Наименование показателя</div>
-            <div class="col-md-4 h6">За последний отчётный период (2016 г.)</div>
-            <div class="col-md-4 h6">Результат за последний квартал (2017 г.)</div>
+            <div class="col-md-8">
+              <div class="col-md-4 h5">Код строки</div>
+              <div class="col-md-4 h6">За последний отчётный период (2016 г.)</div>
+              <div class="col-md-4 h6">Результат за последний квартал (2017 г.)</div>
+            </div>
           </div>
 
           <div class="row">
             <div class="col-md-4">Чистые активы</div>
-            <div class="col-md-4">
-              <input class="form-control input-sm" name="balance_code_1300_offset_1"
-                     v-model="balance_code_1300_offset_1"/>
-            </div>
-            <div class="col-md-4">
-              <input class="form-control input-sm" name="balance_code_1300_offset_0"
-                     v-model="balance_code_1300_offset_0"/>
+            <div class="col-md-8">
+              <div class="col-md-4">1300</div>
+              <div class="col-md-4">
+                <input class="form-control input-sm" name="balance_code_1300_offset_1"
+                       v-model="balance_code_1300_offset_1"/>
+              </div>
+              <div class="col-md-4">
+                <input class="form-control input-sm" name="balance_code_1300_offset_0"
+                       v-model="balance_code_1300_offset_0"/>
+              </div>
             </div>
           </div>
 
           <div class="row">
             <div class="col-md-4">Валюта баланса</div>
-            <div class="col-md-4">
-              <input class="form-control input-sm" name="balance_code_1600_offset_1"
-                     v-model="balance_code_1600_offset_1"/>
-            </div>
-            <div class="col-md-4">
-              <input class="form-control input-sm" name="balance_code_1600_offset_0"
-                     v-model="balance_code_1600_offset_0"/>
+            <div class="col-md-8">
+              <div class="col-md-4">1600</div>
+              <div class="col-md-4">
+                <input class="form-control input-sm" name="balance_code_1600_offset_1"
+                       v-model="balance_code_1600_offset_1"/>
+              </div>
+              <div class="col-md-4">
+                <input class="form-control input-sm" name="balance_code_1600_offset_0"
+                       v-model="balance_code_1600_offset_0"/>
+              </div>
             </div>
           </div>
 
           <div class="row">
             <div class="col-md-4">Прибыль</div>
-            <div class="col-md-4">
-              <input class="form-control input-sm" name="balance_code_2400_offset_1"
-                     v-model="balance_code_2400_offset_1"/>
-            </div>
-            <div class="col-md-4">
-              <input class="form-control input-sm" name="balance_code_2400_offset_0"
-                     v-model="balance_code_2400_offset_0"/>
+            <div class="col-md-8">
+              <div class="col-md-4">2400</div>
+              <div class="col-md-4">
+                <input class="form-control input-sm" name="balance_code_2400_offset_1"
+                       v-model="balance_code_2400_offset_1"/>
+              </div>
+              <div class="col-md-4">
+                <input class="form-control input-sm" name="balance_code_2400_offset_0"
+                       v-model="balance_code_2400_offset_0"/>
+              </div>
             </div>
           </div>
 
