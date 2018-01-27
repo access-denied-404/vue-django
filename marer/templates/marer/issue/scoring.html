@@ -11,7 +11,7 @@
         <div class="panel-heading">Резултьтаты прохождения экспресс-анализа</div>
         <div class="panel-body">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6">
                     {% if issue.status == consts.ISSUE_STATUS_REVIEW %}
                         <div class="alert alert-success h1 text-center">Заявка на рассмотрении</div>
                     {% elif issue.passed_prescoring %}
@@ -19,6 +19,17 @@
                     {% else %}
                         <div class="alert alert-danger h1 text-center">Анализ не пройден</div>
                     {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <div class="h1 text-center">
+                        Комиссия банка
+                        <br/>
+                        {% if issue.passed_prescoring %}
+                            {{ issue.bank_commission |floatformat:2 }} руб.
+                        {% else %}
+                            <span class="text-danger h3">Не в рамках продукта</span>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
             <div class="row">
