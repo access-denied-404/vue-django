@@ -15,9 +15,9 @@
                     {% if issue.status == consts.ISSUE_STATUS_REVIEW %}
                         <div class="alert alert-success h1 text-center">Заявка на рассмотрении</div>
                     {% elif issue.passed_prescoring %}
-                        <div class="alert alert-success h1 text-center">Анализ пройден</div>
+                        <div class="alert alert-success h1 text-center">Стоп-факторы пройдены</div>
                     {% else %}
-                        <div class="alert alert-danger h1 text-center">Анализ не пройден</div>
+                        <div class="alert alert-danger h1 text-center">Стоп-факторы не пройдены</div>
                     {% endif %}
                 </div>
                 <div class="col-md-6">
