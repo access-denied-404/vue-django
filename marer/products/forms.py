@@ -69,6 +69,11 @@ class BGFinProdRegForm(Form):
         (False, 'Нет'),
     ]))
 
+    is_indisputable_charge_off = BooleanField(required=False,
+                                              initial=True,
+                                              widget=Select(
+                                                  attrs={'class': 'form-control'}))
+
     tender_contract_type = ChoiceField(required=False, choices=[
         (consts.TENDER_CONTRACT_TYPE_SUPPLY_CONTRACT, 'Поставка товара'),
         (consts.TENDER_CONTRACT_TYPE_SERVICE_CONTRACT, 'Оказание услуг'),

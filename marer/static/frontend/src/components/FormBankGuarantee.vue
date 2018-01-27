@@ -130,6 +130,8 @@
 
           <div class="col-md-4">
             <checkbox :name="'bg_is_benefeciary_form'" v-model="bg_is_benefeciary_form" type="primary">БГ по форме Бенефециара</checkbox>
+            <checkbox :name="'tender_has_prepayment'" v-model="tender_has_prepayment" type="primary">Наличие аванса</checkbox>
+            <checkbox :name="'is_indisputable_charge_off'" v-model="is_indisputable_charge_off" type="primary">Бесспорное списание</checkbox>
           </div>
         </div>
       </div>
@@ -242,6 +244,8 @@
           tender_contract_execution_ensure_cost: regData.formdata.tender_contract_execution_ensure_cost,
 
           bg_is_benefeciary_form: regData.formdata.bg_is_benefeciary_form,
+          is_indisputable_charge_off: regData.formdata.is_indisputable_charge_off,
+          tender_has_prepayment: regData.formdata.tender_has_prepayment,
           tender_contract_type: regData.formdata.tender_contract_type,
           tender_contract_subject: regData.formdata.tender_contract_subject,
 
@@ -286,6 +290,8 @@
           tender_finish_date: '',
 
           bg_is_benefeciary_form: '',
+          is_indisputable_charge_off: true,
+          tender_has_prepayment: '',
           tender_contract_type: '',
           tender_contract_subject: '',
 

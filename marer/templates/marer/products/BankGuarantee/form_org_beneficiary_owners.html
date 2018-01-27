@@ -20,6 +20,10 @@
                                 {{ formset.empty_form.fio }}
                             </td>
                             <td class="h6">{{ formset.empty_form.inn_or_snils }}</td>
+                            <td class="h6">{{ formset.empty_form.legal_address }}</td>
+                            <td class="h6">{{ formset.empty_form.fact_address }}</td>
+                            <td class="h6">{{ formset.empty_form.post_address }}</td>
+                            <td class="h6">{{ formset.empty_form.on_belong_to_pub_persons_info }}</td>
                             <td class="h6">
                                 {{ formset.empty_form.DELETE }}
                                 <button type="button" class="btn btn-link btn-xs" data-formset-delete-button>
@@ -33,8 +37,12 @@
 
                 <table class="table">
                     <tr>
-                        <th class="h6 col-md-6"><b>ФИО</b></th>
-                        <th class="h6 col-md-5"><b>ИНН/СНИЛС (при наличии)</b></th>
+                        <th class="h6 col-md-2"><b>ФИО</b></th>
+                        <th class="h6 col-md-2"><b>ИНН/СНИЛС (при наличии)</b></th>
+                        <th class="h6 col-md-2"><b>Адресс регистрации</b></th>
+                        <th class="h6 col-md-2"><b>Фактический адресс</b></th>
+                        <th class="h6 col-md-2"><b>Почтовый адресс</b></th>
+                        <th class="h6 col-md-2"><b>Сведения о принадлежности к публичным лицам</b></th>
                         <th class="col-md-1">&nbsp;</th>
                     </tr>
                     <tbody data-formset-body>
@@ -42,9 +50,13 @@
                         <tr data-formset-form>
                             <td class="h6">
                                 {{ form.id }}
-                                {{ form.fio.value }}
+                                {{ form.fio }}
                             </td>
-                            <td class="h6">{{ form.inn_or_snils.value }}</td>
+                            <td class="h6">{{ form.inn_or_snils }}</td>
+                            <td class="h6">{{ form.legal_address }}</td>
+                            <td class="h6">{{ form.fact_address }}</td>
+                            <td class="h6">{{ form.post_address }}</td>
+                            <td class="h6">{{ form.on_belong_to_pub_persons_info }}</td>
                             <td class="h6">
                                 {{ form.DELETE }}
                                 <button type="button" class="btn btn-link btn-xs" data-formset-delete-button>
