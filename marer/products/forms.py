@@ -41,11 +41,6 @@ class BGFinProdRegForm(Form):
     bg_commercial_contract_sign_date = DateField(required=False)
     bg_commercial_contract_end_date = DateField(required=False)
 
-    balance_code_1300_offset_1 = BalanceCodeDecimalField(decimal_places=2, required=False, localize=True)
-    balance_code_1300_offset_0 = BalanceCodeDecimalField(decimal_places=2, required=False, localize=True)
-    balance_code_1600_offset_1 = BalanceCodeDecimalField(decimal_places=2, required=False, localize=True)
-    balance_code_1600_offset_0 = BalanceCodeDecimalField(decimal_places=2, required=False, localize=True)
-
     balance_code_2400_offset_1 = BalanceCodeDecimalField(decimal_places=2, required=False, localize=True)
     balance_code_2400_offset_0 = BalanceCodeDecimalField(decimal_places=2, required=False, localize=True)
 
@@ -77,21 +72,16 @@ class BGFinProdRegForm(Form):
     tender_has_prepayment = BooleanField(required=False)
 
     def clean(self):
-        bg_sum_min = BankMinimalCommission.objects.order_by('sum_min').first().sum_min
-        bg_sum_max = BankMinimalCommission.objects.order_by('-sum_max').first().sum_max
-        if not self.cleaned_data['bg_sum'] or not bg_sum_min < self.cleaned_data['bg_sum'] < bg_sum_max:
-            self.add_error(None, 'Неверная сумма запрашиваемой гарантии')
+        # bg_sum_min = BankMinimalCommission.objects.order_by('sum_min').first().sum_min
+        # bg_sum_max = BankMinimalCommission.objects.order_by('-sum_max').first().sum_max
+        # if not self.cleaned_data['bg_sum'] or not bg_sum_min < self.cleaned_data['bg_sum'] < bg_sum_max:
+        #     self.add_error(None, 'Неверная сумма запрашиваемой гарантии')
 
         bg_start = self.cleaned_data['bg_start_date']
         bg_end = self.cleaned_data['bg_end_date']
         bg_months_diff = 1 + (bg_end.year - bg_start.year) * 12 + bg_end.month - bg_start.month
         if not bg_start or not bg_end or not 0 < bg_months_diff < 30:
             self.add_error(None, 'Неверный срок действия запрашиваемой гарантии')
-
-        bo_1600_last_period = self.cleaned_data['balance_code_1600_offset_1'] or 0
-        bo_1600_last_year = self.cleaned_data['balance_code_1600_offset_0'] or 0
-        if bo_1600_last_period < 0 or bo_1600_last_year < 0:
-            self.add_error(None, 'Отрицательный баланс')
 
 
 class CreditFinProdRegForm(Form):
