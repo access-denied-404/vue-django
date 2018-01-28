@@ -19,19 +19,13 @@
             </div>
 
             <div class="row">
-            	<div class="col-md-4">
+            	<div class="col-md-6">
             		<div class="form-group">
                         <label>Номер свидетельства о постановке</label>
                         {{ form.issuer_ifns_reg_cert_number }}
                     </div>
             	</div>
-                <div class="col-md-5">
-            		<div class="form-group">
-                        <label>Основной вид деятельности (код ОКВЭД)</label>
-                        {{ form.issuer_okved }}
-                    </div>
-            	</div>
-                <div class="col-md-3">
+                <div class="col-md-6">
             		<div class="form-group">
                         <label>Web-сайт</label>
                         {{ form.issuer_web_site }}
@@ -91,19 +85,25 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>ОГРН</label>
+                        {{ form.issuer_ogrn }}
+                    </div>
+                </div>
+                <div class="col-md-3">
                     <div class="form-group">
                         <label>ИНН</label>
                         {{ form.issuer_inn }}
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label>КПП</label>
                         {{ form.issuer_kpp }}
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label>ОКПО</label>
                         {{ form.issuer_okpo }}
