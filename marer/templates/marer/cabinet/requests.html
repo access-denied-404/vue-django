@@ -1,27 +1,29 @@
 {% extends 'marer/cabinet/layout_dashboard.html' %}
 
 {% block cabinet_dashboard_content %}
-<div class="pull-right">
-{#    <form style="display: inline">#}
-{#        <div class="btn-group" role="group">#}
-{#            <label>{{ filter_form.fpgrp.label }}</label>#}
-{#        </div>#}
-{#        <div class="btn-group" role="group" aria-label="{{ filter_form.fpgrp.label }}">#}
-{#            {{ filter_form.fpgrp }}#}
-{#        </div>#}
-{#        &nbsp;#}
-{#        &nbsp;#}
-{#        <div class="btn-group" role="group">#}
-{#            <label>{{ filter_form.status.label }}</label>#}
-{#        </div>#}
-{#        <div class="btn-group" role="group" aria-label="{{ filter_form.status.label }}">#}
-{#            {{ filter_form.status }}#}
-{#        </div>#}
-{#    </form>#}
-    <div class="btn-group" role="group" aria-label="Статус заявки">
-        <a class="btn btn-yellow" href="{% url 'issue_new' %}" role="button">Создать заявку</a>
+    <div class="pull-left">
+        <form style="display: inline">
+            {#        <div class="btn-group" role="group">#}
+            {#            <label>{{ filter_form.fpgrp.label }}</label>#}
+            {#        </div>#}
+            {#        <div class="btn-group" role="group" aria-label="{{ filter_form.fpgrp.label }}">#}
+            {#            {{ filter_form.fpgrp }}#}
+            {#        </div>#}
+            {#        &nbsp;#}
+            {#        &nbsp;#}
+            <div class="btn-group" role="group">
+                <label>{{ filter_form.status.label }}</label>
+            </div>
+            <div class="btn-group" role="group" aria-label="{{ filter_form.status.label }}">
+                {{ filter_form.status }}
+            </div>
+        </form>
     </div>
-</div>
+    <div class="pull-right">
+        <div class="btn-group" role="group" aria-label="Статус заявки">
+            <a class="btn btn-yellow" href="{% url 'issue_new' %}" role="button">Создать заявку</a>
+        </div>
+    </div>
 <div class="clearfix"></div>
 <br/>
 
@@ -100,4 +102,15 @@
         </ul>
     </nav>
 {% endif %}
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(function () {
+            $('body').on('change', '#id_status', function (e) {
+                $(this).closest('form').submit();
+            })
+        });
+    </script>
+
 {% endblock %}
