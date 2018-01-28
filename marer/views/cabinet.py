@@ -34,9 +34,21 @@ class CabinetRequestsView(LoginRequiredMixin, TemplateView):
             paged_filtered_issues_qs = paged_filtered_issues_qs.page(1)
         except EmptyPage:
             paged_filtered_issues_qs = paged_filtered_issues_qs.page(1)
+        get_params = request.GET.copy()
+        for key in request.GET:
+            if get_params.get(key, '') == '' or get_params.get(key, None) is None or key == 'page':
+                del get_params[key]
+        get_params_as_new = ''
+        get_params_as_addition = ''
+        if len(get_params):
+            get_params = get_params.urlencode()
+            get_params_as_new = '?' + get_params
+            get_params_as_addition = '&' + get_params
         kwargs.update(dict(
             filter_form=filter_form,
-            issues=paged_filtered_issues_qs
+            issues=paged_filtered_issues_qs,
+            get_params_as_new=get_params_as_new,
+            get_params_as_addition=get_params_as_addition,
         ))
         return super().get(request, *args, **kwargs)
 

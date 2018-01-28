@@ -1,28 +1,20 @@
 {% extends 'marer/cabinet/layout_dashboard.html' %}
 
 {% block cabinet_dashboard_content %}
-    <div class="pull-left">
-        <form style="display: inline">
-            {#        <div class="btn-group" role="group">#}
-            {#            <label>{{ filter_form.fpgrp.label }}</label>#}
-            {#        </div>#}
-            {#        <div class="btn-group" role="group" aria-label="{{ filter_form.fpgrp.label }}">#}
-            {#            {{ filter_form.fpgrp }}#}
-            {#        </div>#}
-            {#        &nbsp;#}
-            {#        &nbsp;#}
-            <div class="btn-group" role="group">
-                <label>{{ filter_form.status.label }}</label>
-            </div>
-            <div class="btn-group" role="group" aria-label="{{ filter_form.status.label }}">
-                {{ filter_form.status }}
-            </div>
-        </form>
-    </div>
     <div class="pull-right">
+        &nbsp;
+        &nbsp;
         <div class="btn-group" role="group" aria-label="Статус заявки">
             <a class="btn btn-yellow" href="{% url 'issue_new' %}" role="button">Создать заявку</a>
         </div>
+    </div>
+    <div class="pull-right">
+        <form class="form-inline">
+            <div class="form-group">
+                <label>{{ filter_form.status.label }}</label>
+                {{ filter_form.status }}
+            </div>
+        </form>
     </div>
 <div class="clearfix"></div>
 <br/>
@@ -63,11 +55,11 @@
             {% if issues.has_previous %}
                 <li>
                     {% if issues.contacts.previous_page_number == 1 %}
-                        <a href="{% url 'cabinet_requests' %}" aria-label="Previous">
+                        <a href="{% url 'cabinet_requests' %}{{ get_params_as_new }}" aria-label="Previous">
                             <span aria-hidden="true" class="glyphicon glyphicon glyphicon-chevron-left"></span>
                         </a>
                     {% else %}
-                        <a href="{% url 'cabinet_requests' %}?page={{ issues.previous_page_number }}" aria-label="Previous">
+                        <a href="{% url 'cabinet_requests' %}?page={{ issues.previous_page_number }}{{ get_params_as_addition }}" aria-label="Previous">
                             <span aria-hidden="true" class="glyphicon glyphicon glyphicon-chevron-left"></span>
                         </a>
                     {% endif %}
@@ -81,16 +73,16 @@
                 <li {% if issues.number == pagenum %}class="active"{% endif %}>
                     <a
                             {% if pagenum == 1 %}
-                                href="{% url 'cabinet_requests' %}"
+                                href="{% url 'cabinet_requests' %}{{ get_params_as_new }}"
                             {% else %}
-                                href="{% url 'cabinet_requests' %}?page={{ pagenum }}"
+                                href="{% url 'cabinet_requests' %}?page={{ pagenum }}{{ get_params_as_addition }}"
                             {% endif %}
                     >{{ pagenum }}</a>
                 </li>
             {% endfor %}
             {% if issues.has_next %}
                 <li>
-                    <a href="{% url 'cabinet_requests' %}?page={{ issues.next_page_number }}" aria-label="Next">
+                    <a href="{% url 'cabinet_requests' %}?page={{ issues.next_page_number }}{{ get_params_as_addition }}" aria-label="Next">
                         <span aria-hidden="true" class="glyphicon glyphicon glyphicon-chevron-right"></span>
                     </a>
                 </li>
