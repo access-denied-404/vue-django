@@ -22,6 +22,19 @@
 
         <div class="row">
           <div class="col-md-12"><bs-input :name="'tender_gos_number'" v-model="tender_gos_number" label="Госномер тендера или ссылка на закупку" required></bs-input></div>
+          <div class="col-md-6">
+          <bs3-radio-field
+            :name="'tender_exec_law'"
+            v-model="tender_exec_law"
+            label="Закон исполнения торгов"
+            :options="[
+              {value: '44-fz', text:'44-ФЗ'},
+              {value: '223-fz', text:'223-ФЗ'},
+              {value: '185-fz', text:'185-ФЗ'}
+            ]"
+            :cols="3"
+          ></bs3-radio-field>
+        </div>
         </div>
 
         <fieldset>
@@ -32,22 +45,6 @@
               Подробности
             </a>
           </legend>
-
-          <div class="row" v-if="tender_add_data_visible">
-            <div class="col-md-6">
-              <bs3-radio-field
-                :name="'tender_exec_law'"
-                v-model="tender_exec_law"
-                label="Закон исполнения торгов"
-                :options="[
-                  {value: '44-fz', text:'44-ФЗ'},
-                  {value: '223-fz', text:'223-ФЗ'},
-                  {value: '185-fz', text:'185-ФЗ'}
-                ]"
-                :cols="3"
-              ></bs3-radio-field>
-            </div>
-          </div>
 
           <div class="row" v-if="tender_add_data_visible">
 
