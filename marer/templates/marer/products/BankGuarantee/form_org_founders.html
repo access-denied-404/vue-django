@@ -1,8 +1,8 @@
 {% load formset_tags %}
 
 <div class="panel panel-info">
-    <div class="panel-heading" data-toggle="collapse" data-target="#panel-org-founders">Учредители компании</div>
-    <div class="panel-body collapse" id="panel-org-founders">
+    <div class="panel-heading">Учредители компании</div>
+    <div class="panel-body" >
         <div class="container-fluid">
             <div class="row formset" data-formset-prefix="{{ formset_physical.prefix }}">
 
@@ -19,12 +19,7 @@
                                 {{ formset_physical.empty_form.id }}
                                 {{ formset_physical.empty_form.fio }}
                             </td>
-                            <td class="h6">{{ formset_physical.empty_form.add_date }}</td>
-                            <td class="h6">{{ formset_physical.empty_form.additional_business }}</td>
-                            <td class="h6">{{ formset_physical.empty_form.country }}</td>
                             <td class="h6">{{ formset_physical.empty_form.auth_capital_percentage }}</td>
-                            <td class="h6">{{ formset_physical.empty_form.address }}</td>
-                            <td class="h6">{{ formset_physical.empty_form.passport_data }}</td>
 
                             <td class="h6">
                                 {{ formset_physical.empty_form.DELETE }}
@@ -40,14 +35,9 @@
                 <span class="h4">Физические лица</span>
                 <table class="table">
                     <tr>
-                        <th class="h6"><b>ФИО</b></th>
-                        <th class="h6"><b>Дата<br/>внесения</b></th>
-                        <th class="text-nowrap h6"><b>Наличие других<br/>видов бизнеса</b></th>
-                        <th class="h6"><b>Страна</b></th>
-                        <th class="h6"><b>Доля в УК</b></th>
-                        <th class="h6"><b>Адрес проживания</b></th>
-                        <th class="h6"><b>Паспортные данные</b></th>
-                        <th>&nbsp;</th>
+                        <th class="h6 col-md-6"><b>ФИО</b></th>
+                        <th class="h6 col-md-5"><b>Доля в УК</b></th>
+                        <th class="col-md-1">&nbsp;</th>
                     </tr>
                     <tbody data-formset-body>
                     {% for form in formset_physical %}
@@ -56,12 +46,7 @@
                                 {{ form.id }}
                                 {{ form.fio.value }}
                             </td>
-                            <td class="h6">{{ form.add_date.value }}</td>
-                            <td class="h6">{{ form.additional_business.value }}</td>
-                            <td class="h6">{{ form.country.value }}</td>
                             <td class="h6">{{ form.auth_capital_percentage.value }}</td>
-                            <td class="h6">{{ form.address.value }}</td>
-                            <td class="h6">{{ form.passport_data.value }}</td>
                             <td class="h6">
                                 {{ form.DELETE }}
                                 <button type="button" class="btn btn-link btn-xs" data-formset-delete-button>
@@ -97,12 +82,7 @@
                                 {{ formset_legal.empty_form.id }}
                                 {{ formset_legal.empty_form.name }}
                             </td>
-                            <td class="h6">{{ formset_legal.empty_form.add_date }}</td>
-                            <td class="h6">{{ formset_legal.empty_form.additional_business }}</td>
-                            <td class="h6">{{ formset_legal.empty_form.country }}</td>
                             <td class="h6">{{ formset_legal.empty_form.auth_capital_percentage }}</td>
-                            <td class="h6">{{ formset_legal.empty_form.legal_address }}</td>
-
                             <td class="h6">
                                 {{ formset_legal.empty_form.DELETE }}
                                 <button type="button" class="btn btn-link btn-xs" data-formset-delete-button>
@@ -117,13 +97,9 @@
                 <span class="h4">Юридические лица</span>
                 <table class="table">
                     <tr>
-                        <th class="h6"><b>Наименование</b></th>
-                        <th class="h6"><b>Дата<br/>внесения</b></th>
-                        <th class="text-nowrap h6"><b>Наличие других<br/>видов бизнеса</b></th>
-                        <th class="h6"><b>Страна</b></th>
-                        <th class="h6"><b>Доля в УК</b></th>
-                        <th class="h6"><b>Юридический адрес</b></th>
-                        <th>&nbsp;</th>
+                        <th class="h6 col-md-6"><b>Наименование</b></th>
+                        <th class="h6 col-md-5"><b>Доля в УК</b></th>
+                        <th class="col-md-1">&nbsp;</th>
                     </tr>
                     <tbody data-formset-body>
                     {% for form in formset_legal %}
@@ -132,11 +108,7 @@
                                 {{ form.id }}
                                 {{ form.name.value }}
                             </td>
-                            <td class="h6">{{ form.add_date.value }}</td>
-                            <td class="h6">{{ form.additional_business.value }}</td>
-                            <td class="h6">{{ form.country.value }}</td>
                             <td class="h6">{{ form.auth_capital_percentage.value }}</td>
-                            <td class="h6">{{ form.legal_address.value }}</td>
                             <td class="h6">
                                 {{ form.DELETE }}
                                 <button type="button" class="btn btn-link btn-xs" data-formset-delete-button>

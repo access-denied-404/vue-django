@@ -295,6 +295,12 @@ class IssueBankCommissionForm(Form):
         (False, 'Нет'),
     ]))
     tender_has_prepayment = BooleanField(required=False)
+    bg_type = ChoiceField(required=True, choices=[
+        (consts.BG_TYPE_CONTRACT_EXECUTION, 'Исполнение контракта'),
+        (consts.BG_TYPE_APPLICATION_ENSURE, 'Обеспечение заявки на участие в тендере'),
+        (consts.BG_TYPE_REFUND_OF_ADVANCE, 'Возврат аванса'),
+        (consts.BG_TYPE_WARRANTY_ENSURE, 'Обеспечение гарантийных обязательств')
+    ])
     tender_exec_law = ChoiceField(required=True, choices=[
         (consts.TENDER_EXEC_LAW_44_FZ, '44-ФЗ'),
         (consts.TENDER_EXEC_LAW_223_FZ, '223-ФЗ'),

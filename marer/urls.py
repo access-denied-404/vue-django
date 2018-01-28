@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^cabinet/requests/(?P<iid>\d+)/reg$', issue.IssueRegisteringView.as_view(), name='issue_registering'),
     url(r'^cabinet/requests/(?P<iid>\d+)/srv$', issue.IssueSurveyView.as_view(), name='issue_survey'),
     url(r'^cabinet/requests/(?P<iid>\d+)/scr$', issue.IssueScoringView.as_view(), name='issue_scoring'),
+    url(r'^cabinet/requests/(?P<iid>\d+)/rsr$', issue.IssueRemoteSurveyView.as_view(), name='issue_remote_survey'),
     url(r'^cabinet/requests/(?P<iid>\d+)/rsd$', issue.IssueRemoteSignView.as_view(), name='issue_remote_for_sign'),
     url(r'^cabinet/requests/(?P<iid>\d+)/rsd/sign-file$', issue.IssueRemoteDocumentSignView.as_view(), name='issue_remote_file_sign'),
     url(r'^cabinet/requests/(?P<iid>\d+)/adr/clr$', issue.IssueAdditionalDocumentsRequestView.as_view(), name='issue_additional_documents_request_new'),

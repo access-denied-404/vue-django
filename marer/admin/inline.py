@@ -317,7 +317,6 @@ class IssueProposeDocumentInlineAdmin(TabularInline):
     # todo check del permission
 
 
-
 class IFOPClarificationMessageInlineAdmin(StackedInline):
     extra = 1
     model = models.IssueClarificationMessage

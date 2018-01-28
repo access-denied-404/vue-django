@@ -134,6 +134,8 @@ class Issue(models.Model):
     bg_type = models.CharField(verbose_name='тип банковской гарантии', max_length=32, blank=True, null=True, choices=[
         (consts.BG_TYPE_APPLICATION_ENSURE, 'Обеспечение заявки'),
         (consts.BG_TYPE_CONTRACT_EXECUTION, 'Исполнение контракта'),
+        (consts.BG_TYPE_REFUND_OF_ADVANCE, 'Возврат аванса'),
+        (consts.BG_TYPE_WARRANTY_ENSURE, 'Обеспечение гарантийных обязательств'),
     ])
 
     credit_product_is_credit = models.NullBooleanField(verbose_name='кредит', blank=True, null=True)
@@ -219,23 +221,23 @@ class Issue(models.Model):
     issuer_bank_relations_term = models.CharField(verbose_name='срок отношений с Банком', max_length=32, blank=True, null=True, choices=[
         (consts.ISSUE_DEAL_BANK_RELATIONS_TERM_SHORT, 'Краткосрочные'),
         (consts.ISSUE_DEAL_BANK_RELATIONS_TERM_LONG, 'Долгосрочные'),
-    ])
+    ], default=consts.ISSUE_DEAL_BANK_RELATIONS_TERM_LONG)
     issuer_activity_objective = models.CharField(verbose_name='цели финансово-хозяйственной детяельности', max_length=32, blank=True, null=True, choices=[
         (consts.ISSUE_ISSUER_ACTIVITY_OBJECTIVE_PROFIT_MAKING, 'Получение прибыли'),
         (consts.ISSUE_ISSUER_ACTIVITY_OBJECTIVE_OTHER, 'Иное'),
-    ])
+    ], default=consts.ISSUE_ISSUER_ACTIVITY_OBJECTIVE_PROFIT_MAKING)
     issuer_finance_situation = models.CharField(verbose_name='финансовое положение', max_length=32, blank=True, null=True, choices=[
         (consts.ISSUE_ISSUER_FINANCE_SITUATION_SATISFIED, 'Удовлетворительное'),
         (consts.ISSUE_ISSUER_FINANCE_SITUATION_UNSATISFIED, 'Неудовлетворительное'),
-    ])
+    ], default=consts.ISSUE_ISSUER_FINANCE_SITUATION_SATISFIED)
     issuer_business_reputation = models.CharField(verbose_name='деловая репутация', max_length=32, blank=True, null=True, choices=[
         (consts.ISSUE_ISSUER_BUSINESS_REPUTATION_POSITIVE, 'Положительная'),
         (consts.ISSUE_ISSUER_BUSINESS_REPUTATION_NOT_PRESENT, 'Отсутствует'),
-    ])
+    ], default=consts.ISSUE_ISSUER_BUSINESS_REPUTATION_POSITIVE)
     issuer_funds_source = models.CharField(verbose_name='источник происхождения денежных средств', max_length=32, blank=True, null=True, choices=[
         (consts.ISSUER_FUNDS_SOURCE_LOAN_FUNDS, 'Заемные средства'),
         (consts.ISSUER_FUNDS_SOURCE_OTHER, 'Иное'),
-    ])
+    ], default=consts.ISSUER_FUNDS_SOURCE_LOAN_FUNDS)
 
     issuer_org_management_collegial_executive_name = models.CharField(verbose_name='Коллегиальный исполнительный орган: наименование', max_length=512, blank=True, null=False, default='')
     issuer_org_management_collegial_executive_fio = models.CharField(verbose_name='Коллегиальный исполнительный орган: ФИО', max_length=512, blank=True, null=False, default='')
@@ -288,7 +290,7 @@ class Issue(models.Model):
             self.bg_end_date,
             self.bg_sum,
             self.bg_is_benefeciary_form,
-            self.tender_has_prepayment,
+            self.bg_type,
             self.tender_exec_law
         )
 
@@ -544,9 +546,11 @@ class Issue(models.Model):
         reg_form = reg_form_class(self.__dict__)
         if reg_form.is_valid():
             available_views.append('issue_survey')
-            available_views.append('issue_scoring')
         else:
             return available_views
+
+        if self.application_doc_id is not None:
+            available_views.append('issue_scoring')
 
         if not self.status == consts.ISSUE_STATUS_REGISTERING:
             available_views.append('issue_additional_documents_requests')
@@ -739,6 +743,9 @@ class Issue(models.Model):
                 if self.issuer_inn.startswith(bl_inn_start):
                     ve.error_list.append('Обнаружен стоп-фактор: исполнитель находится в необслуживаемом регионе')
                     break
+            if kontur_principal_analytics_data.get('m5006', False):
+                ve.error_list.append(
+                    'Обнаружен стоп-фактор: указан недостоверный адрес исполнителя')
 
             # benefitiar stop factors
             if self.tender_exec_law in [consts.TENDER_EXEC_LAW_44_FZ, consts.TENDER_EXEC_LAW_223_FZ]:
@@ -771,16 +778,18 @@ class Issue(models.Model):
             return True
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if not self.id:
+            adding_new = True
+        else:
+            adding_new = False
         if not self.bg_start_date:
             self.bg_start_date = timezone.now()
         if not self.product or self.product == '':
             self.product = BankGuaranteeProduct().name
         super().save(force_insert, force_update, using, update_fields)
 
-        pdocs = FinanceOrgProductProposeDocument.objects.all()
-        if self.status == consts.ISSUE_STATUS_REVIEW \
-                and not self.propose_documents.exists() \
-                and pdocs.exists():
+        if adding_new:
+            pdocs = FinanceOrgProductProposeDocument.objects.all()
             for pdoc in pdocs:
                 new_doc = IssueProposeDocument()
                 new_doc.issue = self
@@ -910,11 +919,11 @@ class IssueClarification(models.Model):
 
 class IssueClarificationMessage(models.Model):
     class Meta:
-        verbose_name = 'сообщение по дозапросу'
-        verbose_name_plural = 'сообщения по дозапросу'
+        verbose_name = 'сообщение по заявке'
+        verbose_name_plural = 'сообщения по заявке'
 
-    clarification = models.ForeignKey(
-        IssueClarification,
+    issue = models.ForeignKey(
+        Issue,
         on_delete=models.CASCADE,
         blank=False,
         null=False,
@@ -925,14 +934,14 @@ class IssueClarificationMessage(models.Model):
     created_at = models.DateTimeField(verbose_name='время создания', auto_now_add=True, null=False)
 
     def __str__(self):
-        return 'Сообщение по дозапросу №{num} от пользователя {user} в {created}'.format(
-            num=self.clarification_id,
+        return 'Сообщение по заявке №{num} от пользователя {user} в {created}'.format(
+            num=self.issue_id,
             user=self.user,
             created=self.created_at,
         )
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        set_obj_update_time(self.clarification)
+        set_obj_update_time(self.issue)
         return super().save(force_insert, force_update, using, update_fields)
 
 

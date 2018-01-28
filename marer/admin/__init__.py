@@ -184,8 +184,8 @@ class IssueAdmin(ModelAdmin):
                 link = "http://zakupki.gov.ru/epz/order/notice/ea44/view/common-info.html?regNumber=%s" % obj.tender_gos_number
             if obj.tender_exec_law == TENDER_EXEC_LAW_223_FZ:
                 link = "http://zakupki.gov.ru/223/purchase/public/purchase/info/common-info.html?regNumber=%s" % obj.tender_gos_number
-
-        return '<a target="_blank" href="%s">Ссылка на конкурс</a>' % link
+            return '<a target="_blank" href="{link}">{link}</a>'.format(link=link)
+        return ''
     tender_gos_number_link.allow_tags = True
     tender_gos_number_link.short_description = 'Ссылка на конкурс'
 

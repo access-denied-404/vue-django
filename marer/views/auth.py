@@ -17,6 +17,9 @@ class LoginView(TemplateView):
     template_name = 'marer/auth/login.html'
 
     def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            url = reverse('cabinet_requests', args=args, kwargs=kwargs)
+            return HttpResponseRedirect(url)
         login_form = forms.LoginForm()
         if 'login_form' not in kwargs:
             kwargs.update(dict(login_form=login_form))

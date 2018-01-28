@@ -56,11 +56,18 @@ class BGFinProdRegForm(Form):
     bg_type = ChoiceField(required=False, choices=[
         (consts.BG_TYPE_APPLICATION_ENSURE, 'Обеспечение заявки'),
         (consts.BG_TYPE_CONTRACT_EXECUTION, 'Исполнение контракта'),
+        (consts.BG_TYPE_REFUND_OF_ADVANCE, 'Возврат аванса'),
+        (consts.BG_TYPE_WARRANTY_ENSURE, 'Обеспечение гарантийных обязательств'),
     ])
     bg_is_benefeciary_form = BooleanField(required=False, widget=Select(attrs={'class': 'form-control'}, choices=[
         (True, 'Да'),
         (False, 'Нет'),
     ]))
+
+    is_indisputable_charge_off = BooleanField(required=False,
+                                              initial=True,
+                                              widget=Select(
+                                                  attrs={'class': 'form-control'}))
 
     tender_contract_type = ChoiceField(required=False, choices=[
         (consts.TENDER_CONTRACT_TYPE_SUPPLY_CONTRACT, 'Поставка товара'),
