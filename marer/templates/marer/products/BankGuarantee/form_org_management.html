@@ -42,7 +42,7 @@
                     </tr>
                     <tbody data-formset-body>
                     {% for form in formset_collegial %}
-                        <tr data-formset-body>
+                        <tr data-formset-form>
                             <td class="h6">
                                 {{ form.id }}
                                 {{ form.org_name }}
@@ -107,7 +107,7 @@
                     </tr>
                     <tbody data-formset-body>
                     {% for form in formset_directors %}
-                        <tr data-formset-body>
+                        <tr data-formset-form>
                             <td class="h6">
                                 {{ form.id }}
                                 {{ form.org_name }}
@@ -172,7 +172,7 @@
                     </tr>
                     <tbody data-formset-body>
                     {% for form in formset_others %}
-                        <tr data-formset-body>
+                        <tr data-formset-form>
                             <td class="h6">
                                 {{ form.id }}
                                 {{ form.org_name }}
