@@ -4,16 +4,19 @@ from marer import consts
 from marer.models import BankMinimalCommission
 
 
-def bank_commission(bg_start_date, bg_end_date, bg_sum, bg_is_benefeciary_form, bg_type,
-                    tender_exec_law, contract_term_extend=False, contract_exec_verification_more_5_doc=False):
+def bank_commission(bg_start_date, bg_end_date, bg_sum, bg_is_beneficiary_form, bg_type, tender_exec_law,
+                    tender_has_prepayment, contract_term_extend=False, contract_exec_verification_more_5_doc=False):
     """
     Расчет банковской комиссии
     :param bg_start_date:
     :param bg_end_date:
     :param bg_sum:
-    :param bg_is_benefeciary_form:
+    :param bg_is_beneficiary_form:
     :param bg_type:
     :param tender_exec_law:
+    :param tender_has_prepayment:
+    :param contract_term_extend:
+    :param contract_exec_verification_more_5_doc:
     :return:
     """
     Q25 = 0.0027  # Процент: 0,27% (процент чего?)
@@ -28,8 +31,8 @@ def bank_commission(bg_start_date, bg_end_date, bg_sum, bg_is_benefeciary_form, 
     E7 = bg_start_date
     F10 = bg_sum
     F11 = bg_end_date
-    F17 = bg_is_benefeciary_form
-    F18 = bg_type == consts.BG_TYPE_REFUND_OF_ADVANCE
+    F17 = bg_is_beneficiary_form
+    F18 = tender_has_prepayment
     F19 = tender_exec_law == consts.TENDER_EXEC_LAW_185_FZ  # Гарантия в рамках 185-ФЗ: +/-
     F20 = bg_type == consts.BG_TYPE_WARRANTY_ENSURE
     F21 = contract_exec_verification_more_5_doc  # Подтверждение опыта исполнения контрактов (более 5 документов): +/-

@@ -291,7 +291,8 @@ class Issue(models.Model):
             self.bg_sum,
             self.bg_is_benefeciary_form,
             self.bg_type,
-            self.tender_exec_law
+            self.tender_exec_law,
+            self.tender_has_prepayment,
         )
 
     @property
