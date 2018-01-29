@@ -166,10 +166,6 @@
         </div>
       </div>
     </div>
-    <div v-if="bank_commission" class="h1 text-center">
-      Коммисия банка
-      {{ bank_commission }} руб.
-    </div>
   </div>
 
 </template>
@@ -289,7 +285,6 @@
         }
       }
       let defaultData = {
-        bank_commission: null,
         is_tender_info_panel_visible: true,
         tender_add_data_visible: false
       }
@@ -337,18 +332,6 @@
       }
     },
     watch: {
-      bg_start_date: _.debounce(function () {
-        this.get_commission()
-      }, 1000),
-      bg_end_date: _.debounce(function () {
-        this.get_commission()
-      }, 1000),
-      bg_sum: _.debounce(function () {
-        this.get_commission()
-      }, 1000),
-      bg_is_benefeciary_form: _.debounce(function () {
-        this.get_commission()
-      }, 1000),
       tender_gos_number: _.debounce(function () {
         jQuery.getJSON('/rest/tender?format=json&gos_number=' + this.tender_gos_number, (data, status, xhr) => {
           this.tender_exec_law = data.law
@@ -371,23 +354,15 @@
       }, 1000),
       tender_exec_law: _.debounce(function () {
         this.is_tender_info_panel_visible = this.get_if_tender_info_panel_visible()
-        this.get_commission()
       }, 200),
       bg_type: _.debounce(function () {
         this.process_bg_type()
-        this.get_commission()
       }, 1000)
     },
     mounted () {
-      this.get_commission()
       this.is_tender_info_panel_visible = this.get_if_tender_info_panel_visible()
     },
     methods: {
-      get_commission () {
-        jQuery.getJSON('/rest/bank_commission?bg_start_date=' + this.bg_start_date + '&bg_end_date=' + this.bg_end_date.format('DD.MM.YYYY') + '&bg_sum=' + this.bg_sum + '&bg_is_benefeciary_form=' + this.bg_is_benefeciary_form + '&bg_type=' + this.bg_type + '&tender_exec_law=' + this.tender_exec_law, (data, status, xhr) => {
-          this.bank_commission = data.commission
-        })
-      },
       get_if_tender_info_panel_visible () {
         return this.tender_exec_law === '44-fz' ||
           this.tender_exec_law === '223-fz' ||
