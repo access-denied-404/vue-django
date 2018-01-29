@@ -103,7 +103,7 @@
       <transition appear name="fade" mode="out-in">
         <router-view></router-view>
       </transition>
-      <button type="submit" class="btn btn-primary center-block">Далее</button>
+      <button type="submit" class="btn btn-primary center-block spinjs">Далее</button>
     </form>
   </div>
 </template>
