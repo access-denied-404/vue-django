@@ -26,6 +26,7 @@
             <th>Организация</th>
             <th>Сумма</th>
             <th>Статус</th>
+            <th></th>
         </tr>
 
         {% for issue in issues %}
@@ -44,6 +45,16 @@
                 <td>{{ issue.get_issuer_name }}</td>
                 <td>{{ issue.humanized_sum }}</td>
                 <td>{{ issue.humanized_status }}</td>
+                <td>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="issue_del" value="true" />
+                        <input type="hidden" name="id" value="{{ issue.id }}"/>
+                        <button type="submit" class="btn btn-link btn-xs pull-right">
+                            <span class="glyphicon glyphicon-remove text-danger"></span>
+                        </button>
+                    </form>
+                </td>
             </tr>
         {% endfor %}
     </table>

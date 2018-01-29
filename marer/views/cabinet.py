@@ -52,6 +52,17 @@ class CabinetRequestsView(LoginRequiredMixin, TemplateView):
         ))
         return super().get(request, *args, **kwargs)
 
+    def post(self, request, *args, **kwargs):
+        if request.POST.get('issue_del', False):
+            del_issue_id = request.POST.get('id', None)
+            if del_issue_id:
+                Issue.objects.filter(id=del_issue_id, user=request.user).delete()
+
+        url = reverse(request.resolver_match.url_name, args=request.resolver_match.args)
+        if len(request.GET):
+            url += '?' + request.GET.urlencode()
+        return HttpResponseRedirect(url)
+
 
 class CabinetOrganizationsView(LoginRequiredMixin, TemplateView):
     template_name = 'marer/cabinet/organizations.html'
