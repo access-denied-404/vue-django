@@ -115,7 +115,10 @@ class WordDocumentHelper:
             if isinstance(value, dict):
                 value = value.get(path)
             elif hasattr(value, path):
-                value = getattr(value, path)
+                if callable(getattr(value, path)):
+                    value = getattr(value, path)()
+                else:
+                    value = getattr(value, path)
         return len(value or [])
 
     def prepare(self, doc, data):
