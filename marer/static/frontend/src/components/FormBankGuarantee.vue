@@ -143,14 +143,15 @@
             <div class="col-md-5 h4">Наименование показателя</div>
             <div class="col-md-7">
               <div class="col-md-4 h5">Код строки</div>
-              <div class="col-md-4 h6">Отчётный год</div>
-              <div class="col-md-4 h6">Отчётный период</div>
+              <div class="col-md-4 h6">Последний завершённый год (2016 г)</div>
+              <div class="col-md-4 h6">Последний завершённый квартал (2017 г)</div>
+
             </div>
           </div>
 
           <div class="row">
-            <div class="col-md-5">Прибыль (должна быть положительной)</div>
-            <div class="col-md-7">
+            <div class="col-md-4">Прибыль/убыток</div>
+            <div class="col-md-8">
               <div class="col-md-4">2400</div>
               <div class="col-md-4">
                 <input class="form-control input-sm" name="balance_code_2400_offset_1"
