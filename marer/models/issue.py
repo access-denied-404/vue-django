@@ -1015,6 +1015,45 @@ class IssueLeasingProdPayRule(models.Model):
     payment_rule = models.CharField(verbose_name='порядок и срок оплаты', max_length=512, blank=False, null=False, default='')
 
 
+class IssueOrgManagementCollegial(models.Model):
+    class Meta:
+        verbose_name = 'коллегиальный исполнительный орган'
+        verbose_name_plural = 'коллегиальные исполнительные органы'
+
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False,
+                              related_name='org_management_collegial')
+    org_name = models.CharField(verbose_name='наименование', max_length=512,
+                                blank=False, null=False, default='')
+    fio = models.CharField(verbose_name='фио', max_length=512,
+                           blank=False, null=False, default='')
+
+
+class IssueOrgManagementDirectors(models.Model):
+    class Meta:
+        verbose_name = 'совет директоров'
+        verbose_name_plural = 'совет директоров'
+
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False,
+                              related_name='org_management_directors')
+    org_name = models.CharField(verbose_name='наименование', max_length=512,
+                                blank=False, null=False, default='')
+    fio = models.CharField(verbose_name='фио', max_length=512,
+                           blank=False, null=False, default='')
+
+
+class IssueOrgManagementOthers(models.Model):
+    class Meta:
+        verbose_name = 'иной орган управления'
+        verbose_name_plural = 'иные органы управления'
+
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False,
+                              related_name='org_management_others')
+    org_name = models.CharField(verbose_name='наименование', max_length=512,
+                                blank=False, null=False, default='')
+    fio = models.CharField(verbose_name='фио', max_length=512,
+                           blank=False, null=False, default='')
+
+
 class IssueBGProdFounderLegal(models.Model):
     class Meta:
         verbose_name = 'учредитель-юрлицо'

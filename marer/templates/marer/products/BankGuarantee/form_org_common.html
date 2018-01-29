@@ -4,7 +4,13 @@
 		<div class="container-fluid">
 
 			<div class="row">
-                <div class="col-md-6">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Web-сайт</label>
+                        {{ form.issuer_web_site }}
+                    </div>
+                </div>
+                <div class="col-md-3">
                     <div class="form-group">
                         <label>Фактический адрес</label>
                         {{ form.issuer_fact_address }}
@@ -16,21 +22,6 @@
                         {{ form.issuer_post_address }}
                     </div>
                 </div>
-            </div>
-
-            <div class="row">
-            	<div class="col-md-6">
-            		<div class="form-group">
-                        <label>Номер свидетельства о постановке</label>
-                        {{ form.issuer_ifns_reg_cert_number }}
-                    </div>
-            	</div>
-                <div class="col-md-6">
-            		<div class="form-group">
-                        <label>Web-сайт</label>
-                        {{ form.issuer_web_site }}
-                    </div>
-            	</div>
             </div>
 
             <div class="row">

@@ -2,56 +2,48 @@
     <div class="panel-heading">Руководитель компании</div>
     <div class="panel-body">
         <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Дата рождения</label>
-                            {{ form.issuer_head_birthday }}
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Телефон</label>
-                            {{ form.issuer_head_phone }}
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Адрес прописки</label>
-                            {{ form.issuer_head_residence_address }}
-                        </div>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Серия паспорта</label>
-                            {{ form.issuer_head_passport_series }}
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Номер паспорта</label>
-                            {{ form.issuer_head_passport_number }}
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label>Дата выдачи</label>
-                            {{ form.issuer_head_passport_issue_date }}
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>Кем выдан паспорт</label>
-                            {{ form.issuer_head_passport_issued_by }}
-                        </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Телефон(не обязательно)</label>
+                        {{ form.issuer_head_phone }}
                     </div>
                 </div>
-
-                <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Серия паспорта</label>
+                        {{ form.issuer_head_passport_series }}
+                    </div>
                 </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Номер паспорта</label>
+                        {{ form.issuer_head_passport_number }}
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Дата выдачи</label>
+                        {{ form.issuer_head_passport_issue_date }}
+                    </div>
+                </div>
+            </div>
+{#для каждого из 3х органов правления создать отдельную кнопку#}
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Адрес прописки</label>
+                        {{ form.issuer_head_residence_address }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Кем выдан паспорт</label>
+                        {{ form.issuer_head_passport_issued_by }}
+                    </div>
+                </div>
+            </div>
 
         </div>
         <div data-toggle="collapse" data-target="#panel-org-common-1">

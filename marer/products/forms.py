@@ -284,6 +284,36 @@ class FounderPhysicalForm(Form):
         js = formset_media_js
 
 
+class OrgManagementCollegialForm(Form):
+    id = IntegerField(required=False, widget=HiddenInput())
+    org_name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    fio = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden'}))
+
+    class Media(object):
+        js = formset_media_js
+
+
+class OrgManagementDirectorsForm(Form):
+    id = IntegerField(required=False, widget=HiddenInput())
+    org_name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    fio = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden'}))
+
+    class Media(object):
+        js = formset_media_js
+
+
+class OrgManagementOthersForm(Form):
+    id = IntegerField(required=False, widget=HiddenInput())
+    org_name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    fio = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden'}))
+
+    class Media(object):
+        js = formset_media_js
+
+
 class CreditPledgeForm(Form):
     id = IntegerField(required=False, widget=HiddenInput())
 

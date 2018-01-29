@@ -15,7 +15,8 @@ from marer.products.forms import BGFinProdRegForm, BGFinProdSurveyOrgCommonForm,
     AffiliatesForm, FounderLegalForm, FounderPhysicalForm, CreditFinProdRegForm, CreditPledgeForm, \
     FactoringFinProdRegForm, LeasingFinProdRegForm, LeasingAssetForm, LeasingSupplierForm, LeasingPayRuleForm, \
     FactoringBuyerForm, FactoringSalesAnalyzeForm, BGFinProdSurveyOrgManagementForm, \
-    OrgBeneficiaryOwnerForm, OrgBankAccountForm, BGFinProdSurveyDealParamsForm
+    OrgBeneficiaryOwnerForm, OrgBankAccountForm, BGFinProdSurveyDealParamsForm, OrgManagementCollegialForm, \
+    OrgManagementDirectorsForm, OrgManagementOthersForm
 from marer.utils import kontur
 from marer.utils.loadfoc import get_cell_value, get_cell_summ_range, get_cell_percentage, get_cell_bool, \
     get_cell_review_term_days, get_cell_ensure_condition, get_issue_and_interest_rates
@@ -316,6 +317,30 @@ class BankGuaranteeProduct(FinanceProduct):
             prefix='founders_physical'
         )
 
+        formset_org_management_collegial = formset_factory(OrgManagementCollegialForm, extra=0)
+        from marer.models.issue import IssueOrgManagementCollegial
+        org_management_collegial = IssueOrgManagementCollegial.objects.filter(issue=self._issue)
+        formset_org_management_collegial = formset_org_management_collegial(
+            initial=[omc.__dict__ for omc in org_management_collegial],
+            prefix='org_management_collegial'
+        )
+
+        formset_org_management_directors = formset_factory(OrgManagementDirectorsForm, extra=0)
+        from marer.models.issue import IssueOrgManagementDirectors
+        org_management_directors = IssueOrgManagementDirectors.objects.filter(issue=self._issue)
+        formset_org_management_directors = formset_org_management_directors(
+            initial=[omd.__dict__ for omd in org_management_directors],
+            prefix='org_management_directors'
+        )
+
+        formset_org_management_others = formset_factory(OrgManagementOthersForm, extra=0)
+        from marer.models.issue import IssueOrgManagementOthers
+        org_management_others = IssueOrgManagementOthers.objects.filter(issue=self._issue)
+        formset_org_management_others = formset_org_management_others(
+            initial=[omo.__dict__ for omo in org_management_others],
+            prefix='org_management_others'
+        )
+
         if self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_COMMERCIAL:
             formset_pledges = formset_factory(CreditPledgeForm, extra=0)
             from marer.models.issue import IssueCreditPledge
@@ -333,6 +358,9 @@ class BankGuaranteeProduct(FinanceProduct):
             beneficiary_owners_formset=beneficiary_owners_formset,
             formset_founders_legal=formset_founders_legal,
             formset_founders_physical=formset_founders_physical,
+            formset_org_management_collegial=formset_org_management_collegial,
+            formset_org_management_directors=formset_org_management_directors,
+            formset_org_management_others=formset_org_management_others,
             formset_pledges=formset_pledges,
             issue=self._issue,
             consts=consts,
@@ -463,6 +491,81 @@ class BankGuaranteeProduct(FinanceProduct):
                     new_pf.passport_data = afdata.get('passport_data', '')
                     new_pf.issue = self._issue
                     new_pf.save()
+        else:
+            processed_sucessfully_flag = False
+
+        # processing org management collegial
+        formset_org_management_collegial = formset_factory(OrgManagementCollegialForm, extra=0)
+        formset_org_management_collegial = formset_org_management_collegial(request.POST,
+                                                                            prefix='org_management_collegial')
+        from marer.models.issue import IssueOrgManagementCollegial
+        if formset_org_management_collegial.is_valid():
+            for omcdata in formset_org_management_collegial.cleaned_data:
+                omcdata_id = omcdata.get('id', None)
+                omcdata_org_name = str(omcdata.get('org_name', '')).strip()
+                if omcdata_id and omcdata.get('DELETE', False):
+                    try:
+                        omc = IssueOrgManagementCollegial.objects.get(id=omcdata['id'],
+                                                                      issue=self._issue)
+                        omc.delete()
+                    except ObjectDoesNotExist:
+                        pass  # nothing to do
+                elif not omcdata_id and omcdata_org_name != '':
+                    new_omc = IssueOrgManagementCollegial()
+                    new_omc.org_name = omcdata_org_name
+                    new_omc.fio = omcdata.get('fio', '')
+                    new_omc.issue = self._issue
+                    new_omc.save()
+        else:
+            processed_sucessfully_flag = False
+
+        # processing org management directors
+        formset_org_management_directors = formset_factory(OrgManagementDirectorsForm, extra=0)
+        formset_org_management_directors = formset_org_management_directors(request.POST,
+                                                                            prefix='org_management_directors')
+        from marer.models.issue import IssueOrgManagementDirectors
+        if formset_org_management_directors.is_valid():
+            for omddata in formset_org_management_directors.cleaned_data:
+                omddata_id = omddata.get('id', None)
+                omddata_org_name = str(omddata.get('org_name', '')).strip()
+                if omddata_id and omddata.get('DELETE', False):
+                    try:
+                        omd = IssueOrgManagementDirectors.objects.get(id=omddata['id'],
+                                                                      issue=self._issue)
+                        omd.delete()
+                    except ObjectDoesNotExist:
+                        pass  # nothing to do
+                elif not omddata_id and omddata_org_name != '':
+                    new_omd = IssueOrgManagementDirectors()
+                    new_omd.org_name = omddata_org_name
+                    new_omd.fio = omddata.get('fio', '')
+                    new_omd.issue = self._issue
+                    new_omd.save()
+        else:
+            processed_sucessfully_flag = False
+
+        # processing org management others
+        formset_org_management_others = formset_factory(OrgManagementOthersForm, extra=0)
+        formset_org_management_others = formset_org_management_others(request.POST,
+                                                                            prefix='org_management_others')
+        from marer.models.issue import IssueOrgManagementOthers
+        if formset_org_management_others.is_valid():
+            for omodata in formset_org_management_others.cleaned_data:
+                omodata_id = omodata.get('id', None)
+                omodata_org_name = str(omodata.get('org_name', '')).strip()
+                if omodata_id and omodata.get('DELETE', False):
+                    try:
+                        omo = IssueOrgManagementOthers.objects.get(id=omodata['id'],
+                                                                   issue=self._issue)
+                        omo.delete()
+                    except ObjectDoesNotExist:
+                        pass  # nothing to do
+                elif not omodata_id and omodata_org_name != '':
+                    new_omo = IssueOrgManagementOthers()
+                    new_omo.org_name = omodata_org_name
+                    new_omo.fio = omodata.get('fio', '')
+                    new_omo.issue = self._issue
+                    new_omo.save()
         else:
             processed_sucessfully_flag = False
 
@@ -625,7 +728,7 @@ class BankGuaranteeProduct(FinanceProduct):
             IssueBGProdFounderLegalInlineAdmin,
             IssueBGProdFounderPhysicalInlineAdmin,
             IssueBGProdAffiliateInlineAdmin,
-            IssueLicencesInlineAdmin
+            IssueLicencesInlineAdmin,
         ]
         if self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_COMMERCIAL:
             inlines.append(IssueCreditPledgeInlineAdmin)
