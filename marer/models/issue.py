@@ -544,7 +544,7 @@ class Issue(models.Model):
 
         reg_form_class = self.get_product().get_registering_form_class()
         reg_form = reg_form_class(self.__dict__)
-        if reg_form.is_valid():
+        if reg_form.is_valid() and self.check_stop_factors_validity:
             available_views.append('issue_survey')
         else:
             return available_views
