@@ -4,7 +4,8 @@ from marer import consts
 from marer.models import BankMinimalCommission
 
 
-def bank_commission(bg_start_date, bg_end_date, bg_sum, bg_is_benefeciary_form, bg_type, tender_exec_law):
+def bank_commission(bg_start_date, bg_end_date, bg_sum, bg_is_benefeciary_form, bg_type,
+                    tender_exec_law, contract_term_extend=False, contract_exec_verification_more_5_doc=False):
     """
     Расчет банковской комиссии
     :param bg_start_date:
@@ -19,9 +20,10 @@ def bank_commission(bg_start_date, bg_end_date, bg_sum, bg_is_benefeciary_form, 
     M10 = 0.1  # Предоставление гарантии по форме заказчика: 10%
     M11 = 0.1  # Контрактом предусмотрена возможность выплаты Аванса: 10%
     M12 = 0.05  # Гарантия в рамках 185-ФЗ: 5%
-    M13 = 0.1  # Гарантия качества: 10%
-    M14 = 0.15  # Подтверждение опыта исполнения контрактов (более 5 документов): 15%
-    M15 = 0.05  # Увеличение/продление срока контракта: 5%
+    M13 = 0.05  # Гарантия качества: 10%
+    M14 = 0.15  # Увеличение/продление срока контракта: 5%
+    M15 = 0.05  # Подтверждение опыта исполнения контрактов (более 5 документов): 15%
+    M16 = 0  # Сумма БГ более 5 млн.
 
     E7 = bg_start_date
     F10 = bg_sum
@@ -30,8 +32,9 @@ def bank_commission(bg_start_date, bg_end_date, bg_sum, bg_is_benefeciary_form, 
     F18 = bg_type == consts.BG_TYPE_REFUND_OF_ADVANCE
     F19 = tender_exec_law == consts.TENDER_EXEC_LAW_185_FZ  # Гарантия в рамках 185-ФЗ: +/-
     F20 = bg_type == consts.BG_TYPE_WARRANTY_ENSURE
-    F21 = False  # Подтверждение опыта исполнения контрактов (более 5 документов): +/-
-    F22 = False  # Увеличение/продление срока контракта: +/-
+    F21 = contract_exec_verification_more_5_doc  # Подтверждение опыта исполнения контрактов (более 5 документов): +/-
+    F22 = contract_term_extend  # Увеличение/продление срока контракта: +/-
+    F23 = bg_sum > 5000000
 
     # F23: **Пусто**
     # M16: **Пусто**
@@ -53,8 +56,7 @@ def bank_commission(bg_start_date, bg_end_date, bg_sum, bg_is_benefeciary_form, 
         + (M13 if F20 else 0)
         + (M15 if F21 else 0)
         + (M14 if F22 else 0)
-        # + (M130 if F20 else 0)
-        # + (M16 if F23 else 0)
+        + (M16 if F23 else 0)
     )
     try:
         min_com = BankMinimalCommission.objects.get(
