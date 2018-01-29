@@ -44,9 +44,9 @@
             {% else %}
                 <tr>
             {% endif %}
-                <td>
-                    <a href="{% url 'cabinet_request' issue.id %}">{{ issue.humanized_id }}</a>
-                </td>
+            <td>
+                <a href="{% url 'cabinet_request' issue.id %}">{{ issue.humanized_id }}</a>
+            </td>
                 <td>{{ issue.get_issuer_name }}</td>
                 <td>{{ issue.humanized_sum }}</td>
                 <td>{{ issue.humanized_status }}</td>
