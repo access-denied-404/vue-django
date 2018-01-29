@@ -15,7 +15,8 @@ from marer.products.forms import BGFinProdRegForm, BGFinProdSurveyOrgCommonForm,
     AffiliatesForm, FounderLegalForm, FounderPhysicalForm, CreditFinProdRegForm, CreditPledgeForm, \
     FactoringFinProdRegForm, LeasingFinProdRegForm, LeasingAssetForm, LeasingSupplierForm, LeasingPayRuleForm, \
     FactoringBuyerForm, FactoringSalesAnalyzeForm, BGFinProdSurveyOrgManagementForm, \
-    OrgBeneficiaryOwnerForm, OrgBankAccountForm, BGFinProdSurveyDealParamsForm
+    OrgBeneficiaryOwnerForm, OrgBankAccountForm, BGFinProdSurveyDealParamsForm, OrgManagementCollegialForm, \
+    OrgManagementDirectorsForm, OrgManagementOthersForm
 from marer.utils import kontur
 from marer.utils.loadfoc import get_cell_value, get_cell_summ_range, get_cell_percentage, get_cell_bool, \
     get_cell_review_term_days, get_cell_ensure_condition, get_issue_and_interest_rates
@@ -316,6 +317,30 @@ class BankGuaranteeProduct(FinanceProduct):
             prefix='founders_physical'
         )
 
+        formset_org_management_collegial = formset_factory(OrgManagementCollegialForm, extra=0)
+        from marer.models.issue import IssueOrgManagementCollegial
+        org_management_collegial = IssueOrgManagementCollegial.objects.filter(issue=self._issue)
+        formset_org_management_collegial = formset_org_management_collegial(
+            initial=[omc.__dict__ for omc in org_management_collegial],
+            prefix='org_management_collegial'
+        )
+
+        formset_org_management_directors = formset_factory(OrgManagementDirectorsForm, extra=0)
+        from marer.models.issue import IssueOrgManagementDirectors
+        org_management_directors = IssueOrgManagementDirectors.objects.filter(issue=self._issue)
+        formset_org_management_directors = formset_org_management_directors(
+            initial=[omd.__dic__ for omd in org_management_directors],
+            prefix='org_management_directors'
+        )
+
+        formset_org_management_others = formset_factory(OrgManagementOthersForm, extra=0)
+        from marer.models.issue import IssueOrgManagementOthers
+        org_management_others = IssueOrgManagementOthers.objects.filter(issue=self._issue)
+        formset_org_management_others = formset_org_management_others(
+            initial=[omo.__dict__ for omo in org_management_others],
+            prefix='org_management_others'
+        )
+
         if self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_COMMERCIAL:
             formset_pledges = formset_factory(CreditPledgeForm, extra=0)
             from marer.models.issue import IssueCreditPledge
@@ -333,6 +358,9 @@ class BankGuaranteeProduct(FinanceProduct):
             beneficiary_owners_formset=beneficiary_owners_formset,
             formset_founders_legal=formset_founders_legal,
             formset_founders_physical=formset_founders_physical,
+            formset_org_management_collegial=formset_org_management_collegial,
+            formset_org_management_directors=formset_org_management_directors,
+            formset_org_management_others=formset_org_management_others,
             formset_pledges=formset_pledges,
             issue=self._issue,
             consts=consts,
