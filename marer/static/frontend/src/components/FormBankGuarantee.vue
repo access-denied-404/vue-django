@@ -157,12 +157,12 @@
             <div class="col-md-8">
               <div class="col-md-4">2400</div>
               <div class="col-md-4">
-                <input class="form-control input-sm" name="balance_code_2400_offset_0"
-                       v-model="balance_code_2400_offset_0"/>
-              </div>
-              <div class="col-md-4">
                 <input class="form-control input-sm" name="balance_code_2400_offset_1"
                        v-model="balance_code_2400_offset_1"/>
+              </div>
+              <div class="col-md-4">
+                <input class="form-control input-sm" name="balance_code_2400_offset_0"
+                       v-model="balance_code_2400_offset_0"/>
               </div>
             </div>
           </div>
