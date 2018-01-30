@@ -201,7 +201,7 @@ class IssueAdmin(ModelAdmin):
                     doc_url=doc_url,
                 )
             ret_text += obj_tmpl.format(msg=msg_text, msg_docs=docs)
-            ret_text += '<hr/>'
+            ret_text += '<hr/><br>'
 
         url = reverse(
             '%s:%s_%s_change' % (
@@ -211,7 +211,7 @@ class IssueAdmin(ModelAdmin):
             ),
             args=(obj.id,),
         )
-        ret_text += '<a href="{}" target="_blank">Смотреть все</a>'.format(url)
+        ret_text += '<a href="{}" target="_blank"><b>Смотреть все</b></a>'.format(url)
         return ret_text
     get_last_message.short_description = 'Последние сообщения'
     get_last_message.allow_tags = True
@@ -377,7 +377,16 @@ class IssueAdmin(ModelAdmin):
 class IssueMessagesProxyAdmin(ModelAdmin):
 
     def response_post_save_change(self, request, obj):
-        return super().response_post_save_change(request, obj)
+        return HttpResponseRedirect(
+            reverse(
+                '%s:%s_%s_change' % (
+                    self.admin_site.name,
+                    Issue._meta.app_label,
+                    Issue._meta.model_name,
+                ),
+                args=(obj.id,),
+            )
+        )
 
     def has_add_permission(self, request):
         return False
