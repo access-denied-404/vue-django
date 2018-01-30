@@ -1,8 +1,11 @@
 {% load formset_tags %}
 
 <div class="panel panel-info">
-    <div class="panel-heading">Состав органов правления</div>
-    <div class="panel-body">
+    <div class="panel-heading">
+        Состав органов правления(при наличии)
+        <span class="pull-right" role="button" data-toggle="collapse" data-target="#open1">Развернуть</span>
+    </div>
+    <div class="panel-body collapse" id="open1">
         <div class="container-fluid">
             <div class="row formset" data-formset-prefix="{{ formset_collegial.prefix }}">
 
@@ -36,7 +39,7 @@
                 <span class="h4">Коллегиальный исполнительный орган</span>
                 <table class="table">
                     <tr>
-                        <th class="h6 col-md-6">Наименование</th>
+                        <th class="h6 col-md-6">Наименование участника</th>
                         <th class="h6 col-md-5">ФИО</th>
                         <th class="col-md-1">&nbsp;</th>
                     </tr>
@@ -101,7 +104,7 @@
                 <span class="h4">Совет директоров</span>
                 <table class="table">
                     <tr>
-                        <th class="h6 col-md-6">Наименование</th>
+                        <th class="h6 col-md-6">Наименование участника</th>
                         <th class="h6 col-md-5">ФИО</th>
                         <th class="col-md-1">&nbsp;</th>
                     </tr>
@@ -166,7 +169,7 @@
                 <span class="h4">Иной орган управления организации</span>
                 <table class="table">
                     <tr>
-                        <th class="h6 col-md-6">Наименование</th>
+                        <th class="h6 col-md-6">Наименование участника</th>
                         <th class="h6 col-md-5">ФИО</th>
                         <th class="col-md-1">&nbsp;</th>
                     </tr>

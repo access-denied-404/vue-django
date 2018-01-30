@@ -296,7 +296,8 @@ class FounderPhysicalForm(Form):
 
 class OrgManagementCollegialForm(Form):
     id = IntegerField(required=False, widget=HiddenInput())
-    org_name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    org_name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm',
+                                                                                 'placeholder': 'Например, член совета директоров'}))
     fio = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden'}))
 
@@ -306,7 +307,8 @@ class OrgManagementCollegialForm(Form):
 
 class OrgManagementDirectorsForm(Form):
     id = IntegerField(required=False, widget=HiddenInput())
-    org_name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    org_name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm',
+                                                                                 'placeholder': 'Например, член совета директоров'}))
     fio = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden'}))
 
@@ -316,7 +318,8 @@ class OrgManagementDirectorsForm(Form):
 
 class OrgManagementOthersForm(Form):
     id = IntegerField(required=False, widget=HiddenInput())
-    org_name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    org_name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm',
+                                                                                 'placeholder': 'Например, член совета директоров'}))
     fio = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden'}))
 

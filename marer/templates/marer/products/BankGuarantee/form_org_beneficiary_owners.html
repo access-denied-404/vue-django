@@ -15,7 +15,7 @@
                     {% escapescript %}
 
                         <tr data-formset-form>
-                            <td colspan="6">
+                            <td class="h6">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <b>ФИО</b>
@@ -41,15 +41,15 @@
                                         {{ formset.empty_form.post_address }}
                                     </div>
                                 </div>
-                                <td>
-                                    <div class="row">
-                                        <div class="col-md-1">
-                                            {{ formset.empty_form.DELETE }}
-                                            <button type="button" class="btn btn-link btn-xs" data-formset-delete-button>
-                                                <span class="glyphicon glyphicon-remove text-danger"></span>
-                                            </button>
-                                        </div>
+                            <td>
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        {{ formset.empty_form.DELETE }}
+                                        <button type="button" class="btn btn-link btn-xs" data-formset-delete-button>
+                                            <span class="glyphicon glyphicon-remove text-danger"></span>
+                                        </button>
                                     </div>
+                                </div>
                             </td>
                         </tr>
                     {% endescapescript %}
@@ -59,7 +59,7 @@
                     <tbody data-formset-body>
                     {% for form in formset %}
                         <tr data-formset-form>
-                            <td colspan="6">
+                            <td class="h6">
                                 <div class="row">
                                     <div class="col-md-6">
                                         {{ formset.id }}
