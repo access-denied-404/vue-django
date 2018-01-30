@@ -14,43 +14,89 @@
     </div>
     <div class="row">
         <div class="col-md-3">
-            <div class="h4 text-center text-primary">Этапы прохождения заявки</div>
-            <div class="panel panel-default">
-{#                <div class="panel-heading">Этапы прохождения заявки</div>#}
-                <div class="list-group">
-                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_registering' or request.resolver_match.url_name == 'issue_new' %} active{% endif %}{% if not issue %} disabled{% endif %}"
-                        {% if issue and 'issue_registering' in issue.available_dashboard_views_names %}
-                            href="{% url 'issue_registering' issue.id %}"
-                        {% endif %}
-                    >Оформление заявки</a>
+            <div class="visible-md visible-lg container" data-spy="affix">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="h4 text-center text-primary">Этапы прохождения заявки</div>
+                        <div class="panel panel-default">
+            {#                <div class="panel-heading">Этапы прохождения заявки</div>#}
+                            <div class="list-group">
+                                <a class="list-group-item{% if request.resolver_match.url_name == 'issue_registering' or request.resolver_match.url_name == 'issue_new' %} active{% endif %}{% if not issue %} disabled{% endif %}"
+                                    {% if issue and 'issue_registering' in issue.available_dashboard_views_names %}
+                                        href="{% url 'issue_registering' issue.id %}"
+                                    {% endif %}
+                                >Оформление заявки</a>
 
-                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_survey' %} active{% endif %}{% if not issue or 'issue_survey' not in issue.available_dashboard_views_names %} disabled{% endif %}"
-                        {% if issue and 'issue_survey' in issue.available_dashboard_views_names %}
-                            href="{% url 'issue_survey' issue.id %}"
-                        {% endif %}
-                    >Анкетирование</a>
+                                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_survey' %} active{% endif %}{% if not issue or 'issue_survey' not in issue.available_dashboard_views_names %} disabled{% endif %}"
+                                            {% if issue and 'issue_survey' in issue.available_dashboard_views_names %}
+                                       href="{% url 'issue_survey' issue.id %}"
+                                            {% endif %}
+                                    >Анкетирование</a>
 
-                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_scoring' %} active{% endif %}{% if not issue or 'issue_scoring' not in issue.available_dashboard_views_names %} disabled{% endif %}"
-                        {% if issue and 'issue_scoring' in issue.available_dashboard_views_names %}
-                            href="{% url 'issue_scoring' issue.id %}"
-                        {% endif %}
-                    >Экспресс-анализ</a>
+                                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_scoring' %} active{% endif %}{% if not issue or 'issue_scoring' not in issue.available_dashboard_views_names %} disabled{% endif %}"
+                                            {% if issue and 'issue_scoring' in issue.available_dashboard_views_names %}
+                                       href="{% url 'issue_scoring' issue.id %}"
+                                            {% endif %}
+                                    >Экспресс-анализ</a>
 
-                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_additional_documents_requests' or request.resolver_match.url_name == 'issue_additional_documents_request' or request.resolver_match.url_name == 'issue_additional_documents_request_new' %} active{% endif %}{% if 'issue_additional_documents_requests' not in issue.available_dashboard_views_names and 'issue_additional_documents_request' not in issue.available_dashboard_views_names and 'issue_additional_documents_request_new' not in issue.available_dashboard_views_names %} disabled{% elif not issue %} disabled{% endif %}"
-                        {% if issue and 'issue_additional_documents_requests' in issue.available_dashboard_views_names %}
-                            href="{% url 'issue_additional_documents_requests' issue.id %}"
-                        {% endif %}
-                    >Запросы и обсуждения</a>
+                                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_additional_documents_requests' or request.resolver_match.url_name == 'issue_additional_documents_request' or request.resolver_match.url_name == 'issue_additional_documents_request_new' %} active{% endif %}{% if 'issue_additional_documents_requests' not in issue.available_dashboard_views_names and 'issue_additional_documents_request' not in issue.available_dashboard_views_names and 'issue_additional_documents_request_new' not in issue.available_dashboard_views_names %} disabled{% elif not issue %} disabled{% endif %}"
+                                            {% if issue and 'issue_additional_documents_requests' in issue.available_dashboard_views_names %}
+                                       href="{% url 'issue_additional_documents_requests' issue.id %}"
+                                            {% endif %}
+                                    >Запросы и обсуждения</a>
 
-                    <a class="list-group-item{% if request.resolver_match.url_name == 'issue_finished' %} active{% endif %}{% if not issue or 'issue_finished' not in issue.available_dashboard_views_names %} disabled{% endif %}"
-                        {% if issue and 'issue_finished' in issue.available_dashboard_views_names %}
-                            href="{% url 'issue_finished' issue.id %}"
-                        {% endif %}
-                    >Завершение сделки</a>
+                                <a class="list-group-item{% if request.resolver_match.url_name == 'issue_finished' %} active{% endif %}{% if not issue or 'issue_finished' not in issue.available_dashboard_views_names %} disabled{% endif %}"
+                                    {% if issue and 'issue_finished' in issue.available_dashboard_views_names %}
+                                        href="{% url 'issue_finished' issue.id %}"
+                                    {% endif %}
+                                >Завершение сделки</a>
+                            </div>
+                        </div>
+                        <div style="margin-top: 30px;">
+                            <a href="{% url 'cabinet_requests' %}" style="margin-left: 15px;">Вернуться в личный кабинет</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div style="margin-top: 30px;">
-                <a href="{% url 'cabinet_requests' %}" style="margin-left: 15px;">Вернуться в личный кабинет</a>
+            <div class="visible-sm visible-xs">
+                <div class="h4 text-center text-primary">Этапы прохождения заявки</div>
+                <div class="panel panel-default">
+        {#                <div class="panel-heading">Этапы прохождения заявки</div>#}
+                    <div class="list-group">
+                        <a class="list-group-item{% if request.resolver_match.url_name == 'issue_registering' or request.resolver_match.url_name == 'issue_new' %} active{% endif %}{% if not issue %} disabled{% endif %}"
+                            {% if issue and 'issue_registering' in issue.available_dashboard_views_names %}
+                                href="{% url 'issue_registering' issue.id %}"
+                            {% endif %}
+                        >Оформление заявки</a>
+
+                            <a class="list-group-item{% if request.resolver_match.url_name == 'issue_survey' %} active{% endif %}{% if not issue or 'issue_survey' not in issue.available_dashboard_views_names %} disabled{% endif %}"
+                                    {% if issue and 'issue_survey' in issue.available_dashboard_views_names %}
+                               href="{% url 'issue_survey' issue.id %}"
+                                    {% endif %}
+                            >Анкетирование</a>
+
+                            <a class="list-group-item{% if request.resolver_match.url_name == 'issue_scoring' %} active{% endif %}{% if not issue or 'issue_scoring' not in issue.available_dashboard_views_names %} disabled{% endif %}"
+                                    {% if issue and 'issue_scoring' in issue.available_dashboard_views_names %}
+                               href="{% url 'issue_scoring' issue.id %}"
+                                    {% endif %}
+                            >Экспресс-анализ</a>
+
+                            <a class="list-group-item{% if request.resolver_match.url_name == 'issue_additional_documents_requests' or request.resolver_match.url_name == 'issue_additional_documents_request' or request.resolver_match.url_name == 'issue_additional_documents_request_new' %} active{% endif %}{% if 'issue_additional_documents_requests' not in issue.available_dashboard_views_names and 'issue_additional_documents_request' not in issue.available_dashboard_views_names and 'issue_additional_documents_request_new' not in issue.available_dashboard_views_names %} disabled{% elif not issue %} disabled{% endif %}"
+                                    {% if issue and 'issue_additional_documents_requests' in issue.available_dashboard_views_names %}
+                               href="{% url 'issue_additional_documents_requests' issue.id %}"
+                                    {% endif %}
+                            >Запросы и обсуждения</a>
+
+                        <a class="list-group-item{% if request.resolver_match.url_name == 'issue_finished' %} active{% endif %}{% if not issue or 'issue_finished' not in issue.available_dashboard_views_names %} disabled{% endif %}"
+                            {% if issue and 'issue_finished' in issue.available_dashboard_views_names %}
+                                href="{% url 'issue_finished' issue.id %}"
+                            {% endif %}
+                        >Завершение сделки</a>
+                    </div>
+                </div>
+                <div style="margin-top: 30px;">
+                    <a href="{% url 'cabinet_requests' %}" style="margin-left: 15px;">Вернуться в личный кабинет</a>
+                </div>
             </div>
         </div>
         <div class="col-md-9">{% block issue_content %}{% endblock %}</div>
