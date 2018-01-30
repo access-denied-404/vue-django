@@ -20,6 +20,11 @@ BG_TYPE_CONTRACT_EXECUTION = 'contract_execution'
 BG_TYPE_WARRANTY_ENSURE = 'warranty_ensure'
 BG_TYPE_REFUND_OF_ADVANCE = 'refund_of_advance'
 
+TAX_USN = 'tax_usn'
+TAX_OSN = 'tax_osn'
+TAX_ENVD = 'tax_envd'
+TAX_ESHD = 'tax_eshd'
+
 CURRENCY_RUR = 'rur'
 CURRENCY_USD = 'usd'
 CURRENCY_EUR = 'eur'

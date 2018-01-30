@@ -216,6 +216,12 @@ class Issue(models.Model):
     tender_contract_subject = models.CharField(verbose_name='предмет контракта', max_length=512, blank=True, null=False, default='')
     issuer_has_overdue_debts_for_last_180_days = models.NullBooleanField(verbose_name='Наличие просроченной задолженности по всем кредитам за последние 180 дней', blank=True, null=True)
     issuer_overdue_debts_info = models.TextField(verbose_name='Причины и обстоятельства просрочек', blank=True, null=False, default='')
+    tax_system = models.CharField(verbose_name='Система налогообложения', max_length=32, blank=True, null=True, choices=[
+        (consts.TAX_USN, 'УСН'),
+        (consts.TAX_OSN, 'ОСН'),
+        (consts.TAX_ENVD, 'ЕНВД'),
+        (consts.TAX_ESHD, 'ЕСХД'),
+    ])
 
     deal_has_beneficiary = models.NullBooleanField(verbose_name='наличие бенефициара по сделке', blank=True, null=True)
     issuer_bank_relations_term = models.CharField(verbose_name='срок отношений с Банком', max_length=32, blank=True, null=True, choices=[
