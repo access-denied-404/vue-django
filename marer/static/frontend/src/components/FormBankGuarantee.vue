@@ -153,11 +153,11 @@
             <div class="col-md-4">Прибыль/(убыток)</div>
             <div class="col-md-8">
               <div class="col-md-4">2400</div>
-              <div class="col-md-4">
+              <div class="col-md-4" v-bind:class="{'has-error': is_negative(balance_code_2400_offset_1)}">
                 <input class="form-control input-sm" name="balance_code_2400_offset_1"
                        v-model="balance_code_2400_offset_1"/>
               </div>
-              <div class="col-md-4">
+              <div class="col-md-4" v-bind:class="{'has-error': is_negative(balance_code_2400_offset_0)}">
                 <input class="form-control input-sm" name="balance_code_2400_offset_0"
                        v-model="balance_code_2400_offset_0"/>
               </div>
@@ -364,6 +364,12 @@
       this.is_tender_info_panel_visible = this.get_if_tender_info_panel_visible()
     },
     methods: {
+      is_negative: function (value) {
+        if (value.startsWith('(') && value.endsWith(')')) {
+          value = '-' + value.substr(1, value.length - 2)
+        }
+        return jQuery.isNumeric(value) && parseFloat(value) < 0
+      },
       get_if_tender_info_panel_visible () {
         return this.tender_exec_law === '44-fz' ||
           this.tender_exec_law === '223-fz' ||
