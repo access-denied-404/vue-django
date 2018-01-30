@@ -4,25 +4,16 @@
 		<div class="container-fluid">
 
 			<div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Web-сайт</label>
-                        {{ form.issuer_web_site }}
-                    </div>
-                </div>
-                <div class="col-md-6">
+                <div class="col-md-7">
                     <div class="form-group">
                         <label>Фактический адрес</label>
                         {{ form.issuer_fact_address }}
                     </div>
                 </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-5">
                     <div class="form-group">
-                        <label>Почтовый адрес (для отправки банковской гарантии)</label>
-                        {{ form.issuer_post_address }}
+                        <label>Система налогообложения</label>
+                        {{ form.tax_system }}
                     </div>
                 </div>
             </div>
@@ -40,6 +31,21 @@
                         {{ form.avg_employees_cnt_for_prev_year }}
                     </div>
             	</div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="form-group">
+                        <label>Почтовый адрес (для отправки банковской гарантии)</label>
+                        {{ form.issuer_post_address }}
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label>Web-сайт</label>
+                        {{ form.issuer_web_site }}
+                    </div>
+                </div>
             </div>
 
 		</div>
