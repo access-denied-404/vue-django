@@ -814,11 +814,11 @@ class Issue(models.Model):
                     ve.error_list.append('Обнаружен стоп-фактор: заказчик находится в необслуживаемом регионе')
                     break
 
-            # if self.finished_contracts_count == 0:
-            #     ve.error_list.append('Обнаружен стоп-фактор: нет опыта исполненных контрактов')
+            if self.finished_contracts_count == 0:
+                ve.error_list.append('Обнаружен стоп-фактор: нет опыта исполненных контрактов')
 
-            if ((self.balance_code_2400_offset_1 or 0) < 0) or ((self.balance_code_2400_offset_0 or 0) < 0):
-                ve.error_list.append('Обнаружен стоп-фактор: отрицательная прибыль')
+            # if ((self.balance_code_2400_offset_1 or 0) < 0) or ((self.balance_code_2400_offset_0 or 0) < 0):
+            #     ve.error_list.append('Обнаружен стоп-фактор: отрицательная прибыль')
 
         except Exception:
             ve.error_list.append('Не удалось проверить заявку на стоп-факторы')

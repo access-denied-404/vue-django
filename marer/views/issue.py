@@ -139,10 +139,10 @@ class IssueRegisteringView(IssueView):
                 url = reverse('cabinet_requests')
                 return HttpResponseRedirect(url)
             elif action == 'next':
-                if not issue.passed_prescoring:
+                if not issue.check_stop_factors_validity:
                     issue.status = consts.ISSUE_STATUS_CANCELLED
                     issue.save()
-                    url = reverse('issue_cancelled', args=[issue.id])
+                    url = reverse('issue_finished', args=[issue.id])
                     return HttpResponseRedirect(url)
 
                 if processed_valid:
