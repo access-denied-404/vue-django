@@ -452,8 +452,8 @@ class BankGuaranteeProduct(FinanceProduct):
                     except ObjectDoesNotExist:
                         pass  # nothing to do
 
-                elif not afdata_id and afdata_name != '':
-                    new_lf = IssueBGProdFounderLegal()
+                elif afdata_name != '':
+                    new_lf = IssueBGProdFounderLegal() if not afdata_id else IssueBGProdFounderLegal.objects.get(id=afdata_id)
                     new_lf.name = afdata_name
                     new_lf.add_date = afdata.get('add_date', '')
                     new_lf.additional_business = afdata.get('additional_business', '')
@@ -480,8 +480,8 @@ class BankGuaranteeProduct(FinanceProduct):
                     except ObjectDoesNotExist:
                         pass  # nothing to do
 
-                elif not afdata_id and afdata_fio != '':
-                    new_pf = IssueBGProdFounderPhysical()
+                elif afdata_fio != '':
+                    new_pf = IssueBGProdFounderPhysical() if not afdata_id else IssueBGProdFounderPhysical.objects.get(id=afdata_id)
                     new_pf.fio = afdata_fio
                     new_pf.add_date = afdata.get('add_date', '')
                     new_pf.additional_business = afdata.get('additional_business', '')
@@ -510,8 +510,9 @@ class BankGuaranteeProduct(FinanceProduct):
                         omc.delete()
                     except ObjectDoesNotExist:
                         pass  # nothing to do
-                elif not omcdata_id and omcdata_org_name != '':
-                    new_omc = IssueOrgManagementCollegial()
+                elif omcdata_org_name != '':
+                    new_omc = IssueOrgManagementCollegial() if not omcdata_id else IssueOrgManagementCollegial.objects.get(
+                        id=omcdata_id)
                     new_omc.org_name = omcdata_org_name
                     new_omc.fio = omcdata.get('fio', '')
                     new_omc.issue = self._issue
@@ -535,8 +536,10 @@ class BankGuaranteeProduct(FinanceProduct):
                         omd.delete()
                     except ObjectDoesNotExist:
                         pass  # nothing to do
-                elif not omddata_id and omddata_org_name != '':
-                    new_omd = IssueOrgManagementDirectors()
+                elif omddata_org_name != '':
+                    new_omd = IssueOrgManagementDirectors() if not omddata_id else IssueOrgManagementDirectors.objects.get(
+                        id=omddata_id)
+
                     new_omd.org_name = omddata_org_name
                     new_omd.fio = omddata.get('fio', '')
                     new_omd.issue = self._issue
@@ -560,8 +563,8 @@ class BankGuaranteeProduct(FinanceProduct):
                         omo.delete()
                     except ObjectDoesNotExist:
                         pass  # nothing to do
-                elif not omodata_id and omodata_org_name != '':
-                    new_omo = IssueOrgManagementOthers()
+                elif omodata_org_name != '':
+                    new_omo = IssueOrgManagementOthers() if not omodata_id else IssueOrgManagementOthers.objects.get(id=omodata_id)
                     new_omo.org_name = omodata_org_name
                     new_omo.fio = omodata.get('fio', '')
                     new_omo.issue = self._issue
@@ -616,8 +619,8 @@ class BankGuaranteeProduct(FinanceProduct):
                     except ObjectDoesNotExist:
                         pass  # nothing to do
 
-                elif not ba_data_id and ba_data_name != '':
-                    new_ba = IssueOrgBankAccount()
+                elif ba_data_name != '':
+                    new_ba = IssueOrgBankAccount() if not ba_data_id else IssueOrgBankAccount.objects.get(id=ba_data_id)
                     new_ba.name = ba_data_name
                     new_ba.bik = ba_data.get('bik', '')
                     new_ba.issue = self._issue
