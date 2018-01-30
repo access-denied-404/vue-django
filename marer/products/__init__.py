@@ -584,8 +584,12 @@ class BankGuaranteeProduct(FinanceProduct):
                     except ObjectDoesNotExist:
                         pass  # nothing to do
 
-                elif not bo_data_id and bo_data_fio != '':
-                    new_bo = IssueOrgBeneficiaryOwner()
+                elif bo_data_fio != '':
+                    if not bo_data_id:
+                        new_bo = IssueOrgBeneficiaryOwner()
+                    else:
+                        new_bo = IssueOrgBeneficiaryOwner.objects.get(id=bo_data_id)
+
                     new_bo.fio = bo_data_fio
                     new_bo.legal_address = bo_data.get('legal_address', '')
                     new_bo.fact_address = bo_data.get('fact_address', '')
