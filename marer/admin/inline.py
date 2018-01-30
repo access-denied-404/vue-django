@@ -295,6 +295,7 @@ class IssueProposeDocumentInlineAdmin(TabularInline):
     fields = (
         'name',
         'cert_info',
+        'type',
         'file_sample',
         'file',
         'is_approved_by_manager',

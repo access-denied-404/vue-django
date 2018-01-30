@@ -653,7 +653,7 @@ class Issue(models.Model):
 
     @property
     def propose_documents_ordered(self):
-        return self.propose_documents.order_by('document_id')  # need null to be first
+        return self.propose_documents.order_by('document_id', 'type')  # need null to be first
 
     @property
     def propose_documents_for_remote_sign(self):
@@ -814,8 +814,8 @@ class Issue(models.Model):
                     ve.error_list.append('Обнаружен стоп-фактор: заказчик находится в необслуживаемом регионе')
                     break
 
-            # if self.finished_contracts_count == 0:
-            #     ve.error_list.append('Обнаружен стоп-фактор: нет опыта исполненных контрактов')
+            if self.finished_contracts_count == settings.LIMIT_FINISHED_CONTRACTS:
+                ve.error_list.append('Обнаружен стоп-фактор: нет опыта исполненных контрактов')
 
             if ((self.balance_code_2400_offset_1 or 0) < 0) or ((self.balance_code_2400_offset_0 or 0) < 0):
                 ve.error_list.append('Обнаружен стоп-фактор: отрицательная прибыль')
@@ -853,6 +853,7 @@ class Issue(models.Model):
                 new_doc.issue = self
                 new_doc.name = pdoc.name
                 new_doc.code = pdoc.code
+                new_doc.type = pdoc.type
                 if pdoc.sample:
                     new_doc.sample = pdoc.sample
                 new_doc.save()
@@ -921,6 +922,7 @@ class IssueProposeDocument(models.Model):
         null=True,
         blank=True,
     )
+    type = models.PositiveIntegerField(choices=consts.DOCUMENT_TYPE_CHOICES, default=consts.DOCUMENT_TYPE_OTHER, null=False, blank=False)
     is_approved_by_manager = models.NullBooleanField('проверка менеджером', choices=[
         (None, 'Не проверен'),
         (True, 'Подтвержден'),

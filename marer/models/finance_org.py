@@ -200,10 +200,14 @@ class FinanceOrgProductProposeDocument(models.Model):
         null=True,
         blank=True,
     )
+    type = models.PositiveIntegerField(choices=consts.DOCUMENT_TYPE_CHOICES, default=consts.DOCUMENT_TYPE_OTHER,
+                                       null=False, blank=False)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self.finance_product or self.finance_product == '':
             self.finance_product = BankGuaranteeProduct().name
+        from marer.models.issue import IssueProposeDocument
+        IssueProposeDocument.objects.filter(name=self.name).update(type=self.type)
         super().save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
