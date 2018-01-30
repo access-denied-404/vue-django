@@ -60,7 +60,13 @@ def _fill_docx_paragraph_with_dict(paragraph: Paragraph, data: dict) -> None:
     for run in runs:
         old_text = str(run.text)
         try:
-            new_text = old_text.format(**data)
+            if '{' in old_text:
+                for found in set(re.findall('{[^}]*?}', old_text)):
+                    old_text = old_text.replace(found, '^%s^' % found)
+                new_text = old_text.format(**data)
+                new_text = new_text.replace('^^', 'нет').replace('^', '')
+            else:
+                new_text = old_text
         except KeyError:
             pass
         except ValueError:
@@ -201,7 +207,7 @@ class WordDocumentHelper:
                             found = re.findall('{obj[^{}]*}', str(old_text))
                             for f in found:
                                 new_text = new_text.replace(bytes(f, encoding='utf-8'),
-                                                            bytes('', encoding='utf-8'))
+                                                            bytes('нет', encoding='utf-8'))
                         # заменяем содержимое ячейки на новое содержимое
                         table._tbl[row_idx][i + 1] = etree.fromstring(new_text)
 

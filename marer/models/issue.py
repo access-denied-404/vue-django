@@ -269,6 +269,18 @@ class Issue(models.Model):
         related_name='sec_dep_conclusion_docs_links'
     )
 
+    def get_last_comment_for_user(self, user):
+        if self.status == consts.ISSUE_STATUS_REVIEW:
+            messages = list(self.clarification_messages.all().order_by('id'))
+            if messages:
+                last_message = messages[-1].message
+                count_messages_before = 0
+                for message in messages[::-1]:
+                    if message.user != user:
+                        count_messages_before += 1
+                return '%s <span class="badge">%s</span>' % (last_message, count_messages_before)
+        return '-'
+
     @cached_property
     def finished_contracts_count(self):
         url = 'http://zakupki.gov.ru/epz/contract/extendedsearch/rss?openMode=USE_DEFAULT_PARAMS&pageNumber=1&sortDirection=false&recordsPerPage=_50&sortBy=PO_DATE_OBNOVLENIJA&fz44=on&fz94=on&priceFrom=0&priceTo=200000000000&advancePercentFrom=hint&advancePercentTo=hint&contractStageList_1=on&contractStageList=1&supplierTitle=%s' % self.issuer_inn

@@ -33,6 +33,7 @@ class IFOPClarificationAddForm(forms.ModelForm):
 
         new_msg = IssueClarificationMessage()
         new_msg.user = self.user
+        new_msg.issue = self.instance.issue
         new_msg.message = self.cleaned_data['message']
         new_msg.issue = self.instance
         new_msg.save()
