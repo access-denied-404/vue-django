@@ -245,8 +245,7 @@ class OrgBeneficiaryOwnerForm(Form):
                                                                                       'placeholder': 'Обязательно к заполнению'}))
     fact_address = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm',
                                                                                       'placeholder': 'Обязательно к заполнению'}))
-    post_address = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm',
-                                                                                      'placeholder': 'Обязательно к заполнению'}))
+    post_address = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     inn_or_snils = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     on_belong_to_pub_persons_info = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden'}))

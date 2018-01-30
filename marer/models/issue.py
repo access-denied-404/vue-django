@@ -431,30 +431,6 @@ class Issue(models.Model):
         return '\n'.join(list(self.org_management_others.all().values_list('fio', flat=True)))
 
     @cached_property
-    def management_collegial_org_name(self):
-        return '\n'.join(list(self.org_management_collegial.all().values_list('org_name', flat=True)))
-
-    @cached_property
-    def management_collegial_fio(self):
-        return '\n'.join(list(self.org_management_collegial.all().values_list('fio', flat=True)))
-
-    @cached_property
-    def management_directors_org_name(self):
-        return '\n'.join(list(self.org_management_directors.all().values_list('org_name', flat=True)))
-
-    @cached_property
-    def management_directors_fio(self):
-        return '\n'.join(list(self.org_management_directors.all().values_list('fio', flat=True)))
-
-    @cached_property
-    def management_others_org_name(self):
-        return '\n'.join(list(self.org_management_others.all().values_list('org_name', flat=True)))
-
-    @cached_property
-    def management_others_fio(self):
-        return '\n'.join(list(self.org_management_others.all().values_list('fio', flat=True)))
-
-    @cached_property
     def bank_accounts(self):
         return list(self.org_bank_accounts.order_by('id').all())
 
