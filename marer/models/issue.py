@@ -271,14 +271,17 @@ class Issue(models.Model):
 
     def get_last_comment_for_user(self, user):
         if self.status == consts.ISSUE_STATUS_REVIEW:
-            messages = list(self.clarification_messages.all().order_by('id'))
+            messages = list(self.clarification_messages.all().order_by('-id'))
             if messages:
                 last_message = messages[-1].message
                 count_messages_before = 0
                 for message in messages[::-1]:
                     if message.user != user:
                         count_messages_before += 1
-                return '%s <span class="badge">%s</span>' % (last_message, count_messages_before)
+                if count_messages_before > 0:
+                    return '%s <span class="badge">%s</span>' % (last_message, count_messages_before)
+                else:
+                    return '%s' % last_message
         return '-'
 
     @cached_property

@@ -27,9 +27,7 @@
             <th>Организация</th>
             <th>Сумма</th>
             <th>Статус</th>
-            {% if request.user.is_broker %}
-                <th>Последний комментарий</th>
-            {% endif %}
+            <th>Последний комментарий</th>
             <th></th>
         </tr>
 
@@ -49,9 +47,7 @@
                 <td>{{ issue.get_issuer_name }}</td>
                 <td>{{ issue.humanized_sum }}</td>
                 <td>{{ issue.humanized_status }}</td>
-                {% if request.user.is_broker %}
-                    <td>{% get_last_comment issue request.user %}</td>
-                {% endif %}
+                <td>{% get_last_comment issue request.user %}</td>
                 <td>
                     <form method="post">
                         {% csrf_token %}
