@@ -519,6 +519,18 @@ class Issue(models.Model):
         # fixme implement issue validation for each status
         return consts.ISSUE_STATUS_REGISTERING
 
+    def check_all_application_required_fields_filled(self):
+        checks = []
+        checks.append(self.issuer_fact_address is not None and self.issuer_fact_address != '')
+        checks.append(self.issuer_accountant_org_or_person is not None and self.issuer_accountant_org_or_person != '')
+        checks.append(self.avg_employees_cnt_for_prev_year is not None and self.avg_employees_cnt_for_prev_year > 0)
+        checks.append(self.issuer_head_passport_series is not None and self.issuer_head_passport_series != '')
+        checks.append(self.issuer_head_passport_number is not None and self.issuer_head_passport_number != '')
+        checks.append(self.issuer_head_passport_issue_date is not None)
+        checks.append(self.issuer_head_residence_address is not None and self.issuer_head_residence_address != '')
+        checks.append(self.issuer_head_passport_issued_by is not None and self.issuer_head_passport_issued_by != '')
+        return not False in checks
+
     def fill_from_issuer(self):
         self.issuer_inn = self.issuer.inn
         self.issuer_kpp = self.issuer.kpp
