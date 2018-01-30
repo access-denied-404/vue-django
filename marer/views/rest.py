@@ -29,8 +29,13 @@ class TenderDataView(APIView):
 
         gos_number = rtform.cleaned_data['gos_number']
         tdata = {}
+
+        if gos_number.startswith('http://zakupki.gov.ru/epz/order/'):
+            gos_number = gos_number.split('=',1)[1]
+
         try:
             req = requests.get('https://tender.marer.ru/rest/tender/' + gos_number)
+
             if req and req.status_code != 200:
                 return HttpResponseNotFound()
             if req.text:
