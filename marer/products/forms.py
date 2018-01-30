@@ -131,7 +131,8 @@ class BGFinProdSurveyOrgCommonForm(Form):
     issuer_short_name = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
     issuer_foreign_name = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
     issuer_legal_address = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
-    issuer_fact_address = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_fact_address = CharField(required=False, widget=TextInput(attrs={'class': 'form-control',
+                                                                            'placeholder': 'Обязательно к заполнению'}))
     issuer_ogrn = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
     issuer_inn = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
     issuer_kpp = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
@@ -144,7 +145,8 @@ class BGFinProdSurveyOrgCommonForm(Form):
 
     avg_employees_cnt_for_prev_year = IntegerField(required=False, widget=NumberInput(attrs={'class': 'form-control'}))
     issuer_web_site = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
-    issuer_accountant_org_or_person = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_accountant_org_or_person = CharField(required=False, widget=TextInput(attrs={'class': 'form-control',
+                                                                                        'placeholder': 'Обязательно к заполнению'}))
     issuer_post_address = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
     issuer_has_overdue_debts_for_last_180_days = BooleanField(required=False, widget=Select(attrs={'class': 'form-control'}, choices=[
         (False, 'Нет'),
@@ -160,11 +162,16 @@ class BGFinProdSurveyOrgHeadForm(Form):
     issuer_head_birthday = DateField(required=False, widget=DateInput(attrs={'class': 'form-control'}))
     issuer_head_org_position_and_permissions = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
     issuer_head_phone = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
-    issuer_head_passport_series = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
-    issuer_head_passport_number = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
-    issuer_head_passport_issue_date = DateField(required=False, widget=DateInput(attrs={'class': 'form-control'}))
-    issuer_head_passport_issued_by = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
-    issuer_head_residence_address = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    issuer_head_passport_series = CharField(required=False, widget=TextInput(attrs={'class': 'form-control',
+                                                                                    'placeholder': 'Обязательно к заполнению'}))
+    issuer_head_passport_number = CharField(required=False, widget=TextInput(attrs={'class': 'form-control',
+                                                                                    'placeholder': 'Обязательно к заполнению'}))
+    issuer_head_passport_issue_date = DateField(required=False, widget=DateInput(attrs={'class': 'form-control',
+                                                                                        'placeholder': 'Обязательно к заполнению'}))
+    issuer_head_passport_issued_by = CharField(required=False, widget=TextInput(attrs={'class': 'form-control',
+                                                                                        'placeholder': 'Обязательно к заполнению'}))
+    issuer_head_residence_address = CharField(required=False, widget=TextInput(attrs={'class': 'form-control',
+                                                                                        'placeholder': 'Обязательно к заполнению'}))
     issuer_head_education_level = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
     issuer_head_org_work_experience = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
     issuer_head_share_in_authorized_capital = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
@@ -234,9 +241,12 @@ class AffiliatesForm(Form):
 class OrgBeneficiaryOwnerForm(Form):
     id = IntegerField(required=False, widget=HiddenInput())
     fio = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
-    legal_address = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
-    fact_address = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
-    post_address = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    legal_address = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm',
+                                                                                      'placeholder': 'Обязательно к заполнению'}))
+    fact_address = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm',
+                                                                                      'placeholder': 'Обязательно к заполнению'}))
+    post_address = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm',
+                                                                                      'placeholder': 'Обязательно к заполнению'}))
     inn_or_snils = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     on_belong_to_pub_persons_info = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden'}))
@@ -286,7 +296,8 @@ class FounderPhysicalForm(Form):
 
 class OrgManagementCollegialForm(Form):
     id = IntegerField(required=False, widget=HiddenInput())
-    org_name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    org_name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm',
+                                                                                 'placeholder': 'Например, член совета директоров'}))
     fio = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden'}))
 
@@ -296,7 +307,8 @@ class OrgManagementCollegialForm(Form):
 
 class OrgManagementDirectorsForm(Form):
     id = IntegerField(required=False, widget=HiddenInput())
-    org_name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    org_name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm',
+                                                                                 'placeholder': 'Например, член совета директоров'}))
     fio = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden'}))
 
@@ -306,7 +318,8 @@ class OrgManagementDirectorsForm(Form):
 
 class OrgManagementOthersForm(Form):
     id = IntegerField(required=False, widget=HiddenInput())
-    org_name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
+    org_name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm',
+                                                                                 'placeholder': 'Например, член совета директоров'}))
     fio = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden'}))
 

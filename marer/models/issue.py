@@ -403,6 +403,7 @@ class Issue(models.Model):
     def beneficiaries_owner(self):
         return list(self.org_beneficiary_owners.order_by('id').all())
 
+    @cached_property
     def management_collegial_org_name(self):
         return '\n'.join(list(self.org_management_collegial.all().values_list('org_name', flat=True)))
 
