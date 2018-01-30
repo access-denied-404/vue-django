@@ -104,7 +104,13 @@
       <transition appear name="fade" mode="out-in">
         <router-view></router-view>
       </transition>
-      <button type="submit" class="btn btn-primary center-block spinjs">Далее</button>
+      <div class="text-center">
+        <button type="submit" v-on:click="action = 'save'" class="btn btn-primary spinjs">Сохранить черновик</button>
+        &nbsp;
+        <button type="submit" v-on:click="action = 'next'" class="btn btn-success spinjs">Далее</button>
+
+        <input type="hidden" name="action" :value="action"/>
+      </div>
     </form>
   </div>
 </template>
@@ -153,7 +159,9 @@
         comment: document.getElementById('app').getAttribute('comment'),
 
         errors: errors,
-        org_add_data_visible: false
+        org_add_data_visible: false,
+
+        action: ''
       }
     },
     watch: {

@@ -134,12 +134,20 @@ class IssueRegisteringView(IssueView):
             product.set_issue(issue)
             processed_valid = product.process_registering_form(request)
 
-            if not issue.passed_prescoring:
-                return self.return_errors(base_form, *args, **kwargs)
-
-            if processed_valid:
-                url = reverse('issue_survey', args=[issue.id])
+            action = request.POST.get('action', 'save')
+            if action == 'save':
+                url = reverse('cabinet_requests')
                 return HttpResponseRedirect(url)
+            elif action == 'next':
+                if not issue.passed_prescoring:
+                    issue.status = consts.ISSUE_STATUS_CANCELLED
+                    issue.save()
+                    url = reverse('issue_cancelled', args=[issue.id])
+                    return HttpResponseRedirect(url)
+
+                if processed_valid:
+                    url = reverse('issue_survey', args=[issue.id])
+                    return HttpResponseRedirect(url)
 
         return self.return_errors(base_form, *args, **kwargs)
 
@@ -158,7 +166,11 @@ class IssueSurveyView(IssueView):
             return self.get(request, *args, **kwargs)
 
         all_ok = self.get_issue().get_product().process_survey_post_data(request)
-        if all_ok:
+        action = request.POST.get('action', 'save')
+        if action == 'save':
+            url = reverse('cabinet_requests')
+            return HttpResponseRedirect(url)
+        elif action == 'next' and all_ok:
             self.get_issue().fill_application_doc(commit=True)
             notify_user_manager_about_user_updated_issue(self.get_issue())
             url = reverse('issue_scoring', args=[self.get_issue().id])
