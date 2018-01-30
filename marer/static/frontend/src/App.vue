@@ -30,6 +30,7 @@
           <div class="row">
             <div class="col-md-12">
               <bs-input
+                :placeholder="'Название, ИНН, ОГРН или адрес организации'"
                 :name="'party'"
                 class="party"
                 :label="'Организация-заявитель'"
