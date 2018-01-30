@@ -155,7 +155,7 @@
                         {% if not issue.can_send_for_review %}
                             {% if not issue.is_all_propose_docs_filled %}
                                 <button type="submit" class="btn btn-primary center-block">Загрузить документы</button>
-                            {% else %}
+                            {% elif issue.status == consts.ISSUE_STATUS_REGISTERING %}
                                 <div class="alert alert-warning text-center">
                                     Для отправки заявления в банк, файл заявления должен быть подписан клиентом.
                                 </div>
