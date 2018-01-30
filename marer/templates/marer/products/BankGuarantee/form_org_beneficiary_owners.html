@@ -62,22 +62,27 @@
                             <td class="h6">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        {{ formset.id }}
-                                        {{ formset.fio }}
+                                        <b>ФИО</b>
+                                        {{ form.id }}
+                                        {{ form.fio }}
                                     </div>
                                     <div class="col-md-6">
-                                        {{ formset.inn_or_snils }}
+                                        <b>Адрес регистрации</b>
+                                        {{ form.inn_or_snils }}
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4">
-                                        {{ formset.legal_address }}
+                                        <b>Адрес регистрации</b>
+                                        {{ form.legal_address }}
                                     </div>
                                     <div class="col-md-4">
-                                        {{ formset.fact_address }}
+                                        <b>Фактический адрес</b>
+                                        {{ form.fact_address }}
                                     </div>
                                     <div class="col-md-4">
-                                        {{ formset.post_address }}
+                                        <b>Почтовый адрес</b>
+                                        {{ form.post_address }}
                                     </div>
 
                                 </div>
@@ -85,7 +90,7 @@
                             <td>
                                 <div class="row">
                                     <div class="col-md-1">
-                                        {{ formset.DELETE }}
+                                        {{ form.DELETE }}
                                         <button type="button" class="btn btn-link btn-xs" data-formset-delete-button>
                                             <span class="glyphicon glyphicon-remove text-danger"></span>
                                         </button>
