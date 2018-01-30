@@ -30,7 +30,7 @@ from marer.admin.inline import IssueDocumentInlineAdmin, \
     IFOPFinalDocumentInlineAdmin, IssueBGProdAffiliateInlineAdmin, \
     IssueBGProdFounderLegalInlineAdmin, IssueBGProdFounderPhysicalInlineAdmin, \
     FinanceOrgProductProposeDocumentInlineAdmin, IssueProposeDocumentInlineAdmin, RegionKLADRCodeInlineAdmin
-from marer.models import Issue, User
+from marer.models import Issue, User, IssueMessagesProxy
 from marer.models.finance_org import FinanceOrganization, FinanceOrgProductConditions, FinanceOrgProductProposeDocument
 from marer.utils.notify import notify_user_about_manager_created_issue_for_user, \
     notify_user_about_manager_updated_issue_for_user, notify_fo_managers_about_issue_proposed_to_banks, \
@@ -148,6 +148,7 @@ class IssueAdmin(ModelAdmin):
                     'private_comment',
                     'comment',
                     'final_note',
+                    'get_last_message',
                 ))),
             ]
             product_fieldset_part = obj.get_product().get_admin_issue_fieldset()
@@ -156,7 +157,7 @@ class IssueAdmin(ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            return obj.get_product().get_admin_issue_read_only_fields()
+            return obj.get_product().get_admin_issue_read_only_fields() + ['get_last_message']
         else:
             return []
 
@@ -176,6 +177,44 @@ class IssueAdmin(ModelAdmin):
     get_issue_manager.short_description = 'Менеджер по заявке'
     get_issue_manager.admin_order_field = 'manager__first_name'
     get_issue_manager.allow_tags = True
+
+    def get_last_message(self, obj):
+
+        msg = obj.clarification_messages.all().order_by('-created_at').first()
+        obj_tmpl = '<div>{msg}</div><br/><div>{msg_docs}</div>'
+        line_tmpl = '<b><{msg.user}</b><br/>{msg_created}:<br/><br/>{msg.message}'
+        line_doc_tmpl = '<div><a href="{doc_url}">{doc_name}</a></div>'
+        ret_text = ''
+        if msg:
+            msg_text = line_tmpl.format(msg=msg, msg_created=localtime(msg.created_at).strftime('%d.%m.%Y %H:%M'))
+            docs = ''
+            if msg.documents_links.exists():
+                docs += '<b>Документы:</b><br/>'
+            for msg_doc in msg.documents_links.all():
+                doc_name = msg_doc.name
+                if msg_doc.document and msg_doc.document.file:
+                    doc_url = msg_doc.document.file.url
+                else:
+                    doc_url = '#'
+                docs += line_doc_tmpl.format(
+                    doc_name=doc_name,
+                    doc_url=doc_url,
+                )
+            ret_text += obj_tmpl.format(msg=msg_text, msg_docs=docs)
+            ret_text += '<hr/>'
+
+        url = reverse(
+            '%s:%s_%s_change' % (
+                self.admin_site.name,
+                IssueMessagesProxy._meta.app_label,
+                IssueMessagesProxy._meta.model_name,
+            ),
+            args=(obj.id,),
+        )
+        ret_text += '<a href="{}" target="_blank">Смотреть все</a>'.format(url)
+        return ret_text
+    get_last_message.short_description = 'Последние сообщения'
+    get_last_message.allow_tags = True
 
     def tender_gos_number_link(self, obj):
         link = obj.tender_gos_number
@@ -334,19 +373,20 @@ class IssueAdmin(ModelAdmin):
             notify_user_about_manager_created_issue_for_user(obj)
 
 
-@register(models.IssueClarification)
-class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
-    list_display = (
-        'humanized_id',
-        '__str__',
-        'created_at',
-        'updated_at',
-    )
+@register(models.IssueMessagesProxy)
+class IssueMessagesProxyAdmin(ModelAdmin):
 
-    def humanized_id(self, obj):
-        return obj.id
-    humanized_id.short_description = 'номер дозапроса'
-    humanized_id.admin_order_field = 'id'
+    def response_post_save_change(self, request, obj):
+        return super().response_post_save_change(request, obj)
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_module_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
     form = IFOPClarificationAddForm
 
@@ -372,7 +412,6 @@ class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
         else:
             self.fields = (
                 'issue_change_link',
-                'initiator',
                 'get_messages',
                 'message',
                 (
@@ -388,7 +427,6 @@ class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
             )
             self.readonly_fields = (
                 'issue_change_link',
-                'initiator',
                 'get_messages',
             )
 
@@ -442,21 +480,14 @@ class IssueFinanceOrgProposeClarificationAdmin(ModelAdmin):
         return super().save_form(request, form, change)
 
     def issue_change_link(self, obj):
-        change_url = reverse('admin:marer_issue_change', args=(obj.issue_id,))
-        return '<a href="{}">{}</a>'.format(change_url, obj.issue)
+        change_url = reverse('admin:marer_issue_change', args=(obj.id,))
+        return '<a href="{}">{}</a>'.format(change_url, obj)
     issue_change_link.short_description = 'Заявка'
     issue_change_link.allow_tags = True
 
     # todo filter queryset basing on permissions
     # todo save messages as fo or issuer based on permissions if not set in form
     # todo filter proposes in form on creating clarification
-
-    def has_add_permission(self, request):
-        if request.user.has_perm('marer.can_add_managed_users_issues_proposes_clarifications'):
-            return True
-        elif request.user.has_perm('marer.can_add_managed_finance_org_proposes_clarifications'):
-            return True
-        return super().has_add_permission(request)
 
     def has_change_permission(self, request, obj=None):
         # todo change to can_view_managed_users_issues_proposes_clarifications

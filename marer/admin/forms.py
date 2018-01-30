@@ -34,7 +34,7 @@ class IFOPClarificationAddForm(forms.ModelForm):
         new_msg = IssueClarificationMessage()
         new_msg.user = self.user
         new_msg.message = self.cleaned_data['message']
-        new_msg.clarification = self.instance
+        new_msg.issue = self.instance
         new_msg.save()
 
         for file_field_name in self.files:

@@ -23,7 +23,7 @@ from marer.utils import CustomJSONEncoder, kontur
 from marer.utils.issue import bank_commission
 
 __all__ = [
-    'Issue', 'IssueDocument', 'IssueClarification',
+    'Issue', 'IssueDocument', 'IssueClarification', 'IssueMessagesProxy',
     'IssueClarificationMessage', 'IssueFinanceOrgProposeClarificationMessageDocument'
 ]
 
@@ -1235,3 +1235,10 @@ class IssueOrgBankAccount(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False, related_name='org_bank_accounts')
     name = models.CharField(verbose_name='наименование', max_length=512, blank=False, null=False, default='')
     bik = models.CharField(verbose_name='БИК', max_length=512, blank=False, null=False, default='')
+
+
+class IssueMessagesProxy(Issue):
+    class Meta:
+        proxy = True
+        verbose_name = 'собощение по заявке'
+        verbose_name_plural = 'собощения по заявке'
