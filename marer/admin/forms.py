@@ -226,6 +226,10 @@ class FinanceOrgProductProposeDocumentForm(forms.ModelForm):
             'file_sample',
             'code',
             'type',
+            'tax_system',
+            'min_bg_sum',
+            'max_bg_sum',
+            'is_required',
         )
 
     file_sample = forms.FileField(label='Образец', required=False)

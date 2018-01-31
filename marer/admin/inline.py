@@ -296,11 +296,12 @@ class IssueProposeDocumentInlineAdmin(TabularInline):
         'name',
         'cert_info',
         'type',
+        'is_required',
         'file_sample',
         'file',
         'is_approved_by_manager',
     )
-    readonly_fields = ['cert_info']
+    readonly_fields = ['cert_info', 'is_required']
     classes = ('collapse',)
 
     def cert_info(self, obj):

@@ -158,13 +158,9 @@
                             {% endfor %}
                         </table>
 
-                        {% if not issue.can_send_for_review %}
+                        {% if issue.status == consts.ISSUE_STATUS_REGISTERING %}
                             {% if not issue.is_all_propose_docs_filled %}
                                 <button type="submit" class="btn btn-primary center-block spinjs">Загрузить документы</button>
-                            {% elif issue.status == consts.ISSUE_STATUS_REGISTERING %}
-                                <div class="alert alert-warning text-center">
-                                    Для отправки заявления в банк, файл заявления должен быть подписан клиентом.
-                                </div>
                             {% endif %}
                         {% endif %}
 
@@ -178,6 +174,11 @@
                                 Отправить заявку на рассмотрение
                             </button>
                         </form>
+                    {% elif issue.status == consts.ISSUE_STATUS_REGISTERING %}
+                        <br/>
+                        <div class="alert alert-warning text-center">
+                            Для отправки заявления в банк, файл заявления должен быть подписан клиентом.
+                        </div>
                     {% endif %}
 
                 </div>

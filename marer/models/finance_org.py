@@ -200,8 +200,17 @@ class FinanceOrgProductProposeDocument(models.Model):
         null=True,
         blank=True,
     )
-    type = models.PositiveIntegerField(choices=consts.DOCUMENT_TYPE_CHOICES, default=consts.DOCUMENT_TYPE_OTHER,
+    type = models.PositiveIntegerField('тип документа', choices=consts.DOCUMENT_TYPE_CHOICES, default=consts.DOCUMENT_TYPE_OTHER,
                                        null=False, blank=False)
+    tax_system = models.CharField(verbose_name='система налогообложения', max_length=32, blank=True, null=True, choices=[
+        (consts.TAX_USN, 'УСН'),
+        (consts.TAX_OSN, 'ОСН'),
+        (consts.TAX_ENVD, 'ЕНВД'),
+        (consts.TAX_ESHD, 'ЕСХД'),
+    ])
+    min_bg_sum = models.DecimalField(verbose_name='минимальная сумма', max_digits=12, decimal_places=2, blank=True, null=True)
+    max_bg_sum = models.DecimalField(verbose_name='максимальная сумма', max_digits=12, decimal_places=2, blank=True, null=True)
+    is_required = models.BooleanField('обязательный документ', null=False, default=False)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self.finance_product or self.finance_product == '':

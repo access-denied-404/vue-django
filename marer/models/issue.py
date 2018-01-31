@@ -359,7 +359,7 @@ class Issue(models.Model):
     @property
     def humanized_bg_end_date(self):
         return self.bg_end_date.strftime('%d.%m.%Y') if self.bg_end_date else ''
-    
+
     @property
     def humanized_bg_type(self):
         return self.get_bg_type_display() or ''
@@ -685,8 +685,12 @@ class Issue(models.Model):
         return not self.propose_documents.filter(Q(document__file__isnull=True) | Q(document__file='')).exists()
 
     @property
+    def is_all_required_propose_docs_filled(self):
+        return not self.propose_documents.filter(Q(document__file__isnull=True) | Q(document__file=''), is_required=True).exists()
+
+    @property
     def can_send_for_review(self):
-        return self.is_application_filled and self.is_application_signed and self.is_all_propose_docs_filled
+        return self.is_application_filled and self.is_application_signed and self.is_all_required_propose_docs_filled
 
     def fill_application_doc(self, commit=True):
         template_path = os.path.join(
@@ -836,24 +840,25 @@ class Issue(models.Model):
             return True
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        if not self.id:
-            adding_new = True
-        else:
-            adding_new = False
         if not self.bg_start_date:
             self.bg_start_date = timezone.now()
         if not self.product or self.product == '':
             self.product = BankGuaranteeProduct().name
         super().save(force_insert, force_update, using, update_fields)
 
-        if adding_new:
-            pdocs = FinanceOrgProductProposeDocument.objects.all()
+        if not self.propose_documents.exists() and self.tax_system:
+            pdocs = FinanceOrgProductProposeDocument.objects.filter(
+                Q(Q(tax_system=self.tax_system) | Q(tax_system__isnull=True)),
+                Q(Q(min_bg_sum__lte=self.bg_sum) | Q(min_bg_sum__isnull=True)),
+                Q(Q(max_bg_sum__gte=self.bg_sum) | Q(min_bg_sum__isnull=True)),
+            )
             for pdoc in pdocs:
                 new_doc = IssueProposeDocument()
                 new_doc.issue = self
                 new_doc.name = pdoc.name
                 new_doc.code = pdoc.code
                 new_doc.type = pdoc.type
+                new_doc.is_required = pdoc.is_required
                 if pdoc.sample:
                     new_doc.sample = pdoc.sample
                 new_doc.save()
@@ -922,7 +927,8 @@ class IssueProposeDocument(models.Model):
         null=True,
         blank=True,
     )
-    type = models.PositiveIntegerField(choices=consts.DOCUMENT_TYPE_CHOICES, default=consts.DOCUMENT_TYPE_OTHER, null=False, blank=False)
+    type = models.PositiveIntegerField('тип документа', choices=consts.DOCUMENT_TYPE_CHOICES, default=consts.DOCUMENT_TYPE_OTHER, null=False, blank=False)
+    is_required = models.BooleanField('обязательный документ', null=False, default=False)
     is_approved_by_manager = models.NullBooleanField('проверка менеджером', choices=[
         (None, 'Не проверен'),
         (True, 'Подтвержден'),
