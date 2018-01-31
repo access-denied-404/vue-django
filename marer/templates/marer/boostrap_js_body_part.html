@@ -3,10 +3,12 @@
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="{% static '/jquery/dist/jquery.min.js' %}"></script>
 <script src="{% static '/jquery-ui/jquery-ui.min.js' %}"></script>
+<script src="{% static '/jquery-ui/ui/i18n/datepicker-ru.js' %}"></script>
 <script src="{% static '/bootstrap/dist/js/bootstrap.min.js' %}"></script>
 <script src="{% static '/js/jquery.formset.js' %}"></script>
 <script>
     jQuery(function($) {
+        $(".datepicker").datepicker({ dateFormat: 'dd.mm.yy' });
         $(".formset").formset({animateForms: false});
     }).on('formDeleted', function (event) {
         var hForm = event.target;

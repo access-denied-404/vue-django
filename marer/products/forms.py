@@ -177,7 +177,7 @@ class BGFinProdSurveyOrgHeadForm(Form):
                                                                                     'placeholder': 'Обязательно к заполнению'}))
     issuer_head_passport_number = CharField(required=False, widget=TextInput(attrs={'class': 'form-control',
                                                                                     'placeholder': 'Обязательно к заполнению'}))
-    issuer_head_passport_issue_date = DateField(required=False, widget=DateInput(attrs={'class': 'form-control',
+    issuer_head_passport_issue_date = DateField(required=False, widget=DateInput(attrs={'class': 'form-control datepicker',
                                                                                         'placeholder': 'Обязательно к заполнению'}))
     issuer_head_passport_issued_by = CharField(required=False, widget=TextInput(attrs={'class': 'form-control',
                                                                                         'placeholder': 'Обязательно к заполнению'}))
