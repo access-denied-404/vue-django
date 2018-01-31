@@ -23,12 +23,12 @@
 <div class="panel panel-info">
     <table class="table">
         <tr class="bg-info">
-            <th>Номер</th>
-            <th>Организация</th>
-            <th>Сумма</th>
-            <th>Статус</th>
+            <th><a href="?order_by={% if request.GET.order_by == 'id' %}-{% endif %}id">Номер</a></th>
+            <th><a href="?order_by={% if request.GET.order_by == 'issuer_full_name' %}-{% endif %}issuer_full_name">Организация</a></th>
+            <th><a href="?order_by={% if request.GET.order_by == 'bg_sum' %}-{% endif %}bg_sum">Сумма</a></th>
+            <th><a href="?order_by={% if request.GET.order_by == 'status' %}-{% endif %}status">Статус</a></th>
+            <th><a href="?order_by={% if request.GET.order_by == 'created_at' %}-{% endif %}created_at">Дата заведения заявки</a></th>
             <th>Последний комментарий</th>
-            <th>Дата заведения заявки</th>
             <th></th>
         </tr>
 
@@ -48,8 +48,8 @@
                 <td>{{ issue.get_issuer_name }}</td>
                 <td>{{ issue.humanized_sum }}</td>
                 <td>{{ issue.humanized_status }}</td>
-                <td>{% get_last_comment issue request.user %}</td>
                 <td>{{ issue.created_at }}</td>
+                <td>{% get_last_comment issue request.user %}</td>
                 <td>
                     <form method="post">
                         {% csrf_token %}
