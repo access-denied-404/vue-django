@@ -27,8 +27,8 @@
             <th><a href="?{% if request.GET.order_by != '-get_issuer_name' %}order_by={% if request.GET.order_by == 'get_issuer_name' %}-{% endif %}get_issuer_name{% endif %}">Организация</a></th>
             <th><a href="?{% if request.GET.order_by != '-bg_sum' %}order_by={% if request.GET.order_by == 'bg_sum' %}-{% endif %}bg_sum{% endif %}">Сумма</a></th>
             <th><a href="?{% if request.GET.order_by != '-status' %}order_by={% if request.GET.order_by == 'status' %}-{% endif %}status{% endif %}">Статус</a></th>
-            <th><a href="?{% if request.GET.order_by != '-creaed_at' %}order_by={% if request.GET.order_by == 'creaed_at' %}-{% endif %}creaed_at{% endif %}">Дата заведения заявки</a></th>
-            <th>Последний комментарий</th>
+            <th><a href="?{% if request.GET.order_by != '-created_at' %}order_by={% if request.GET.order_by == 'created_at' %}-{% endif %}created_at{% endif %}">Дата заведения заявки</a></th>
+            <th><a href="?{% if request.GET.order_by != '-comment' %}order_by={% if request.GET.order_by == 'comment' %}-{% endif %}comment{% endif %}">Последний комментарий</a></th>
             <th></th>
         </tr>
 
