@@ -101,7 +101,7 @@ class Issue(models.Model):
         (consts.TENDER_EXEC_LAW_VAT, 'Возврат НДС'),
     ])
     tender_publish_date = models.DateField(verbose_name='дата публикации тендера', blank=True, null=True)
-    tender_start_cost = models.DecimalField(verbose_name='начальная цена тендера', max_digits=12, decimal_places=2, blank=True, null=True)
+    tender_start_cost = models.DecimalField(verbose_name='начальная цена тендера', max_digits=32, decimal_places=2, blank=True, null=True)
 
     tender_contract_type = models.CharField(verbose_name='вид работ в тендере', max_length=32, blank=True, null=True, choices=[
         (consts.TENDER_CONTRACT_TYPE_SUPPLY_CONTRACT, 'Поставка товара'),
@@ -118,11 +118,11 @@ class Issue(models.Model):
 
     bg_commercial_contract_subject = models.CharField(verbose_name='предмет договора', max_length=512, blank=True, null=False, default='')
     bg_commercial_contract_place_of_work = models.CharField(verbose_name='место выполнения работ', max_length=512, blank=True, null=False, default='')
-    bg_commercial_contract_sum = models.DecimalField(verbose_name='сумма контракта', max_digits=12, decimal_places=2, blank=True, null=True)
+    bg_commercial_contract_sum = models.DecimalField(verbose_name='сумма контракта', max_digits=32, decimal_places=2, blank=True, null=True)
     bg_commercial_contract_sign_date = models.DateField(verbose_name='дата заключения договора', blank=True, null=True)
     bg_commercial_contract_end_date = models.DateField(verbose_name='дата завершения договора', blank=True, null=True)
 
-    bg_sum = models.DecimalField(verbose_name='сумма', max_digits=12, decimal_places=2, blank=True, null=True)
+    bg_sum = models.DecimalField(verbose_name='сумма', max_digits=32, decimal_places=2, blank=True, null=True)
     bg_currency = models.CharField(verbose_name='валюта', max_length=32, blank=True, null=True, choices=[
         (consts.CURRENCY_RUR, 'Рубль'),
         (consts.CURRENCY_USD, 'Доллар'),
@@ -185,27 +185,27 @@ class Issue(models.Model):
     leasing_insurer_inn = models.CharField(verbose_name='ИНН страхователя', max_length=32, blank=True, null=False, default='')
     leasing_insurer_kpp = models.CharField(verbose_name='КПП страхователя', max_length=32, blank=True, null=False, default='')
 
-    curr_year_sales_value = models.DecimalField(verbose_name='Объем продаж за текущий год, млн. рублей без НДС', max_digits=12, decimal_places=2, blank=True, null=True)
-    prev_year_sales_value = models.DecimalField(verbose_name='Объем продаж за прошлый год, млн. рублей без НДС', max_digits=12, decimal_places=2, blank=True, null=True)
-    curr_year_sales_value_inc_deferment = models.DecimalField(verbose_name='Объем продаж за текущий год, в том числе на условиях отсрочки, млн. рублей без НДС', max_digits=12, decimal_places=2, blank=True, null=True)
-    prev_year_sales_value_inc_deferment = models.DecimalField(verbose_name='Объем продаж за прошлый год, в том числе на условиях отсрочки, млн. рублей без НДС', max_digits=12, decimal_places=2, blank=True, null=True)
-    curr_year_expected_sales_value = models.DecimalField(verbose_name='Ожидаемые продажи за текущий год по экспорту, млн. рублей без НДС', max_digits=12, decimal_places=2, blank=True, null=True)
-    prev_year_expected_sales_value = models.DecimalField(verbose_name='Ожидаемые продажи за прошлый год по экспорту, млн. рублей без НДС', max_digits=12, decimal_places=2, blank=True, null=True)
-    curr_year_expected_sales_value_inc_deferment = models.DecimalField(verbose_name='Ожидаемые продажи за текущий год по экспорту в том числе с отсрочкой платежа, млн. рублей без НДС', max_digits=12, decimal_places=2, blank=True, null=True)
-    prev_year_expected_sales_value_inc_deferment = models.DecimalField(verbose_name='Ожидаемые продажи за прошлый год по экспорту в том числе с отсрочкой платежа, млн. рублей без НДС', max_digits=12, decimal_places=2, blank=True, null=True)
+    curr_year_sales_value = models.DecimalField(verbose_name='Объем продаж за текущий год, млн. рублей без НДС', max_digits=32, decimal_places=2, blank=True, null=True)
+    prev_year_sales_value = models.DecimalField(verbose_name='Объем продаж за прошлый год, млн. рублей без НДС', max_digits=32, decimal_places=2, blank=True, null=True)
+    curr_year_sales_value_inc_deferment = models.DecimalField(verbose_name='Объем продаж за текущий год, в том числе на условиях отсрочки, млн. рублей без НДС', max_digits=32, decimal_places=2, blank=True, null=True)
+    prev_year_sales_value_inc_deferment = models.DecimalField(verbose_name='Объем продаж за прошлый год, в том числе на условиях отсрочки, млн. рублей без НДС', max_digits=32, decimal_places=2, blank=True, null=True)
+    curr_year_expected_sales_value = models.DecimalField(verbose_name='Ожидаемые продажи за текущий год по экспорту, млн. рублей без НДС', max_digits=32, decimal_places=2, blank=True, null=True)
+    prev_year_expected_sales_value = models.DecimalField(verbose_name='Ожидаемые продажи за прошлый год по экспорту, млн. рублей без НДС', max_digits=32, decimal_places=2, blank=True, null=True)
+    curr_year_expected_sales_value_inc_deferment = models.DecimalField(verbose_name='Ожидаемые продажи за текущий год по экспорту в том числе с отсрочкой платежа, млн. рублей без НДС', max_digits=32, decimal_places=2, blank=True, null=True)
+    prev_year_expected_sales_value_inc_deferment = models.DecimalField(verbose_name='Ожидаемые продажи за прошлый год по экспорту в том числе с отсрочкой платежа, млн. рублей без НДС', max_digits=32, decimal_places=2, blank=True, null=True)
 
     formalize_note = models.TextField(verbose_name='подпись к документам для оформления', blank=True, null=False, default='')
     final_note = models.TextField(verbose_name='подпись к итоговым документам', blank=True, null=False, default='')
 
-    balance_code_1300_offset_0 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
-    balance_code_1600_offset_0 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
-    balance_code_2110_offset_0 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
-    balance_code_2400_offset_0 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_1300_offset_0 = models.DecimalField(max_digits=32, decimal_places=2, blank=True, null=True)
+    balance_code_1600_offset_0 = models.DecimalField(max_digits=32, decimal_places=2, blank=True, null=True)
+    balance_code_2110_offset_0 = models.DecimalField(max_digits=32, decimal_places=2, blank=True, null=True)
+    balance_code_2400_offset_0 = models.DecimalField(max_digits=32, decimal_places=2, blank=True, null=True)
 
-    balance_code_1300_offset_1 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
-    balance_code_1600_offset_1 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
-    balance_code_2110_offset_1 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
-    balance_code_2400_offset_1 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    balance_code_1300_offset_1 = models.DecimalField(max_digits=32, decimal_places=2, blank=True, null=True)
+    balance_code_1600_offset_1 = models.DecimalField(max_digits=32, decimal_places=2, blank=True, null=True)
+    balance_code_2110_offset_1 = models.DecimalField(max_digits=32, decimal_places=2, blank=True, null=True)
+    balance_code_2400_offset_1 = models.DecimalField(max_digits=32, decimal_places=2, blank=True, null=True)
 
     avg_employees_cnt_for_prev_year = models.IntegerField(verbose_name='Средняя численность работников за предшествующий календарный год', blank=False, null=False, default=1)
     issuer_web_site = models.CharField(verbose_name='Web-сайт', max_length=512, blank=True, null=False, default='')
@@ -1235,7 +1235,7 @@ class IssueCreditPledge(models.Model):
         (consts.CREDIT_PLEDGE_TYPE_REAL_ESTATE, 'Недвижимость'),
         (consts.CREDIT_PLEDGE_TYPE_OTHER, 'Другое'),
     ])
-    cost = models.DecimalField(verbose_name='сумма', max_digits=12, decimal_places=2, blank=True, null=True)
+    cost = models.DecimalField(verbose_name='сумма', max_digits=32, decimal_places=2, blank=True, null=True)
 
 
 class IssueFactoringBuyer(models.Model):
@@ -1248,7 +1248,7 @@ class IssueFactoringBuyer(models.Model):
     avg_monthly_shipments = models.CharField(verbose_name='средние отгрузки за последние 12 месяцев (млн руб. без НДС)', max_length=512, blank=True, null=False, default='')
     operating_pay_deferment_days = models.IntegerField(verbose_name='действующая отсрочка платежа, дней', blank=True, null=True)
     start_work_date = models.CharField(verbose_name='дата начала работы', max_length=512, blank=True, null=False, default='')
-    required_credit_limit = models.DecimalField(verbose_name='требуемый кредитный лимит (млн руб. без НДС)', max_digits=12, decimal_places=2, blank=True, null=True)
+    required_credit_limit = models.DecimalField(verbose_name='требуемый кредитный лимит (млн руб. без НДС)', max_digits=32, decimal_places=2, blank=True, null=True)
     debitor_share = models.CharField(verbose_name='доля дебитора', max_length=512, blank=True, null=False, default='')
     average_delay_days = models.IntegerField(verbose_name='средние просрочки за 12 месяцев, дней', blank=True, null=True)
     sales_volume = models.CharField(verbose_name='объем продаж за последние 12 месяцев (млн руб. без НДС)', max_length=512, blank=True, null=False, default='')
