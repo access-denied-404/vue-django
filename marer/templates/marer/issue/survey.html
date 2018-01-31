@@ -32,16 +32,25 @@
 
                     {% if not request.user.cert_hash or request.user.cert_hash == '' %}
                         <div class="well well-sm text-center">
-                            Ссылка для дополнения информации клиентом:
+                            Ссылка для клиента для заполнения анкеты и её подписания:
                             <strong>
                                 http://sgbmarertest.ru{% url 'issue_remote_survey' issue.id %}
                             </strong>
-                            <a class="btn btn-link btn-xs" href="{% url 'issue_remote_for_sign' issue.id %}" target="_blank">
+                            <a class="btn btn-link btn-xs" href="{% url 'issue_remote_survey' issue.id %}" target="_blank">
                                 <span class="glyphicon glyphicon glyphicon-new-window"></span>
                             </a>
                         </div>
                     {% endif %}
 
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="well well-sm text-center">
+                        Заполнить самостоятельно
+                        <span class="glyphicon glyphicon-arrow-down"></span>
+                    </div>
                 </div>
             </div>
             {% include survey_template %}
