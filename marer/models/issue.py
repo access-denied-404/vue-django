@@ -846,7 +846,7 @@ class Issue(models.Model):
             self.product = BankGuaranteeProduct().name
         super().save(force_insert, force_update, using, update_fields)
 
-        if not self.propose_documents.exists() and self.tax_system:
+        if bool(self.propose_documents.exists() is False and self.tax_system):
             pdocs = FinanceOrgProductProposeDocument.objects.filter(
                 Q(Q(tax_system=self.tax_system) | Q(tax_system__isnull=True)),
                 Q(Q(min_bg_sum__lte=self.bg_sum) | Q(min_bg_sum__isnull=True)),

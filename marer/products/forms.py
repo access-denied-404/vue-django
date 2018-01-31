@@ -159,10 +159,10 @@ class BGFinProdSurveyOrgCommonForm(Form):
     ]))
     issuer_overdue_debts_info = CharField(required=False, widget=Textarea(attrs={'class': 'form-control', 'rows': 3}))
     tax_system = CharField(required=False, widget=Select(attrs={'class': 'form-control'}, choices=[
-        ('usn', 'УСН'),
-        ('osn', 'ОСН'),
-        ('envd', 'ЕНВД'),
-        ('eshd', 'ЕСХД'),
+        (consts.TAX_USN, 'УСН'),
+        (consts.TAX_OSN, 'ОСН'),
+        (consts.TAX_ENVD, 'ЕНВД'),
+        (consts.TAX_ESHD, 'ЕСХД'),
     ]))
 
 
