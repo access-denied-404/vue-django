@@ -817,8 +817,8 @@ class Issue(models.Model):
             if self.finished_contracts_count == settings.LIMIT_FINISHED_CONTRACTS:
                 ve.error_list.append('Обнаружен стоп-фактор: нет опыта исполненных контрактов')
 
-            # if ((self.balance_code_2400_offset_1 or 0) < 0) or ((self.balance_code_2400_offset_0 or 0) < 0):
-            #     ve.error_list.append('Обнаружен стоп-фактор: отрицательная прибыль')
+            if ((self.balance_code_2400_offset_1 or 0) < 0) or ((self.balance_code_2400_offset_0 or 0) < 0):
+                ve.error_list.append('Обнаружен стоп-фактор: отрицательная прибыль')
 
         except Exception:
             ve.error_list.append('Не удалось проверить заявку на стоп-факторы')
