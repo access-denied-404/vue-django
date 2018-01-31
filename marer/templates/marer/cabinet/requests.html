@@ -23,12 +23,12 @@
 <div class="panel panel-info">
     <table class="table">
         <tr class="bg-info">
-            <th>Номер</th>
-            <th>Организация</th>
-            <th>Сумма</th>
-            <th>Статус</th>
-            <th>Последний комментарий</th>
-            <th>Дата заведения заявки</th>
+            <th><a href="?{% if request.GET.order_by != '-id' %}order_by={% if request.GET.order_by == 'id'%}-{% endif %}id{% endif %}">Номер</a></th>
+            <th><a href="?{% if request.GET.order_by != '-issuer_full_name' %}order_by={% if request.GET.order_by == 'issuer_full_name' %}-{% endif %}issuer_full_name{% endif %}">Организация</a></th>
+            <th><a href="?{% if request.GET.order_by != '-bg_sum' %}order_by={% if request.GET.order_by == 'bg_sum' %}-{% endif %}bg_sum{% endif %}">Сумма</a></th>
+            <th><a href="?{% if request.GET.order_by != '-status' %}order_by={% if request.GET.order_by == 'status' %}-{% endif %}status{% endif %}">Статус</a></th>
+            <th><a href="?{% if request.GET.order_by != '-created_at' %}order_by={% if request.GET.order_by == 'created_at' %}-{% endif %}created_at{% endif %}">Дата заведения заявки</a></th>
+            <th><a href="?{% if request.GET.order_by != '-comment' %}order_by={% if request.GET.order_by == 'comment' %}-{% endif %}comment{% endif %}">Последний комментарий</a></th>
             <th></th>
         </tr>
 
@@ -48,8 +48,8 @@
                 <td>{{ issue.get_issuer_name }}</td>
                 <td>{{ issue.humanized_sum }}</td>
                 <td>{{ issue.humanized_status }}</td>
-                <td>{% get_last_comment issue request.user %}</td>
                 <td>{{ issue.created_at }}</td>
+                <td>{% get_last_comment issue request.user %}</td>
                 <td>
                     <form method="post">
                         {% csrf_token %}
