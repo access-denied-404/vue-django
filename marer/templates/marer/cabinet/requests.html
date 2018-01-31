@@ -23,11 +23,11 @@
 <div class="panel panel-info">
     <table class="table">
         <tr class="bg-info">
-            <th><a href="?order_by={% if request.GET.order_by == 'id' %}-{% endif %}id">Номер</a></th>
-            <th><a href="?order_by={% if request.GET.order_by == 'issuer_full_name' %}-{% endif %}issuer_full_name">Организация</a></th>
-            <th><a href="?order_by={% if request.GET.order_by == 'bg_sum' %}-{% endif %}bg_sum">Сумма</a></th>
-            <th><a href="?order_by={% if request.GET.order_by == 'status' %}-{% endif %}status">Статус</a></th>
-            <th><a href="?order_by={% if request.GET.order_by == 'created_at' %}-{% endif %}created_at">Дата заведения заявки</a></th>
+            <th><a href="?{% if request.GET.order_by != '-id' %}order_by={% if request.GET.order_by == 'id'%}-{% endif %}id{% endif %}">Номер</a></th>
+            <th><a href="?{% if request.GET.order_by != '-get_issuer_name' %}order_by={% if request.GET.order_by == 'get_issuer_name' %}-{% endif %}get_issuer_name{% endif %}">Организация</a></th>
+            <th><a href="?{% if request.GET.order_by != '-bg_sum' %}order_by={% if request.GET.order_by == 'bg_sum' %}-{% endif %}bg_sum{% endif %}">Сумма</a></th>
+            <th><a href="?{% if request.GET.order_by != '-status' %}order_by={% if request.GET.order_by == 'status' %}-{% endif %}status{% endif %}">Статус</a></th>
+            <th><a href="?{% if request.GET.order_by != '-creaed_at' %}order_by={% if request.GET.order_by == 'creaed_at' %}-{% endif %}creaed_at{% endif %}">Дата заведения заявки</a></th>
             <th>Последний комментарий</th>
             <th></th>
         </tr>
