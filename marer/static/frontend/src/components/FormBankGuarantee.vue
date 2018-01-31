@@ -17,11 +17,11 @@
     <input type="hidden" name="tender_responsible_ogrn" :value="tender_responsible_ogrn">
 
     <div class="panel panel-info">
-      <div class="panel-heading">Сведения о тендере</div>
+      <div class="panel-heading">Сведения о закупке</div>
       <div class="panel-body">
 
         <div class="row">
-          <div class="col-md-12"><bs-input :name="'tender_gos_number'" v-model="tender_gos_number" label="Госномер тендера или ссылка на закупку" required></bs-input></div>
+          <div class="col-md-12"><bs-input :name="'tender_gos_number'" v-model="tender_gos_number" label="Номер закупки или ссылка" required></bs-input></div>
           <div class="col-md-6">
           <bs3-radio-field
             :name="'tender_exec_law'"
@@ -55,7 +55,7 @@
 
 
           <fieldset v-if="tender_add_data_visible">
-            <legend>Организатор закупки</legend>
+            <legend>Бенефициар закупки</legend>
 
 
             <div class="row">
