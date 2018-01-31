@@ -86,70 +86,76 @@
                                 </tr>
                             {% endif %}
 
-
-                            {% for propose_doc in issue.propose_documents_ordered %}
+                            {% regroup issue.propose_documents_ordered by get_type_display as docs_list %}
+                            {% for docs in docs_list %}
+                                <tr>
+                                    <td>
+                                        <h4>{{ docs.grouper }}</h4>
+                                    </td>
+                                </tr>
+                            {% for doc in docs.list %}
                                 <tr>
                                     <td class="h6">
-                                        {% if propose_doc.document and propose_doc.document.file %}
-                                            <a href="{{ propose_doc.document.file.url }}">
-                                                {{ propose_doc.name }}
-                                            </a>
+                                        {% if doc.document and doc.document.file %}
+                                            <a href="{{ doc.document.file.url }}">{{ doc.name }}</a>
                                         {% else %}
-                                            <div>{{ propose_doc.name }}</div>
-                                            <input
-                                                    type="file"
-                                                    name="propose_doc_{{ propose_doc.id }}"
-                                                    class="input-sm pull-right" />
+                                           {{ doc.name }}
                                         {% endif %}
-                                        {% if propose_doc.document and propose_doc.document.file %}
+                                    <div class="pull-right">
+                                        {% if not doc.document.file %}
+                                            <input type="file" name="propose_doc_{{ doc.id }}" class="input-sm pull-right"/>
+                                        {% endif %}
+                                        {% if doc.document and doc.document.file %}
                                             {% if issue.status == consts.ISSUE_STATUS_REGISTERING %}
-                                                <button type="submit" class="btn btn-link btn-xs pull-right" form="propose_doc_{{ propose_doc.id }}_del_form">
+                                                <button type="submit" class="btn btn-link btn-xs pull-right" form="propose_doc_{{ doc.id }}_del_form">
                                                     <span class="glyphicon glyphicon-remove text-danger"></span>
                                                 </button>
                                             {% endif %}
 
-                                            {% if user.cert_hash != '' or propose_doc.document.sign_state == consts.DOCUMENT_SIGN_VERIFIED %}
+                                            {% if user.cert_hash != '' or doc.document.sign_state == consts.DOCUMENT_SIGN_VERIFIED %}
                                                 <script type="text/javascript">
-                                                    filesB64ForSign[{{ propose_doc.document.id }}] = "{{ propose_doc.document.base64_content }}";
+                                                    filesB64ForSign[{{ doc.document.id }}] = "{{ doc.document.base64_content }}";
                                                 </script>
 
                                                 <a
-                                                        href="#" id="btn-sign-file-id{{ propose_doc.document.id }}"
-                                                        class="btn btn-primary btn-xs pull-right {% if propose_doc.document.sign_state != consts.DOCUMENT_SIGN_NONE %}hidden{% endif %}"
-                                                        onclick="signFile({{ propose_doc.document.id }});return false;">
+                                                        href="#" id="btn-sign-file-id{{ doc.document.id }}"
+                                                        class="btn btn-primary btn-xs pull-right {% if doc.document.sign_state != consts.DOCUMENT_SIGN_NONE %}hidden{% endif %}"
+                                                        onclick="signFile({{ doc.document.id }});return false;">
                                                     <span class="glyphicon glyphicon-certificate"></span>
                                                     Подписать
                                                 </a>
 
                                                 <a
-                                                        href="#" id="btn-signed-file-id{{ propose_doc.document.id }}"
-                                                        class="btn btn-xs pull-right btn-success {% if propose_doc.document.sign_state != consts.DOCUMENT_SIGN_VERIFIED %}hidden{% endif %}"
+                                                        href="#" id="btn-signed-file-id{{ doc.document.id }}"
+                                                        class="btn btn-xs pull-right btn-success {% if doc.document.sign_state != consts.DOCUMENT_SIGN_VERIFIED %}hidden{% endif %}"
                                                         onclick="return false;">
                                                     <span class="glyphicon glyphicon-ok-sign"></span>
                                                     Подписано
                                                 </a>
 
                                                 <a
-                                                        href="#" id="btn-resign-file-id{{ propose_doc.document.id }}"
-                                                        class="btn btn-xs pull-right btn-danger {% if propose_doc.document.sign_state != consts.DOCUMENT_SIGN_CORRUPTED %}hidden{% endif %}"
-                                                        onclick="signFile({{ propose_doc.document.id }});return false;">
+                                                        href="#" id="btn-resign-file-id{{ doc.document.id }}"
+                                                        class="btn btn-xs pull-right btn-danger {% if doc.document.sign_state != consts.DOCUMENT_SIGN_CORRUPTED %}hidden{% endif %}"
+                                                        onclick="signFile({{ doc.document.id }});return false;">
                                                     <span class="glyphicon glyphicon-exclamation-sign"></span>
                                                     Переподписать
                                                 </a>
                                             {% endif %}
 
-                                        {% elif propose_doc.sample and propose_doc.sample.file %}
+
+                                        {% elif doc.sample and doc.sample.file %}
                                             <a
-                                                    href="{{ propose_doc.sample.file.url }}"
+                                                    href="{{ doc.sample.file.url }}"
                                                     class="btn btn-link btn-xs pull-right">
                                                 Образец <span class="glyphicon glyphicon-download-alt"></span>
                                             </a>
                                         {% endif %}
                                         <div class="clearfix"></div>
+                                    </div>
                                     </td>
                                 </tr>
                             {% endfor %}
-
+                            {% endfor %}
                         </table>
 
                         {% if not issue.can_send_for_review %}

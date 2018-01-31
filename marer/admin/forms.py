@@ -225,6 +225,7 @@ class FinanceOrgProductProposeDocumentForm(forms.ModelForm):
             'name',
             'file_sample',
             'code',
+            'type',
         )
 
     file_sample = forms.FileField(label='Образец', required=False)

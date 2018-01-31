@@ -189,6 +189,8 @@ FILE_SIGN_CHECK_CLASS = ''
 
 KONTUR_FOCUS_API_KEY = ''
 
+LIMIT_FINISHED_CONTRACTS = 0
+
 include(
     optional('secrets.py'),
     optional('local_settings.py'),

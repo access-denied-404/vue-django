@@ -201,7 +201,8 @@ class BankGuaranteeProduct(FinanceProduct):
             kontur_egrDetails_data = kontur.egrDetails(inn=inn, ogrn=ogrn)
             kontur_beneficialOwners = kontur.beneficialOwners(inn=inn, ogrn=ogrn)
             kontur_licences = kontur.licences(inn=inn, ogrn=ogrn)
-
+            if not kontur_req_data:
+                return True
             self._issue.issuer_registration_date = parser.parse(kontur_req_data['UL']['registrationDate'] if 'UL' in kontur_req_data else kontur_req_data['IP']['registrationDate'])
             self._issue.issuer_ifns_reg_date = parser.parse(kontur_egrDetails_data['UL']['nalogRegBody']['nalogRegDate'] if 'UL' in kontur_egrDetails_data else kontur_egrDetails_data['IP']['nalogRegBody']['nalogRegDate']).date()
             self._issue.issuer_okopf = kontur_req_data['UL']['okopf'] if 'UL' in kontur_req_data else kontur_req_data['IP']['okopf']
