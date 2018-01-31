@@ -93,9 +93,20 @@
               v-bind:class="{'has-error': !sum_is_appropriate}"
             ></bs-input>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-2">
             <div class="form-group">
-              <label>Сроки БГ, по</label>
+              <label>Дата выдачи</label>
+              <date-time-picker
+                :name="'bg_start_date'"
+                v-model="bg_start_date"
+                :config="{'format':'L','locale':'ru'}"
+                required
+              ></date-time-picker>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>Дата окончания</label>
               <date-time-picker
                 :name="'bg_end_date'"
                 v-model="bg_end_date"
