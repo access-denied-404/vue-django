@@ -15,7 +15,36 @@
 {#        {% endif %}#}
 {#    </div>#}
 
-    {% for msg in issue.clarification_messages.all %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="panel panel-info">
+            <div class="panel-heading">Новое сообщение</div>
+            <div class="panel-body">
+                <div class="container-fluid">
+
+                    <div class="row">
+                        <div class="col-md-5">{{ comment_form.message }}</div>
+                        <div class="col-md-7">
+                            <div class="text-center"><span class="h5">Прикрепить документы</span></div>
+                            <table class="table table-condensed">
+                                <tr><td class="h5"><small>{{ comment_form.doc1 }}</small></td><td class="h5"><small>{{ comment_form.doc2 }}</small></td></tr>
+                                <tr><td class="h5"><small>{{ comment_form.doc3 }}</small></td><td class="h5"><small>{{ comment_form.doc4 }}</small></td></tr>
+                                <tr><td class="h5"><small>{{ comment_form.doc5 }}</small></td><td class="h5"><small>{{ comment_form.doc6 }}</small></td></tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    {% include 'marer/form_errors.html' with form=comment_form %}
+
+                    <div class="row text-center">
+                        <button type="submit" class="btn btn-primary">Отправить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {% for msg in issue.clarification_messages.all reversed %}
         <div class="panel panel-info">
             <div class="panel-body">
                 <div class="container-fluid">
@@ -48,34 +77,4 @@
             </div>
         </div>
     {% endfor %}
-
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="panel panel-info">
-            <div class="panel-heading">Новое сообщение</div>
-            <div class="panel-body">
-                <div class="container-fluid">
-
-                    <div class="row"><div class="col-md-12">{{ comment_form.message }}</div></div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="h4 text-center">Прикрепить документы</div>
-                            <table class="table table-condensed">
-                                <tr><td>{{ comment_form.doc1 }}</td><td>{{ comment_form.doc2 }}</td></tr>
-                                <tr><td>{{ comment_form.doc3 }}</td><td>{{ comment_form.doc4 }}</td></tr>
-                                <tr><td>{{ comment_form.doc5 }}</td><td>{{ comment_form.doc6 }}</td></tr>
-                                <tr><td>{{ comment_form.doc7 }}</td><td>{{ comment_form.doc8 }}</td></tr>
-                            </table>
-                        </div>
-                    </div>
-
-                    {% include 'marer/form_errors.html' with form=comment_form %}
-
-                    <div class="row text-center">
-                        <button type="submit" class="btn btn-primary">Отправить</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
 {% endblock %}
