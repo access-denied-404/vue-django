@@ -326,7 +326,7 @@ class Issue(models.Model):
     @property
     def humanized_sum(self):
         if self.bg_sum:
-            fmt_sum = number_format(self.bg_sum)
+            fmt_sum = number_format(self.bg_sum, force_grouping=True)
             if self.bg_currency == consts.CURRENCY_RUR:
                 str_fmt = '{cost} руб.'
             elif self.bg_currency == consts.CURRENCY_USD:
