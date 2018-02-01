@@ -302,10 +302,6 @@ class IssueRemoteSurveyView(TemplateView, ContextMixin, View):
             login_form = LoginSignForm()
             if 'login_form' not in kwargs:
                 kwargs.update(dict(login_form=login_form))
-        elif 'fill_application_doc' in request.GET:
-            self.get_issue().fill_application_doc()
-            url = reverse('issue_remote_for_sign', args=[self.get_issue().id])
-            return HttpResponseRedirect(url)
         else:
             self.template_name = 'marer/issue/remote_survey.html'
             kwargs['survey_template'] = self.get_issue().get_product().survey_template_name
@@ -339,6 +335,11 @@ class IssueRemoteSurveyView(TemplateView, ContextMixin, View):
             if all_ok:
                 # self.get_issue().fill_application_doc(commit=True)
                 notify_user_manager_about_user_updated_issue(self.get_issue())
+            if request.POST.get('action', '') == 'fill_application_doc':
+                self.get_issue().fill_application_doc()
+                url = reverse('issue_remote_for_sign', args=[self.get_issue().id])
+                return HttpResponseRedirect(url)
+
         return self.get(request, args, kwargs)
 
 
