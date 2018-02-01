@@ -42,7 +42,8 @@
             {% if issue and issue.id %}
                 <h1 class="text-center">Заявка №{{ issue.humanized_id }}</h1>
                 <div class="h4 text-center"><b>{{ issue.get_product.humanized_name }}</b>
-                    {% if issue.short_name %}для <b>{{ issue.get_issuer_name }}</b>{% endif %}
+                    {% if issue.issuer_short_name %}для <b>{{ issue.get_issuer_name }}</b>{% endif %}
+                    {% if issue.bg_sum %}на сумму <b>{{ issue.humanized_sum }}</b>{% endif %}
                 </div>
             {% else %}
                 <h1 class="text-center">Новая заявка</h1>
