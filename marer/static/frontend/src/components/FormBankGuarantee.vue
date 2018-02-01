@@ -401,9 +401,9 @@
           this.sum_is_appropriate &&
           !this.is_negative(this.balance_code_2400_offset_0) &&
           !this.is_negative(this.balance_code_2400_offset_1)) {
-          jQuery('button[type="submit"].btn-success').removeClass('disabled')
+          jQuery('button[type="submit"].btn-success').prop('disabled', false)
         } else {
-          jQuery('button[type="submit"].btn-success').addClass('disabled')
+          jQuery('button[type="submit"].btn-success').prop('disabled', true)
         }
       },
       is_negative: function (value) {
