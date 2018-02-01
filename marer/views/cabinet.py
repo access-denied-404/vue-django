@@ -20,7 +20,7 @@ class CabinetRequestsView(LoginRequiredMixin, TemplateView):
         filtered_issues_qs = Issue.objects.filter(user=request.user)
         if request.GET.get('order_by'):
             order_by = request.GET.get('order_by', '')
-            filtered_issues_qs = Issue.objects.all().order_by(order_by)
+            filtered_issues_qs = filtered_issues_qs.order_by(order_by)
         filter_form = forms.CabinetIssueListFilterForm(request.GET)
         if filter_form.is_valid():
             filter_fgrp = filter_form.cleaned_data.get('fpgrp', None)
