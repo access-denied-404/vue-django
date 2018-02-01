@@ -374,11 +374,15 @@ class IssueScoringView(IssueView):
                 pdoc.document = None
                 pdoc.save(chain_docs_update=False)
 
-        if request.POST.get('action', '') == 'send_to_review' and self.get_issue().can_send_for_review:
+        action = request.POST.get('action', '')
+        if action == 'send_to_review' and self.get_issue().can_send_for_review:
             self.get_issue().status = consts.ISSUE_STATUS_REVIEW
             self.get_issue().save()
             notify_user_manager_about_user_updated_issue(self.get_issue())
             url = reverse('issue_additional_documents_requests', args=[self.get_issue().id])
+            return HttpResponseRedirect(url)
+        elif action == 'save':
+            url = reverse('cabinet_requests')
             return HttpResponseRedirect(url)
 
         return self.get(request, *args, **kwargs)
