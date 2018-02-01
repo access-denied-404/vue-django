@@ -107,7 +107,7 @@
                                         {% if doc.document and doc.document.file %}
                                             <a href="{{ doc.document.file.url }}">{{ doc.name }}</a>
                                         {% else %}
-                                           {{ doc.name }}
+                                            {{ doc.name }}{% if doc.is_required %}<span class="text-danger"><b>*</b></span>{% endif %}
                                         {% endif %}
                                     <div class="pull-right">
                                         {% if not doc.document.file %}
@@ -165,6 +165,9 @@
                             {% endfor %}
                             {% endfor %}
                         </table>
+                        <div class="help-block text-center">
+                            Документы, помеченные звездочкой (<span class="text-danger"><b>*</b></span>) обязательны для заполнения.
+                        </div>
 
                         {% if issue.status == consts.ISSUE_STATUS_REGISTERING %}
                             {% if not issue.is_all_propose_docs_filled %}
