@@ -174,6 +174,11 @@
 
             </div>
           </div>
+          <div class="row">
+            <div class="col-md-12 text-right help-block">
+              <small>любое отрицательное значение является стоп-фактором&nbsp;&nbsp;&nbsp;&nbsp;</small>
+            </div>
+          </div>
 
         </div>
       </div>
