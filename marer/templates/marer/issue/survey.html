@@ -65,3 +65,44 @@
     {% endif %}
 
 {% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        $(function($) {
+
+            $('input[name=issuer_fact_address]').addClass('req');
+            $('select[name=tax_system]').addClass('req');
+            $('input[name=issuer_accountant_org_or_person]').addClass('req');
+            $('input[name=avg_employees_cnt_for_prev_year]').addClass('req');
+            $('input[name=issuer_head_passport_series]').addClass('req');
+            $('input[name=issuer_head_passport_number]').addClass('req');
+            $('input[name=issuer_head_passport_issue_date]').addClass('req');
+            $('input[name=issuer_head_residence_address]').addClass('req');
+            $('input[name=issuer_head_passport_issued_by]').addClass('req');
+
+
+            $('.req').on('change', function (evt) {
+                update_send_button_is_available();
+            });
+
+            function update_send_button_is_available() {
+                var requiredFields = $('.req');
+                var requiredFieldsFilled = true;
+                var reqField;
+                for (reqField = 0; reqField < requiredFields.length; reqField++) {
+                    if (!requiredFields[reqField].value) {
+                        requiredFieldsFilled = false;
+                        break;
+                    }
+                }
+                if (requiredFieldsFilled) {
+                    $('button[type=submit].btn-success').prop('disabled', false);
+                } else {
+                    $('button[type=submit].btn-success').prop('disabled', true);
+                }
+            }
+
+            update_send_button_is_available();
+        });
+    </script>
+{% endblock %}
