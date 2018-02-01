@@ -653,7 +653,11 @@ class Issue(models.Model):
 
     @property
     def propose_documents_ordered(self):
-        return self.propose_documents.order_by('document_id', 'type')  # need null to be first
+        pdocs = []
+        pdocs.extend(self.propose_documents.filter(type=consts.DOCUMENT_TYPE_FINANCE).order_by('name'))
+        pdocs.extend(self.propose_documents.filter(type=consts.DOCUMENT_TYPE_LEGAL).order_by('name'))
+        pdocs.extend(self.propose_documents.filter(type=consts.DOCUMENT_TYPE_OTHER).order_by('name'))
+        return pdocs
 
     @property
     def propose_documents_for_remote_sign(self):
