@@ -229,6 +229,8 @@ class IssueRemoteSignView(TemplateView, ContextMixin, View):
             login_form = LoginSignForm()
             if 'login_form' not in kwargs:
                 kwargs.update(dict(login_form=login_form))
+        elif self.get_issue().status == consts.ISSUE_STATUS_REGISTERING:
+            self.template_name = 'marer/issue/remote_sign_docs_for_registering.html'
         else:
             self.template_name = 'marer/issue/remote_sign_docs.html'
         return super().get(request, *args, **kwargs)

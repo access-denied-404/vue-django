@@ -662,7 +662,7 @@ class Issue(models.Model):
     @property
     def propose_documents_for_remote_sign(self):
         docs = []
-        if self.application_doc and self.application_doc.file and self.application_doc.sign_state != consts.DOCUMENT_SIGN_VERIFIED:
+        if self.application_doc and self.application_doc.file:
             app_doc = IssueProposeDocument()
             app_doc.name = 'Заявление на предоставление банковской гарантии'
             app_doc.document = self.application_doc
