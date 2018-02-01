@@ -146,8 +146,8 @@
     </div>
 
     <div class="panel panel-info">
-      <div class="panel-heading" data-toggle="collapse" data-target="#panel1">Бухгалтерская отчетность</div>
-      <div class="panel-body collapse in" id="panel1">
+      <div class="panel-heading">Бухгалтерская отчетность</div>
+      <div class="panel-body">
         <div class="container-fluid">
 
           <div class="row">
