@@ -23,12 +23,72 @@
 <div class="panel panel-info">
     <table class="table">
         <tr class="bg-info">
-            <th><a href="?{% if request.GET.order_by != '-id' %}order_by={% if request.GET.order_by == 'id'%}-{% endif %}id{% endif %}">Номер</a></th>
-            <th><a href="?{% if request.GET.order_by != '-issuer_full_name' %}order_by={% if request.GET.order_by == 'issuer_full_name' %}-{% endif %}issuer_full_name{% endif %}">Организация</a></th>
-            <th><a href="?{% if request.GET.order_by != '-bg_sum' %}order_by={% if request.GET.order_by == 'bg_sum' %}-{% endif %}bg_sum{% endif %}">Сумма</a></th>
-            <th><a href="?{% if request.GET.order_by != '-status' %}order_by={% if request.GET.order_by == 'status' %}-{% endif %}status{% endif %}">Статус</a></th>
-            <th><a href="?{% if request.GET.order_by != '-created_at' %}order_by={% if request.GET.order_by == 'created_at' %}-{% endif %}created_at{% endif %}">Дата заведения заявки</a></th>
-            <th><a href="?{% if request.GET.order_by != '-comment' %}order_by={% if request.GET.order_by == 'comment' %}-{% endif %}comment{% endif %}">Последний комментарий</a></th>
+            <th>
+                <div class="row">
+                <div class="col-md-7">
+                    <a href="?order_by">Номер</a>
+                </div>
+                <div class="col-md-3">
+                    <small><a href="?order_by=-id"><p class="glyphicon glyphicon-arrow-up"></p></a></small>
+                    <small><a href="?order_by=id"><p class="glyphicon glyphicon-arrow-down"></p></a></small>
+                </div>
+                </div>
+            </th>
+            <th>
+                <div class="row">
+                <div class="col-md-9">
+                    <a href="?order_by">Дата заведения заявки</a>
+                </div>
+                <div class="col-md-3">
+                    <small><a href="?order_by=-created_at"><p class="glyphicon glyphicon-arrow-up"></p></a></small>
+                    <small><a href="?order_by=created_at"><p class="glyphicon glyphicon-arrow-down"></p></a></small>
+                </div>
+                </div>
+            </th>
+            <th>
+                <div class="row">
+                <div class="col-md-9">
+                    <a href="?order_by">Организация</a>
+                </div>
+                <div class="col-md-3">
+                    <small><a href="?order_by=-issuer_full_name"><p class="glyphicon glyphicon-arrow-up"></p></a></small>
+                    <small><a href="?order_by=issuer_full_name"><p class="glyphicon glyphicon-arrow-down"></p></a></small>
+                </div>
+                </div>
+            </th>
+            <th>
+                <div class="row">
+                <div class="col-md-7">
+                    <a href="?order_by">Сумма</a>
+                </div>
+                <div class="col-md-3">
+                    <small><a href="?order_by=-bg_sum"><p class="glyphicon glyphicon-arrow-up"></p></a></small>
+                    <small><a href="?order_by=bg_sum"><p class="glyphicon glyphicon-arrow-down"></p></a></small>
+                </div>
+                </div>
+            </th>
+            <th>
+                <div class="row">
+                <div class="col-md-9">
+                    <a href="?order_by">Статус</a>
+                </div>
+                <div class="col-md-3">
+                    <small><a href="?order_by=-status"><p class="glyphicon glyphicon-arrow-up"></p></a></small>
+                    <small><a href="?order_by=status"><p class="glyphicon glyphicon-arrow-down"></p></a></small>
+                </div>
+                </div>
+            </th>
+            <th>
+                <div class="row">
+                <div class="col-md-7">
+                    <a href="?order_by">Последний комментарий</a>
+                </div>
+                <div class="col-md-3">
+                    <small><a href="?order_by=-comment"><p class="glyphicon glyphicon-arrow-up"></p></a></small>
+                    <small><a href="?order_by=comment"><p class="glyphicon glyphicon-arrow-down"></p></a></small>
+                </div>
+                </div>
+            </th>
             <th></th>
         </tr>
 
@@ -45,10 +105,10 @@
             <td>
                 <a href="{% url 'cabinet_request' issue.id %}">{{ issue.humanized_id }}</a>
             </td>
+                <td>{{ issue.created_at }}</td>
                 <td>{{ issue.get_issuer_name }}</td>
                 <td>{{ issue.humanized_sum }}</td>
                 <td>{{ issue.humanized_status }}</td>
-                <td>{{ issue.created_at }}</td>
                 <td>{% get_last_comment issue request.user %}</td>
                 <td>
                     <form method="post">
