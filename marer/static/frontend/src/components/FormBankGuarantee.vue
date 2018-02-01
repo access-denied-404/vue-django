@@ -154,8 +154,8 @@
             <div class="col-md-4 h4">Наименование показателя</div>
             <div class="col-md-8">
               <div class="col-md-4 h5">Код строки</div>
-              <div class="col-md-4 h6">Последний завершённый квартал (2017&nbsp;г)</div>
-              <div class="col-md-4 h6">Последний завершённый год (2016&nbsp;г)</div>
+              <div class="col-md-4 h6" v-bind:class="{'text-danger': is_negative(balance_code_2400_offset_0)}">Последний завершённый квартал (2017&nbsp;г)</div>
+              <div class="col-md-4 h6" v-bind:class="{'text-danger': is_negative(balance_code_2400_offset_1)}">Последний завершённый год (2016&nbsp;г)</div>
             </div>
           </div>
 
@@ -369,14 +369,40 @@
       }, 200),
       bg_type: _.debounce(function () {
         this.process_bg_type()
-      }, 1000)
+      }, 1000),
+      balance_code_2400_offset_0: _.debounce(function () {
+        this.next_btn_enabled_set()
+      }),
+      balance_code_2400_offset_1: _.debounce(function () {
+        this.next_btn_enabled_set()
+      }),
+      bg_start_date: _.debounce(function () {
+        this.next_btn_enabled_set()
+      }),
+      bg_end_date: _.debounce(function () {
+        this.next_btn_enabled_set()
+      }),
+      bg_sum: _.debounce(function () {
+        this.next_btn_enabled_set()
+      })
     },
     mounted () {
       this.is_tender_info_panel_visible = this.get_if_tender_info_panel_visible()
+      this.next_btn_enabled_set()
     },
     methods: {
+      next_btn_enabled_set: function () {
+        if (this.date_range_is_appropriate &&
+          this.sum_is_appropriate &&
+          !this.is_negative(this.balance_code_2400_offset_0) &&
+          !this.is_negative(this.balance_code_2400_offset_1)) {
+          jQuery('button[type="submit"].btn-success').removeClass('disabled')
+        } else {
+          jQuery('button[type="submit"].btn-success').addClass('disabled')
+        }
+      },
       is_negative: function (value) {
-        if (value.startsWith('(') && value.endsWith(')')) {
+        if (value !== undefined && value.startsWith('(') && value.endsWith(')')) {
           value = '-' + value.substr(1, value.length - 2)
         }
         return jQuery.isNumeric(value) && parseFloat(value) < 0
