@@ -279,7 +279,7 @@ class Issue(models.Model):
         if self.status == consts.ISSUE_STATUS_REVIEW:
             messages = list(self.clarification_messages.all().order_by('-id'))
             if messages:
-                last_message = messages[-1].message
+                last_message = messages[0].message
                 count_messages_before = 0
                 for message in messages[::-1]:
                     if message.user != user:
