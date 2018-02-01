@@ -82,6 +82,14 @@
                                             </a>
                                         {% endif %}
                                         <div class="clearfix"></div>
+
+                                        {% if issue.status == consts.ISSUE_STATUS_REGISTERING and issue.application_doc.sign_state != consts.DOCUMENT_SIGN_VERIFIED %}
+                                            <br/>
+                                            <div class="alert alert-warning text-center">
+                                                Для отправки заявления в банк, файл заявления должен быть подписан клиентом.
+                                            </div>
+                                        {% endif %}
+
                                     </td>
                                 </tr>
                             {% endif %}
@@ -174,11 +182,6 @@
                                 Отправить заявку на рассмотрение
                             </button>
                         </form>
-                    {% elif issue.status == consts.ISSUE_STATUS_REGISTERING %}
-                        <br/>
-                        <div class="alert alert-warning text-center">
-                            Для отправки заявления в банк, файл заявления должен быть подписан клиентом.
-                        </div>
                     {% endif %}
 
                 </div>
