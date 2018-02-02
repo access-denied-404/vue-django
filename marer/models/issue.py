@@ -8,6 +8,8 @@ from django.conf import settings
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db import models
 from django.db.models import Q
+from django.db.models.signals import post_save, pre_save
+from django.dispatch import receiver
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.formats import number_format
@@ -20,7 +22,9 @@ from marer.models.finance_org import FinanceOrganization, FinanceOrgProductPropo
 from marer.models.issuer import Issuer, IssuerDocument
 from marer.products import get_finance_products_as_choices, FinanceProduct, get_finance_products, BankGuaranteeProduct
 from marer.utils import CustomJSONEncoder, kontur
-from marer.utils.issue import bank_commission
+from marer.utils.issue import bank_commission, sum2str, generate_bg_number
+from marer.utils.morph import MorpherApi
+from marer.utils.other import OKOPF_CATALOG
 
 __all__ = [
     'Issue', 'IssueDocument', 'IssueClarification', 'IssueMessagesProxy',
@@ -274,6 +278,34 @@ class Issue(models.Model):
         blank=True,
         related_name='sec_dep_conclusion_docs_links'
     )
+    bg_contract_doc = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='bg_contract_doc'
+    )
+    bg_doc = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='bg_doc'
+    )
+    transfer_acceptance_act = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='transfer_acceptance_acts_links'
+    )
+    additional_doc = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='additional_doc'
+    )
 
     def get_last_comment_for_user(self, user):
         if self.status == consts.ISSUE_STATUS_REVIEW:
@@ -359,7 +391,11 @@ class Issue(models.Model):
     @property
     def humanized_bg_end_date(self):
         return self.bg_end_date.strftime('%d.%m.%Y') if self.bg_end_date else ''
-    
+
+    @property
+    def humanized_created_at(self):
+        return self.created_at.strftime('%d.%m.%Y') if self.created_at else ''
+
     @property
     def humanized_bg_type(self):
         return self.get_bg_type_display() or ''
@@ -452,6 +488,44 @@ class Issue(models.Model):
         return data
 
     @cached_property
+    def bg_property(self):
+        bg_type = {
+            'электронный аукцион': 'электронного аукциона',
+            'открытый конкурс': 'открытого конкурса',
+            'конкурс с ограниченным участием': 'конкурса с ограниченным участием',
+            'аукцион в электронном виде': 'аукциона в электронном виде',
+        }.get(self.tender_placement_type.lower(), self.tender_placement_type)
+        issuer_head_fio = '%s %s %s' % (self.issuer_head_last_name, self.issuer_head_first_name, self.issuer_head_middle_name)
+        return {
+            'bg_number': generate_bg_number(self.created_at),
+            'sign_by': 'Скворцова Ирина Вячеславовна',
+            'sign_by_rp': 'Скворцовой Ирины Вячеславовны',
+            'sign_by_short': 'И. В. Скворцова',
+            'post_sign_by': 'Заместитель главного бухгалтера Московского филиала «БАНК СГБ»',
+            'post_sign_by_rp': 'Заместителя главного бухгалтера Московского филиала «БАНК СГБ»',
+            'city': 'г. Москва',
+            'bg_type': bg_type,
+            'bg_sum_str': sum2str(self.bg_sum),
+            'bank_commission_str': sum2str(self.bank_commission),
+            'indisputable': 'Гарант предоставляет Бенефициару право на бесспорное списание денежных средств со счета Гаранта, если Гарантом в течение пяти рабочих дней не исполнено требование Бенефициара об уплате денежной суммы по Гарантии, направленное с соблюдением условий Гарантии.' if self.is_indisputable_charge_off else 'Не указано в заявлениии',
+            'requisites': '\n'.join([
+                'Московский филиал «БАНК СГБ»',
+                'Юридический (фактический) адрес: 121069, г. Москва,',
+                'ул. Садовая-Кудринская, д. 2/62, стр.4',
+                'ОГРН 1023500000160',
+                'ИНН 3525023780, КПП 770343002',
+                'К/с 30101810245250000094 в ГУ Банка России по ЦФО,',
+                'БИК 044525094',
+                'Телефон: (499) 951-49-40',
+            ]),
+            'org_form': MorpherApi.get_response(OKOPF_CATALOG.get(str(self.issuer_okopf), self.issuer_okopf), 'Р').lower(),
+            'issuer_head_short_fio': '%s.%s. %s' % (self.issuer_head_first_name[0], self.issuer_head_middle_name[0], self.issuer_head_last_name),
+            'issuer_head_fio_rp': MorpherApi.get_response(issuer_head_fio, 'Р'),
+            'arbitration': 'г. Москвы',
+            'power_of_attorney': '№59 от 27 января 2017 года',
+        }
+
+    @cached_property
     def licences_as_string(self):
         return '\n'.join(['%s от %s' % (l.number, l.date_from.strftime('%d.%m.%Y')) for l in self.issuer_licences.all() if l.is_active()])
 
@@ -468,6 +542,66 @@ class Issue(models.Model):
             return 'отсутствует'
     application_doc_admin_field.short_description = 'файл заявки'
     application_doc_admin_field.allow_tags = True
+
+    def bg_contract_doc_admin_field(self):
+        doc = self.bg_contract_doc
+        field_parts = []
+        if doc:
+            if doc.file:
+                field_parts.append('<b><a href="{}">скачать</a></b>'.format(doc.file.url))
+            if doc.sign:
+                field_parts.append('<b><a href="{}">ЭЦП</a></b>'.format(doc.sign.url))
+        if len(field_parts) > 0:
+            return ', '.join(field_parts)
+        else:
+            return 'отсутствует'
+    bg_contract_doc_admin_field.short_description = 'контракт'
+    bg_contract_doc_admin_field.allow_tags = True
+
+    def bg_doc_admin_field(self):
+        doc = self.bg_doc
+        field_parts = []
+        if doc:
+            if doc.file:
+                field_parts.append('<b><a href="{}">скачать</a></b>'.format(doc.file.url))
+            if doc.sign:
+                field_parts.append('<b><a href="{}">ЭЦП</a></b>'.format(doc.sign.url))
+        if len(field_parts) > 0:
+            return ', '.join(field_parts)
+        else:
+            return 'отсутствует'
+    bg_doc_admin_field.short_description = 'банковская гарантия'
+    bg_doc_admin_field.allow_tags = True
+
+    def transfer_acceptance_act_admin_field(self):
+        doc = self.transfer_acceptance_act
+        field_parts = []
+        if doc:
+            if doc.file:
+                field_parts.append('<b><a href="{}">скачать</a></b>'.format(doc.file.url))
+            if doc.sign:
+                field_parts.append('<b><a href="{}">ЭЦП</a></b>'.format(doc.sign.url))
+        if len(field_parts) > 0:
+            return ', '.join(field_parts)
+        else:
+            return 'отсутствует'
+    transfer_acceptance_act_admin_field.short_description = 'Акт передачи'
+    transfer_acceptance_act_admin_field.allow_tags = True
+
+    def additional_doc_admin_field(self):
+        doc = self.additional_doc
+        field_parts = []
+        if doc:
+            if doc.file:
+                field_parts.append('<b><a href="{}">скачать</a></b>'.format(doc.file.url))
+            if doc.sign:
+                field_parts.append('<b><a href="{}">ЭЦП</a></b>'.format(doc.sign.url))
+        if len(field_parts) > 0:
+            return ', '.join(field_parts)
+        else:
+            return 'отсутствует'
+    additional_doc_admin_field.short_description = 'Дополнительно'
+    additional_doc_admin_field.allow_tags = True
 
     def doc_ops_mgmt_conclusion_doc_admin_field(self):
         field_parts = []
@@ -858,6 +992,9 @@ class Issue(models.Model):
                     new_doc.sample = pdoc.sample
                 new_doc.save()
 
+    def __init__(self, *args, **kwargs):
+        super(Issue, self).__init__(*args, **kwargs)
+        self.old_status = self.status
 
 class IssueDocument(models.Model):
     class Meta:
@@ -1277,3 +1414,10 @@ class IssueMessagesProxy(Issue):
         proxy = True
         verbose_name = 'собощение по заявке'
         verbose_name_plural = 'собощения по заявке'
+
+
+@receiver(pre_save, sender=Issue, dispatch_uid="pre_save_issue")
+def pre_save_issue(sender, instance, **kwargs):
+    if instance.old_status != instance.status and instance.status == consts.ISSUE_STATUS_REVIEW:
+        from marer.utils.documents import generate_acts_for_issue
+        generate_acts_for_issue(instance)

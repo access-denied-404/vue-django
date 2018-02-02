@@ -1,7 +1,9 @@
+import math
 from django.core.exceptions import ObjectDoesNotExist
 
 from marer import consts
 from marer.models import BankMinimalCommission
+from marer.utils.datetime_utils import get_datetime_as_excel_number
 
 
 def bank_commission(bg_start_date, bg_end_date, bg_sum, bg_is_beneficiary_form, bg_type, tender_exec_law,
@@ -74,3 +76,78 @@ def bank_commission(bg_start_date, bg_end_date, bg_sum, bg_is_beneficiary_form, 
 
     Q20 = O24 if Q22 < O24 else Q22  # Q20: =ЕСЛИ(Q22<O24;O24;Q22)
     return round(Q20, 2)
+
+
+def generate_bg_number(date):
+    prefix = '19/'
+    suffix = 'ЭГ-18'
+    today = get_datetime_as_excel_number(date)
+    part1 = math.floor(today) - 42900
+    part2 = math.floor((math.fmod(today, 1) * 100000))
+    return '%s%s-%s%s' % (prefix, part1, part2, suffix)
+
+
+def sum2str(value):
+    zero = 'ноль'
+    ten = (
+        ('', 'один', 'два', 'три', 'четыре', 'пять', 'шесть', 'семь', 'восемь', 'девять'),
+        ('', 'одна', 'две', 'три', 'четыре', 'пять', 'шесть', 'семь', 'восемь', 'девять'),
+    )
+    a20 = [
+        'десять', 'одиннадцать', 'двенадцать', 'тринадцать', 'четырнадцать', 'пятнадцать',
+        'шестнадцать', 'семнадцать', 'восемнадцать', 'девятнадцать'
+    ]
+    tens = [
+        '', '', 'двадцать', 'тридцать', 'сорок', 'пятьдесят', 'шестьдесят', 'семьдесят', 'восемьдесят', 'девяносто'
+    ]
+    hundred = [
+        '', 'сто', 'двести', 'триста', 'четыреста', 'пятьсот', 'шестьсот', 'семьсот', 'восемьсот', 'девятьсот'
+    ]
+    unit = [  # Units
+        ['копейка', 'копейки', 'копеек', 1],
+        ['рубль', 'рубля', 'рублей', 1],
+        ['тысяча', 'тысячи', 'тысяч', 1],
+        ['миллион', 'миллиона', 'миллионов', 0],
+        ['миллиард', 'милиарда', 'миллиардов', 0],
+    ]
+    rub, kop = ('%3.2f' % float(value)).split('.')
+    output = []
+
+    def split_by_groups(value: str, count: int):
+        extended_length = len(value) * 1.0 / count
+        extended_value = value.rjust(math.ceil(extended_length) * count, '0')
+        return [extended_value[i: i + count] for i in range(0, len(extended_value), count)]
+
+    def morph(value, var1, var2, var3):
+        value = abs(int(value)) % 100
+        if value > 10 and value < 20:
+            return var3
+        value = value % 10
+        if value > 1 and value < 5:
+            return var2
+        if value == 1:
+            return var1
+        return var3
+
+    if int(rub) > 0:
+        groups = split_by_groups(rub, 3)
+        for id, group in enumerate(groups):
+            i1, i2, i3 = list([int(g) for g in group])
+            unit_id = len(groups) - id
+            current_unit = unit[unit_id]
+            gender = current_unit[3]
+            output.append(hundred[i1])
+            if i2 > 1:
+                text = tens[i2] + ' ' + ten[gender][i3]  # 20-99
+                output.append(text)
+            else:
+                if i2 > 0:
+                    text = a20[i3]
+                else:
+                    text = ten[gender][i3]  # 10-19 | 1-9
+                output.append(text)
+            if unit_id > 0:
+                output.append(morph(group, *current_unit[:3]))
+        output.append(str(kop) if int(kop) > 0 else zero)
+        output.append(morph(kop, *unit[0][:3]))
+    return ' '.join(output)
