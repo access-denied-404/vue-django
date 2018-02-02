@@ -1,6 +1,6 @@
 {% extends 'marer/layout.html' %}
 
-{% load staticfiles l10n %}
+{% load staticfiles %}
 
 {% block head_additional %}
     <link href="{% static '/marer/css/sticky-navbar.css' %}" rel="stylesheet">
@@ -11,7 +11,7 @@
     <link href="{% static '/marer/css/suggestions.css' %}" rel="stylesheet">
 {% endblock %}
 
-{% block content %}{% localize off %}
+{% block content %}
     <nav class="navbar navbar-default navbar-static-top">
         <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -258,4 +258,4 @@
     <script type=text/javascript src="{% static 'marer/js/common.js' %}"></script>
     <script type=text/javascript src="{% static 'frontend/dist/static/js/app.js' %}"></script>
 
-{% endlocalize %}{% endblock %}
+{% endblock %}

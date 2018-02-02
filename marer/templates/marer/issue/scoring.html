@@ -1,8 +1,8 @@
 {% extends 'marer/issue/layout.html' %}
 
-{% load staticfiles l10n %}
+{% load staticfiles %}
 
-{% block issue_content %}{% localize off %}
+{% block issue_content %}
     <script type="text/javascript">
         var filesB64ForSign = [];
     </script>
@@ -279,7 +279,7 @@
         </script>
     {% endif %}
 
-{% endlocalize %}{% endblock %}
+{% endblock %}
 
 {% block js %}
     <script type="text/javascript">
