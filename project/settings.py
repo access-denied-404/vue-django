@@ -118,6 +118,10 @@ USE_L10N = True
 
 USE_TZ = True
 
+THOUSAND_SEPARATOR = ' '
+USE_THOUSAND_SEPARATOR = True
+NUMBER_GROUPING = 3
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
