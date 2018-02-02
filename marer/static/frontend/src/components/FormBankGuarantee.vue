@@ -428,23 +428,23 @@
       },
       process_bg_type () {
         if (this.bg_type === 'application_ensure') {
-          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === this.tender_contract_execution_ensure_cost) this.bg_sum = this.tender_application_ensure_cost
+          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === Number(this.tender_contract_execution_ensure_cost)) this.bg_sum = this.tender_application_ensure_cost
 
           if (this.tender_collect_end_date && this.tender_collect_end_date !== '') {
             this.bg_end_date = moment(this.tender_collect_end_date, dateformat).add(90, 'days')
           }
         }
         if (this.bg_type === 'contract_execution') {
-          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === this.tender_application_ensure_cost) if (this.tender_contract_execution_ensure_cost) this.bg_sum = this.tender_contract_execution_ensure_cost
+          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === Number(this.tender_application_ensure_cost)) if (this.tender_contract_execution_ensure_cost) this.bg_sum = this.tender_contract_execution_ensure_cost
         }
         if (this.bg_type === 'refund_of_advance') {
-          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === this.tender_contract_execution_ensure_cost) {
-            this.bg_sum = this.tender_contract_execution_ensure_cost
+          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === Number(this.tender_application_ensure_cost)) {
+            if (this.tender_contract_execution_ensure_cost) this.bg_sum = this.tender_contract_execution_ensure_cost
           }
         }
         if (this.bg_type === 'warranty_ensure') {
-          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === this.tender_contract_execution_ensure_cost) {
-            this.bg_sum = this.tender_contract_execution_ensure_cost
+          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === Number(this.tender_application_ensure_cost)) {
+            if (this.tender_contract_execution_ensure_cost) this.bg_sum = this.tender_contract_execution_ensure_cost
           }
         }
       }
