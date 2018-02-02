@@ -1,5 +1,5 @@
 {% extends 'marer/cabinet/layout_dashboard.html' %}
-{% load marer_cabinet %}
+{% load marer_cabinet l10n %}
 
 {% block cabinet_dashboard_content %}
     <div class="pull-right">
@@ -114,7 +114,7 @@
                     <form method="post">
                         {% csrf_token %}
                         <input type="hidden" name="issue_del" value="true" />
-                        <input type="hidden" name="id" value="{{ issue.id }}"/>
+                        <input type="hidden" name="id" value="{{ issue.id |unlocalize }}"/>
                         <button type="submit" class="btn btn-link btn-xs pull-right">
                             <span class="text-danger">Удалить</span>
                         </button>
