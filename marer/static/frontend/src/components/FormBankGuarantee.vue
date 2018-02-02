@@ -50,7 +50,10 @@
 
             <div class="col-md-5"><div class="form-group"><bs-input :name="'tender_placement_type'" v-model="tender_placement_type" label="Способ определения поставщика"></bs-input></div></div>
             <div class="col-md-3"><label>Дата публикации</label><date-time-picker :name="'tender_publish_date'" v-model="tender_publish_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div>
-            <div class="col-md-4"><bs-input :name="'tender_start_cost'" v-model="tender_start_cost" label="Начальная цена контракта" :mask="currency"></bs-input></div>
+            <div class="col-md-4">
+              <label >Начальная цена контракта</label>
+              <money type="text" name="tender_start_cost" class="form-control input" v-model="tender_start_cost" v-bind="money_format"></money>
+            </div>
           </div>
 
 
@@ -84,14 +87,12 @@
       <div class="panel-heading">Сведения об истребуемой гарантии</div>
       <div class="panel-body">
         <div class="row">
-          <div class="col-md-4">
-            <bs-input
-              :name="'bg_sum'"
-              v-model="bg_sum"
-              label="Требуемая сумма (не более 18 млн.)"
-              :mask="currency"
-              v-bind:class="{'has-error': !sum_is_appropriate}"
-            ></bs-input>
+          <div class="col-md-4" v-bind:class="{'has-error': !sum_is_appropriate}">
+            <div class="form-group">
+              <label for="id_bg_sum">Требуемая сумма (не более 18 млн.)</label>
+              <money type="text" id="id_bg_sum" name="bg_sum"
+                     v-bind="money_format" v-model="bg_sum" class="form-control input"></money>
+            </div>
           </div>
           <div class="col-md-2">
             <div class="form-group">
@@ -196,6 +197,7 @@
   import BS3SelectField from '@/components/inputs/BS3SelectField'
   import BS3RadioField from '@/components/inputs/BS3RadioField'
   import 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css'
+  import {Money} from 'v-money'
 
   moment.locale = 'ru'
   let dateformat = 'DD.MM.YYYY'
@@ -207,7 +209,8 @@
       'checkbox': checkbox,
       'bs3-select-field': BS3SelectField,
       'bs3-radio-field': BS3RadioField,
-      'date-time-picker': DateTimePicker
+      'date-time-picker': DateTimePicker,
+      'Money': Money
     },
     data () {
       let regData = JSON.parse(window.regdata)
@@ -303,7 +306,13 @@
       }
       let defaultData = {
         is_tender_info_panel_visible: true,
-        tender_add_data_visible: false
+        tender_add_data_visible: false,
+        money_format: {
+          decimal: ',',
+          thousands: ' ',
+          precision: 2,
+          masked: false /* doesn't work with directive */
+        }
       }
       jQuery.extend(defaultData, formData)
       return defaultData

@@ -18,6 +18,7 @@
     "lodash": "^4.17.4",
     "moment": "^2.10",
     "suggestions-jquery": "^17.10",
+    "v-money": "^0.8.1",
     "vue": "^2.4.2",
     "vue-bootstrap-datetimepicker": "^3.0.0",
     "vue-router": "^2.7.0",
