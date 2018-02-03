@@ -11,7 +11,7 @@ import mptt.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('marer', '0089_add_type_field_to_document'),
+        ('marer', '0090_extend_issue_propose_documents params'),
     ]
 
     operations = [
