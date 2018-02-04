@@ -31,11 +31,11 @@
                 <div class="col-md-12">
 
                     {% if not request.user.cert_hash or request.user.cert_hash == '' %}
-                        <div class="well well-sm text-center">
-                            Ссылка для клиента для заполнения анкеты и её подписания:
+                        <div class="well well-sm dang text-center">
                             <strong>
-                                http://sgbmarertest.ru{% url 'issue_remote_survey' issue.id %}
+                            Ссылка для клиента для заполнения анкеты и её подписания:
                             </strong>
+                                http://sgbmarertest.ru{% url 'issue_remote_survey' issue.id %}
                             <a class="btn btn-link btn-xs" href="{% url 'issue_remote_survey' issue.id %}" target="_blank">
                                 <span class="glyphicon glyphicon glyphicon-new-window"></span>
                             </a>
@@ -47,13 +47,15 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <div class="well well-sm text-center">
+                    <div class="well well-sm warn text-center pointer" data-toggle="collapse" data-target="#open0">
                         Заполнить самостоятельно
-                        <span class="glyphicon glyphicon-arrow-down"></span>
+                        <span class="glyphicon glyphicon-chevron-down pull-right"></span>
+                    </div>
+                    <div class="collapse" id="open0">
+                        {% include survey_template %}
                     </div>
                 </div>
             </div>
-            {% include survey_template %}
             <div class="row">
                 <div class="col-md-12 text-center">
                     <button class="btn btn-primary spinjs" name="action" value="save" type="submit">Сохранить черновик</button>
@@ -64,4 +66,45 @@
         </form>
     {% endif %}
 
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        $(function($) {
+
+            $('input[name=issuer_fact_address]').addClass('req');
+            $('select[name=tax_system]').addClass('req');
+            $('input[name=issuer_accountant_org_or_person]').addClass('req');
+            $('input[name=avg_employees_cnt_for_prev_year]').addClass('req');
+            $('input[name=issuer_head_passport_series]').addClass('req');
+            $('input[name=issuer_head_passport_number]').addClass('req');
+            $('input[name=issuer_head_passport_issue_date]').addClass('req');
+            $('input[name=issuer_head_residence_address]').addClass('req');
+            $('input[name=issuer_head_passport_issued_by]').addClass('req');
+
+
+            $('.req').on('change', function (evt) {
+                update_send_button_is_available();
+            });
+
+            function update_send_button_is_available() {
+                var requiredFields = $('.req');
+                var requiredFieldsFilled = true;
+                var reqField;
+                for (reqField = 0; reqField < requiredFields.length; reqField++) {
+                    if (!requiredFields[reqField].value) {
+                        requiredFieldsFilled = false;
+                        break;
+                    }
+                }
+                if (requiredFieldsFilled) {
+                    $('button[type=submit].btn-success').prop('disabled', false);
+                } else {
+                    $('button[type=submit].btn-success').prop('disabled', true);
+                }
+            }
+
+            update_send_button_is_available();
+        });
+    </script>
 {% endblock %}

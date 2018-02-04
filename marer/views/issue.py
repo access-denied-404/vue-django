@@ -139,7 +139,7 @@ class IssueRegisteringView(IssueView):
                 url = reverse('cabinet_requests')
                 return HttpResponseRedirect(url)
             elif action == 'next':
-                if not issue.check_stop_factors_validity:
+                if processed_valid and not issue.check_stop_factors_validity:
                     issue.status = consts.ISSUE_STATUS_CANCELLED
                     issue.save()
                     url = reverse('issue_finished', args=[issue.id])
@@ -229,6 +229,8 @@ class IssueRemoteSignView(TemplateView, ContextMixin, View):
             login_form = LoginSignForm()
             if 'login_form' not in kwargs:
                 kwargs.update(dict(login_form=login_form))
+        elif self.get_issue().status == consts.ISSUE_STATUS_REGISTERING:
+            self.template_name = 'marer/issue/remote_sign_docs_for_registering.html'
         else:
             self.template_name = 'marer/issue/remote_sign_docs.html'
         return super().get(request, *args, **kwargs)
@@ -325,9 +327,19 @@ class IssueRemoteSurveyView(TemplateView, ContextMixin, View):
                 return self.get(request, *args, **kwargs)
 
             all_ok = self.get_issue().get_product().process_survey_post_data(request)
+            app_doc = self.get_issue().application_doc
+            if app_doc is not None and app_doc.sign_state != consts.DOCUMENT_SIGN_NONE:
+                app_doc.sign = None
+                app_doc.sign_state = consts.DOCUMENT_SIGN_NONE
+                app_doc.save()
             if all_ok:
-                self.get_issue().fill_application_doc(commit=True)
+                # self.get_issue().fill_application_doc(commit=True)
                 notify_user_manager_about_user_updated_issue(self.get_issue())
+            if request.POST.get('action', '') == 'fill_application_doc':
+                self.get_issue().fill_application_doc()
+                url = reverse('issue_remote_for_sign', args=[self.get_issue().id])
+                return HttpResponseRedirect(url)
+
         return self.get(request, args, kwargs)
 
 
@@ -365,11 +377,15 @@ class IssueScoringView(IssueView):
                 pdoc.document = None
                 pdoc.save(chain_docs_update=False)
 
-        if request.POST.get('action', '') == 'send_to_review' and self.get_issue().can_send_for_review:
+        action = request.POST.get('action', '')
+        if action == 'send_to_review' and self.get_issue().can_send_for_review:
             self.get_issue().status = consts.ISSUE_STATUS_REVIEW
             self.get_issue().save()
             notify_user_manager_about_user_updated_issue(self.get_issue())
             url = reverse('issue_additional_documents_requests', args=[self.get_issue().id])
+            return HttpResponseRedirect(url)
+        elif action == 'save':
+            url = reverse('cabinet_requests')
             return HttpResponseRedirect(url)
 
         return self.get(request, *args, **kwargs)

@@ -84,7 +84,7 @@
                                                                         class="btn btn-primary btn-xs pull-right {% if propose_doc.document.sign_state != consts.DOCUMENT_SIGN_NONE %}hidden{% endif %}"
                                                                         onclick="signFile({{ propose_doc.document.id }});return false;">
                                                                     <span class="glyphicon glyphicon-certificate"></span>
-                                                                    Подписать
+                                                                    Подписать и отправить
                                                                 </a>
 
                                                                 <a
@@ -92,7 +92,7 @@
                                                                         class="btn btn-xs pull-right btn-success {% if propose_doc.document.sign_state != consts.DOCUMENT_SIGN_VERIFIED %}hidden{% endif %}"
                                                                         onclick="return false;">
                                                                     <span class="glyphicon glyphicon-ok-sign"></span>
-                                                                    Подписано
+                                                                    Подписано и отправлено
                                                                 </a>
 
                                                                 <a
@@ -108,7 +108,7 @@
                                                                         class="btn btn-xs pull-right btn-danger {% if propose_doc.document.sign_state != consts.DOCUMENT_SIGN_CORRUPTED %}hidden{% endif %}"
                                                                         onclick="signFile({{ propose_doc.document.id }});return false;">
                                                                     <span class="glyphicon glyphicon-exclamation-sign"></span>
-                                                                    Переподписать
+                                                                    Переподписать и отправить
                                                                 </a>
                                                             {% endif %}
 
@@ -125,12 +125,6 @@
                                             {% endfor %}
 
                                         </table>
-
-                                        <div class="text-center">
-                                            <button type="button" class="btn btn-primary" onclick="signAllFiles();">
-                                                Подписать все
-                                            </button>
-                                        </div>
 
                                     </form>
                                 </div>

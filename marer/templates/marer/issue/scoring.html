@@ -47,7 +47,7 @@
                         <table class="table table-condensed">
 
                             {% if issue.application_doc and issue.application_doc.file %}
-                                <tr>
+                                <tr class="application_doc">
                                     <td class="h6">
                                         <a href="{{ issue.application_doc.file.url }}">
                                             <b>Заявление на предоставление банковской гарантии</b>
@@ -82,6 +82,14 @@
                                             </a>
                                         {% endif %}
                                         <div class="clearfix"></div>
+
+                                        {% if issue.status == consts.ISSUE_STATUS_REGISTERING and issue.application_doc.sign_state != consts.DOCUMENT_SIGN_VERIFIED %}
+                                            <br/>
+                                            <div class="alert alert-warning text-center">
+                                                Для отправки заявления в банк, файл заявления должен быть подписан клиентом.
+                                            </div>
+                                        {% endif %}
+
                                     </td>
                                 </tr>
                             {% endif %}
@@ -99,11 +107,11 @@
                                         {% if doc.document and doc.document.file %}
                                             <a href="{{ doc.document.file.url }}">{{ doc.name }}</a>
                                         {% else %}
-                                           {{ doc.name }}
+                                            {{ doc.name }}{% if doc.is_required %}<span class="text-danger"><b>*</b></span>{% endif %}
                                         {% endif %}
                                     <div class="pull-right">
                                         {% if not doc.document.file %}
-                                            <input type="file" name="propose_doc_{{ doc.id }}" class="input-sm pull-right"/>
+                                            <input type="file" name="propose_doc_{{ doc.id }}" class="input-sm pull-right {% if doc.is_required %}required{% endif %}"/>
                                         {% endif %}
                                         {% if doc.document and doc.document.file %}
                                             {% if issue.status == consts.ISSUE_STATUS_REGISTERING %}
@@ -157,29 +165,23 @@
                             {% endfor %}
                             {% endfor %}
                         </table>
+                        <div class="help-block text-center">
+                            Документы, помеченные звездочкой (<span class="text-danger"><b>*</b></span>) обязательны для заполнения.
+                        </div>
 
-                        {% if not issue.can_send_for_review %}
-                            {% if not issue.is_all_propose_docs_filled %}
-                                <button type="submit" class="btn btn-primary center-block spinjs">Загрузить документы</button>
-                            {% elif issue.status == consts.ISSUE_STATUS_REGISTERING %}
-                                <div class="alert alert-warning text-center">
-                                    Для отправки заявления в банк, файл заявления должен быть подписан клиентом.
-                                </div>
-                            {% endif %}
+                        {% if issue.status == consts.ISSUE_STATUS_REGISTERING %}
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary spinjs" name="action" value="save">Сохранить черновик</button>
+                                <button
+                                        type="submit"
+                                        class="btn btn-success spinjs"
+                                        name="action" value="send_to_review">
+                                    Отправить заявку на рассмотрение
+                                </button>
+                            </div>
                         {% endif %}
 
                     </form>
-
-                    {% if issue.can_send_for_review and issue.status == consts.ISSUE_STATUS_REGISTERING %}
-                        <form method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="action" value="send_to_review"/>
-                            <button type="submit" class="btn btn-success btn-lg center-block spinjs">
-                                Отправить заявку на рассмотрение
-                            </button>
-                        </form>
-                    {% endif %}
-
                 </div>
             </div>
         </div>
@@ -271,9 +273,40 @@
                             sign_btn.removeClass('hidden');
                             break;
                     }
+                    update_send_button_is_available();
                 }, 'json');
             }
         </script>
     {% endif %}
 
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        $(function($) {
+            $('input[type=file].required').on('change', function (evt) {
+                update_send_button_is_available();
+            });
+
+            function update_send_button_is_available() {
+                var appDocIsSigned = $('#btn-signed-file-id{{ issue.application_doc.id }}').length > 0;
+                var requiredFiles = $('input[type=file].required');
+                var requiredFilesFilled = true;
+                var reqFile;
+                for (reqFile = 0; reqFile < requiredFiles.length; reqFile++) {
+                    if (!requiredFiles[reqFile].value) {
+                        requiredFilesFilled = false;
+                        break;
+                    }
+                }
+                if (appDocIsSigned && requiredFilesFilled) {
+                    $('button[type=submit].btn-success').prop('disabled', false);
+                } else {
+                    $('button[type=submit].btn-success').prop('disabled', true);
+                }
+            }
+
+            update_send_button_is_available();
+        });
+    </script>
 {% endblock %}

@@ -786,5 +786,13 @@ class FinanceOrgProductProposeDocumentAdmin(ModelAdmin):
     exclude = (
         'finance_product',
     )
+    list_display = (
+        'name',
+        'type',
+        'tax_system',
+        'min_bg_sum',
+        'max_bg_sum',
+        'is_required',
+    )
 
     form = forms.FinanceOrgProductProposeDocumentForm

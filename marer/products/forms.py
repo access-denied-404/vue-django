@@ -5,6 +5,7 @@ from djangoformsetjs.utils import formset_media_js
 from marer.fields import BalanceCodeDecimalField
 from marer import consts
 from marer.models import BankMinimalCommission
+from marer.products.fields import DecimalForcedThousandsGroupedField
 
 
 class BGFinProdRegForm(Form):
@@ -44,7 +45,7 @@ class BGFinProdRegForm(Form):
     balance_code_2400_offset_1 = BalanceCodeDecimalField(decimal_places=2, required=False, localize=True)
     balance_code_2400_offset_0 = BalanceCodeDecimalField(decimal_places=2, required=False, localize=True)
 
-    bg_sum = DecimalField(decimal_places=2, required=False, localize=True)
+    bg_sum = DecimalForcedThousandsGroupedField(decimal_places=2, required=False, localize=True)
     bg_currency = ChoiceField(required=False, choices=[
         (consts.CURRENCY_RUR, 'Рубль'),
         (consts.CURRENCY_USD, 'Доллар'),
@@ -158,11 +159,12 @@ class BGFinProdSurveyOrgCommonForm(Form):
         (True, 'Да'),
     ]))
     issuer_overdue_debts_info = CharField(required=False, widget=Textarea(attrs={'class': 'form-control', 'rows': 3}))
-    tax_system = CharField(required=False, widget=Select(attrs={'class': 'form-control'}, choices=[
-        ('usn', 'УСН'),
-        ('osn', 'ОСН'),
-        ('envd', 'ЕНВД'),
-        ('eshd', 'ЕСХД'),
+    tax_system = CharField(required=True, widget=Select(attrs={'class': 'form-control check'}, choices=[
+        (None, '---Обязательно к выбору---'),
+        (consts.TAX_USN, 'УСН'),
+        (consts.TAX_OSN, 'ОСН'),
+        (consts.TAX_ENVD, 'ЕНВД'),
+        (consts.TAX_ESHD, 'ЕСХД'),
     ]))
 
 
@@ -177,7 +179,7 @@ class BGFinProdSurveyOrgHeadForm(Form):
                                                                                     'placeholder': 'Обязательно к заполнению'}))
     issuer_head_passport_number = CharField(required=False, widget=TextInput(attrs={'class': 'form-control',
                                                                                     'placeholder': 'Обязательно к заполнению'}))
-    issuer_head_passport_issue_date = DateField(required=False, widget=DateInput(attrs={'class': 'form-control',
+    issuer_head_passport_issue_date = DateField(required=False, widget=DateInput(attrs={'class': 'form-control datepicker',
                                                                                         'placeholder': 'Обязательно к заполнению'}))
     issuer_head_passport_issued_by = CharField(required=False, widget=TextInput(attrs={'class': 'form-control',
                                                                                         'placeholder': 'Обязательно к заполнению'}))

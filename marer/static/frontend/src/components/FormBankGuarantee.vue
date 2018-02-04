@@ -147,16 +147,16 @@
     </div>
 
     <div class="panel panel-info">
-      <div class="panel-heading" data-toggle="collapse" data-target="#panel1">Бухгалтерская отчетность</div>
-      <div class="panel-body collapse in" id="panel1">
+      <div class="panel-heading">Бухгалтерская отчетность</div>
+      <div class="panel-body">
         <div class="container-fluid">
 
           <div class="row">
             <div class="col-md-4 h4">Наименование показателя</div>
             <div class="col-md-8">
               <div class="col-md-4 h5">Код строки</div>
-              <div class="col-md-4 h6">Последний завершённый квартал (2017&nbsp;г)</div>
-              <div class="col-md-4 h6">Последний завершённый год (2016&nbsp;г)</div>
+              <div class="col-md-4 h6" v-bind:class="{'text-danger': is_negative(balance_code_2400_offset_0)}">Последний завершённый квартал (2017&nbsp;г)</div>
+              <div class="col-md-4 h6" v-bind:class="{'text-danger': is_negative(balance_code_2400_offset_1)}">Последний завершённый год (2016&nbsp;г)</div>
             </div>
           </div>
 
@@ -173,6 +173,11 @@
                        v-model="balance_code_2400_offset_1"/>
               </div>
 
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 text-right help-block">
+              <small>любое отрицательное значение является стоп-фактором&nbsp;&nbsp;&nbsp;&nbsp;</small>
             </div>
           </div>
 
@@ -378,14 +383,40 @@
       }, 200),
       bg_type: _.debounce(function () {
         this.process_bg_type()
-      }, 1000)
+      }, 1000),
+      balance_code_2400_offset_0: _.debounce(function () {
+        this.next_btn_enabled_set()
+      }),
+      balance_code_2400_offset_1: _.debounce(function () {
+        this.next_btn_enabled_set()
+      }),
+      bg_start_date: _.debounce(function () {
+        this.next_btn_enabled_set()
+      }),
+      bg_end_date: _.debounce(function () {
+        this.next_btn_enabled_set()
+      }),
+      bg_sum: _.debounce(function () {
+        this.next_btn_enabled_set()
+      })
     },
     mounted () {
       this.is_tender_info_panel_visible = this.get_if_tender_info_panel_visible()
+      this.next_btn_enabled_set()
     },
     methods: {
+      next_btn_enabled_set: function () {
+        if (this.date_range_is_appropriate &&
+          this.sum_is_appropriate &&
+          !this.is_negative(this.balance_code_2400_offset_0) &&
+          !this.is_negative(this.balance_code_2400_offset_1)) {
+          jQuery('button[type="submit"].btn-success').prop('disabled', false)
+        } else {
+          jQuery('button[type="submit"].btn-success').prop('disabled', true)
+        }
+      },
       is_negative: function (value) {
-        if (value.startsWith('(') && value.endsWith(')')) {
+        if (value !== undefined && value.startsWith('(') && value.endsWith(')')) {
           value = '-' + value.substr(1, value.length - 2)
         }
         return jQuery.isNumeric(value) && parseFloat(value) < 0
@@ -397,23 +428,23 @@
       },
       process_bg_type () {
         if (this.bg_type === 'application_ensure') {
-          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === this.tender_contract_execution_ensure_cost) this.bg_sum = this.tender_application_ensure_cost
+          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === Number(this.tender_contract_execution_ensure_cost)) this.bg_sum = this.tender_application_ensure_cost
 
           if (this.tender_collect_end_date && this.tender_collect_end_date !== '') {
             this.bg_end_date = moment(this.tender_collect_end_date, dateformat).add(90, 'days')
           }
         }
         if (this.bg_type === 'contract_execution') {
-          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === this.tender_application_ensure_cost) if (this.tender_contract_execution_ensure_cost) this.bg_sum = this.tender_contract_execution_ensure_cost
+          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === Number(this.tender_application_ensure_cost)) if (this.tender_contract_execution_ensure_cost) this.bg_sum = this.tender_contract_execution_ensure_cost
         }
         if (this.bg_type === 'refund_of_advance') {
-          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === this.tender_contract_execution_ensure_cost) {
-            this.bg_sum = this.tender_contract_execution_ensure_cost
+          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === Number(this.tender_application_ensure_cost)) {
+            if (this.tender_contract_execution_ensure_cost) this.bg_sum = this.tender_contract_execution_ensure_cost
           }
         }
         if (this.bg_type === 'warranty_ensure') {
-          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === this.tender_contract_execution_ensure_cost) {
-            this.bg_sum = this.tender_contract_execution_ensure_cost
+          if (!this.bg_sum || this.bg_sum === '' || this.bg_sum === Number(this.tender_application_ensure_cost)) {
+            if (this.tender_contract_execution_ensure_cost) this.bg_sum = this.tender_contract_execution_ensure_cost
           }
         }
       }

@@ -1,219 +1,126 @@
-{% extends 'marer/cabinet/layout.html' %}
+{% extends 'marer/layout.html' %}
 
-{% load static %}
+{% load staticfiles %}
 
-{% block cabinet_content %}
-<div class="container">
-    <div class="row">
-        {% if issue and issue.id %}
-            <h1 class="text-center">Заявка №{{ issue.humanized_id }}</h1>
-            <div class="h4 text-center"><b>{{ issue.get_product.humanized_name }}</b>
-                {% if issue.short_name %}для <b>{{ issue.get_issuer_name }}</b>{% endif %}
+{% block head_additional %}
+    <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
+    <link href="{% static '/marer/css/sticky-navbar.css' %}" rel="stylesheet">
+    <link href="{% static '/marer/css/sticky-footer.css' %}" rel="stylesheet">
+    <link href="{% static '/marer/css/btn-yellow.css' %}" rel="stylesheet">
+    <link href="{% static '/marer/css/body-bgnd.css' %}" rel="stylesheet">
+    <link href="{% static 'frontend/dist/static/css/app.css' %}" rel=stylesheet>
+    <link href="{% static '/marer/css/suggestions.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{% url 'index' %}">
+                    <img src="{% static 'marer/img/logo_sgb.png' %}" height="25"/>
+                </a>
             </div>
-        {% else %}
-            <h1 class="text-center">Новая заявка</h1>
-        {% endif %}
-    </div>
-    <div class="row">
-        <div class="col-md-12">
 
-            {% if survey_template %}
-                <form method="post">
-                    {% csrf_token %}
-                    {% include survey_template %}
-                    <div class="row">
-                        <div class="col-md-12 text-center">
-                            <button class="btn btn-primary spinjs" type="submit">Сохранить</button>
-                            <a href="?logout" class="btn btn-warning spinjs">Завершить</a>
-                        </div>
-                    </div>
-                </form>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="?logout">Выход</a></li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            {% if issue and issue.id %}
+                <h1 class="text-center">Заявка №{{ issue.humanized_id }}</h1>
+                <div class="h4 text-center"><b>{{ issue.get_product.humanized_name }}</b>
+                    {% if issue.issuer_short_name %}для <b>{{ issue.get_issuer_name }}</b>{% endif %}
+                    {% if issue.bg_sum %}на сумму <b>{{ issue.humanized_sum }}</b>{% endif %}
+                </div>
+            {% else %}
+                <h1 class="text-center">Новая заявка</h1>
             {% endif %}
-
         </div>
-    </div>
-    <div class="row">
-        &nbsp;
-    </div>
-    {% if issue.check_all_application_required_fields_filled %}
         <div class="row">
             <div class="col-md-12">
-                <script type="text/javascript">
-                    var filesB64ForSign = [];
-                </script>
 
-                {% if issue.propose_documents_for_remote_sign %}
-                    <div class="panel panel-info">
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <form method="post" enctype="multipart/form-data">
-                                        {% csrf_token %}
-                                        <div class="h3">Документы для подписания</div>
-                                        <table class="table table-condensed">
-                                            {% for propose_doc in issue.propose_documents_for_remote_sign %}
-                                                <tr>
-                                                    <td class="h6">
-                                                        {% if propose_doc.document and propose_doc.document.file %}
-                                                            <a href="{{ propose_doc.document.file.url }}">
-                                                                {{ propose_doc.name }}
-                                                            </a>
-                                                        {% endif %}
-                                                        {% if propose_doc.document and propose_doc.document.file %}
-
-                                                            {% if cert_hash != '' or propose_doc.document.sign_state == consts.DOCUMENT_SIGN_VERIFIED %}
-                                                                <script type="text/javascript">
-                                                                    filesB64ForSign[{{ propose_doc.document.id }}] = "{{ propose_doc.document.base64_content }}";
-                                                                </script>
-
-                                                                <a
-                                                                        href="#" id="btn-sign-file-id{{ propose_doc.document.id }}"
-                                                                        class="btn btn-primary btn-xs pull-right {% if propose_doc.document.sign_state != consts.DOCUMENT_SIGN_NONE %}hidden{% endif %}"
-                                                                        onclick="signFile({{ propose_doc.document.id }});return false;">
-                                                                    <span class="glyphicon glyphicon-certificate"></span>
-                                                                    Подписать
-                                                                </a>
-
-                                                                <a
-                                                                        href="#" id="btn-signed-file-id{{ propose_doc.document.id }}"
-                                                                        class="btn btn-xs pull-right btn-success {% if propose_doc.document.sign_state != consts.DOCUMENT_SIGN_VERIFIED %}hidden{% endif %}"
-                                                                        onclick="return false;">
-                                                                    <span class="glyphicon glyphicon-ok-sign"></span>
-                                                                    Подписано
-                                                                </a>
-
-                                                                <a
-                                                                        href="#" id="btn-signing-file-id{{ propose_doc.document.id }}"
-                                                                        class="btn btn-xs pull-right btn-warning hidden"
-                                                                        onclick="signFile({{ propose_doc.document.id }});return false;">
-                                                                    <span class="glyphicon glyphicon-time"></span>
-                                                                    Подписание...
-                                                                </a>
-
-                                                                <a
-                                                                        href="#" id="btn-resign-file-id{{ propose_doc.document.id }}"
-                                                                        class="btn btn-xs pull-right btn-danger {% if propose_doc.document.sign_state != consts.DOCUMENT_SIGN_CORRUPTED %}hidden{% endif %}"
-                                                                        onclick="signFile({{ propose_doc.document.id }});return false;">
-                                                                    <span class="glyphicon glyphicon-exclamation-sign"></span>
-                                                                    Переподписать
-                                                                </a>
-                                                            {% endif %}
-
-                                                        {% elif propose_doc.sample and propose_doc.sample.file %}
-                                                            <a
-                                                                    href="{{ propose_doc.sample.file.url }}"
-                                                                    class="btn btn-link btn-xs pull-right">
-                                                                Образец <span class="glyphicon glyphicon-download-alt"></span>
-                                                            </a>
-                                                        {% endif %}
-                                                        <div class="clearfix"></div>
-                                                    </td>
-                                                </tr>
-                                            {% endfor %}
-
-                                        </table>
-
-                                    </form>
-                                </div>
+                {% if survey_template %}
+                    <form method="post" class="spinjs-submit">
+                        {% csrf_token %}
+                        {% include survey_template %}
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <button class="btn btn-primary" type="submit">Сохранить черновик</button>
+                                &nbsp;
+                                <button class="btn btn-success" type="submit" name="action" value="fill_application_doc">
+                                    Сформировать заявление для подписания
+                                </button>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 {% endif %}
 
-                {% if cert_hash != '' %}
-                    <script language="javascript" src="{% static '/marer/js/signing/es6-promise.min.js' %}"></script>
-                    <script language="javascript" src="{% static '/marer/js/signing/ie_eventlistner_polyfill.js' %}"></script>
-                    <script language="javascript">window.allow_firefox_cadesplugin_async=1</script>
-                    <script src="{% static '/marer/js/signing/cadesplugin_api.js' %}" type="text/javascript"></script>
-                    <script src="{% static '/marer/js/signing/Code.js' %}" type="text/javascript"></script>
-
-                    <script language="javascript">
-                        window.userCertHash = '{{ cert_hash }}';
-
-                        var canPromise = !!window.Promise;
-                        if(canPromise) {
-                            cadesplugin.then(function () {
-                                    Common_CheckForPlugIn();
-                                },
-                                function(error) {}
-                            );
-                        } else {
-                            window.addEventListener("message", function (event) {
-                                if (event.data == "cadesplugin_loaded") {
-                                    CheckForPlugIn_NPAPI();
-                                } else if(event.data == "cadesplugin_load_error") {
-                                    // todo alert for error
-                                }
-                                },
-                                false);
-                            window.postMessage("cadesplugin_echo_request", "*");
-                        }
-
-                        function signFile(docID) {
-                            var sign_btn = $('#btn-sign-file-id' + docID);
-                            var signed_btn = $('#btn-signed-file-id' + docID);
-                            var resign_btn = $('#btn-resign-file-id' + docID);
-                            var signing_btn = $('#btn-signing-file-id' + docID);
-
-                            sign_btn.addClass('hidden');
-                            signed_btn.addClass('hidden');
-                            resign_btn.addClass('hidden');
-                            signing_btn.removeClass('hidden');
-
-                            var docData = filesB64ForSign[docID];
-                            var canAsync = !!cadesplugin.CreateObjectAsync;
-                            if (canAsync) {
-                                include_async_code().then(function () {
-                                    SignCadesBES_Async_File(docData).then(function (sign) {
-                                        finalizeSignature(docID, sign)
-                                    }).catch(function () {
-                                        // todo set an error
-                                        alert("Error occurs!")
-                                    });
-                                });
-                            } else {
-                                var sign = SignCadesBES_NPAPI_File(docData);
-                                finalizeSignature(docID, sign);
-                            }
-                        }
-
-                        function finalizeSignature(docID, signature) {
-                            var sendParams = Object();
-                            sendParams.document = docID;
-                            sendParams.signature = signature;
-                            $.post('{% url 'issue_remote_file_sign' issue.id %}', sendParams, function (data) {
-                                var sign_btn = $('#btn-sign-file-id' + data.document);
-                                var signed_btn = $('#btn-signed-file-id' + data.document);
-                                var resign_btn = $('#btn-resign-file-id' + data.document);
-                                var signing_btn = $('#btn-signing-file-id' + data.document);
-                                signing_btn.addClass('hidden');
-                                switch (data.sign_state) {
-
-                                    case '{{ consts.DOCUMENT_SIGN_VERIFIED }}':
-                                        sign_btn.addClass('hidden');
-                                        resign_btn.addClass('hidden');
-                                        signed_btn.removeClass('hidden');
-                                        break;
-                                    case '{{ consts.DOCUMENT_SIGN_CORRUPTED }}':
-                                        sign_btn.addClass('hidden');
-                                        signed_btn.addClass('hidden');
-                                        resign_btn.removeClass('hidden');
-                                        break;
-                                    case '{{ consts.DOCUMENT_SIGN_NONE }}':
-                                        signed_btn.addClass('hidden');
-                                        resign_btn.addClass('hidden');
-                                        sign_btn.removeClass('hidden');
-                                        break;
-                                }
-                            }, 'json');
-                        }
-                    </script>
-                {% endif %}
             </div>
         </div>
-    {% endif %}
-    <div class="row">
-        &nbsp;
+        <div class="row">
+            &nbsp;
+        </div>
     </div>
-</div>
+
+    {% include 'marer/footer.html' %}
+    {% include 'marer/boostrap_js_body_part.html' %}
+
+    <script type="text/javascript">
+        $(function($) {
+
+            $('input[name=issuer_fact_address]').addClass('req');
+            $('select[name=tax_system]').addClass('req');
+            $('input[name=issuer_accountant_org_or_person]').addClass('req');
+            $('input[name=avg_employees_cnt_for_prev_year]').addClass('req');
+            $('input[name=issuer_head_passport_series]').addClass('req');
+            $('input[name=issuer_head_passport_number]').addClass('req');
+            $('input[name=issuer_head_passport_issue_date]').addClass('req');
+            $('input[name=issuer_head_residence_address]').addClass('req');
+            $('input[name=issuer_head_passport_issued_by]').addClass('req');
+
+
+            $('.req').on('change', function (evt) {
+                update_send_button_is_available();
+            });
+
+            function update_send_button_is_available() {
+                var requiredFields = $('.req');
+                var requiredFieldsFilled = true;
+                var reqField;
+                for (reqField = 0; reqField < requiredFields.length; reqField++) {
+                    if (!requiredFields[reqField].value) {
+                        requiredFieldsFilled = false;
+                        break;
+                    }
+                }
+                if (requiredFieldsFilled) {
+                    $('button[type=submit].btn-success').prop('disabled', false);
+                } else {
+                    $('button[type=submit].btn-success').prop('disabled', true);
+                }
+            }
+
+            update_send_button_is_available();
+        });
+    </script>
+
+    <script type=text/javascript src="{% static 'frontend/dist/static/js/manifest.js' %}"></script>
+    <script type=text/javascript src="{% static 'frontend/dist/static/js/vendor.js' %}"></script>
+    <script type=text/javascript src="{% static 'marer/js/common.js' %}"></script>
+    <script type=text/javascript src="{% static 'frontend/dist/static/js/app.js' %}"></script>
+
 {% endblock %}

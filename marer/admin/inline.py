@@ -294,25 +294,26 @@ class IssueProposeDocumentInlineAdmin(TabularInline):
     form = IssueProposeDocumentInlineAdminForm
     fields = (
         'name',
-        'cert_info',
         'type',
+        'is_required',
         'file_sample',
         'file',
+        'sign_info',
         'is_approved_by_manager',
     )
-    readonly_fields = ['cert_info']
+    readonly_fields = ['sign_info', 'is_required']
     classes = ('collapse',)
 
-    def cert_info(self, obj):
+    def sign_info(self, obj):
         output = []
         if obj.document:
             output = [
-                'Статус подписи: <b>%s</b>' % DOCUMENT_SIGN_LABELS.get(obj.document.sign_state, '-'),
-                ('Подпись: <a href="%s" >скачать</a>' % obj.document.sign.url) if obj.document.sign else ''
+                'Состояние подписи: <b>%s</b>' % DOCUMENT_SIGN_LABELS.get(obj.document.sign_state, '-'),
+                ('Файл ЭЦП: <a href="%s" ><b>скачать</b></a>' % obj.document.sign.url) if obj.document.sign else ''
             ]
         return '<br>'.join(output)
-    cert_info.short_description = 'Данные сертификата'
-    cert_info.allow_tags = True
+    sign_info.short_description = 'Подпись файла'
+    sign_info.allow_tags = True
     # todo check add permission
     # todo check change permission
     # todo check del permission

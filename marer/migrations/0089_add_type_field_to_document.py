@@ -13,12 +13,12 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
+        migrations.AddField(
             model_name='financeorgproductproposedocument',
             name='type',
             field=models.PositiveIntegerField(choices=[(1, 'Юридические документы'), (2, 'Финансовые документы'), (3, 'Прочее')], default=3),
         ),
-        migrations.AlterField(
+        migrations.AddField(
             model_name='issueproposedocument',
             name='type',
             field=models.PositiveIntegerField(choices=[(1, 'Юридические документы'), (2, 'Финансовые документы'), (3, 'Прочее')], default=3),
