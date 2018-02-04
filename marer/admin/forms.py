@@ -10,6 +10,7 @@ from marer.models import IssueClarificationMessage, Document, \
 from marer.models.finance_org import FinanceOrgProductProposeDocument
 from marer.utils.notify import notify_about_user_manager_adds_message, notify_about_user_manager_created_clarification, \
     notify_about_fo_manager_created_clarification, notify_about_fo_manager_adds_message
+from marer.models.base import FormOwnership
 
 
 class IFOPClarificationAddForm(forms.ModelForm):
@@ -217,6 +218,7 @@ class IssueProposeDocumentInlineAdminForm(forms.ModelForm):
 
 
 class FinanceOrgProductProposeDocumentForm(forms.ModelForm):
+    form_ownership = forms.ModelMultipleChoiceField(FormOwnership.objects.all(), label='Форма собственности')
 
     class Meta:
         model = FinanceOrgProductProposeDocument
@@ -227,6 +229,7 @@ class FinanceOrgProductProposeDocumentForm(forms.ModelForm):
             'code',
             'type',
             'tax_system',
+            'form_ownership',
             'min_bg_sum',
             'max_bg_sum',
             'is_required',

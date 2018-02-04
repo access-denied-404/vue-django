@@ -17,7 +17,7 @@ from django.utils.functional import cached_property
 from django.utils.timezone import now
 
 from marer import consts
-from marer.models.base import Document, set_obj_update_time, BankMinimalCommission
+from marer.models.base import Document, set_obj_update_time, BankMinimalCommission, FormOwnership
 from marer.models.finance_org import FinanceOrganization, FinanceOrgProductProposeDocument
 from marer.models.issuer import Issuer, IssuerDocument
 from marer.products import get_finance_products_as_choices, FinanceProduct, get_finance_products, BankGuaranteeProduct
@@ -1002,6 +1002,9 @@ class Issue(models.Model):
                 Q(Q(min_bg_sum__lte=self.bg_sum) | Q(min_bg_sum__isnull=True)),
                 Q(Q(max_bg_sum__gte=self.bg_sum) | Q(min_bg_sum__isnull=True)),
             )
+            if self.issuer_okopf:
+                form_ownership = FormOwnership.objects.filter(okopf_codes__contains=self.issuer_okopf).first()
+                pdocs = pdocs.filter(form_ownership__in=[form_ownership])
             for pdoc in pdocs:
                 new_doc = IssueProposeDocument()
                 new_doc.issue = self

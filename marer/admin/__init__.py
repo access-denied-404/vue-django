@@ -36,6 +36,7 @@ from marer.models.finance_org import FinanceOrganization, FinanceOrgProductCondi
 from marer.utils.notify import notify_user_about_manager_created_issue_for_user, \
     notify_user_about_manager_updated_issue_for_user, notify_fo_managers_about_issue_proposed_to_banks, \
     notify_user_about_issue_proposed_to_banks, notify_user_manager_about_issue_proposed_to_banks
+from marer.models.base import FormOwnership
 
 site.site_title = 'Управление сайтом'
 site.site_header = 'Управление площадкой'
@@ -796,3 +797,8 @@ class FinanceOrgProductProposeDocumentAdmin(ModelAdmin):
     )
 
     form = forms.FinanceOrgProductProposeDocumentForm
+
+
+@register(FormOwnership)
+class FormOwnershipAdmin(ModelAdmin):
+    pass

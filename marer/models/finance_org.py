@@ -202,6 +202,7 @@ class FinanceOrgProductProposeDocument(models.Model):
     )
     type = models.PositiveIntegerField('тип документа', choices=consts.DOCUMENT_TYPE_CHOICES, default=consts.DOCUMENT_TYPE_OTHER,
                                        null=False, blank=False)
+    form_ownership = models.ManyToManyField(to='FormOwnership', blank=True, verbose_name='Форма собственности')
     tax_system = models.CharField(verbose_name='система налогообложения', max_length=32, blank=True, null=True, choices=[
         (consts.TAX_USN, 'УСН'),
         (consts.TAX_OSN, 'ОСН'),
