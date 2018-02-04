@@ -498,11 +498,11 @@ class Issue(models.Model):
         issuer_head_fio = '%s %s %s' % (self.issuer_head_last_name, self.issuer_head_first_name, self.issuer_head_middle_name)
         return {
             'bg_number': generate_bg_number(self.created_at),
-            'sign_by': 'Скворцова Ирина Вячеславовна',
-            'sign_by_rp': 'Скворцовой Ирины Вячеславовны',
-            'sign_by_short': 'И. В. Скворцова',
-            'post_sign_by': 'Заместитель главного бухгалтера Московского филиала «БАНК СГБ»',
-            'post_sign_by_rp': 'Заместителя главного бухгалтера Московского филиала «БАНК СГБ»',
+            'sign_by': 'Евграфова Ольга Алексеевна',
+            'sign_by_rp': 'Евграфовой Ольги Алексеевны',
+            'sign_by_short': 'О.А. Евграфова',
+            'post_sign_by': 'Ведущий специалист Отдела документарных операций Управления развития документарных операций',
+            'post_sign_by_rp': 'Ведущего специалиста Отдела документарных операций Управления развития документарных операций',
             'city': 'г. Москва',
             'bg_type': bg_type,
             'bg_sum_str': sum2str(self.bg_sum),
@@ -522,7 +522,7 @@ class Issue(models.Model):
             'issuer_head_short_fio': '%s.%s. %s' % (self.issuer_head_first_name[0], self.issuer_head_middle_name[0], self.issuer_head_last_name),
             'issuer_head_fio_rp': MorpherApi.get_response(issuer_head_fio, 'Р'),
             'arbitration': 'г. Москвы',
-            'power_of_attorney': '№59 от 27 января 2017 года',
+            'power_of_attorney': '№236 от 05 июня 2017 года',
         }
 
     @cached_property
@@ -552,10 +552,12 @@ class Issue(models.Model):
             if doc.sign:
                 field_parts.append('<b><a href="{}">ЭЦП</a></b>'.format(doc.sign.url))
         if len(field_parts) > 0:
-            return ', '.join(field_parts)
+            output = ', '.join(field_parts)
         else:
-            return 'отсутствует'
-    bg_contract_doc_admin_field.short_description = 'контракт'
+            output = 'отсутствует'
+        output += ' <input type="file" name="bg_contract_doc_document" />'
+        return output
+    bg_contract_doc_admin_field.short_description = 'Проект'
     bg_contract_doc_admin_field.allow_tags = True
 
     def bg_doc_admin_field(self):
@@ -567,10 +569,12 @@ class Issue(models.Model):
             if doc.sign:
                 field_parts.append('<b><a href="{}">ЭЦП</a></b>'.format(doc.sign.url))
         if len(field_parts) > 0:
-            return ', '.join(field_parts)
+            output = ', '.join(field_parts)
         else:
-            return 'отсутствует'
-    bg_doc_admin_field.short_description = 'банковская гарантия'
+            output = 'отсутствует'
+        output += ' <input type="file" name="bg_doc_document" />'
+        return output
+    bg_doc_admin_field.short_description = 'Акт'
     bg_doc_admin_field.allow_tags = True
 
     def transfer_acceptance_act_admin_field(self):
@@ -582,10 +586,12 @@ class Issue(models.Model):
             if doc.sign:
                 field_parts.append('<b><a href="{}">ЭЦП</a></b>'.format(doc.sign.url))
         if len(field_parts) > 0:
-            return ', '.join(field_parts)
+            output = ', '.join(field_parts)
         else:
-            return 'отсутствует'
-    transfer_acceptance_act_admin_field.short_description = 'Акт передачи'
+            output = 'отсутствует'
+        output += ' <input type="file" name="transfer_acceptance_act_document" />'
+        return output
+    transfer_acceptance_act_admin_field.short_description = 'Заявление'
     transfer_acceptance_act_admin_field.allow_tags = True
 
     def additional_doc_admin_field(self):
@@ -597,9 +603,11 @@ class Issue(models.Model):
             if doc.sign:
                 field_parts.append('<b><a href="{}">ЭЦП</a></b>'.format(doc.sign.url))
         if len(field_parts) > 0:
-            return ', '.join(field_parts)
+            output = ', '.join(field_parts)
         else:
-            return 'отсутствует'
+            output = 'отсутствует'
+        output += ' <input type="file" name="additional_doc_document" />'
+        return output
     additional_doc_admin_field.short_description = 'Дополнительно'
     additional_doc_admin_field.allow_tags = True
 

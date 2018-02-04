@@ -1,20 +1,45 @@
 {% extends 'marer/issue/layout.html' %}
 
 {% block issue_content %}
-{#    <div class="text-center h3">#}
-{#        {% if clarification %}#}
-{#            Запрос №<b>{{ clarification.id }}</b>#}
-{#            {% if clarification.initiator == consts.IFOPC_INITIATOR_ISSUER %}#}
-{#                в <b>{{ clarification.propose.finance_org.name }}</b>#}
-{#            {% elif clarification.initiator == consts.IFOPC_INITIATOR_FINANCE_ORG %}#}
-{#                от <b>{{ clarification.propose.finance_org.name }}</b>#}
-{#            {% endif %}#}
-{#            от {{ clarification.created_at }}#}
-{#        {% else %}#}
-{#            Новый запрос в <b>{{ propose.finance_org.name }}</b>#}
-{#        {% endif %}#}
-{#    </div>#}
-
+    {#    <div class="text-center h3">#}
+    {#        {% if clarification %}#}
+    {#            Запрос №<b>{{ clarification.id }}</b>#}
+    {#            {% if clarification.initiator == consts.IFOPC_INITIATOR_ISSUER %}#}
+    {#                в <b>{{ clarification.propose.finance_org.name }}</b>#}
+    {#            {% elif clarification.initiator == consts.IFOPC_INITIATOR_FINANCE_ORG %}#}
+    {#                от <b>{{ clarification.propose.finance_org.name }}</b>#}
+    {#            {% endif %}#}
+    {#            от {{ clarification.created_at }}#}
+    {#        {% else %}#}
+    {#            Новый запрос в <b>{{ propose.finance_org.name }}</b>#}
+    {#        {% endif %}#}
+    {#    </div>#}
+    {% if not request.user.is_broker and issue.status == consts.ISSUE_STATUS_REVIEW %}
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <table class="table table-condensed">
+                    <div class="h3">Документы</div>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <a href="{{ issue.bg_contract_doc.file.url }}">Проект</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="{{ issue.bg_doc.file.url }}">Акт</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="{{ issue.transfer_acceptance_act.file.url }}">Заявление</a>
+                        </td>
+                    </tr>
+                     </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
     {% for msg in issue.clarification_messages.all %}
         <div class="panel panel-info">
             <div class="panel-body">
@@ -34,7 +59,8 @@
                                         <tr>
                                             <td>
                                                 <a href="{{ doclink.document.file.url }}">
-                                                    {{ doclink.name }} <span class="glyphicon glyphicon-download-alt pull-right"></span>
+                                                    {{ doclink.name }} <span
+                                                        class="glyphicon glyphicon-download-alt pull-right"></span>
                                                 </a>
                                             </td>
                                         </tr>
@@ -56,15 +82,29 @@
             <div class="panel-body">
                 <div class="container-fluid">
 
-                    <div class="row"><div class="col-md-12">{{ comment_form.message }}</div></div>
+                    <div class="row">
+                        <div class="col-md-12">{{ comment_form.message }}</div>
+                    </div>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="h4 text-center">Прикрепить документы</div>
                             <table class="table table-condensed">
-                                <tr><td>{{ comment_form.doc1 }}</td><td>{{ comment_form.doc2 }}</td></tr>
-                                <tr><td>{{ comment_form.doc3 }}</td><td>{{ comment_form.doc4 }}</td></tr>
-                                <tr><td>{{ comment_form.doc5 }}</td><td>{{ comment_form.doc6 }}</td></tr>
-                                <tr><td>{{ comment_form.doc7 }}</td><td>{{ comment_form.doc8 }}</td></tr>
+                                <tr>
+                                    <td>{{ comment_form.doc1 }}</td>
+                                    <td>{{ comment_form.doc2 }}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ comment_form.doc3 }}</td>
+                                    <td>{{ comment_form.doc4 }}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ comment_form.doc5 }}</td>
+                                    <td>{{ comment_form.doc6 }}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ comment_form.doc7 }}</td>
+                                    <td>{{ comment_form.doc8 }}</td>
+                                </tr>
                             </table>
                         </div>
                     </div>

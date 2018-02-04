@@ -21,7 +21,8 @@ from django.utils.timezone import localtime
 from django.utils.translation import ugettext_lazy as _
 from mptt.admin import MPTTModelAdmin
 
-from marer.consts import TENDER_EXEC_LAW_44_FZ, TENDER_EXEC_LAW_223_FZ
+
+from marer.consts import TENDER_EXEC_LAW_44_FZ, TENDER_EXEC_LAW_223_FZ, DOCUMENT_SIGN_NONE
 from marer import models
 from marer.admin.filters import ManagerListFilter, BrokerListFilter
 from marer.admin.forms import IFOPClarificationAddForm, MarerUserChangeForm, UserCreationForm
@@ -97,6 +98,19 @@ class IssueAdmin(ModelAdmin):
     formfield_overrides = {
         TextField: dict(widget=Textarea(dict(rows=4)))
     }
+
+    def save_form(self, request, form, change):
+        obj = super(IssueAdmin, self).save_form(request, form, change)
+        issue = form.instance
+        for file_name in ['bg_contract_doc', 'bg_doc', 'transfer_acceptance_act']:
+            file_content = request.FILES.get('%s_document' % file_name)
+            file_document = getattr(issue, file_name)
+            if file_content and file_document:
+                file_document.file = file_content
+                file_document.sign = None
+                file_document.sign_state = DOCUMENT_SIGN_NONE
+                file_document.save()
+        return obj
 
     def issuer_name(self, obj):
         return obj.issuer_short_name
