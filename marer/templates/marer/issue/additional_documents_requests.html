@@ -14,32 +14,6 @@
     {#            Новый запрос в <b>{{ propose.finance_org.name }}</b>#}
     {#        {% endif %}#}
     {#    </div>#}
-    {% if not request.user.is_broker and issue.status == consts.ISSUE_STATUS_REVIEW %}
-        <div class="panel panel-primary">
-            <div class="panel-body">
-                <table class="table table-condensed">
-                    <div class="h3">Документы</div>
-                    <tbody>
-                    <tr>
-                        <td>
-                            <a href="{{ issue.bg_contract_doc.file.url }}">Проект</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a href="{{ issue.bg_doc.file.url }}">Акт</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a href="{{ issue.transfer_acceptance_act.file.url }}">Заявление</a>
-                        </td>
-                    </tr>
-                     </tbody>
-                </table>
-            </div>
-        </div>
-    {% endif %}
     {% for msg in issue.clarification_messages.all %}
         <div class="panel panel-info">
             <div class="panel-body">
@@ -74,7 +48,33 @@
             </div>
         </div>
     {% endfor %}
-
+    {% if request.user.is_broker and issue.status == consts.ISSUE_STATUS_REVIEW %}
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <table class="table table-condensed">
+                    <div class="h3">Документы</div>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <a href="{{ issue.bg_contract_doc.file.url }}">Проект</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="{{ issue.bg_doc.file.url }}">Акт</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="{{ issue.transfer_acceptance_act.file.url }}">Заявление</a>
+                        </td>
+                    </tr>
+                     </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+    
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="panel panel-info">
