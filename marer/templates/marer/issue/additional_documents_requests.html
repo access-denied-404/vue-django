@@ -14,7 +14,7 @@
 {#            Новый запрос в <b>{{ propose.finance_org.name }}</b>#}
 {#        {% endif %}#}
 {#    </div>#}
-    {% if request.user.is_broker and issue.status == consts.ISSUE_STATUS_REVIEW %}
+    {% if issue.status == consts.ISSUE_STATUS_REVIEW %}
         <div class="panel panel-primary">
             <div class="panel-body">
                 <table class="table table-condensed">
