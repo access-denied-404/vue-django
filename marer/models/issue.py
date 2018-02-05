@@ -561,7 +561,7 @@ class Issue(models.Model):
             output = 'отсутствует'
         output += ' <input type="file" name="bg_contract_doc_document" />'
         return output
-    bg_contract_doc_admin_field.short_description = 'Проект'
+    bg_contract_doc_admin_field.short_description = 'Акт'
     bg_contract_doc_admin_field.allow_tags = True
 
     def bg_doc_admin_field(self):
@@ -578,7 +578,7 @@ class Issue(models.Model):
             output = 'отсутствует'
         output += ' <input type="file" name="bg_doc_document" />'
         return output
-    bg_doc_admin_field.short_description = 'Акт'
+    bg_doc_admin_field.short_description = 'Проект'
     bg_doc_admin_field.allow_tags = True
 
     def transfer_acceptance_act_admin_field(self):
