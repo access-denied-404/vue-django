@@ -287,21 +287,24 @@ class Issue(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='bg_contract_doc'
+        related_name='bg_contract_doc',
+        verbose_name='Договор'
     )
     bg_doc = models.ForeignKey(
         Document,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='bg_doc'
+        related_name='bg_doc',
+        verbose_name='Проект'
     )
     transfer_acceptance_act = models.ForeignKey(
         Document,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='transfer_acceptance_acts_links'
+        related_name='transfer_acceptance_acts_links',
+        verbose_name='Акт'
     )
     additional_doc = models.ForeignKey(
         Document,
@@ -566,7 +569,7 @@ class Issue(models.Model):
             output = 'отсутствует'
         output += ' <input type="file" name="bg_contract_doc_document" />'
         return output
-    bg_contract_doc_admin_field.short_description = 'Акт'
+    bg_contract_doc_admin_field.short_description = 'Договор'
     bg_contract_doc_admin_field.allow_tags = True
 
     def bg_doc_admin_field(self):
@@ -600,7 +603,7 @@ class Issue(models.Model):
             output = 'отсутствует'
         output += ' <input type="file" name="transfer_acceptance_act_document" />'
         return output
-    transfer_acceptance_act_admin_field.short_description = 'Заявление'
+    transfer_acceptance_act_admin_field.short_description = 'Акт'
     transfer_acceptance_act_admin_field.allow_tags = True
 
     def additional_doc_admin_field(self):
