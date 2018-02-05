@@ -17,7 +17,8 @@ from django.utils.timezone import now
 from marer import consts
 from marer.models.base import Document, set_obj_update_time, BankMinimalCommission
 from marer.models.finance_org import FinanceOrganization, FinanceOrgProductProposeDocument
-from marer.models.issuer import Issuer, IssuerDocument
+from marer.models.issuer import Issuer, IssuerDocument, IssuerOrgCollegial, IssuerOrgDirector, IssuerOrgOther, \
+    IssuerBenOwner, IssuerFounderLegal, IssuerFounderPhysical, IssuerOrgBankAccount
 from marer.products import get_finance_products_as_choices, FinanceProduct, get_finance_products, BankGuaranteeProduct
 from marer.utils import CustomJSONEncoder, kontur
 from marer.utils.issue import bank_commission
@@ -533,6 +534,8 @@ class Issue(models.Model):
         checks.append(self.issuer_head_passport_issue_date is not None)
         checks.append(self.issuer_head_residence_address is not None and self.issuer_head_residence_address != '')
         checks.append(self.issuer_head_passport_issued_by is not None and self.issuer_head_passport_issued_by != '')
+        checks.append(IssueOrgBeneficiaryOwner.legal_address is not None and IssueOrgBeneficiaryOwner.legal_address != '')
+        checks.append(IssueOrgBeneficiaryOwner.fact_address is not None and IssueOrgBeneficiaryOwner.fact_address != '')
         return not False in checks
 
     def fill_from_issuer(self):

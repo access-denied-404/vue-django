@@ -18,10 +18,11 @@ from django.views.generic.base import ContextMixin
 
 from marer import consts
 from marer.forms import IssueRegisteringForm, IFOPCMessageForm, LoginSignForm
-from marer.models import Issue, Document
+from marer.models import Issue, Document, Issuer
 from marer.models.issue import IssueClarificationMessage, \
     IssueFinanceOrgProposeClarificationMessageDocument, IssueClarification, \
     IssueProposeDocument
+from marer.models.issuer import IssuerOrgCollegial
 from marer.products import get_finance_products
 from marer.stub import create_stub_issuer
 from marer.utils.notify import notify_user_manager_about_user_created_issue, \
@@ -134,7 +135,8 @@ class IssueRegisteringView(IssueView):
             product.set_issue(issue)
             processed_valid = product.process_registering_form(request)
 
-            action = request.POST.get('action', 'save')
+            # action = request.POST.get('action', 'save')
+            action = 'next'
             if action == 'save':
                 url = reverse('cabinet_requests')
                 return HttpResponseRedirect(url)
@@ -146,6 +148,39 @@ class IssueRegisteringView(IssueView):
                     return HttpResponseRedirect(url)
 
                 if processed_valid:
+                    issues_list = Issue.objects.order_by('id').all()
+                    for iss in issues_list:
+                        if iss.issuer_inn == issue.issuer_inn:
+                            org = Issuer()
+                            org.user = iss.user
+                            org.fact_address = iss.issuer_fact_address
+                            org.tax_system = iss.tax_system
+                            org.has_overdue_debts_for_last_180_days =\
+                                iss.issuer_has_overdue_debts_for_last_180_days
+                            org.web_site = iss.issuer_web_site
+                            org.avg_employees_cnt_for_prev_year = iss.avg_employees_cnt_for_prev_year
+                            org.post_address = iss.issuer_post_address
+                            org.full_name = iss.issuer_full_name
+                            org.short_name = iss.issuer_short_name
+                            org.legal_address = iss.issuer_legal_address
+                            org.okopf = iss.issuer_okopf
+                            org.ogrn = iss.issuer_ogrn
+                            org.inn = iss.issuer_inn
+                            org.kpp = iss.issuer_kpp
+                            org.okpo = iss.issuer_okpo
+                            org.registration_date = iss.issuer_registration_date
+                            org.ifns_reg_date = iss.issuer_ifns_reg_date
+                            org.head_passport_number = iss.issuer_head_passport_number
+                            org.head_passport_series = iss.issuer_head_passport_series
+                            org.head_passport_issue_date = iss.issuer_head_passport_issue_date
+                            org.head_passport_issued_by = iss.issuer_head_passport_issued_by
+                            org.head_residence_address = iss.issuer_head_residence_address
+                            org.head_phone = iss.issuer_head_phone
+                            org.head_first_name = iss.issuer_head_first_name
+                            org.head_last_name = iss.issuer_head_last_name
+                            org.head_middle_name = iss.issuer_head_middle_name
+                            org.head_org_position_and_permissions = iss.issuer_head_org_position_and_permissions
+                            org.save()
                     url = reverse('issue_survey', args=[issue.id])
                     return HttpResponseRedirect(url)
 
