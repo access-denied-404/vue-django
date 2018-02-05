@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^cabinet/requests$', cabinet.CabinetRequestsView.as_view(), name='cabinet_requests'),
     url(r'^cabinet/organizations$', cabinet.CabinetOrganizationsView.as_view(), name='cabinet_organizations'),
     url(r'^cabinet/profile$', cabinet.CabinetProfileView.as_view(), name='cabinet_profile'),
+    url(r'^manager$', cabinet.CabinetManagerView.as_view(), name='cabinet_manager'),
 
     url(r'^cabinet/requests/new$', issue.IssueRegisteringView.as_view(), name='issue_new'),
     url(r'^cabinet/requests/(?P<iid>\d+)$', issue.IssueRedirectView.as_view(), name='cabinet_request'),

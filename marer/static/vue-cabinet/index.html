@@ -1,41 +1,91 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <title>frontend-application</title>
-  <!-- Bootstrap core CSS -->
-  <link rel="stylesheet" href="http://localhost:8000/static/marer/fonts/DINPro-Regular.css">
-  <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="http://localhost:8000/static/bootstrap/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="http://localhost:8000/static/marer/css/suggestions.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-  <!-- Latest compiled and minified JavaScript -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-          integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-          crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>СГБ</title>
+    <!-- favicon set -->
+    <link rel="apple-touch-icon" sizes="57x57" href="http://localhost:8000/static/marer/img/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="http://localhost:8000/static/marer/img/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="http://localhost:8000/static/marer/img/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="http://localhost:8000/static/marer/img/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="http://localhost:8000/static/marer/img/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="http://localhost:8000/static/marer/img/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="http://localhost:8000/static/marer/img/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="http://localhost:8000/static/marer/img/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="http://localhost:8000/static/marer/img/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="http://localhost:8000/static/marer/img/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="http://localhost:8000/static/marer/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="http://localhost:8000/static/marer/img/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:8000/static/marer/img/favicon/favicon-16x16.png">
+    <link rel="manifest" href="http://localhost:8000/static/marer/img/favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="http://localhost:8000/static/marer/img/favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- Bootstrap core CSS -->
+    <link href="http://localhost:8000/static/marer/fonts/PFDinDisplayPro-Light.css" rel="stylesheet">
+    <link href="http://localhost:8000/static/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://localhost:8000/static/jquery-ui/themes/base/jquery-ui.min.css" rel="stylesheet">
+    <link href="http://localhost:8000/static/marer/css/sticky-navbar.css" rel="stylesheet">
+    <link href="http://localhost:8000/static/marer/css/sticky-footer.css" rel="stylesheet">
+    <link href="http://localhost:8000/static/marer/css/btn-yellow.css" rel="stylesheet">
+    <link href="http://localhost:8000/static/marer/css/body-bgnd.css" rel="stylesheet">
+    <link href="http://localhost:8000/static/vue-cabinet/dist/static/css/app.css" rel=stylesheet>
+    <link href="http://localhost:8000/static/marer/css/suggestions.css" rel="stylesheet">
+    <link href="http://localhost:8000/static/marer/css/helpers.css" rel="stylesheet">
+    <!-- Latest compiled and minified CSS -->
+
+    <!-- Bootstrap core JavaScript ================================ -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="http://localhost:8000/static/jquery/dist/jquery.min.js"></script>
+    <script src="http://localhost:8000/static/jquery-ui/jquery-ui.min.js"></script>
+    <script src="http://localhost:8000/static/jquery-ui/ui/i18n/datepicker-ru.js"></script>
+    <script src="http://localhost:8000/static/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="http://localhost:8000/static/js/jquery.formset.js"></script>
+    <script>
+        jQuery(function($) {
+            $(".datepicker").datepicker({ dateFormat: 'dd.mm.yy' });
+            $(".formset").formset({animateForms: false});
+        }).on('formDeleted', function (event) {
+            var hForm = event.target;
+            $(hForm).hide();
+        });
+    </script>
+    <script type=text/javascript src="http://localhost:8000/static/marer/js/common.js"></script>
+    <script type=text/javascript src="http://localhost:8000/static/marer/js/form-submit-on-enter.js"></script>
+
+    <script>
+        $(function () {
+            $('body').on('change', '#id_status', function (e) {
+                $(this).closest('form').submit();
+            })
+        });
+    </script>
+    <!-- Latest compiled and minified JavaScript -->
 </head>
 <body>
-<div class="container">
-  <div class="row">
-    <div class="col-md-12 text-center">
-      <h1>
-        <a href="/" class="no-text-decoration">
-          <img src="http://localhost:8000/static/marer/img/logo_marer_horizontal.svg" height="64">
-          <span class="visible-md-inline visible-lg-inline">
-                    <img src="http://localhost:8000/static/marer/img/logo_marer_vert_line.svg" height="64">
-                    <img src="http://localhost:8000/static/marer/img/logo_marer_descr.svg" height="64">
-                </span>
-        </a>
-      </h1>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-3">Этапы прохождения заявки</div>
-    <div class="col-md-9">
-      <div id="app"></div>
-      <!-- built files will be auto injected -->
-    </div>
-  </div>
-</div>
+    <div id="app"></div>
+    <footer class="footer">
+        <div class="container">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid text-center">
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <ul class="nav navbar-nav">
+
+                    </ul>
+                </div><!-- /.container-fluid -->
+            </nav>
+            <div class="row">
+                <div class="col-md-12">
+                    <p class="text-muted text-center">
+                        &copy; 2017
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
 </body>
 </html>

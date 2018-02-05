@@ -1,0 +1,28 @@
+{% extends 'marer/layout.html' %}
+
+{% load staticfiles %}
+
+{% block head_additional %}
+    <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
+    <link href="{% static '/marer/css/sticky-navbar.css' %}" rel="stylesheet">
+    <link href="{% static '/marer/css/sticky-footer.css' %}" rel="stylesheet">
+    <link href="{% static '/marer/css/btn-yellow.css' %}" rel="stylesheet">
+    <link href="{% static '/marer/css/body-bgnd.css' %}" rel="stylesheet">
+    <link href="{% static '/vue-cabinet/dist/static/css/app.css' %}" rel=stylesheet>
+    <link href="{% static '/marer/css/suggestions.css' %}" rel="stylesheet">
+    <link href="{% static '/marer/css/helpers.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <div id="app"></div>
+    {% include 'marer/footer.html' %}
+    {% include 'marer/boostrap_js_body_part.html' %}
+
+    <script type=text/javascript src="{% static 'vue-cabinet/dist/static/js/manifest.js' %}"></script>
+    <script type=text/javascript src="{% static 'vue-cabinet/dist/static/js/vendor.js' %}"></script>
+    <script type=text/javascript src="{% static 'marer/js/common.js' %}"></script>
+    <script type=text/javascript src="{% static 'marer/js/form-submit-on-enter.js' %}"></script>
+    <script type=text/javascript src="{% static 'vue-cabinet/dist/static/js/app.js' %}"></script>
+    {% block js %}{% endblock %}
+
+{% endblock %}

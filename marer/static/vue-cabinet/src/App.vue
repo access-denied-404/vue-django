@@ -1,96 +1,47 @@
 <template>
   <div id="app-root">
-
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                  data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">
+            <img src="/static/marer/img/logo_sgb.png" height="25"/>
+          </a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+            <li>
+              <a href="/admin/">
+                <span class="text-primary">Управление</span>
+                <span class="glyphicon glyphicon-briefcase text-primary"></span>
+              </a>
+            </li>
+            <li>
+              <a href="/cabinet/requests">
+                <span class="text-primary">Владислав Зиминов</span>
+                <span class="glyphicon glyphicon-user text-primary"></span>
+              </a>
+            </li>
+            <li><a href="/logout">Выход</a></li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-  import {input} from 'vue-strap'
-  import BS3SelectField from '@/components/inputs/BS3SelectField'
-  import jQuery from 'jquery'
-  require('suggestions-jquery')
   export default {
     name: 'app',
-    props: ['csrf', 'products', 'token'],
-    components: {
-      'bs-input': input,
-      'bs3-select-field': BS3SelectField
-    },
-    data () {
-      var regData = JSON.parse(window.regdata)
-      var issuerFullName = ''
-      var issuerShortName = ''
-      var issuerINN = ''
-      var issuerKPP = ''
-      var issuerOGRN = ''
-      var issuerLegalAddress = ''
-      var errors = false
-
-      if (regData !== null && regData.formdata !== null) {
-        issuerFullName = regData.formdata.issuer_full_name
-        issuerShortName = regData.formdata.issuer_short_name
-        issuerINN = regData.formdata.issuer_inn
-        issuerKPP = regData.formdata.issuer_kpp
-        issuerOGRN = regData.formdata.issuer_ogrn
-        issuerLegalAddress = regData.formdata.issuer_legal_address
-        errors = regData.errors
-      }
-
-      return {
-        product: 'BankGuaranteeProduct',
-        party: issuerShortName,
-        party_ogrn: issuerOGRN,
-        party_inn: issuerINN,
-        party_kpp: issuerKPP,
-        party_full_name: issuerFullName,
-        party_short_name: issuerShortName,
-        party_legal_address: issuerLegalAddress,
-        comment: document.getElementById('app').getAttribute('comment'),
-
-        errors: errors,
-        org_add_data_visible: false,
-
-        action: ''
-      }
-    },
-    watch: {
-      product (e) {
-        window.location.hash = '/' + this.product
-      }
-    },
-    created () {
-      window.location.hash = '/' + this.product
-    },
-    mounted () {
-      var vue = this
-      jQuery('.party input').suggestions({
-        serviceUrl: 'https://suggestions.dadata.ru/suggestions/api/4_1/rs',
-        token: this.token,
-        type: 'PARTY',
-        count: 7,
-        onSelect: function (suggestion) {
-          vue.party_ogrn = suggestion.data.ogrn
-          vue.party_inn = suggestion.data.inn
-          vue.party_kpp = suggestion.data.kpp
-          vue.party_full_name = suggestion.data.name.full_with_opf
-          vue.party_short_name = suggestion.data.name.short_with_opf
-          vue.party_legal_address = suggestion.data.address.value
-        }
-      })
-    }
+    data () {}
   }
 </script>
-
-<style scoped>
-  label {
-    text-align: left;
-  }
-
-  .fade-enter-active, .fade-leave-active {
-    transition: opacity .5s ease;
-  }
-
-  .fade-enter, .fade-leave-active {
-    opacity: 0
-  }
-</style>

@@ -129,3 +129,7 @@ class CabinetProfileView(LoginRequiredMixin, TemplateView):
                 password_form=password_form,
             ))
             return self.get(request=request, *args, **kwargs)
+
+
+class CabinetManagerView(LoginRequiredMixin, TemplateView):
+    template_name = 'marer/cabinet/manager.html'
