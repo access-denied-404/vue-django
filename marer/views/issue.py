@@ -22,7 +22,6 @@ from marer.models import Issue, Document, Issuer
 from marer.models.issue import IssueClarificationMessage, \
     IssueFinanceOrgProposeClarificationMessageDocument, IssueClarification, \
     IssueProposeDocument
-from marer.models.issuer import IssuerOrgCollegial
 from marer.products import get_finance_products
 from marer.stub import create_stub_issuer
 from marer.utils.notify import notify_user_manager_about_user_created_issue, \

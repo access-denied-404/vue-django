@@ -19,8 +19,7 @@ from django.utils.timezone import now
 from marer import consts
 from marer.models.base import Document, set_obj_update_time, BankMinimalCommission, FormOwnership
 from marer.models.finance_org import FinanceOrganization, FinanceOrgProductProposeDocument
-from marer.models.issuer import Issuer, IssuerDocument, IssuerOrgCollegial, IssuerOrgDirector, IssuerOrgOther, \
-    IssuerBenOwner, IssuerFounderLegal, IssuerFounderPhysical, IssuerOrgBankAccount
+from marer.models.issuer import Issuer, IssuerDocument
 from marer.products import get_finance_products_as_choices, FinanceProduct, get_finance_products, BankGuaranteeProduct
 from marer.utils import CustomJSONEncoder, kontur
 from marer.utils.issue import bank_commission, sum2str, generate_bg_number

@@ -5,9 +5,7 @@ from django.utils.functional import cached_property
 from marer.models.base import Document
 
 
-__all__ = ['Issuer', 'IssuerDocument', 'IssuerOrgCollegial', 'IssuerOrgDirector',
-           'IssuerOrgOther', 'IssuerOrgBankAccount', 'IssuerFounderPhysical',
-           'IssuerFounderLegal', 'IssuerBenOwner']
+__all__ = ['Issuer', 'IssuerDocument']
 
 
 class Issuer(models.Model):
