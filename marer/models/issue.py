@@ -500,6 +500,11 @@ class Issue(models.Model):
             'аукцион в электронном виде': 'аукциона в электронном виде',
         }.get(self.tender_placement_type.lower(), self.tender_placement_type)
         issuer_head_fio = '%s %s %s' % (self.issuer_head_last_name, self.issuer_head_first_name, self.issuer_head_middle_name)
+        org_form = MorpherApi.get_response(OKOPF_CATALOG.get(str(self.issuer_okopf), self.issuer_okopf), 'Р')
+        if self.issuer_head_first_name and self.issuer_head_middle_name and  self.issuer_head_last_name:
+            issuer_head_short_fio = '%s.%s. %s' % (self.issuer_head_first_name[0], self.issuer_head_middle_name[0], self.issuer_head_last_name)
+        else:
+            issuer_head_short_fio = ''
         return {
             'bg_number': generate_bg_number(self.created_at),
             'sign_by': 'Евграфова Ольга Алексеевна',
@@ -522,8 +527,8 @@ class Issue(models.Model):
                 'БИК 044525094',
                 'Телефон: (499) 951-49-40',
             ]),
-            'org_form': MorpherApi.get_response(OKOPF_CATALOG.get(str(self.issuer_okopf), self.issuer_okopf), 'Р').lower(),
-            'issuer_head_short_fio': '%s.%s. %s' % (self.issuer_head_first_name[0], self.issuer_head_middle_name[0], self.issuer_head_last_name),
+            'org_form': org_form,
+            'issuer_head_short_fio': issuer_head_short_fio,
             'issuer_head_fio_rp': MorpherApi.get_response(issuer_head_fio, 'Р'),
             'arbitration': 'г. Москвы',
             'power_of_attorney': '№236 от 05 июня 2017 года',
