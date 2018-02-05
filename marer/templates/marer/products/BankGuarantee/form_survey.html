@@ -1,19 +1,9 @@
-<div class="row">
-    <div class="col-md-12">
-        <div class="well well-sm warn text-center pointer" data-toggle="collapse" data-target="#open0">
-            Заполнить самостоятельно
-            <span class="glyphicon glyphicon-chevron-down pull-right"></span>
-        </div>
-        <div class="collapse" id="open0">
-            {% include 'marer/products/BankGuarantee/form_org_common.html' with form=form_org_common %}
-            {% include 'marer/products/BankGuarantee/form_org_head.html' with form=form_org_head %}
-            {% include 'marer/products/BankGuarantee/form_org_management.html' with formset_collegial=formset_org_management_collegial formset_directors=formset_org_management_directors formset_others=formset_org_management_others %}
-            {% include 'marer/products/BankGuarantee/form_org_bank_accounts.html' with formset=bank_accounts_formset %}
-            {% if issue.tender_exec_law == consts.TENDER_EXEC_LAW_COMMERCIAL %}
-                {% include 'marer/products/BankGuarantee/form_pledge.html' with formset=formset_pledges %}
-            {% endif %}
-            {% include 'marer/products/BankGuarantee/form_org_founders.html' with formset_physical=formset_founders_physical formset_legal=formset_founders_legal %}
-            {% include 'marer/products/BankGuarantee/form_org_beneficiary_owners.html' with formset=beneficiary_owners_formset %}
-        </div>
-    </div>
-</div>
+{% include 'marer/products/BankGuarantee/form_org_common.html' with form=form_org_common %}
+{% include 'marer/products/BankGuarantee/form_org_head.html' with form=form_org_head %}
+{% include 'marer/products/BankGuarantee/form_org_management.html' with formset_collegial=formset_org_management_collegial formset_directors=formset_org_management_directors formset_others=formset_org_management_others %}
+{% include 'marer/products/BankGuarantee/form_org_bank_accounts.html' with formset=bank_accounts_formset %}
+{% if issue.tender_exec_law == consts.TENDER_EXEC_LAW_COMMERCIAL %}
+    {% include 'marer/products/BankGuarantee/form_pledge.html' with formset=formset_pledges %}
+{% endif %}
+{% include 'marer/products/BankGuarantee/form_org_founders.html' with formset_physical=formset_founders_physical formset_legal=formset_founders_legal %}
+{% include 'marer/products/BankGuarantee/form_org_beneficiary_owners.html' with formset=beneficiary_owners_formset %}

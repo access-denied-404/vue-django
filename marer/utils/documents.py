@@ -3,6 +3,8 @@ from io import BytesIO
 from string import Formatter
 import re
 
+import os
+from django.conf import settings
 from django.core.files.base import ContentFile
 from docx import Document
 from docx.text.paragraph import Paragraph
@@ -10,6 +12,7 @@ from openpyxl import load_workbook
 from openpyxl.writer.excel import save_virtual_workbook
 from lxml import etree
 
+from marer import consts
 from marer.models import Issue
 
 
@@ -212,3 +215,41 @@ class WordDocumentHelper:
                         table._tbl[row_idx][i + 1] = etree.fromstring(new_text)
 
         return doc
+
+
+def generate_doc(path:str, new_name:str, data: Issue):
+    from marer.models import Document
+    doc_file = fill_docx_file_with_issue_data(path, data)
+    doc_file.name = new_name
+    doc = Document()
+    doc.file = doc_file
+    doc.save()
+    doc_file.close()
+    return doc
+
+
+def generate_acts_for_issue(issue: Issue)-> Issue:
+    transfer_acceptance_path = {
+        12: os.path.join(settings.BASE_DIR, 'marer/templates/documents/acts/transfer_acceptance_ip.docx'),
+        10: os.path.join(settings.BASE_DIR, 'marer/templates/documents/acts/transfer_acceptance_ul.docx')
+    }.get(len(issue.issuer_inn))
+    if transfer_acceptance_path:
+        issue.transfer_acceptance_act = generate_doc(transfer_acceptance_path, 'transfer_acceptance.docx', issue)
+
+    bg_contract_path = {
+        (consts.TENDER_EXEC_LAW_44_FZ, consts.BG_TYPE_APPLICATION_ENSURE): 'marer/templates/documents/acts/fz44_participation.docx',
+        (consts.TENDER_EXEC_LAW_44_FZ, consts.BG_TYPE_CONTRACT_EXECUTION): 'marer/templates/documents/acts/fz44_execution.docx',
+        (consts.TENDER_EXEC_LAW_223_FZ, consts.BG_TYPE_APPLICATION_ENSURE): 'marer/templates/documents/acts/fz233_participation.docx',
+        (consts.TENDER_EXEC_LAW_223_FZ, consts.BG_TYPE_CONTRACT_EXECUTION): 'marer/templates/documents/acts/fz223_execution.docx',
+        (consts.TENDER_EXEC_LAW_185_FZ, consts.BG_TYPE_APPLICATION_ENSURE): 'marer/templates/documents/acts/fz185_participation.docx',
+        (consts.TENDER_EXEC_LAW_185_FZ, consts.BG_TYPE_CONTRACT_EXECUTION): 'marer/templates/documents/acts/fz185_execution.docx',
+    }.get((issue.tender_exec_law, issue.bg_type))
+    if bg_contract_path:
+        issue.bg_doc = generate_doc(os.path.join(settings.BASE_DIR, bg_contract_path), 'bg.docx', issue)
+
+    issue.bg_contract_doc = generate_doc(os.path.join(settings.BASE_DIR, 'marer/templates/documents/acts/one_commission.docx'), 'bg_contract.docx', issue)
+    if any([issue.issuer_inn.startswith(x) for x in ['77', '97', '99', '177', '199', '197']]) and issue.tender_exec_law == consts.TENDER_EXEC_LAW_185_FZ:
+        path = 'marer/templates/documents/acts/fz185_additional_for_msk.docx'
+        issue.additional_doc = generate_doc(os.path.join(settings.BASE_DIR, path), 'additional_doc.docx', issue)
+
+    return issue

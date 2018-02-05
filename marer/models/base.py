@@ -175,3 +175,15 @@ class BankMinimalCommission(models.Model):
             self.term_months_min,
             self.term_months_max,
         )
+
+
+class FormOwnership(models.Model):
+    class Meta:
+        verbose_name = 'форма собственности'
+        verbose_name_plural = 'формы собственности'
+
+    name = models.CharField(verbose_name='Форма собственности', max_length=100, blank=False, null=False)
+    okopf_codes = models.CharField(max_length=256, verbose_name='Коды ОКОПФ', blank=False, null=False)
+
+    def __str__(self):
+        return self.name

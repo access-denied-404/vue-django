@@ -671,7 +671,11 @@ class BankGuaranteeProduct(FinanceProduct):
                 'doc_ops_mgmt_conclusion_doc_admin_field',
                 'sec_dep_conclusion_doc_admin_field',
             ))),
-
+            ('Договора и акты', dict(fields=(
+                'bg_contract_doc_admin_field',
+                'bg_doc_admin_field',
+                'transfer_acceptance_act_admin_field',
+            ))),
             ('Сведения о тендере', dict(classes=('collapse',), fields=(
                 'tender_gos_number',
                 'tender_gos_number_link',
@@ -723,6 +727,10 @@ class BankGuaranteeProduct(FinanceProduct):
     def get_admin_issue_read_only_fields(self):
         return [
             'application_doc_admin_field',
+            'bg_contract_doc_admin_field',
+            'transfer_acceptance_act_admin_field',
+            'bg_doc_admin_field',
+            'additional_doc_admin_field',
             'doc_ops_mgmt_conclusion_doc_admin_field',
             'sec_dep_conclusion_doc_admin_field',
             'tender_gos_number_link',

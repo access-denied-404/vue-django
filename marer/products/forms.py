@@ -5,6 +5,7 @@ from djangoformsetjs.utils import formset_media_js
 from marer.fields import BalanceCodeDecimalField
 from marer import consts
 from marer.models import BankMinimalCommission
+from marer.products.fields import DecimalForcedThousandsGroupedField
 
 
 class BGFinProdRegForm(Form):
@@ -44,7 +45,7 @@ class BGFinProdRegForm(Form):
     balance_code_2400_offset_1 = BalanceCodeDecimalField(decimal_places=2, required=False, localize=True)
     balance_code_2400_offset_0 = BalanceCodeDecimalField(decimal_places=2, required=False, localize=True)
 
-    bg_sum = DecimalField(decimal_places=2, required=False, localize=True)
+    bg_sum = DecimalForcedThousandsGroupedField(decimal_places=2, required=False, localize=True)
     bg_currency = ChoiceField(required=False, choices=[
         (consts.CURRENCY_RUR, 'Рубль'),
         (consts.CURRENCY_USD, 'Доллар'),
