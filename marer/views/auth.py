@@ -45,7 +45,10 @@ class LoginView(TemplateView):
 
         if login_form.is_valid():
             login(request, user)
-            url = reverse('cabinet_requests', args=args, kwargs=kwargs)
+            if user.is_staff:
+                url = reverse('cabinet_manager', args=args, kwargs=kwargs)
+            else:
+                url = reverse('cabinet_requests', args=args, kwargs=kwargs)
             url = request.GET.get('next', url)
             return HttpResponseRedirect(url)
         else:
