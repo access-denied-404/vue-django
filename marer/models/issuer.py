@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.utils.functional import cached_property
 
 from marer.models.base import Document
 
@@ -14,14 +15,6 @@ class Issuer(models.Model):
     full_name = models.CharField(max_length=512, blank=False, null=False)
     short_name = models.CharField(max_length=512, blank=False, null=False)
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
-
-    def get_name(self):
-        if self.short_name != '':
-            return self.short_name
-        elif self.full_name != '':
-            return self.full_name
-        else:
-            return 'Без названия'
 
 
 class IssuerDocument(models.Model):
