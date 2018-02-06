@@ -1022,6 +1022,7 @@ class Issue(models.Model):
         super(Issue, self).__init__(*args, **kwargs)
         self.old_status = self.status
 
+
 class IssueDocument(models.Model):
     class Meta:
         verbose_name = 'общий документ'

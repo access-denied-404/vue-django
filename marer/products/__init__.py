@@ -197,24 +197,6 @@ class BankGuaranteeProduct(FinanceProduct):
 
         if inn_should_be_requested or ogrn_should_should_be_requested:
             self._issue.refresh_from_db()
-            from marer.models.issue import Issue
-            issues_list = reversed(Issue.objects.order_by('id').all())
-            for iss in issues_list:
-                if inn == iss.issuer_inn and inn != '' and iss.id != self._issue.id:
-                    self._issue.issuer_fact_address = iss.issuer_fact_address
-                    self._issue.tax_system = iss.tax_system
-                    self._issue.issuer_accountant_org_or_person = iss.issuer_accountant_org_or_person
-                    self._issue.avg_employees_cnt_for_prev_year = iss.avg_employees_cnt_for_prev_year
-                    self._issue.issuer_post_address = iss.issuer_post_address
-                    self._issue.issuer_web_site = iss.issuer_web_site
-                    self._issue.issuer_head_passport_series = iss.issuer_head_passport_series
-                    self._issue.issuer_head_passport_number = iss.issuer_head_passport_number
-                    self._issue.issuer_head_passport_issue_date = iss.issuer_head_passport_issue_date
-                    self._issue.issuer_head_passport_issued_by = iss.issuer_head_passport_issued_by
-                    self._issue.issuer_head_residence_address = iss.issuer_head_residence_address
-                    self._issue.issuer_head_phone = iss.issuer_head_phone
-                    self._issue.save()
-                    break
             kontur_req_data = kontur.req(inn=inn, ogrn=ogrn)
             kontur_egrDetails_data = kontur.egrDetails(inn=inn, ogrn=ogrn)
             kontur_beneficialOwners = kontur.beneficialOwners(inn=inn, ogrn=ogrn)

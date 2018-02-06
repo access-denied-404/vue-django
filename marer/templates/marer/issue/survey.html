@@ -82,8 +82,11 @@
             $('input[name=issuer_head_residence_address]').addClass('req');
             $('input[name=issuer_head_passport_issued_by]').addClass('req');
 
+            $('.tbl-crt').on('click', function () {
+                update_send_button_is_available();
+            });
 
-            $('.req').on('change', function (evt) {
+            $('body').on('keyup', function (evt) {
                 update_send_button_is_available();
             });
 
