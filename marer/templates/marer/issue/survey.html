@@ -27,6 +27,19 @@
                     </div>
                 </div>
             </div>
+            {% if issue.check_not_stop_factors %}
+                <div class="row">
+                    {% for error in issue.check_not_stop_factors %}
+                        {% if error.1 == True %}
+                            <div class="col-md-12">
+                                <div class="alert alert-warning">
+                                    {{ error.0 }}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
             <div class="row">
                 <div class="col-md-12">
 

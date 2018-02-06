@@ -956,9 +956,6 @@ class Issue(models.Model):
                 )
             if kontur_principal_analytics_data.get('m7003', False):
                 ve.error_list.append('Обнаружен стоп-фактор: организация зарегистрирована менее 6 месецев назад')
-            if kontur_principal_analytics_data.get('m5004', False):
-                ve.error_list.append(
-                    'Организация была найдена в списке юридических лиц, имеющих задолженность по уплате налогов.')
             for bl_inn_start in ['09', '01', '05', '06', '07', '15', '17', '20', '91', '92', '2632']:
                 if self.issuer_inn.startswith(bl_inn_start):
                     ve.error_list.append('Обнаружен стоп-фактор: исполнитель находится в необслуживаемом регионе')
@@ -990,10 +987,15 @@ class Issue(models.Model):
         error_list = []
 
         try:
+            kontur_principal_analytics_data = kontur.analytics(inn=self.issuer_inn, ogrn=self.issuer_ogrn)
+            if kontur_principal_analytics_data.get('m5004', False):
+                error_list.append([
+                    'Организация была найдена в списке юридических лиц, имеющих задолженность по уплате налогов.', False
+                ])
             if self.finished_contracts_count <= settings.LIMIT_FINISHED_CONTRACTS:
-                error_list.append('Обнаружен стоп-фактор: нет опыта исполненных контрактов')
+                error_list.append(['Опыта нет. Необходимо загрузить документ подтверждающий опыт в пакете документов', True])
         except Exception:
-            error_list.append('Не удалось проверить заявку на стоп-факторы')
+            error_list.append(['Не удалось проверить заявку на стоп-факторы', False])
 
         return error_list
 
@@ -1019,6 +1021,8 @@ class Issue(models.Model):
                 Q(Q(min_bg_sum__lte=self.bg_sum) | Q(min_bg_sum__isnull=True)),
                 Q(Q(max_bg_sum__gte=self.bg_sum) | Q(min_bg_sum__isnull=True)),
             )
+            if self.finished_contracts_count > settings.LIMIT_FINISHED_CONTRACTS:
+                pdocs = pdocs.exclude(if_not_finished_contracts=True)
             if self.issuer_okopf:
                 form_ownership = FormOwnership.objects.filter(okopf_codes__contains=self.issuer_okopf).first()
                 pdocs = pdocs.filter(form_ownership__in=[form_ownership])
@@ -1036,6 +1040,7 @@ class Issue(models.Model):
     def __init__(self, *args, **kwargs):
         super(Issue, self).__init__(*args, **kwargs)
         self.old_status = self.status
+
 
 class IssueDocument(models.Model):
     class Meta:

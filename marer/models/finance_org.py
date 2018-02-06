@@ -212,6 +212,7 @@ class FinanceOrgProductProposeDocument(models.Model):
     min_bg_sum = models.DecimalField(verbose_name='минимальная сумма', max_digits=12, decimal_places=2, blank=True, null=True)
     max_bg_sum = models.DecimalField(verbose_name='максимальная сумма', max_digits=12, decimal_places=2, blank=True, null=True)
     is_required = models.BooleanField('обязательный документ', null=False, default=False)
+    if_not_finished_contracts = models.BooleanField('Запрашивать, если нет опыта завершенных контрактов', default=False)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self.finance_product or self.finance_product == '':
