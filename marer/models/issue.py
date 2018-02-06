@@ -508,13 +508,31 @@ class Issue(models.Model):
             issuer_head_short_fio = '%s.%s. %s' % (self.issuer_head_first_name[0], self.issuer_head_middle_name[0], self.issuer_head_last_name)
         else:
             issuer_head_short_fio = ''
-        return {
+
+        sign_by = {
+            'less_3000000' : {
+                'sign_by': 'Евграфова Ольга Алексеевна',
+                'sign_by_rp': 'Евграфовой Ольги Алексеевны',
+                'sign_by_short': 'О.А. Евграфова',
+                'post_sign_by': 'Ведущий специалист Отдела документарных операций Управления развития документарных операций',
+                'post_sign_by_rp': 'Ведущего специалиста Отдела документарных операций Управления развития документарных операций',
+                'power_of_attorney': '№236 от 05 июня 2017 года',
+            },
+            'more_3000000': {
+                'sign_by': 'Голубев Дмитрий Алексеевич',
+                'sign_by_rp': 'Голубева Дмитрия Алексеевича',
+                'sign_by_short': 'Д. А. Голубев',
+                'post_sign_by': 'Начальник Отдела документарных операций Управления развития документарных операций',
+                'post_sign_by_rp': 'Начальника Отдела документарных операций Управления развития документарных операций',
+                'power_of_attorney': '№235 от 05 июня 2017 года',
+            }
+        }
+        if self.bg_sum >= 3000000:
+            sign_by = sign_by['more_3000000']
+        else:
+            sign_by = sign_by['less_3000000']
+        properties = {
             'bg_number': generate_bg_number(self.created_at),
-            'sign_by': 'Евграфова Ольга Алексеевна',
-            'sign_by_rp': 'Евграфовой Ольги Алексеевны',
-            'sign_by_short': 'О.А. Евграфова',
-            'post_sign_by': 'Ведущий специалист Отдела документарных операций Управления развития документарных операций',
-            'post_sign_by_rp': 'Ведущего специалиста Отдела документарных операций Управления развития документарных операций',
             'city': 'г. Москва',
             'bg_type': bg_type,
             'bg_sum_str': sum2str(self.bg_sum),
@@ -534,8 +552,9 @@ class Issue(models.Model):
             'issuer_head_short_fio': issuer_head_short_fio,
             'issuer_head_fio_rp': MorpherApi.get_response(issuer_head_fio, 'Р'),
             'arbitration': 'г. Москвы',
-            'power_of_attorney': '№236 от 05 июня 2017 года',
         }
+        properties.update(sign_by)
+        return properties
 
     @cached_property
     def licences_as_string(self):
