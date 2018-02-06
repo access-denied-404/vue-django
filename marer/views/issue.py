@@ -129,6 +129,18 @@ class IssueRegisteringView(IssueView):
                             obj.issue_id = new_issue.id
                             obj.pk = None
                             obj.save()
+
+                    for doc in old_issue.propose_documents.all():
+                        new_doc = deepcopy(doc)
+                        new_doc.pk = None
+
+                        doc_file = deepcopy(doc.document)
+                        doc_file.pk = None
+                        doc_file.save()
+                        new_doc.issue_id = new_issue.id
+                        new_doc.document = doc_file
+                        new_doc.save()
+
                 else:
                     new_issue = Issue(
                         issuer=issuer,

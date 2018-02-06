@@ -1079,15 +1079,12 @@ class Issue(models.Model):
                 form_ownership = FormOwnership.objects.filter(okopf_codes__contains=self.issuer_okopf).first()
                 pdocs = pdocs.filter(form_ownership__in=[form_ownership])
             for pdoc in pdocs:
-                new_doc = IssueProposeDocument()
-                new_doc.issue = self
-                new_doc.name = pdoc.name
-                new_doc.code = pdoc.code
-                new_doc.type = pdoc.type
-                new_doc.is_required = pdoc.is_required
-                if pdoc.sample:
-                    new_doc.sample = pdoc.sample
-                new_doc.save()
+                IssueProposeDocument.objects.get_or_create(issue=self, name=pdoc.name, defaults={
+                    'code': pdoc.code,
+                    'type': pdoc.type,
+                    'is_required': pdoc.is_required,
+                    'sample': pdoc.sample,
+                })
 
     def __init__(self, *args, **kwargs):
         super(Issue, self).__init__(*args, **kwargs)
