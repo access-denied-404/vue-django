@@ -484,6 +484,10 @@ class Issue(models.Model):
         return list(self.org_bank_accounts.order_by('id').all())
 
     @cached_property
+    def first_bank_account(self):
+        return self.org_bank_accounts.order_by('id').first()
+
+    @cached_property
     def founders_with_25_share(self):
         data = list(self.issuer_founders_legal.all().values('name', 'auth_capital_percentage'))
         physical = list(self.issuer_founders_physical.all().values('fio', 'auth_capital_percentage'))
