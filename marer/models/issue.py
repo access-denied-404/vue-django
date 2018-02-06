@@ -677,7 +677,7 @@ class Issue(models.Model):
         checks.append(self.issuer_head_passport_issued_by is not None and self.issuer_head_passport_issued_by != '')
         for tr in self.org_management_collegial:
             checks.append(tr.legal_addres is not None and tr.legal_address != '')
-            checks.append(tr.fact_address is not None and tr.legal_address != '')
+            checks.append(tr.fact_address is not None and tr.fact_address != '')
         return not False in checks
 
     def fill_from_issuer(self):
