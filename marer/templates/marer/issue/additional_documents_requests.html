@@ -1,5 +1,5 @@
 {% extends 'marer/issue/layout.html' %}
-
+{% load staticfiles %}
 {% block issue_content %}
 {#    <div class="text-center h3">#}
 {#        {% if clarification %}#}
@@ -33,6 +33,11 @@
                     <tr>
                         <td>
                             <a href="{{ issue.transfer_acceptance_act.file.url }}">Акт</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="{% static 'documents/approval_and_change_sheet.docx' %}" download="Лист_согласования_и_изменения_БГ.docx">Лист согласования и изменения БГ</a>
                         </td>
                     </tr>
                      </tbody>

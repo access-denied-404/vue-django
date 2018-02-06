@@ -378,6 +378,8 @@ class IssueAdmin(ModelAdmin):
             if len(ve.error_list) > 0:
                 for err in ve.error_list:
                     self.message_user(request, err, level=messages.ERROR)
+        for error in obj.check_not_stop_factors:
+            self.message_user(request, error, level=messages.WARNING)
         return obj
 
     def save_model(self, request, obj, form, change):
