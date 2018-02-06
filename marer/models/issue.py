@@ -298,6 +298,14 @@ class Issue(models.Model):
         related_name='bg_doc',
         verbose_name='Проект'
     )
+    contract_of_guarantee = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='contract_of_guaranties',
+        verbose_name='Согласие на взаимодействие с БКИ (поручителя)'
+    )
     transfer_acceptance_act = models.ForeignKey(
         Document,
         on_delete=models.SET_NULL,
@@ -416,6 +424,10 @@ class Issue(models.Model):
         return 'Да' if self.is_indisputable_charge_off else 'Нет'
 
     @property
+    def humanized_issuer_head_birthday(self):
+        return self.issuer_head_bithday.strftime('%d.%m.%Y') if self.issuer_head_bithday else ''
+
+    @property
     def humanized_issuer_has_overdue_debts_for_last_180_days(self):
         return 'Да' if self.issuer_has_overdue_debts_for_last_180_days else 'Нет'
 
@@ -484,6 +496,10 @@ class Issue(models.Model):
         return list(self.org_bank_accounts.order_by('id').all())
 
     @cached_property
+    def first_bank_account(self):
+        return self.org_bank_accounts.order_by('id').first()
+
+    @cached_property
     def founders_with_25_share(self):
         data = list(self.issuer_founders_legal.all().values('name', 'auth_capital_percentage'))
         physical = list(self.issuer_founders_physical.all().values('fio', 'auth_capital_percentage'))
@@ -508,13 +524,31 @@ class Issue(models.Model):
             issuer_head_short_fio = '%s.%s. %s' % (self.issuer_head_first_name[0], self.issuer_head_middle_name[0], self.issuer_head_last_name)
         else:
             issuer_head_short_fio = ''
-        return {
+
+        sign_by = {
+            'less_3000000' : {
+                'sign_by': 'Евграфова Ольга Алексеевна',
+                'sign_by_rp': 'Евграфовой Ольги Алексеевны',
+                'sign_by_short': 'О.А. Евграфова',
+                'post_sign_by': 'Ведущий специалист Отдела документарных операций Управления развития документарных операций',
+                'post_sign_by_rp': 'Ведущего специалиста Отдела документарных операций Управления развития документарных операций',
+                'power_of_attorney': '№236 от 05 июня 2017 года',
+            },
+            'more_3000000': {
+                'sign_by': 'Голубев Дмитрий Алексеевич',
+                'sign_by_rp': 'Голубева Дмитрия Алексеевича',
+                'sign_by_short': 'Д. А. Голубев',
+                'post_sign_by': 'Начальник Отдела документарных операций Управления развития документарных операций',
+                'post_sign_by_rp': 'Начальника Отдела документарных операций Управления развития документарных операций',
+                'power_of_attorney': '№235 от 05 июня 2017 года',
+            }
+        }
+        if self.bg_sum >= 3000000:
+            sign_by = sign_by['more_3000000']
+        else:
+            sign_by = sign_by['less_3000000']
+        properties = {
             'bg_number': generate_bg_number(self.created_at),
-            'sign_by': 'Евграфова Ольга Алексеевна',
-            'sign_by_rp': 'Евграфовой Ольги Алексеевны',
-            'sign_by_short': 'О.А. Евграфова',
-            'post_sign_by': 'Ведущий специалист Отдела документарных операций Управления развития документарных операций',
-            'post_sign_by_rp': 'Ведущего специалиста Отдела документарных операций Управления развития документарных операций',
             'city': 'г. Москва',
             'bg_type': bg_type,
             'bg_sum_str': sum2str(self.bg_sum),
@@ -534,8 +568,9 @@ class Issue(models.Model):
             'issuer_head_short_fio': issuer_head_short_fio,
             'issuer_head_fio_rp': MorpherApi.get_response(issuer_head_fio, 'Р'),
             'arbitration': 'г. Москвы',
-            'power_of_attorney': '№236 от 05 июня 2017 года',
         }
+        properties.update(sign_by)
+        return properties
 
     @cached_property
     def licences_as_string(self):
@@ -588,6 +623,23 @@ class Issue(models.Model):
         return output
     bg_doc_admin_field.short_description = 'Проект'
     bg_doc_admin_field.allow_tags = True
+
+    def contract_of_guarantee_admin_field(self):
+        doc = self.contract_of_guarantee
+        field_parts = []
+        if doc:
+            if doc.file:
+                field_parts.append('<b><a href="{}">скачать</a></b>'.format(doc.file.url))
+            if doc.sign:
+                field_parts.append('<b><a href="{}">ЭЦП</a></b>'.format(doc.sign.url))
+        if len(field_parts) > 0:
+            output = ', '.join(field_parts)
+        else:
+            output = 'отсутствует'
+        output += ' <input type="file" name="contract_of_guarantee_document" />'
+        return output
+    contract_of_guarantee_admin_field.short_description = 'Согласие на взаимодействие с БКИ (поручителя)'
+    contract_of_guarantee_admin_field.allow_tags = True
 
     def transfer_acceptance_act_admin_field(self):
         doc = self.transfer_acceptance_act
@@ -1030,15 +1082,12 @@ class Issue(models.Model):
                 form_ownership = FormOwnership.objects.filter(okopf_codes__contains=self.issuer_okopf).first()
                 pdocs = pdocs.filter(form_ownership__in=[form_ownership])
             for pdoc in pdocs:
-                new_doc = IssueProposeDocument()
-                new_doc.issue = self
-                new_doc.name = pdoc.name
-                new_doc.code = pdoc.code
-                new_doc.type = pdoc.type
-                new_doc.is_required = pdoc.is_required
-                if pdoc.sample:
-                    new_doc.sample = pdoc.sample
-                new_doc.save()
+                IssueProposeDocument.objects.get_or_create(issue=self, name=pdoc.name, defaults={
+                    'code': pdoc.code,
+                    'type': pdoc.type,
+                    'is_required': pdoc.is_required,
+                    'sample': pdoc.sample,
+                })
 
     def __init__(self, *args, **kwargs):
         super(Issue, self).__init__(*args, **kwargs)

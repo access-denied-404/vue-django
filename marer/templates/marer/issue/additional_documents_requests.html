@@ -35,6 +35,13 @@
                             <a href="{{ issue.transfer_acceptance_act.file.url }}">Акт</a>
                         </td>
                     </tr>
+                    {% if issue.contract_of_guarantee %}
+                    <tr>
+                        <td>
+                            <a href="{{ issue.contract_of_guarantee.file.url }}">Согласие на взаимодействие с БКИ (поручителя)</a>
+                        </td>
+                    </tr>
+                    {% endif %}
                     <tr>
                         <td>
                             <a href="{% static 'documents/approval_and_change_sheet.docx' %}" download="Лист_согласования_и_изменения_БГ.docx">Лист согласования и изменения БГ</a>
