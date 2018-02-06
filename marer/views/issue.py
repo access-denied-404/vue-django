@@ -1,5 +1,6 @@
 import importlib
 import json
+from copy import deepcopy
 from tempfile import NamedTemporaryFile
 
 import os
@@ -109,13 +110,33 @@ class IssueRegisteringView(IssueView):
                     user_owner=request.user,
                     issuer_name=base_form.cleaned_data['org_search_name'],
                 )
+                issuer_inn = request.POST.get('issuer_inn')
+                if issuer_inn:
+                    old_issue = Issue.objects.filter(issuer_inn=issuer_inn).order_by('id').first()
+                else:
+                    old_issue = None
+                if old_issue:
+                    new_issue = deepcopy(old_issue)
+                    new_issue.pk = None
+                    new_issue.save()
+                    related_names = [
+                        'org_bank_accounts', 'org_beneficiary_owners', 'issuer_founders_legal',
+                        'issuer_founders_physical', 'issuer_licences', 'org_management_collegial',
+                        'org_management_directors', 'org_management_others'
+                    ]
+                    for name in related_names:
+                        for obj in getattr(old_issue, name).all():
+                            obj.issue_id = new_issue.id
+                            obj.pk = None
+                            obj.save()
+                else:
+                    new_issue = Issue(
+                        issuer=issuer,
+                        product=base_form.cleaned_data['product'],
+                        status=consts.ISSUE_STATUS_REGISTERING,
+                        user=request.user,
+                    )  # todo set values
 
-                new_issue = Issue(
-                    issuer=issuer,
-                    product=base_form.cleaned_data['product'],
-                    status=consts.ISSUE_STATUS_REGISTERING,
-                    user=request.user,
-                )  # todo set values
                 new_issue.fill_from_issuer()
                 need_to_notify_for_issue_create = True
                 self._issue = new_issue
