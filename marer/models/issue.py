@@ -298,6 +298,14 @@ class Issue(models.Model):
         related_name='bg_doc',
         verbose_name='Проект'
     )
+    contract_of_guarantee = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='contract_of_guaranties',
+        verbose_name='Согласие на взаимодействие с БКИ (поручителя)'
+    )
     transfer_acceptance_act = models.ForeignKey(
         Document,
         on_delete=models.SET_NULL,
@@ -414,6 +422,10 @@ class Issue(models.Model):
     @property
     def humanized_is_indisputable_charge_off(self):
         return 'Да' if self.is_indisputable_charge_off else 'Нет'
+
+    @property
+    def humanized_issuer_head_birthday(self):
+        return self.issuer_head_bithday.strftime('%d.%m.%Y') if self.issuer_head_bithday else ''
 
     @property
     def humanized_issuer_has_overdue_debts_for_last_180_days(self):
@@ -611,6 +623,23 @@ class Issue(models.Model):
         return output
     bg_doc_admin_field.short_description = 'Проект'
     bg_doc_admin_field.allow_tags = True
+
+    def contract_of_guarantee_admin_field(self):
+        doc = self.contract_of_guarantee
+        field_parts = []
+        if doc:
+            if doc.file:
+                field_parts.append('<b><a href="{}">скачать</a></b>'.format(doc.file.url))
+            if doc.sign:
+                field_parts.append('<b><a href="{}">ЭЦП</a></b>'.format(doc.sign.url))
+        if len(field_parts) > 0:
+            output = ', '.join(field_parts)
+        else:
+            output = 'отсутствует'
+        output += ' <input type="file" name="contract_of_guarantee_document" />'
+        return output
+    contract_of_guarantee_admin_field.short_description = 'Согласие на взаимодействие с БКИ (поручителя)'
+    contract_of_guarantee_admin_field.allow_tags = True
 
     def transfer_acceptance_act_admin_field(self):
         doc = self.transfer_acceptance_act
