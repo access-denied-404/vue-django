@@ -1,10 +1,13 @@
 import requests
 from django.http import HttpResponseNotFound
 from django.utils.dateparse import parse_datetime
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from urllib3.exceptions import MaxRetryError
 
+from marer.models import Issue
+from marer.serializers import ProfileSerializer, IssueListSerializer, IssueSerializer
 from marer import consts
 from marer.forms import RestTenderForm, IssueBankCommissionForm
 from marer.utils.issue import bank_commission
@@ -165,3 +168,32 @@ class IssueBankCommissionView(APIView):
                 'status': False,
                 'errors': form.errors,
             })
+
+
+class IssuesView(APIView):
+    def get(self, request, format=None):
+        issues_qs = Issue.objects.filter(user_id=request.user.id)
+        ilist_ser = IssueListSerializer(issues_qs, many=True)
+        return Response(ilist_ser.data)
+
+
+class IssueView(APIView):
+    def get(self, request, iid, format=None):
+        issue = Issue.objects.get(id=iid)
+        ser = IssueSerializer(issue)
+        return Response(ser.data)
+
+    def post(self, request, iid):
+        issue = Issue.objects.get(id=iid)
+        ser = IssueSerializer(issue, data=request.data)
+        if ser.is_valid():
+            ser.save()
+            return Response(ser.data)
+        else:
+            return Response(ser.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProfileView(APIView):
+    def get(self, request, format=None):
+        user_ser = ProfileSerializer(request.user)
+        return Response(user_ser.data)
