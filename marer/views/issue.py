@@ -118,6 +118,7 @@ class IssueRegisteringView(IssueView):
                 if old_issue:
                     new_issue = deepcopy(old_issue)
                     new_issue.pk = None
+                    new_issue.user = request.user
                     new_issue.save()
                     related_names = [
                         'org_bank_accounts', 'org_beneficiary_owners', 'issuer_founders_legal',

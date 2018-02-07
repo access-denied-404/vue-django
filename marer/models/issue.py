@@ -1039,7 +1039,7 @@ class Issue(models.Model):
         error_list = []
 
         try:
-            kontur_principal_analytics_data = kontur.analytics(inn=self.issuer_inn, ogrn=self.issuer_ogrn)
+            kontur_principal_analytics_data = kontur.analytics(inn='7840474560').get('analytics', {})
             if kontur_principal_analytics_data.get('m5004', False):
                 error_list.append([
                     'Организация была найдена в списке юридических лиц, имеющих задолженность по уплате налогов.', False
