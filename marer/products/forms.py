@@ -166,6 +166,9 @@ class BGFinProdSurveyOrgCommonForm(Form):
         (consts.TAX_ENVD, 'ЕНВД'),
         (consts.TAX_ESHD, 'ЕСХД'),
     ]))
+    agent_comission = CharField(required=False, max_length=512,
+                                widget=TextInput(attrs={'class': 'form-control input-sm',
+                                                        'placeholder': 'Комиссия агента(руб)'}))
 
 
 class BGFinProdSurveyOrgHeadForm(Form):
@@ -306,10 +309,18 @@ class FounderPhysicalForm(Form):
         js = formset_media_js
 
 
+class AgentComissionForm(Form):
+    id = IntegerField(required=False, widget=HiddenInput())
+
+    class Media(object):
+        js = formset_media_js
+
+
 class OrgManagementCollegialForm(Form):
     id = IntegerField(required=False, widget=HiddenInput())
-    org_name = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm',
-                                                                                 'placeholder': 'Например, член совета директоров'}))
+    org_name = CharField(required=False, max_length=512,
+                         widget=TextInput(attrs={'class': 'form-control input-sm',
+                                                 'placeholder': 'Например, член совета директоров'}))
     fio = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     DELETE = BooleanField(required=False, widget=CheckboxInput(attrs={'class': 'hidden'}))
 

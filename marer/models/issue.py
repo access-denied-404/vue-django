@@ -230,6 +230,8 @@ class Issue(models.Model):
         (consts.TAX_ENVD, 'ЕНВД'),
         (consts.TAX_ESHD, 'ЕСХД'),
     ])
+    agent_comission = models.CharField(verbose_name='Комиссия агента', max_length=512,
+                                       blank=True, null=True, default='')
 
     deal_has_beneficiary = models.NullBooleanField(verbose_name='наличие бенефициара по сделке', blank=True, null=True)
     issuer_bank_relations_term = models.CharField(verbose_name='срок отношений с Банком', max_length=32, blank=True, null=True, choices=[
