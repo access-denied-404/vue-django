@@ -1,5 +1,6 @@
 import logging
 import warnings
+import datetime
 
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
@@ -8,6 +9,7 @@ from django.db.models import Q
 from django.forms import formset_factory
 from django.forms.forms import Form
 from django.utils import timezone
+from django.utils.timezone import now, utc
 
 from marer import consts
 from marer.products.base import FinanceProduct, FinanceProductDocumentItem
@@ -121,6 +123,10 @@ def _build_accounting_report_common_doc_code_and_name_by_next_quarter_start_date
 def get_finance_products():
     products_subclasses = _get_subclasses_recursive(FinanceProduct)
     return [ps() for ps in products_subclasses]
+
+
+def get_urgency_time(created_at):
+    return datetime.datetime.utcnow().replace(tzinfo=utc) - created_at
 
 
 def get_finance_products_as_choices():

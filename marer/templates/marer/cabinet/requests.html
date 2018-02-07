@@ -89,6 +89,7 @@
                 </div>
                 </div>
             </th>
+            <th><span class="glyphicon glyphicon-time"></span></th>
             <th></th>
         </tr>
 
@@ -110,6 +111,7 @@
                 <td>{{ issue.humanized_sum }}</td>
                 <td>{{ issue.humanized_status }}</td>
                 <td>{% get_last_comment issue request.user %}</td>
+                <td>{% get_urgency issue request.user %}</td>
                 <td>
                     <form method="post">
                         {% csrf_token %}

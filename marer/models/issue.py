@@ -20,7 +20,7 @@ from marer import consts
 from marer.models.base import Document, set_obj_update_time, BankMinimalCommission, FormOwnership
 from marer.models.finance_org import FinanceOrganization, FinanceOrgProductProposeDocument
 from marer.models.issuer import Issuer, IssuerDocument
-from marer.products import get_finance_products_as_choices, FinanceProduct, get_finance_products, BankGuaranteeProduct
+from marer.products import get_urgency_time, get_finance_products_as_choices, FinanceProduct, get_finance_products, BankGuaranteeProduct
 from marer.utils import CustomJSONEncoder, kontur
 from marer.utils.issue import bank_commission, sum2str, generate_bg_number
 from marer.utils.morph import MorpherApi
@@ -323,6 +323,24 @@ class Issue(models.Model):
         blank=True,
         related_name='additional_doc'
     )
+
+    def get_urgency_for_user(self, user):
+        messages = list(self.clarification_messages.all().order_by('-id'))
+        if messages:
+            last_message = messages[0]
+            is_manager_message_last = False
+            if last_message.user != user:
+                is_manager_message_last = True
+            if is_manager_message_last:
+                time = str(get_urgency_time(last_message.created_at))
+                if int(time[:1]) > 1:
+                    return '<span class="glyphicon glyphicon-time text-danger"></span>'
+                else:
+                    return '<span class="glyphicon glyphicon-time text-primary"></span>'
+            else:
+                return '<span class="glyphicon glyphicon-time text-muted"></span>'
+        else:
+            return '<span class="glyphicon glyphicon-time text-muted"></span>'
 
     def get_last_comment_for_user(self, user):
         if self.status == consts.ISSUE_STATUS_REVIEW:
@@ -1228,7 +1246,8 @@ class IssueClarificationMessage(models.Model):
         related_name='clarification_messages'
     )
     message = models.TextField(verbose_name='сообщение', blank=False, null=False, default='')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='пользователь', on_delete=models.DO_NOTHING, null=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='пользователь',
+                             on_delete=models.DO_NOTHING, null=False)
     created_at = models.DateTimeField(verbose_name='время создания', auto_now_add=True, null=False)
 
     def __str__(self):
