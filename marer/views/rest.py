@@ -178,7 +178,7 @@ class IssuesView(APIView):
 
 class IssueView(APIView):
     def get(self, request, iid, format=None):
-        issue = Issue.objects.get(id=iid, user=request.user)
+        issue = Issue.objects.get(id=iid)
         ser = IssueSerializer(issue)
         return Response(ser.data)
 

@@ -26,7 +26,7 @@
             </li>
             <li>
               <a href="/cabinet/requests">
-                <span class="text-primary">Владислав Зиминов</span>
+                <span class="text-primary">{{profile.first_name}} {{profile.last_name}}</span>
                 <span class="glyphicon glyphicon-user text-primary"></span>
               </a>
             </li>
@@ -40,8 +40,18 @@
 </template>
 
 <script>
+  import jQuery from 'jquery'
   export default {
     name: 'app',
-    data () {}
+    data () {
+      return {
+        profile: {}
+      }
+    },
+    mounted: function () {
+      jQuery.getJSON('/rest/profile?format=json', (data, status, xhr) => {
+        this.profile = data
+      })
+    }
   }
 </script>
