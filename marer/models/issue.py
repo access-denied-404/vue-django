@@ -1044,7 +1044,7 @@ class Issue(models.Model):
                 error_list.append([
                     'Организация была найдена в списке юридических лиц, имеющих задолженность по уплате налогов.', False
                 ])
-            if self.finished_contracts_count <= settings.LIMIT_FINISHED_CONTRACTS:
+            if self.finished_contracts_count < settings.LIMIT_FINISHED_CONTRACTS:
                 error_list.append(['Опыта нет. Необходимо загрузить документ подтверждающий опыт в пакете документов', True])
         except Exception:
             error_list.append(['Не удалось проверить заявку на стоп-факторы', False])
@@ -1073,7 +1073,7 @@ class Issue(models.Model):
                 Q(Q(min_bg_sum__lte=self.bg_sum) | Q(min_bg_sum__isnull=True)),
                 Q(Q(max_bg_sum__gte=self.bg_sum) | Q(min_bg_sum__isnull=True)),
             )
-            if self.finished_contracts_count > settings.LIMIT_FINISHED_CONTRACTS:
+            if self.finished_contracts_count >= settings.LIMIT_FINISHED_CONTRACTS:
                 pdocs = pdocs.exclude(if_not_finished_contracts=True)
             if self.issuer_okopf:
                 form_ownership = FormOwnership.objects.filter(okopf_codes__contains=self.issuer_okopf).first()
