@@ -1,6 +1,7 @@
 import requests
 from django.http import HttpResponseNotFound
 from django.utils.dateparse import parse_datetime
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from urllib3.exceptions import MaxRetryError
@@ -181,6 +182,15 @@ class IssueView(APIView):
         issue = Issue.objects.get(id=iid)
         ser = IssueSerializer(issue)
         return Response(ser.data)
+
+    def post(self, request, iid):
+        issue = Issue.objects.get(id=iid)
+        ser = IssueSerializer(issue, data=request.data)
+        if ser.is_valid():
+            ser.save()
+            return Response(ser.data)
+        else:
+            return Response(ser.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ProfileView(APIView):
