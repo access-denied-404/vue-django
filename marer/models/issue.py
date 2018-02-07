@@ -328,7 +328,7 @@ class Issue(models.Model):
         messages = list(self.clarification_messages.all().order_by('-id'))
         if messages:
             last_message = messages[0]
-            is_manager_message_last = True
+            is_manager_message_last = False
             if last_message.user != user:
                 is_manager_message_last = True
             if is_manager_message_last and self.bg_sum < 1500000:
