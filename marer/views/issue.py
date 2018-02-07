@@ -112,7 +112,7 @@ class IssueRegisteringView(IssueView):
                 )
                 issuer_inn = request.POST.get('issuer_inn')
                 if issuer_inn:
-                    old_issue = Issue.objects.filter(issuer_inn=issuer_inn).order_by('id').first()
+                    old_issue = Issue.objects.filter(issuer_inn=issuer_inn).order_by('-id').first()
                 else:
                     old_issue = None
                 if old_issue:
