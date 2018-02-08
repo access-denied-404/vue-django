@@ -110,6 +110,7 @@ class Issue(models.Model):
     ])
     tender_publish_date = models.DateField(verbose_name='дата публикации тендера', blank=True, null=True)
     tender_start_cost = models.DecimalField(verbose_name='начальная цена тендера', max_digits=32, decimal_places=2, blank=True, null=True)
+    tender_final_cost = models.DecimalField(verbose_name='конечная цена тендера', max_digits=32, decimal_places=2, blank=True, null=True)
 
     tender_contract_type = models.CharField(verbose_name='вид работ в тендере', max_length=32, blank=True, null=True, choices=[
         (consts.TENDER_CONTRACT_TYPE_SUPPLY_CONTRACT, 'Поставка товара'),
@@ -205,15 +206,17 @@ class Issue(models.Model):
     formalize_note = models.TextField(verbose_name='подпись к документам для оформления', blank=True, null=False, default='')
     final_note = models.TextField(verbose_name='подпись к итоговым документам', blank=True, null=False, default='')
 
-    balance_code_1300_offset_0 = models.DecimalField(max_digits=32, decimal_places=2, blank=True, null=True)
-    balance_code_1600_offset_0 = models.DecimalField(max_digits=32, decimal_places=2, blank=True, null=True)
-    balance_code_2110_offset_0 = models.DecimalField(max_digits=32, decimal_places=2, blank=True, null=True)
-    balance_code_2400_offset_0 = models.DecimalField(max_digits=32, decimal_places=2, blank=True, null=True)
+    balance_code_1300_offset_0 = models.DecimalField('чистые активы за последний отчетный период', max_digits=32, decimal_places=2, blank=True, null=True)
+    balance_code_1600_offset_0 = models.DecimalField('валюта баланса за последний отчетный период', max_digits=32, decimal_places=2, blank=True, null=True)
+    balance_code_2110_offset_0 = models.DecimalField('выручка за последний отчетный период', max_digits=32, decimal_places=2, blank=True, null=True)
+    balance_code_2400_offset_0 = models.DecimalField('прибыль за последний отчетный период', max_digits=32, decimal_places=2, blank=True, null=True)
 
-    balance_code_1300_offset_1 = models.DecimalField(max_digits=32, decimal_places=2, blank=True, null=True)
-    balance_code_1600_offset_1 = models.DecimalField(max_digits=32, decimal_places=2, blank=True, null=True)
-    balance_code_2110_offset_1 = models.DecimalField(max_digits=32, decimal_places=2, blank=True, null=True)
-    balance_code_2400_offset_1 = models.DecimalField(max_digits=32, decimal_places=2, blank=True, null=True)
+    balance_code_1300_offset_1 = models.DecimalField('чистые активы за последний год', max_digits=32, decimal_places=2, blank=True, null=True)
+    balance_code_1600_offset_1 = models.DecimalField('валюта баланса за последний год', max_digits=32, decimal_places=2, blank=True, null=True)
+    balance_code_2110_offset_1 = models.DecimalField('выручка за последний год', max_digits=32, decimal_places=2, blank=True, null=True)
+    balance_code_2400_offset_1 = models.DecimalField('прибыль за последний год', max_digits=32, decimal_places=2, blank=True, null=True)
+
+    balance_code_2110_offset_2 = models.DecimalField('выручка за предыдущий год', max_digits=32, decimal_places=2, blank=True, null=True)
 
     avg_employees_cnt_for_prev_year = models.IntegerField(verbose_name='Средняя численность работников за предшествующий календарный год', blank=False, null=False, default=1)
     issuer_web_site = models.CharField(verbose_name='Web-сайт', max_length=512, blank=True, null=False, default='')
@@ -358,6 +361,102 @@ class Issue(models.Model):
             return str(self.id).zfill(10)
         else:
             return 'БЕЗ НОМЕРА'
+
+    @property
+    def tender_cost_reduction(self):
+        if self.tender_start_cost and self.tender_final_cost:
+            return round(self.tender_start_cost / self.tender_final_cost, 2) * 100
+        else:
+            return '—'
+
+    @property
+    def scoring_issuer_profitability(self):
+        coeff = (self.balance_code_2400_offset_1 / self.balance_code_2110_offset_1) * 100
+        if coeff <= 0.5:
+            return 4
+        elif 0.5 <= coeff <= 1:
+            return 3
+        elif 1 <= coeff <= 3:
+            return 2
+        elif 3 <= coeff:
+            return 1
+
+    @property
+    def scoring_revenue_reduction(self):
+        coeff = (self.balance_code_2110_offset_1 / self.balance_code_2110_offset_2) * 100
+        if coeff <= 75:
+            return 4
+        elif 75 <= coeff <= 100:
+            return 3
+        elif 100 <= coeff <= 110:
+            return 2
+        elif 110 <= coeff:
+            return 1
+
+    @property
+    def scoring_own_funds_ensurance(self):
+        coeff = (self.balance_code_1300_offset_1 / self.balance_code_1600_offset_1) * 100
+        if coeff <= 5:
+            return 4
+        elif 5 <= coeff <= 15:
+            return 3
+        elif 15 <= coeff <= 30:
+            return 2
+        elif 30 <= coeff:
+            return 1
+
+    @property
+    def scoring_current_profit(self):
+        return 1 if self.balance_code_2400_offset_0 > 0 else 2
+
+    @property
+    def scoring_finished_contracts_count(self):
+        coeff = self.finished_contracts_count
+        if coeff <= 5:
+            return 4
+        elif 5 <= coeff <= 15:
+            return 3
+        elif 15 <= coeff <= 30:
+            return 2
+        elif 30 <= coeff:
+            return 1
+
+    @property
+    def scoring_credit_history(self):
+        return 3
+
+    @property
+    def scoring_rating_sum(self):
+        return (
+            self.scoring_current_profit
+            + self.scoring_issuer_profitability
+            + self.scoring_own_funds_ensurance
+            + self.scoring_revenue_reduction
+            + self.scoring_finished_contracts_count
+            + self.scoring_credit_history
+        )
+
+    @property
+    def scoring_credit_rating(self):
+        coeff = self.scoring_rating_sum
+        if coeff <= 14:
+            return 'Asgb'
+        elif 15 <= coeff <= 25:
+            return 'Bsgb'
+        elif 26 <= coeff <= 30:
+            return 'Csgb'
+        elif 31 <= coeff:
+            return 'Fsgb'
+
+    @property
+    def client_finance_situation(self):
+        coeff = self.scoring_rating_sum
+        if coeff <= 25:
+            return 'Хорошее'
+        elif 26 <= coeff <= 30:
+            return 'Среднее'
+        elif 31 <= coeff:
+            return 'Плохое'
 
     @property
     def humanized_sum(self):

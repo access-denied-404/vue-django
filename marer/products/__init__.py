@@ -682,12 +682,23 @@ class BankGuaranteeProduct(FinanceProduct):
                 'tender_placement_type',
                 'tender_publish_date',
                 'tender_start_cost',
+                'tender_final_cost',
                 'tender_contract_type',
+                'tender_contract_subject',
                 'tender_has_prepayment',
             ))),
+            ('Финансовое положение клиента', dict(classes=('collapse',), fields=(
+                ('balance_code_1600_offset_0', 'balance_code_1600_offset_1',),
+                ('balance_code_1300_offset_0', 'balance_code_1300_offset_1',),
+                ('balance_code_2110_offset_0', 'balance_code_2110_offset_1', 'balance_code_2110_offset_2',),
+                ('balance_code_2400_offset_0', 'balance_code_2400_offset_1',),
+            ))),
+
 
             _admin_issue_fieldset_issuer_part,
             _admin_issue_fieldset_issuer_head_part,
+
+
 
         ]
 
