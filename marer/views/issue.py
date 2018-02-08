@@ -120,6 +120,12 @@ class IssueRegisteringView(IssueView):
                     new_issue.pk = None
                     new_issue.user = request.user
                     new_issue.status = consts.ISSUE_STATUS_REVIEW
+                    new_issue.application_doc = None
+                    new_issue.bg_doc = None
+                    new_issue.contract_of_guarantee = None
+                    new_issue.transfer_acceptance_act = None
+                    new_issue.additional_doc = None
+                    new_issue.bg_contract_doc = None
                     new_issue.save(create_docs=False)
 
                     related_names = [

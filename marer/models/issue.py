@@ -846,7 +846,7 @@ class Issue(models.Model):
                 'power_of_attorney': '№59 от 27 января 2017 года',
             },
         }
-        if self.bg_sum > 3000000:
+        if self.bg_sum < 3000000:
             sign_by = sign_by['more_3']
         elif 3000000 <= self.bg_sum < 13000000:
             sign_by = sign_by['more_3_less_13']
