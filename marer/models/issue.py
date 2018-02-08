@@ -290,21 +290,24 @@ class Issue(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='bg_contract_doc'
+        related_name='bg_contract_doc',
+        verbose_name='Договор'
     )
     bg_doc = models.ForeignKey(
         Document,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='bg_doc'
+        related_name='bg_doc',
+        verbose_name='Проект'
     )
     transfer_acceptance_act = models.ForeignKey(
         Document,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='transfer_acceptance_acts_links'
+        related_name='transfer_acceptance_acts_links',
+        verbose_name='Акт'
     )
     additional_doc = models.ForeignKey(
         Document,
@@ -599,6 +602,11 @@ class Issue(models.Model):
             'аукцион в электронном виде': 'аукциона в электронном виде',
         }.get(self.tender_placement_type.lower(), self.tender_placement_type)
         issuer_head_fio = '%s %s %s' % (self.issuer_head_last_name, self.issuer_head_first_name, self.issuer_head_middle_name)
+        org_form = MorpherApi.get_response(OKOPF_CATALOG.get(str(self.issuer_okopf), self.issuer_okopf), 'Р')
+        if self.issuer_head_first_name and self.issuer_head_middle_name and  self.issuer_head_last_name:
+            issuer_head_short_fio = '%s.%s. %s' % (self.issuer_head_first_name[0], self.issuer_head_middle_name[0], self.issuer_head_last_name)
+        else:
+            issuer_head_short_fio = ''
         return {
             'bg_number': generate_bg_number(self.created_at),
             'sign_by': 'Евграфова Ольга Алексеевна',
@@ -621,8 +629,8 @@ class Issue(models.Model):
                 'БИК 044525094',
                 'Телефон: (499) 951-49-40',
             ]),
-            'org_form': MorpherApi.get_response(OKOPF_CATALOG.get(str(self.issuer_okopf), self.issuer_okopf), 'Р').lower(),
-            'issuer_head_short_fio': '%s.%s. %s' % (self.issuer_head_first_name[0], self.issuer_head_middle_name[0], self.issuer_head_last_name),
+            'org_form': org_form,
+            'issuer_head_short_fio': issuer_head_short_fio,
             'issuer_head_fio_rp': MorpherApi.get_response(issuer_head_fio, 'Р'),
             'arbitration': 'г. Москвы',
             'power_of_attorney': '№236 от 05 июня 2017 года',
@@ -660,7 +668,7 @@ class Issue(models.Model):
             output = 'отсутствует'
         output += ' <input type="file" name="bg_contract_doc_document" />'
         return output
-    bg_contract_doc_admin_field.short_description = 'Проект'
+    bg_contract_doc_admin_field.short_description = 'Договор'
     bg_contract_doc_admin_field.allow_tags = True
 
     def bg_doc_admin_field(self):
@@ -677,7 +685,7 @@ class Issue(models.Model):
             output = 'отсутствует'
         output += ' <input type="file" name="bg_doc_document" />'
         return output
-    bg_doc_admin_field.short_description = 'Акт'
+    bg_doc_admin_field.short_description = 'Проект'
     bg_doc_admin_field.allow_tags = True
 
     def transfer_acceptance_act_admin_field(self):
@@ -694,7 +702,7 @@ class Issue(models.Model):
             output = 'отсутствует'
         output += ' <input type="file" name="transfer_acceptance_act_document" />'
         return output
-    transfer_acceptance_act_admin_field.short_description = 'Заявление'
+    transfer_acceptance_act_admin_field.short_description = 'Акт'
     transfer_acceptance_act_admin_field.allow_tags = True
 
     def additional_doc_admin_field(self):
@@ -774,6 +782,9 @@ class Issue(models.Model):
         checks.append(self.issuer_head_passport_issue_date is not None)
         checks.append(self.issuer_head_residence_address is not None and self.issuer_head_residence_address != '')
         checks.append(self.issuer_head_passport_issued_by is not None and self.issuer_head_passport_issued_by != '')
+        for tr in self.org_management_collegial.all():
+            checks.append(tr.legal_addres is not None and tr.legal_address != '')
+            checks.append(tr.fact_address is not None and tr.fact_address != '')
         return not False in checks
 
     def fill_from_issuer(self):
@@ -1047,9 +1058,6 @@ class Issue(models.Model):
                 )
             if kontur_principal_analytics_data.get('m7003', False):
                 ve.error_list.append('Обнаружен стоп-фактор: организация зарегистрирована менее 6 месецев назад')
-            if kontur_principal_analytics_data.get('m5004', False):
-                ve.error_list.append(
-                    'Организация была найдена в списке юридических лиц, имеющих задолженность по уплате налогов.')
             for bl_inn_start in ['09', '01', '05', '06', '07', '15', '17', '20', '91', '92', '2632']:
                 if self.issuer_inn.startswith(bl_inn_start):
                     ve.error_list.append('Обнаружен стоп-фактор: исполнитель находится в необслуживаемом регионе')
@@ -1067,9 +1075,6 @@ class Issue(models.Model):
                     ve.error_list.append('Обнаружен стоп-фактор: заказчик находится в необслуживаемом регионе')
                     break
 
-            if self.finished_contracts_count <= settings.LIMIT_FINISHED_CONTRACTS:
-                ve.error_list.append('Обнаружен стоп-фактор: нет опыта исполненных контрактов')
-
             if ((self.balance_code_2400_offset_1 or 0) < 0) or ((self.balance_code_2400_offset_0 or 0) < 0):
                 ve.error_list.append('Обнаружен стоп-фактор: отрицательная прибыль')
 
@@ -1078,6 +1083,23 @@ class Issue(models.Model):
 
         if len(ve.error_list) > 0:
             raise ve
+
+    @cached_property
+    def check_not_stop_factors(self):
+        error_list = []
+
+        try:
+            kontur_principal_analytics_data = kontur.analytics(inn=self.issuer_inn, ogrn=self.issuer_ogrn)
+            if kontur_principal_analytics_data.get('m5004', False):
+                error_list.append([
+                    'Организация была найдена в списке юридических лиц, имеющих задолженность по уплате налогов.', False
+                ])
+            if self.finished_contracts_count <= settings.LIMIT_FINISHED_CONTRACTS:
+                error_list.append(['Опыта нет. Необходимо загрузить документ подтверждающий опыт в пакете документов', True])
+        except Exception:
+            error_list.append(['Не удалось проверить заявку на стоп-факторы', False])
+
+        return error_list
 
     @cached_property
     def check_stop_factors_validity(self):
@@ -1101,6 +1123,8 @@ class Issue(models.Model):
                 Q(Q(min_bg_sum__lte=self.bg_sum) | Q(min_bg_sum__isnull=True)),
                 Q(Q(max_bg_sum__gte=self.bg_sum) | Q(min_bg_sum__isnull=True)),
             )
+            if self.finished_contracts_count > settings.LIMIT_FINISHED_CONTRACTS:
+                pdocs = pdocs.exclude(if_not_finished_contracts=True)
             if self.issuer_okopf:
                 form_ownership = FormOwnership.objects.filter(okopf_codes__contains=self.issuer_okopf).first()
                 pdocs = pdocs.filter(form_ownership__in=[form_ownership])
@@ -1118,6 +1142,7 @@ class Issue(models.Model):
     def __init__(self, *args, **kwargs):
         super(Issue, self).__init__(*args, **kwargs)
         self.old_status = self.status
+
 
 class IssueDocument(models.Model):
     class Meta:

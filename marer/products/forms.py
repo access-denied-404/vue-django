@@ -254,9 +254,9 @@ class AffiliatesForm(Form):
 class OrgBeneficiaryOwnerForm(Form):
     id = IntegerField(required=False, widget=HiddenInput())
     fio = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
-    legal_address = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm',
+    legal_address = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm req',
                                                                                       'placeholder': 'Обязательно к заполнению'}))
-    fact_address = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm',
+    fact_address = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm req',
                                                                                       'placeholder': 'Обязательно к заполнению'}))
     post_address = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))
     inn_or_snils = CharField(required=False, max_length=512, widget=TextInput(attrs={'class': 'form-control input-sm'}))

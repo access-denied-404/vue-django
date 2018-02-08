@@ -233,6 +233,7 @@ class FinanceOrgProductProposeDocumentForm(forms.ModelForm):
             'min_bg_sum',
             'max_bg_sum',
             'is_required',
+            'if_not_finished_contracts',
         )
 
     file_sample = forms.FileField(label='Образец', required=False)

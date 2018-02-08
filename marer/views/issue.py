@@ -18,7 +18,7 @@ from django.views.generic.base import ContextMixin
 
 from marer import consts
 from marer.forms import IssueRegisteringForm, IFOPCMessageForm, LoginSignForm
-from marer.models import Issue, Document
+from marer.models import Issue, Document, Issuer
 from marer.models.issue import IssueClarificationMessage, \
     IssueFinanceOrgProposeClarificationMessageDocument, IssueClarification, \
     IssueProposeDocument
@@ -134,7 +134,8 @@ class IssueRegisteringView(IssueView):
             product.set_issue(issue)
             processed_valid = product.process_registering_form(request)
 
-            action = request.POST.get('action', 'save')
+            # action = request.POST.get('action', 'save')
+            action = 'next'
             if action == 'save':
                 url = reverse('cabinet_requests')
                 return HttpResponseRedirect(url)

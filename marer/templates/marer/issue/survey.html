@@ -27,6 +27,19 @@
                     </div>
                 </div>
             </div>
+            {% if issue.check_not_stop_factors %}
+                <div class="row">
+                    {% for error in issue.check_not_stop_factors %}
+                        {% if error.1 == True %}
+                            <div class="col-md-12">
+                                <div class="alert alert-warning">
+                                    {{ error.0 }}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
             <div class="row">
                 <div class="col-md-12">
 
@@ -82,8 +95,11 @@
             $('input[name=issuer_head_residence_address]').addClass('req');
             $('input[name=issuer_head_passport_issued_by]').addClass('req');
 
+            $('.tbl-crt').on('click', function () {
+                update_send_button_is_available();
+            });
 
-            $('.req').on('change', function (evt) {
+            $('body').on('keyup', function (evt) {
                 update_send_button_is_available();
             });
 
