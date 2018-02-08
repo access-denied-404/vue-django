@@ -25,6 +25,9 @@
                             <span class="text-danger h3">Не в рамках продукта</span>
                         {% endif %}
                     </div>
+                    <div class="h6">
+                        {{ form_org_common.agent_comission }}
+                    </div>
                 </div>
             </div>
             {% if issue.check_not_stop_factors %}
@@ -95,7 +98,7 @@
             $('input[name=issuer_head_residence_address]').addClass('req');
             $('input[name=issuer_head_passport_issued_by]').addClass('req');
 
-            $('.tbl-crt').on('click', function () {
+            $('.tr-crt').on('click', function () {
                 update_send_button_is_available();
             });
 
@@ -120,7 +123,7 @@
                 }
             }
 
-            update_send_button_is_available();
+            {#update_send_button_is_available();#}
         });
     </script>
 {% endblock %}
