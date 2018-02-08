@@ -97,6 +97,7 @@
       with_items:
         - bootstrap
         - frontend
+        - vue-cabinet
       become: true
 
     - name: Primary build static files - grunt dist build
@@ -109,6 +110,7 @@
       command: npm run build chdir=/srv/marer/marer/static/{{ item }}
       with_items:
         - frontend
+        - vue-cabinet
       become: true
 
     - name: Cleaning installation mostly after static files patches
