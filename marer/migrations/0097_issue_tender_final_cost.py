@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('marer', '0094_issue_balance_code_2110_offset_2'),
+        ('marer', '0096_issue_balance_code_2110_offset_2'),
     ]
 
     operations = [
