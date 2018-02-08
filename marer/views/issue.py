@@ -27,8 +27,7 @@ from marer.products import get_finance_products
 from marer.stub import create_stub_issuer
 from marer.utils.notify import notify_user_manager_about_user_created_issue, \
     notify_user_manager_about_user_updated_issue, notify_about_user_created_clarification, \
-    notify_about_user_adds_message, notify_fo_managers_about_issue_proposed_to_banks, \
-    notify_user_manager_about_issue_proposed_to_banks
+    notify_about_user_adds_message,  notify_user_manager_about_user_sign_document
 
 
 class IssueView(LoginRequiredMixin, TemplateView):
@@ -608,6 +607,7 @@ class IssueAdditionalDocumentSignView(LoginRequiredMixin, ContextMixin, View):
                 final_sign_file.name = os.path.basename(doc.file.name) + '.sig'
                 doc.sign = final_sign_file
                 doc.save()
+                notify_user_manager_about_user_sign_document(pdoc)
                 response_dict['sign_state'] = consts.DOCUMENT_SIGN_VERIFIED
             else:
                 response_dict['sign_state'] = consts.DOCUMENT_SIGN_CORRUPTED
@@ -671,6 +671,7 @@ class IssueRemoteDocumentSignView(ContextMixin, View):
                 final_sign_file.name = os.path.basename(doc.file.name) + '.sig'
                 doc.sign = final_sign_file
                 doc.save()
+                notify_user_manager_about_user_sign_document(pdoc)
                 response_dict['sign_state'] = consts.DOCUMENT_SIGN_VERIFIED
             else:
                 response_dict['sign_state'] = consts.DOCUMENT_SIGN_CORRUPTED

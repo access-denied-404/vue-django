@@ -4,6 +4,7 @@ from django.conf import settings
 
 from marer.models import Issue, User, IssueClarification, \
     IssueClarificationMessage
+from marer.models.issue import IssueProposeDocument
 
 
 def _get_default_manager():
@@ -45,6 +46,27 @@ def notify_user_manager_about_user_created_issue(issue: Issue):
             new_issue_number=issue.humanized_id,
             finance_product=issue.get_product().humanized_name,
             issuer_short_name=issue.issuer_short_name,
+        )
+    )
+
+
+def notify_user_manager_about_user_sign_document(document: IssueProposeDocument):
+    issue = document.issue
+    user_manager = issue.user.manager
+    if user_manager is None:
+        user_manager = _get_default_manager()
+
+    # клиент создал заявку, уведомить менеджера
+    user_manager.email_user(
+        subject="Клиент подписал документ",
+        html_template_filename='mail/events_for_send_to_user_manager/user_sign_document.html',
+        context=dict(
+            user_full_name=issue.user.__str__(),
+            new_issue_id=issue.id,
+            new_issue_number=issue.humanized_id,
+            finance_product=issue.get_product().humanized_name,
+            issuer_short_name=issue.issuer_short_name,
+            document_name = document.name,
         )
     )
 
