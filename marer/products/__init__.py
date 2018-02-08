@@ -1,5 +1,7 @@
 import logging
 import warnings
+import datetime
+from datetime import timedelta
 
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
@@ -8,6 +10,7 @@ from django.db.models import Q
 from django.forms import formset_factory
 from django.forms.forms import Form
 from django.utils import timezone
+from django.utils.timezone import utc
 
 from marer import consts
 from marer.products.base import FinanceProduct, FinanceProductDocumentItem
@@ -121,6 +124,31 @@ def _build_accounting_report_common_doc_code_and_name_by_next_quarter_start_date
 def get_finance_products():
     products_subclasses = _get_subclasses_recursive(FinanceProduct)
     return [ps() for ps in products_subclasses]
+
+
+def get_urgency_hours(created_at):
+    now = datetime.datetime.utcnow().replace(tzinfo=utc)
+    ytd = now - timedelta(1)
+    weekday = datetime.date.weekday(datetime.datetime.today())
+    if weekday != 5 or weekday != 6:
+        if 9 < now.hour < 18:
+            return int(now.hour) - int(created_at.hour)
+        elif now.hour > 9:
+            return int(ytd.hour) - int(created_at.hour)
+        else:
+            return 18 - int(created_at.hour)
+    else:
+        if weekday == 5:
+            now = now - datetime.timedelta(days=1)
+        else:
+            now = now - datetime.timedelta(days=2)
+        return int(now.hour) - int(created_at.hour)
+
+
+def get_urgency_days(created_at):
+    now_day = str(datetime.datetime.utcnow().replace(tzinfo=utc)).split(' ')[0]
+    created_day = str(created_at).split(' ')[0]
+    return int(now_day[2]) - int(created_day[2])
 
 
 def get_finance_products_as_choices():
@@ -396,6 +424,7 @@ class BankGuaranteeProduct(FinanceProduct):
             self._issue.issuer_has_overdue_debts_for_last_180_days = form_org_common.cleaned_data['issuer_has_overdue_debts_for_last_180_days']
             self._issue.issuer_overdue_debts_info = form_org_common.cleaned_data['issuer_overdue_debts_info']
             self._issue.tax_system = form_org_common.cleaned_data['tax_system']
+            self._issue.agent_comission = form_org_common.cleaned_data['agent_comission']
 
         else:
             processed_sucessfully_flag = False

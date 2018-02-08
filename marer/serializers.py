@@ -1,6 +1,8 @@
 from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer
 
 from marer import consts
+from marer.models import Issue, User
 
 
 class ReadOnlySerializer(serializers.Serializer):
@@ -31,3 +33,24 @@ class TenderSerializer(ReadOnlySerializer):
     contract_execution_ensure_cost = serializers.DecimalField(max_digits=12, decimal_places=2)
     currency_code = serializers.ChoiceField(choices=[consts.CURRENCY_RUR, consts.CURRENCY_USD, consts.CURRENCY_EUR])
     publisher = TenderPublisherSerializer(many=False)
+
+
+class IssueListSerializer(ModelSerializer):
+
+    class Meta:
+        model = Issue
+        fields = ('id', 'product', 'bg_sum', 'issuer_short_name', 'issuer_inn',)
+
+
+class IssueSerializer(ModelSerializer):
+
+    class Meta:
+        model = Issue
+        exclude = ('issuer', 'user',)
+
+
+class ProfileSerializer(ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ('id', 'first_name', 'last_name', 'email', 'phone',)

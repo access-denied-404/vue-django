@@ -20,7 +20,7 @@ from marer import consts
 from marer.models.base import Document, set_obj_update_time, BankMinimalCommission, FormOwnership
 from marer.models.finance_org import FinanceOrganization, FinanceOrgProductProposeDocument
 from marer.models.issuer import Issuer, IssuerDocument
-from marer.products import get_finance_products_as_choices, FinanceProduct, get_finance_products, BankGuaranteeProduct
+from marer.products import get_urgency_hours, get_urgency_days, get_finance_products_as_choices, FinanceProduct, get_finance_products, BankGuaranteeProduct
 from marer.utils import CustomJSONEncoder, kontur
 from marer.utils.issue import bank_commission, sum2str, generate_bg_number
 from marer.utils.morph import MorpherApi
@@ -230,6 +230,8 @@ class Issue(models.Model):
         (consts.TAX_ENVD, 'ЕНВД'),
         (consts.TAX_ESHD, 'ЕСХД'),
     ])
+    agent_comission = models.CharField(verbose_name='Комиссия агента', max_length=512,
+                                       blank=True, null=True, default='')
 
     deal_has_beneficiary = models.NullBooleanField(verbose_name='наличие бенефициара по сделке', blank=True, null=True)
     issuer_bank_relations_term = models.CharField(verbose_name='срок отношений с Банком', max_length=32, blank=True, null=True, choices=[
@@ -321,6 +323,30 @@ class Issue(models.Model):
         blank=True,
         related_name='additional_doc'
     )
+
+    def get_urgency_for_user(self, user):
+        messages = list(self.clarification_messages.all().order_by('-id'))
+        if messages:
+            last_message = messages[0]
+            is_manager_message_last = False
+            if last_message.user != user:
+                is_manager_message_last = True
+            if is_manager_message_last and self.bg_sum < 1500000:
+                time = get_urgency_hours(last_message.created_at)
+                if time > 5:
+                    return '<span class="glyphicon glyphicon-time text-danger"></span>'
+                else:
+                    return '<span class="glyphicon glyphicon-time text-primary"></span>'
+            elif is_manager_message_last and self.bg_sum >= 1500000:
+                d = get_urgency_days(last_message.created_at)
+                if get_urgency_days(last_message.created_at) > 0:
+                    return '<span class="glyphicon glyphicon-time text-danger"></span>'
+                else:
+                    return '<span class="glyphicon glyphicon-time text-primary"></span>'
+            else:
+                return '<span class="glyphicon glyphicon-time text-muted"></span>'
+        else:
+            return '<span class="glyphicon glyphicon-time text-muted"></span>'
 
     def get_last_comment_for_user(self, user):
         if self.status == consts.ISSUE_STATUS_REVIEW:
@@ -745,6 +771,9 @@ class Issue(models.Model):
         checks.append(self.issuer_head_passport_issue_date is not None)
         checks.append(self.issuer_head_residence_address is not None and self.issuer_head_residence_address != '')
         checks.append(self.issuer_head_passport_issued_by is not None and self.issuer_head_passport_issued_by != '')
+        for tr in self.org_management_collegial.all():
+            checks.append(tr.legal_addres is not None and tr.legal_address != '')
+            checks.append(tr.fact_address is not None and tr.fact_address != '')
         return not False in checks
 
     def fill_from_issuer(self):
@@ -1233,7 +1262,8 @@ class IssueClarificationMessage(models.Model):
         related_name='clarification_messages'
     )
     message = models.TextField(verbose_name='сообщение', blank=False, null=False, default='')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='пользователь', on_delete=models.DO_NOTHING, null=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='пользователь',
+                             on_delete=models.DO_NOTHING, null=False)
     created_at = models.DateTimeField(verbose_name='время создания', auto_now_add=True, null=False)
 
     def __str__(self):
