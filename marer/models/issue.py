@@ -973,15 +973,71 @@ class Issue(models.Model):
             self.save()
         application_doc_file.close()
 
-    def fill_doc_ops_mgmt_conclusion(self, commit=True):
-
-        ve = ValidationError(None)
-        ve.error_list = []
+    @property
+    def is_org_registered_more_than_6_months_ago(self):
         issuer_reg_delta = relativedelta(
             timezone.localdate(timezone.now(), timezone.get_current_timezone()),
             self.issuer_registration_date,
         )
-        if issuer_reg_delta.years <= 0 and issuer_reg_delta.months <= 6:
+        return not (issuer_reg_delta.years <= 0 and issuer_reg_delta.months < 6)
+
+    @property
+    def humanized_is_org_registered_more_than_6_months_ago(self):
+        return 'Да' if self.is_org_registered_more_than_6_months_ago else 'Нет'
+
+    @property
+    def humanuzed_is_org_activity_for_last_year_was_profilable(self):
+        return 'Да' if self.balance_code_2400_offset_1 > 0 else 'Нет'
+
+    @property
+    def humanuzed_is_org_activity_for_last_period_was_profilable(self):
+        return 'Да' if self.balance_code_2400_offset_0 > 0 else 'Нет'
+
+    @property
+    def is_issuer_in_blacklisted_region(self):
+        for bl_inn_start in ['09', '01', '05', '06', '07', '15', '17', '20', '91', '92', '2632']:
+            if self.issuer_inn.startswith(bl_inn_start):
+                return True
+        return False
+
+    @property
+    def is_beneficiary_in_blacklisted_region(self):
+        for bl_inn_start in ['91', '92']:
+            if self.tender_responsible_inn.startswith(bl_inn_start):
+                return True
+        return False
+
+    @property
+    def humanized_is_issuer_not_in_blacklisted_region(self):
+        return 'Нет' if self.is_issuer_in_blacklisted_region else 'Да'
+
+    @property
+    def humanized_is_beneficiary_not_in_blacklisted_region(self):
+        return 'Нет' if self.is_beneficiary_in_blacklisted_region else 'Да'
+
+    @property
+    def humanized_is_surety_needed(self):
+        return 'требуется' if self.bg_sum >= 5000000 else 'не требуется'
+
+    @property
+    def bank_reserving_percent(self):
+        percentage = {
+            'Asgb': 1.5,
+            'Bsgb': 2.5,
+            'Esgb': 1.75,
+            'E2sgb': 2.75,
+            'Fsgb': 2,
+            'F2sgb': 3,
+            'Csgb': 3,
+            'Dsgb': 7.5
+        }
+        return percentage.get(self.scoring_credit_rating, 7.5)
+
+    def fill_doc_ops_mgmt_conclusion(self, commit=True):
+
+        ve = ValidationError(None)
+        ve.error_list = []
+        if self.is_org_registered_more_than_6_months_ago:
             ve.error_list.append('Обнаружен стоп-фактор: организация зарегистрирована менее 6 месецев назад')
 
         if self.sec_dep_conclusion_doc is None or self.sec_dep_conclusion_doc.file is None:
@@ -1058,10 +1114,8 @@ class Issue(models.Model):
                 )
             if kontur_principal_analytics_data.get('m7003', False):
                 ve.error_list.append('Обнаружен стоп-фактор: организация зарегистрирована менее 6 месецев назад')
-            for bl_inn_start in ['09', '01', '05', '06', '07', '15', '17', '20', '91', '92', '2632']:
-                if self.issuer_inn.startswith(bl_inn_start):
-                    ve.error_list.append('Обнаружен стоп-фактор: исполнитель находится в необслуживаемом регионе')
-                    break
+            if self.is_issuer_in_blacklisted_region:
+                ve.error_list.append('Обнаружен стоп-фактор: исполнитель находится в необслуживаемом регионе')
             if kontur_principal_analytics_data.get('m5006', False):
                 ve.error_list.append(
                     'Обнаружен стоп-фактор: указан недостоверный адрес исполнителя')
