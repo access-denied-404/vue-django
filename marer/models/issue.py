@@ -451,7 +451,7 @@ class Issue(models.Model):
 
     @property
     def humanized_issuer_head_birthday(self):
-        return self.issuer_head_bithday.strftime('%d.%m.%Y') if self.issuer_head_bithday else ''
+        return self.issuer_head_birthday.strftime('%d.%m.%Y') if self.issuer_head_birthday else ''
 
     @property
     def humanized_issuer_has_overdue_debts_for_last_180_days(self):
@@ -1078,7 +1078,7 @@ class Issue(models.Model):
         error_list = []
 
         try:
-            kontur_principal_analytics_data = kontur.analytics(inn='7840474560').get('analytics', {})
+            kontur_principal_analytics_data = kontur.analytics(inn=self.issuer_inn, ogrn=self.issuer_ogrn).get('analytics', {})
             if kontur_principal_analytics_data.get('m5004', False):
                 error_list.append([
                     'Организация была найдена в списке юридических лиц, имеющих задолженность по уплате налогов.', False
@@ -1099,14 +1099,14 @@ class Issue(models.Model):
         else:
             return True
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None, create_docs=True):
         if not self.bg_start_date:
             self.bg_start_date = timezone.now()
         if not self.product or self.product == '':
             self.product = BankGuaranteeProduct().name
         super().save(force_insert, force_update, using, update_fields)
 
-        if bool(self.propose_documents.exists() is False and self.tax_system):
+        if create_docs and bool(self.propose_documents.exists() is False and self.tax_system):
             pdocs = FinanceOrgProductProposeDocument.objects.filter(
                 Q(Q(tax_system=self.tax_system) | Q(tax_system__isnull=True)),
                 Q(Q(min_bg_sum__lte=self.bg_sum) | Q(min_bg_sum__isnull=True)),
