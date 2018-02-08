@@ -119,7 +119,9 @@ class IssueRegisteringView(IssueView):
                     new_issue = deepcopy(old_issue)
                     new_issue.pk = None
                     new_issue.user = request.user
+                    new_issue.status = consts.ISSUE_STATUS_REVIEW
                     new_issue.save(create_docs=False)
+
                     related_names = [
                         'org_bank_accounts', 'org_beneficiary_owners', 'issuer_founders_legal',
                         'issuer_founders_physical', 'issuer_licences', 'org_management_collegial',
