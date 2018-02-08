@@ -675,6 +675,7 @@ class BankGuaranteeProduct(FinanceProduct):
                 'bg_contract_doc_admin_field',
                 'bg_doc_admin_field',
                 'transfer_acceptance_act_admin_field',
+                'contract_of_guarantee_admin_field',
             ))),
             ('Сведения о тендере', dict(classes=('collapse',), fields=(
                 'tender_gos_number',
@@ -729,6 +730,7 @@ class BankGuaranteeProduct(FinanceProduct):
             'application_doc_admin_field',
             'bg_contract_doc_admin_field',
             'transfer_acceptance_act_admin_field',
+            'contract_of_guarantee_admin_field',
             'bg_doc_admin_field',
             'additional_doc_admin_field',
             'doc_ops_mgmt_conclusion_doc_admin_field',
