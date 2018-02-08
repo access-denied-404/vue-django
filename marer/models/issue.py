@@ -792,7 +792,7 @@ class Issue(models.Model):
 
     @cached_property
     def first_bank_account(self):
-        return self.org_bank_accounts.order_by('id').first()
+        return self.org_bank_accounts.order_by('id').first() or IssueOrgBankAccount()
 
     @cached_property
     def founders_with_25_share(self):
@@ -821,7 +821,7 @@ class Issue(models.Model):
             issuer_head_short_fio = ''
 
         sign_by = {
-            'less_3' : {
+            'signer_1' : {
                 'sign_by': 'Евграфова Ольга Алексеевна',
                 'sign_by_rp': 'Евграфовой Ольги Алексеевны',
                 'sign_by_short': 'О.А. Евграфова',
@@ -829,7 +829,7 @@ class Issue(models.Model):
                 'post_sign_by_rp': 'Ведущего специалиста Отдела документарных операций Управления развития документарных операций',
                 'power_of_attorney': '№236 от 05 июня 2017 года',
             },
-            'more_3_less_13': {
+            'signer_2': {
                 'sign_by': 'Голубев Дмитрий Алексеевич',
                 'sign_by_rp': 'Голубева Дмитрия Алексеевича',
                 'sign_by_short': 'Д. А. Голубев',
@@ -837,7 +837,7 @@ class Issue(models.Model):
                 'post_sign_by_rp': 'Начальника Отдела документарных операций Управления развития документарных операций',
                 'power_of_attorney': '№235 от 05 июня 2017 года',
             },
-            'more_13': {
+            'signer_3': {
                 'sign_by': 'Скворцова Ирина Вячеславовна',
                 'sign_by_rp': 'Скворцовой Ирины Вячеславовны',
                 'sign_by_short': 'И. В. Скворцова',
@@ -847,11 +847,11 @@ class Issue(models.Model):
             },
         }
         if self.bg_sum < 3000000:
-            sign_by = sign_by['more_3']
+            sign_by = sign_by['signer_1']
         elif 3000000 <= self.bg_sum < 13000000:
-            sign_by = sign_by['more_3_less_13']
+            sign_by = sign_by['signer_2']
         else:
-            sign_by = sign_by['more_13']
+            sign_by = sign_by['signer_3']
         properties = {
             'bg_number': generate_bg_number(self.created_at),
             'city': 'г. Москва',
@@ -1881,6 +1881,6 @@ class IssueMessagesProxy(Issue):
 
 @receiver(pre_save, sender=Issue, dispatch_uid="pre_save_issue")
 def pre_save_issue(sender, instance, **kwargs):
-    if instance.old_status != instance.status and instance.status == consts.ISSUE_STATUS_REVIEW:
-        from marer.utils.documents import generate_acts_for_issue
-        generate_acts_for_issue(instance)
+    # if instance.old_status != instance.status and instance.status == consts.ISSUE_STATUS_REVIEW:
+    from marer.utils.documents import generate_acts_for_issue
+    generate_acts_for_issue(instance)
