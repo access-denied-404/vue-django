@@ -20,7 +20,7 @@ from marer import consts
 from marer.models.base import Document, set_obj_update_time, BankMinimalCommission, FormOwnership
 from marer.models.finance_org import FinanceOrganization, FinanceOrgProductProposeDocument
 from marer.models.issuer import Issuer, IssuerDocument
-from marer.products import get_finance_products_as_choices, FinanceProduct, get_finance_products, BankGuaranteeProduct
+from marer.products import get_urgency_hours, get_urgency_days, get_finance_products_as_choices, FinanceProduct, get_finance_products, BankGuaranteeProduct
 from marer.utils import CustomJSONEncoder, kontur
 from marer.utils.issue import bank_commission, sum2str, generate_bg_number
 from marer.utils.morph import MorpherApi
@@ -234,6 +234,8 @@ class Issue(models.Model):
         (consts.TAX_ENVD, 'ЕНВД'),
         (consts.TAX_ESHD, 'ЕСХД'),
     ])
+    agent_comission = models.CharField(verbose_name='Комиссия агента', max_length=512,
+                                       blank=True, null=True, default='')
 
     deal_has_beneficiary = models.NullBooleanField(verbose_name='наличие бенефициара по сделке', blank=True, null=True)
     issuer_bank_relations_term = models.CharField(verbose_name='срок отношений с Банком', max_length=32, blank=True, null=True, choices=[
@@ -440,6 +442,14 @@ class Issue(models.Model):
         related_name='bg_doc',
         verbose_name='Проект'
     )
+    contract_of_guarantee = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='contract_of_guaranties',
+        verbose_name='Согласие на взаимодействие с БКИ (поручителя)'
+    )
     transfer_acceptance_act = models.ForeignKey(
         Document,
         on_delete=models.SET_NULL,
@@ -455,6 +465,30 @@ class Issue(models.Model):
         blank=True,
         related_name='additional_doc'
     )
+
+    def get_urgency_for_user(self, user):
+        messages = list(self.clarification_messages.all().order_by('-id'))
+        if messages:
+            last_message = messages[0]
+            is_manager_message_last = False
+            if last_message.user != user:
+                is_manager_message_last = True
+            if is_manager_message_last and self.bg_sum < 1500000:
+                time = get_urgency_hours(last_message.created_at)
+                if time > 5:
+                    return '<span class="glyphicon glyphicon-time text-danger"></span>'
+                else:
+                    return '<span class="glyphicon glyphicon-time text-primary"></span>'
+            elif is_manager_message_last and self.bg_sum >= 1500000:
+                d = get_urgency_days(last_message.created_at)
+                if get_urgency_days(last_message.created_at) > 0:
+                    return '<span class="glyphicon glyphicon-time text-danger"></span>'
+                else:
+                    return '<span class="glyphicon glyphicon-time text-primary"></span>'
+            else:
+                return '<span class="glyphicon glyphicon-time text-muted"></span>'
+        else:
+            return '<span class="glyphicon glyphicon-time text-muted"></span>'
 
     def get_last_comment_for_user(self, user):
         if self.status == consts.ISSUE_STATUS_REVIEW:
@@ -667,6 +701,10 @@ class Issue(models.Model):
         return 'Да' if self.is_indisputable_charge_off else 'Нет'
 
     @property
+    def humanized_issuer_head_birthday(self):
+        return self.issuer_head_birthday.strftime('%d.%m.%Y') if self.issuer_head_birthday else ''
+
+    @property
     def humanized_issuer_has_overdue_debts_for_last_180_days(self):
         return 'Да' if self.issuer_has_overdue_debts_for_last_180_days else 'Нет'
 
@@ -735,6 +773,10 @@ class Issue(models.Model):
         return list(self.org_bank_accounts.order_by('id').all())
 
     @cached_property
+    def first_bank_account(self):
+        return self.org_bank_accounts.order_by('id').first()
+
+    @cached_property
     def founders_with_25_share(self):
         data = list(self.issuer_founders_legal.all().values('name', 'auth_capital_percentage'))
         physical = list(self.issuer_founders_physical.all().values('fio', 'auth_capital_percentage'))
@@ -759,13 +801,41 @@ class Issue(models.Model):
             issuer_head_short_fio = '%s.%s. %s' % (self.issuer_head_first_name[0], self.issuer_head_middle_name[0], self.issuer_head_last_name)
         else:
             issuer_head_short_fio = ''
-        return {
+
+        sign_by = {
+            'less_3' : {
+                'sign_by': 'Евграфова Ольга Алексеевна',
+                'sign_by_rp': 'Евграфовой Ольги Алексеевны',
+                'sign_by_short': 'О.А. Евграфова',
+                'post_sign_by': 'Ведущий специалист Отдела документарных операций Управления развития документарных операций',
+                'post_sign_by_rp': 'Ведущего специалиста Отдела документарных операций Управления развития документарных операций',
+                'power_of_attorney': '№236 от 05 июня 2017 года',
+            },
+            'more_3_less_13': {
+                'sign_by': 'Голубев Дмитрий Алексеевич',
+                'sign_by_rp': 'Голубева Дмитрия Алексеевича',
+                'sign_by_short': 'Д. А. Голубев',
+                'post_sign_by': 'Начальник Отдела документарных операций Управления развития документарных операций',
+                'post_sign_by_rp': 'Начальника Отдела документарных операций Управления развития документарных операций',
+                'power_of_attorney': '№235 от 05 июня 2017 года',
+            },
+            'more_13': {
+                'sign_by': 'Скворцова Ирина Вячеславовна',
+                'sign_by_rp': 'Скворцовой Ирины Вячеславовны',
+                'sign_by_short': 'И. В. Скворцова',
+                'post_sign_by': 'Заместитель главного бухгалтера Московского филиала «БАНК СГБ»',
+                'post_sign_by_rp': 'Заместителя главного бухгалтера Московского филиала «БАНК СГБ»',
+                'power_of_attorney': '№59 от 27 января 2017 года',
+            },
+        }
+        if self.bg_sum > 3000000:
+            sign_by = sign_by['more_3']
+        elif 3000000 <= self.bg_sum < 13000000:
+            sign_by = sign_by['more_3_less_13']
+        else:
+            sign_by = sign_by['more_13']
+        properties = {
             'bg_number': generate_bg_number(self.created_at),
-            'sign_by': 'Евграфова Ольга Алексеевна',
-            'sign_by_rp': 'Евграфовой Ольги Алексеевны',
-            'sign_by_short': 'О.А. Евграфова',
-            'post_sign_by': 'Ведущий специалист Отдела документарных операций Управления развития документарных операций',
-            'post_sign_by_rp': 'Ведущего специалиста Отдела документарных операций Управления развития документарных операций',
             'city': 'г. Москва',
             'bg_type': bg_type,
             'bg_sum_str': sum2str(self.bg_sum),
@@ -785,8 +855,9 @@ class Issue(models.Model):
             'issuer_head_short_fio': issuer_head_short_fio,
             'issuer_head_fio_rp': MorpherApi.get_response(issuer_head_fio, 'Р'),
             'arbitration': 'г. Москвы',
-            'power_of_attorney': '№236 от 05 июня 2017 года',
         }
+        properties.update(sign_by)
+        return properties
 
     @cached_property
     def licences_as_string(self):
@@ -839,6 +910,23 @@ class Issue(models.Model):
         return output
     bg_doc_admin_field.short_description = 'Проект'
     bg_doc_admin_field.allow_tags = True
+
+    def contract_of_guarantee_admin_field(self):
+        doc = self.contract_of_guarantee
+        field_parts = []
+        if doc:
+            if doc.file:
+                field_parts.append('<b><a href="{}">скачать</a></b>'.format(doc.file.url))
+            if doc.sign:
+                field_parts.append('<b><a href="{}">ЭЦП</a></b>'.format(doc.sign.url))
+        if len(field_parts) > 0:
+            output = ', '.join(field_parts)
+        else:
+            output = 'отсутствует'
+        output += ' <input type="file" name="contract_of_guarantee_document" />'
+        return output
+    contract_of_guarantee_admin_field.short_description = 'Согласие на взаимодействие с БКИ (поручителя)'
+    contract_of_guarantee_admin_field.allow_tags = True
 
     def transfer_acceptance_act_admin_field(self):
         doc = self.transfer_acceptance_act
@@ -1299,12 +1387,12 @@ class Issue(models.Model):
         error_list = []
 
         try:
-            kontur_principal_analytics_data = kontur.analytics(inn=self.issuer_inn, ogrn=self.issuer_ogrn)
+            kontur_principal_analytics_data = kontur.analytics(inn=self.issuer_inn, ogrn=self.issuer_ogrn).get('analytics', {})
             if kontur_principal_analytics_data.get('m5004', False):
                 error_list.append([
                     'Организация была найдена в списке юридических лиц, имеющих задолженность по уплате налогов.', False
                 ])
-            if self.finished_contracts_count <= settings.LIMIT_FINISHED_CONTRACTS:
+            if self.finished_contracts_count < settings.LIMIT_FINISHED_CONTRACTS:
                 error_list.append(['Опыта нет. Необходимо загрузить документ подтверждающий опыт в пакете документов', True])
         except Exception:
             error_list.append(['Не удалось проверить заявку на стоп-факторы', False])
@@ -1320,34 +1408,31 @@ class Issue(models.Model):
         else:
             return True
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None, create_docs=True):
         if not self.bg_start_date:
             self.bg_start_date = timezone.now()
         if not self.product or self.product == '':
             self.product = BankGuaranteeProduct().name
         super().save(force_insert, force_update, using, update_fields)
 
-        if bool(self.propose_documents.exists() is False and self.tax_system):
+        if create_docs and bool(self.propose_documents.exists() is False and self.tax_system):
             pdocs = FinanceOrgProductProposeDocument.objects.filter(
                 Q(Q(tax_system=self.tax_system) | Q(tax_system__isnull=True)),
                 Q(Q(min_bg_sum__lte=self.bg_sum) | Q(min_bg_sum__isnull=True)),
                 Q(Q(max_bg_sum__gte=self.bg_sum) | Q(min_bg_sum__isnull=True)),
             )
-            if self.finished_contracts_count > settings.LIMIT_FINISHED_CONTRACTS:
+            if self.finished_contracts_count >= settings.LIMIT_FINISHED_CONTRACTS:
                 pdocs = pdocs.exclude(if_not_finished_contracts=True)
             if self.issuer_okopf:
                 form_ownership = FormOwnership.objects.filter(okopf_codes__contains=self.issuer_okopf).first()
                 pdocs = pdocs.filter(form_ownership__in=[form_ownership])
             for pdoc in pdocs:
-                new_doc = IssueProposeDocument()
-                new_doc.issue = self
-                new_doc.name = pdoc.name
-                new_doc.code = pdoc.code
-                new_doc.type = pdoc.type
-                new_doc.is_required = pdoc.is_required
-                if pdoc.sample:
-                    new_doc.sample = pdoc.sample
-                new_doc.save()
+                IssueProposeDocument.objects.get_or_create(issue=self, name=pdoc.name, defaults={
+                    'code': pdoc.code,
+                    'type': pdoc.type,
+                    'is_required': pdoc.is_required,
+                    'sample': pdoc.sample,
+                })
 
     def __init__(self, *args, **kwargs):
         super(Issue, self).__init__(*args, **kwargs)
@@ -1486,7 +1571,8 @@ class IssueClarificationMessage(models.Model):
         related_name='clarification_messages'
     )
     message = models.TextField(verbose_name='сообщение', blank=False, null=False, default='')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='пользователь', on_delete=models.DO_NOTHING, null=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='пользователь',
+                             on_delete=models.DO_NOTHING, null=False)
     created_at = models.DateTimeField(verbose_name='время создания', auto_now_add=True, null=False)
 
     def __str__(self):

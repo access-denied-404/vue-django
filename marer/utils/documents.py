@@ -251,5 +251,6 @@ def generate_acts_for_issue(issue: Issue)-> Issue:
     if any([issue.issuer_inn.startswith(x) for x in ['77', '97', '99', '177', '199', '197']]) and issue.tender_exec_law == consts.TENDER_EXEC_LAW_185_FZ:
         path = 'marer/templates/documents/acts/fz185_additional_for_msk.docx'
         issue.additional_doc = generate_doc(os.path.join(settings.BASE_DIR, path), 'additional_doc.docx', issue)
-
+    if issue.bg_sum > 5000000:
+        issue.contract_of_guarantee = generate_doc(os.path.join(settings.BASE_DIR, 'marer/templates/documents/acts/contract_of_guarantee.docx'), 'contract_of_guarantee.docx', issue)
     return issue

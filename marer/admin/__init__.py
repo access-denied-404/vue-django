@@ -103,7 +103,7 @@ class IssueAdmin(ModelAdmin):
     def save_form(self, request, form, change):
         obj = super(IssueAdmin, self).save_form(request, form, change)
         issue = form.instance
-        for file_name in ['bg_contract_doc', 'bg_doc', 'transfer_acceptance_act']:
+        for file_name in ['bg_contract_doc', 'bg_doc', 'transfer_acceptance_act', 'contract_of_guarantee']:
             file_content = request.FILES.get('%s_document' % file_name)
             file_document = getattr(issue, file_name)
             if file_content and file_document:
@@ -379,7 +379,7 @@ class IssueAdmin(ModelAdmin):
                 for err in ve.error_list:
                     self.message_user(request, err, level=messages.ERROR)
         for error in obj.check_not_stop_factors:
-            self.message_user(request, error, level=messages.WARNING)
+            self.message_user(request, error[0], level=messages.WARNING)
         return obj
 
     def save_model(self, request, obj, form, change):
