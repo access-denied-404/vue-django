@@ -526,7 +526,7 @@ class Issue(models.Model):
             issuer_head_short_fio = ''
 
         sign_by = {
-            'less_3000000' : {
+            'less_3' : {
                 'sign_by': 'Евграфова Ольга Алексеевна',
                 'sign_by_rp': 'Евграфовой Ольги Алексеевны',
                 'sign_by_short': 'О.А. Евграфова',
@@ -534,19 +534,29 @@ class Issue(models.Model):
                 'post_sign_by_rp': 'Ведущего специалиста Отдела документарных операций Управления развития документарных операций',
                 'power_of_attorney': '№236 от 05 июня 2017 года',
             },
-            'more_3000000': {
+            'more_3_less_13': {
                 'sign_by': 'Голубев Дмитрий Алексеевич',
                 'sign_by_rp': 'Голубева Дмитрия Алексеевича',
                 'sign_by_short': 'Д. А. Голубев',
                 'post_sign_by': 'Начальник Отдела документарных операций Управления развития документарных операций',
                 'post_sign_by_rp': 'Начальника Отдела документарных операций Управления развития документарных операций',
                 'power_of_attorney': '№235 от 05 июня 2017 года',
-            }
+            },
+            'more_13': {
+                'sign_by': 'Скворцова Ирина Вячеславовна',
+                'sign_by_rp': 'Скворцовой Ирины Вячеславовны',
+                'sign_by_short': 'И. В. Скворцова',
+                'post_sign_by': 'Заместитель главного бухгалтера Московского филиала «БАНК СГБ»',
+                'post_sign_by_rp': 'Заместителя главного бухгалтера Московского филиала «БАНК СГБ»',
+                'power_of_attorney': '№59 от 27 января 2017 года',
+            },
         }
-        if self.bg_sum >= 3000000:
-            sign_by = sign_by['more_3000000']
+        if self.bg_sum > 3000000:
+            sign_by = sign_by['more_3']
+        elif 3000000 <= self.bg_sum < 13000000:
+            sign_by = sign_by['more_3_less_13']
         else:
-            sign_by = sign_by['less_3000000']
+            sign_by = sign_by['more_13']
         properties = {
             'bg_number': generate_bg_number(self.created_at),
             'city': 'г. Москва',
