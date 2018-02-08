@@ -283,6 +283,7 @@ class Issue(models.Model):
     is_absent_info_about_legal_proceedings_as_defendant_for_more_than_30_pct_of_net_assets = models.NullBooleanField('Отсутствие информации о судебных разбирательствах Клиента в качестве ответчика (за исключением закрытых) на сумму более 30% чистых активов Клиента', blank=True, null=True)
     is_need_to_check_real_of_issuer_activity = models.NullBooleanField('Есть необходимость оценки реальности деятельности', blank=True, null=True)
     is_real_of_issuer_activity_confirms = models.NullBooleanField('Реальность деятельности подтверждается', blank=True, null=True)
+    is_contract_corresponds_issuer_activity = models.NullBooleanField('Контракт соответствует профилю деятельности клиента', blank=True, null=True)
 
     @property
     def humanized_is_issuer_all_bank_liabilities_less_than_max(self):
@@ -401,6 +402,14 @@ class Issue(models.Model):
         if self.is_real_of_issuer_activity_confirms is True:
             return 'Да'
         if self.is_real_of_issuer_activity_confirms is False:
+            return 'Нет'
+        return '—'
+
+    @property
+    def humanized_is_contract_corresponds_issuer_activity(self):
+        if self.is_contract_corresponds_issuer_activity is True:
+            return 'Да'
+        if self.is_contract_corresponds_issuer_activity is False:
             return 'Нет'
         return '—'
 
@@ -548,11 +557,11 @@ class Issue(models.Model):
     @property
     def scoring_issuer_profitability(self):
         coeff = (self.balance_code_2400_offset_1 / self.balance_code_2110_offset_1) * 100
-        if coeff <= 0.5:
+        if coeff < 0.5:
             return 4
-        elif 0.5 <= coeff <= 1:
+        elif 0.5 <= coeff < 1:
             return 3
-        elif 1 <= coeff <= 3:
+        elif 1 <= coeff < 3:
             return 2
         elif 3 <= coeff:
             return 1
@@ -561,11 +570,11 @@ class Issue(models.Model):
     def scoring_revenue_reduction(self):
         code_2110_offset_2 = self.balance_code_2110_offset_2 or 0
         coeff = (self.balance_code_2110_offset_1 / code_2110_offset_2) * 100
-        if coeff <= 75:
+        if coeff < 75:
             return 4
-        elif 75 <= coeff <= 100:
+        elif 75 <= coeff < 100:
             return 3
-        elif 100 <= coeff <= 110:
+        elif 100 <= coeff < 110:
             return 2
         elif 110 <= coeff:
             return 1
@@ -589,13 +598,13 @@ class Issue(models.Model):
     @property
     def scoring_finished_contracts_count(self):
         coeff = self.finished_contracts_count
-        if coeff <= 5:
-            return 4
-        elif 5 <= coeff <= 15:
+        if coeff <= 1:
+            return 6
+        elif 2 <= coeff <= 4:
             return 3
-        elif 15 <= coeff <= 30:
+        elif 5 <= coeff <= 7:
             return 2
-        elif 30 <= coeff:
+        elif 7 < coeff:
             return 1
 
     @property
@@ -616,14 +625,23 @@ class Issue(models.Model):
     @property
     def scoring_credit_rating(self):
         coeff = self.scoring_rating_sum
-        if coeff <= 14:
+        if coeff <= 14 and self.bg_sum > 5000000:
             return 'Asgb'
-        elif 15 <= coeff <= 25:
+        elif 15 <= coeff <= 25 and self.bg_sum > 5000000:
             return 'Bsgb'
+        elif coeff <= 14 and 1500000 < self.bg_sum <= 5000000:
+            return 'Esgb'
+        elif 15 <= coeff <= 25 and 1500000 < self.bg_sum <= 5000000:
+            return 'E2sgb'
+        elif coeff <= 14 and self.bg_sum <= 1500000:
+            return 'Fsgb'
+        elif 15 <= coeff <= 25 and self.bg_sum <= 1500000:
+            return 'F2sgb'
         elif 26 <= coeff <= 30:
             return 'Csgb'
         elif 31 <= coeff:
-            return 'Fsgb'
+            return 'Dsgb'
+
 
     @property
     def client_finance_situation(self):

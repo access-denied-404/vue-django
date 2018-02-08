@@ -743,7 +743,8 @@ class BankGuaranteeProduct(FinanceProduct):
                 'is_absent_info_about_court_acts_for_more_than_20_pct_of_net_assets',),
                 ('is_absent_info_about_legal_proceedings_as_defendant_for_more_than_30_pct_of_net_assets',
                 'is_need_to_check_real_of_issuer_activity',
-                'is_real_of_issuer_activity_confirms',),
+                'is_real_of_issuer_activity_confirms',
+                'is_contract_corresponds_issuer_activity',),
             ))),
 
             _admin_issue_fieldset_issuer_part,
