@@ -1308,12 +1308,17 @@ class Issue(models.Model):
         if len(ve.error_list) > 0:
             raise ve
 
+        if self.bg_sum < 15000000:
+            domc_filename = 'issue_domc_up_to_1500000.docx'
+        else:
+            domc_filename = 'issue_domc_from_1500000.docx'
+
         template_path = os.path.join(
             settings.BASE_DIR,
             'marer',
             'templates',
             'documents',
-            'issue_doc_ops_mgmt_conclusion.docx'
+            domc_filename
         )
 
         from marer.utils.documents import fill_docx_file_with_issue_data
