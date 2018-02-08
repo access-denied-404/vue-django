@@ -39,6 +39,7 @@ _admin_issue_fieldset_issuer_part = (
 
             'issuer_okpo',
             'issuer_okato',
+            'issuer_oktmo',
             'issuer_registration_date',
             'issuer_ifns_reg_date',
             'issuer_ifns_reg_cert_number',
@@ -208,6 +209,7 @@ class BankGuaranteeProduct(FinanceProduct):
             self._issue.issuer_okopf = kontur_req_data['UL']['okopf'] if 'UL' in kontur_req_data else kontur_req_data['IP']['okopf']
             self._issue.issuer_okpo = kontur_req_data['UL'].get('okpo', '') if 'UL' in kontur_req_data else kontur_req_data['IP'].get('okpo', '')
             self._issue.issuer_okato = kontur_req_data['UL'].get('okato', '') if 'UL' in kontur_req_data else ''
+            self._issue.issuer_oktmo = kontur_req_data['UL'].get('oktmo', '') if 'UL' in kontur_req_data else ''
 
             if 'UL' in kontur_req_data and len(kontur_req_data['UL']['heads']) > 0:
                 head_name_arr = kontur_req_data['UL']['heads'][0]['fio'].split(' ')
@@ -669,7 +671,7 @@ class BankGuaranteeProduct(FinanceProduct):
                 ('tender_exec_law', 'bg_type',),
                 'application_doc_admin_field',
                 'doc_ops_mgmt_conclusion_doc_admin_field',
-                'sec_dep_conclusion_doc_admin_field',
+                # 'sec_dep_conclusion_doc_admin_field',
             ))),
             ('Договора и акты', dict(fields=(
                 'bg_contract_doc_admin_field',
@@ -693,7 +695,26 @@ class BankGuaranteeProduct(FinanceProduct):
                 ('balance_code_2110_offset_0', 'balance_code_2110_offset_1', 'balance_code_2110_offset_2',),
                 ('balance_code_2400_offset_0', 'balance_code_2400_offset_1',),
             ))),
+            ('Информация для наполнеиня заключения УРДО', dict(classes=('collapse',), fields=(
+                ('is_issuer_all_bank_liabilities_less_than_max',
+                'is_issuer_executed_contracts_on_44_or_223_or_185_fz',
+                'is_issuer_executed_goverment_contract_for_last_3_years',
+                # 'is_contract_has_prepayment',
+                ),
 
+                ('is_issuer_executed_contracts_with_comparable_advances',
+                'is_issuer_executed_gte_5_contracts_on_44_or_223_or_185_fz',
+                'is_issuer_last_year_revenue_higher_in_5_times_than_all_bank_bgs',
+                'is_issuer_has_garantor_for_advance_related_requirements',),
+
+                ('is_contract_price_reduction_lower_than_50_pct_on_supply_contract',
+                'is_positive_security_department_conclusion',
+                'is_positive_lawyers_department_conclusion',
+                'is_absent_info_about_court_acts_for_more_than_20_pct_of_net_assets',),
+                ('is_absent_info_about_legal_proceedings_as_defendant_for_more_than_30_pct_of_net_assets',
+                'is_need_to_check_real_of_issuer_activity',
+                'is_real_of_issuer_activity_confirms',),
+            ))),
 
             _admin_issue_fieldset_issuer_part,
             _admin_issue_fieldset_issuer_head_part,
