@@ -6,6 +6,18 @@ from marer.models import BankMinimalCommission
 from marer.utils.datetime_utils import get_datetime_as_excel_number
 
 
+def issue_term_in_months(start_date, end_date):
+
+    def _year(datetime):
+        return datetime.year
+
+    def _month(datetime):
+        return datetime.month
+
+    months = 1 + (_year(end_date) - _year(start_date)) * 12 + _month(end_date) - _month(start_date)
+    return months
+
+
 def bank_commission(bg_start_date, bg_end_date, bg_sum, bg_is_beneficiary_form, bg_type, tender_exec_law,
                     tender_has_prepayment, contract_term_extend=False, contract_exec_verification_more_5_doc=False):
     """
@@ -45,13 +57,7 @@ def bank_commission(bg_start_date, bg_end_date, bg_sum, bg_is_beneficiary_form, 
     # M16: **Пусто**
     # M130: **Пусто**
 
-    def _year(datetime):
-        return datetime.year
-
-    def _month(datetime):
-        return datetime.month
-
-    O25 = 1 + (_year(F11) - _year(E7)) * 12 + _month(F11) - _month(E7)
+    O25 = issue_term_in_months(E7, F11)
     Q17 = float(F10) * O25 * Q25
     Q22 = Q17 * (
         1
