@@ -761,6 +761,7 @@ class BankGuaranteeProduct(FinanceProduct):
                 'is_need_to_check_real_of_issuer_activity',
                 'is_real_of_issuer_activity_confirms',
                 'is_contract_corresponds_issuer_activity',),
+                'total_bank_liabilities_vol',
             ))),
 
             _admin_issue_fieldset_issuer_part,

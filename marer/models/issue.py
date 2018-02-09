@@ -284,6 +284,7 @@ class Issue(models.Model):
     is_need_to_check_real_of_issuer_activity = models.NullBooleanField('Есть необходимость оценки реальности деятельности', blank=True, null=True)
     is_real_of_issuer_activity_confirms = models.NullBooleanField('Реальность деятельности подтверждается', blank=True, null=True)
     is_contract_corresponds_issuer_activity = models.NullBooleanField('Контракт соответствует профилю деятельности клиента', blank=True, null=True)
+    total_bank_liabilities_vol = models.DecimalField(verbose_name='объем обязательств банка', max_digits=32, decimal_places=2, blank=True, null=True)
 
     @property
     def humanized_is_issuer_all_bank_liabilities_less_than_max(self):
