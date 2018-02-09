@@ -551,7 +551,7 @@ class Issue(models.Model):
     @property
     def tender_cost_reduction(self):
         if self.tender_start_cost and self.tender_final_cost:
-            return round(self.tender_final_cost / self.tender_start_cost, 4) * 100
+            return round((1 - self.tender_final_cost / self.tender_start_cost) * 100, 0)
         else:
             return '—'
 
