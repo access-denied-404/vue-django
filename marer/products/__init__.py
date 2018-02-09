@@ -229,6 +229,7 @@ class BankGuaranteeProduct(FinanceProduct):
             kontur_req_data = kontur.req(inn=inn, ogrn=ogrn)
             kontur_egrDetails_data = kontur.egrDetails(inn=inn, ogrn=ogrn)
             kontur_beneficialOwners = kontur.beneficialOwners(inn=inn, ogrn=ogrn)
+            kontur_aff_data = kontur.companyAffiliatesReq(inn=inn, ogrn=ogrn)
             kontur_licences = kontur.licences(inn=inn, ogrn=ogrn)
             if not kontur_req_data:
                 return True
@@ -252,6 +253,21 @@ class BankGuaranteeProduct(FinanceProduct):
                     self._issue.issuer_head_last_name = head_name_arr[0]
                     self._issue.issuer_head_first_name = head_name_arr[1]
                     self._issue.issuer_head_middle_name = head_name_arr[2]
+
+            from marer.models.issue import IssueBGProdAffiliate
+            affiliates = IssueBGProdAffiliate.objects.filter(issue=self._issue)
+            affiliates.delete()
+            for aff in kontur_aff_data:
+                new_aff = IssueBGProdAffiliate()
+                new_aff.issue = self._issue
+
+                if aff.get('UL', None):
+                    new_aff.name = aff['UL']['legalName']['short'] if aff['UL']['legalName'].get('short', None) else aff['UL']['legalName']['full']
+                elif aff.get('IP', None):
+                    new_aff.name = aff['IP']['fio']
+
+                new_aff.inn = aff['inn']
+                new_aff.save()
 
             from marer.models.issue import IssueBGProdFounderLegal
             founders_legal = IssueBGProdFounderLegal.objects.filter(issue=self._issue)
@@ -745,6 +761,12 @@ class BankGuaranteeProduct(FinanceProduct):
                 'is_need_to_check_real_of_issuer_activity',
                 'is_real_of_issuer_activity_confirms',
                 'is_contract_corresponds_issuer_activity',),
+
+                ('contract_advance_requirements_fails',
+                'is_issuer_has_bad_credit_history',
+                'is_issuer_has_blocked_bank_account',),
+
+                'total_bank_liabilities_vol',
             ))),
 
             _admin_issue_fieldset_issuer_part,
@@ -779,7 +801,7 @@ class BankGuaranteeProduct(FinanceProduct):
             ])
         else:
             fieldset.extend([
-                ('Сведения об организаторе тендера', dict(
+                ('Сведения о бенефициаре тендера', dict(
                     classes=('collapse',),
                     fields=tender_responsible_fields_part
                 )),

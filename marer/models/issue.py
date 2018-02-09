@@ -22,7 +22,7 @@ from marer.models.finance_org import FinanceOrganization, FinanceOrgProductPropo
 from marer.models.issuer import Issuer, IssuerDocument
 from marer.products import get_urgency_hours, get_urgency_days, get_finance_products_as_choices, FinanceProduct, get_finance_products, BankGuaranteeProduct
 from marer.utils import CustomJSONEncoder, kontur
-from marer.utils.issue import bank_commission, sum2str, generate_bg_number
+from marer.utils.issue import bank_commission, sum2str, generate_bg_number, issue_term_in_months
 from marer.utils.morph import MorpherApi
 from marer.utils.other import OKOPF_CATALOG
 
@@ -285,6 +285,39 @@ class Issue(models.Model):
     is_real_of_issuer_activity_confirms = models.NullBooleanField('Реальность деятельности подтверждается', blank=True, null=True)
     is_contract_corresponds_issuer_activity = models.NullBooleanField('Контракт соответствует профилю деятельности клиента', blank=True, null=True)
 
+    total_bank_liabilities_vol = models.DecimalField(verbose_name='объем обязательств банка', max_digits=32, decimal_places=2, blank=True, null=True)
+
+    contract_advance_requirements_fails = models.NullBooleanField('Не выполняются требования к авансированию (при наличии в контракте аванса)', blank=True, null=True)
+    is_issuer_has_bad_credit_history = models.NullBooleanField('Наличие текущей просроченной ссудной задолженности и отрицательной кредитной истории в кредитных организациях', blank=True, null=True)
+    is_issuer_has_blocked_bank_account = models.NullBooleanField('Наличие информации о блокировке счетов', blank=True, null=True)
+
+    @property
+    def humanized_is_issuer_has_blocked_bank_account(self):
+        if self.is_issuer_has_blocked_bank_account is True:
+            return 'Да'
+        elif self.is_issuer_has_blocked_bank_account is False:
+            return 'Нет'
+        else:
+            return '—'
+
+    @property
+    def humanized_contract_advance_requirements_fails(self):
+        if self.contract_advance_requirements_fails is True:
+            return 'Да'
+        elif self.contract_advance_requirements_fails is False:
+            return 'Нет'
+        else:
+            return '—'
+
+    @property
+    def humanized_is_issuer_has_bad_credit_history(self):
+        if self.is_issuer_has_bad_credit_history is True:
+            return 'Да'
+        elif self.is_issuer_has_bad_credit_history is False:
+            return 'Нет'
+        else:
+            return '—'
+
     @property
     def humanized_is_issuer_all_bank_liabilities_less_than_max(self):
         if self.is_issuer_all_bank_liabilities_less_than_max is True:
@@ -302,12 +335,41 @@ class Issue(models.Model):
         return '—'
 
     @property
+    def humanized_is_not_issuer_executed_contracts_on_44_or_223_or_185_fz(self):
+        return 'Нет' if self.is_issuer_executed_contracts_on_44_or_223_or_185_fz else 'Да'
+
+    @property
     def humanized_is_issuer_executed_goverment_contract_for_last_3_years(self):
         if self.is_issuer_executed_goverment_contract_for_last_3_years is True:
             return 'Да'
         if self.is_issuer_executed_goverment_contract_for_last_3_years is False:
             return 'Нет'
         return '—'
+
+    @property
+    def humanized_is_negative_net_assets_for_last_quarter(self):
+        return 'Да' if self.balance_code_1300_offset_0 < 0 else 'Нет'
+
+    @property
+    def humanized_is_issuer_in_blacklisted_region(self):
+        return 'Да' if self.is_issuer_in_blacklisted_region else 'Нет'
+
+    @property
+    def humanized_is_beneficiary_in_blacklisted_region(self):
+        return 'Да' if self.is_beneficiary_in_blacklisted_region else 'Нет'
+
+    @property
+    def humanized_is_bg_term_more_30_months(self):
+        return 'Да' if issue_term_in_months(self.bg_start_date, self.bg_end_date) > 30 else 'Нет'
+
+    @property
+    def humanized_is_bg_limit_exceeded_max(self):
+        return 'Да' if self.bg_sum > 18000000 else 'Нет'
+
+    @property
+    def humanized_issuer_presence_in_unfair_suppliers_registry(self):
+        kontur_principal_analytics_data = kontur.analytics(inn=self.issuer_inn, ogrn=self.issuer_ogrn)
+        return 'Да' if kontur_principal_analytics_data.get('m4001', False) else 'Нет'
 
     @property
     def humanized_is_contract_has_prepayment(self):
@@ -550,7 +612,7 @@ class Issue(models.Model):
     @property
     def tender_cost_reduction(self):
         if self.tender_start_cost and self.tender_final_cost:
-            return round(self.tender_start_cost / self.tender_final_cost, 2) * 100
+            return round((1 - self.tender_final_cost / self.tender_start_cost) * 100, 0)
         else:
             return '—'
 
@@ -656,6 +718,10 @@ class Issue(models.Model):
     @property
     def humanized_is_client_finance_situation_good(self):
         return 'Да' if self.scoring_rating_sum <= 25 else 'Нет'
+
+    @property
+    def humanized_is_not_client_finance_situation_good(self):
+        return 'Да' if not self.scoring_rating_sum <= 25 else 'Нет'
 
     @property
     def humanized_last_account_period_net_assets_great_than_authorized_capital(self):
@@ -804,6 +870,10 @@ class Issue(models.Model):
             'auth_capital_percentage': f['auth_capital_percentage']
         } for f in physical]
         return data
+
+    @cached_property
+    def issuer_affiliates_all(self):
+        return [obj.__dict__ for obj in self.issuer_affiliates.all()]
 
     @cached_property
     def bg_property(self):
@@ -1248,8 +1318,16 @@ class Issue(models.Model):
         return 'Да' if self.is_org_registered_more_than_6_months_ago else 'Нет'
 
     @property
+    def humanized_is_org_registered_less_than_6_months_ago(self):
+        return 'Да' if not self.is_org_registered_more_than_6_months_ago else 'Нет'
+
+    @property
     def humanuzed_is_org_activity_for_last_year_was_profilable(self):
         return 'Да' if self.balance_code_2400_offset_1 > 0 else 'Нет'
+    
+    @property
+    def humanized_is_org_activity_for_last_year_was_not_profitable(self):
+        return 'Да' if not self.balance_code_2400_offset_1 > 0 else 'Нет'
 
     @property
     def humanuzed_is_org_activity_for_last_period_was_profilable(self):
@@ -1308,12 +1386,17 @@ class Issue(models.Model):
         if len(ve.error_list) > 0:
             raise ve
 
+        if self.bg_sum < 1500000:
+            domc_filename = 'issue_domc_up_to_1500000.docx'
+        else:
+            domc_filename = 'issue_domc_from_1500000.docx'
+
         template_path = os.path.join(
             settings.BASE_DIR,
             'marer',
             'templates',
             'documents',
-            'issue_doc_ops_mgmt_conclusion.docx'
+            domc_filename
         )
 
         from marer.utils.documents import fill_docx_file_with_issue_data
@@ -1630,11 +1713,8 @@ class IssueBGProdAffiliate(models.Model):
 
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False, related_name='issuer_affiliates')
     name = models.CharField(verbose_name='наименование', max_length=512, blank=False, null=False, default='')
-    legal_address = models.CharField(verbose_name='юридический адрес', max_length=512, blank=True, null=False, default='')
     inn = models.CharField(verbose_name='ИНН', max_length=512, blank=True, null=False, default='')
-    activity_type = models.CharField(verbose_name='вид деятельности', max_length=512, blank=True, null=False, default='')
-    aff_percentage = models.CharField(verbose_name='доля участия', max_length=512, blank=True, null=False, default='')
-    aff_type = models.CharField(verbose_name='отношение к организации', max_length=512, blank=True, null=False, default='')
+    bank_liabilities_vol = models.DecimalField(verbose_name='объем обязательств банка', max_digits=32, decimal_places=2, blank=True, null=True)
 
 
 class IssueLeasingProdAsset(models.Model):
