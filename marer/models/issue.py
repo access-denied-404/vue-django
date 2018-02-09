@@ -745,7 +745,7 @@ class Issue(models.Model):
         authorized_capital = 0
         if details and details.get('UL', False):
             authorized_capital = details.get('UL', {}).get('statedCapital', {}).get('sum', 0)
-        return 'Да' if self.balance_code_1300_offset_0 > authorized_capital else 'Нет'
+        return 'Да' if self.balance_code_1300_offset_0 * 1000 > authorized_capital else 'Нет'
 
     @property
     def humanized_sum(self):
