@@ -550,7 +550,7 @@ class Issue(models.Model):
     @property
     def tender_cost_reduction(self):
         if self.tender_start_cost and self.tender_final_cost:
-            return round(self.tender_start_cost / self.tender_final_cost, 2) * 100
+            return round(self.tender_final_cost / self.tender_start_cost, 4) * 100
         else:
             return '—'
 
@@ -1312,7 +1312,7 @@ class Issue(models.Model):
         if len(ve.error_list) > 0:
             raise ve
 
-        if self.bg_sum < 15000000:
+        if self.bg_sum < 1500000:
             domc_filename = 'issue_domc_up_to_1500000.docx'
         else:
             domc_filename = 'issue_domc_from_1500000.docx'
