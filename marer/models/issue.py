@@ -806,6 +806,10 @@ class Issue(models.Model):
         return data
 
     @cached_property
+    def issuer_affiliates_all(self):
+        return [obj.__dict__ for obj in self.issuer_affiliates.all()]
+
+    @cached_property
     def bg_property(self):
         bg_type = {
             'электронный аукцион': 'электронного аукциона',
@@ -1635,11 +1639,8 @@ class IssueBGProdAffiliate(models.Model):
 
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False, related_name='issuer_affiliates')
     name = models.CharField(verbose_name='наименование', max_length=512, blank=False, null=False, default='')
-    legal_address = models.CharField(verbose_name='юридический адрес', max_length=512, blank=True, null=False, default='')
     inn = models.CharField(verbose_name='ИНН', max_length=512, blank=True, null=False, default='')
-    activity_type = models.CharField(verbose_name='вид деятельности', max_length=512, blank=True, null=False, default='')
-    aff_percentage = models.CharField(verbose_name='доля участия', max_length=512, blank=True, null=False, default='')
-    aff_type = models.CharField(verbose_name='отношение к организации', max_length=512, blank=True, null=False, default='')
+    bank_liabilities_vol = models.DecimalField(verbose_name='объем обязательств банка', max_digits=32, decimal_places=2, blank=True, null=True)
 
 
 class IssueLeasingProdAsset(models.Model):
