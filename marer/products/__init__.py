@@ -715,6 +715,7 @@ class BankGuaranteeProduct(FinanceProduct):
                 'bg_deadline_date',
                 ('tender_exec_law', 'bg_type',),
                 'application_doc_admin_field',
+                'lawyers_dep_conclusion_doc_admin_field',
                 'doc_ops_mgmt_conclusion_doc_admin_field',
                 # 'sec_dep_conclusion_doc_admin_field',
             ))),
@@ -740,6 +741,10 @@ class BankGuaranteeProduct(FinanceProduct):
                 ('balance_code_1300_offset_0', 'balance_code_1300_offset_1',),
                 ('balance_code_2110_offset_0', 'balance_code_2110_offset_1', 'balance_code_2110_offset_2',),
                 ('balance_code_2400_offset_0', 'balance_code_2400_offset_1',),
+            ))),
+            ('Информация для наполнеиня заключения ПУ', dict(classes=('collapse',), fields=(
+                'persons_can_acts_as_issuer_and_perms_term_info',
+                'lawyers_dep_recommendations',
             ))),
             ('Информация для наполнеиня заключения УРДО', dict(classes=('collapse',), fields=(
                 ('is_issuer_all_bank_liabilities_less_than_max',
@@ -817,6 +822,7 @@ class BankGuaranteeProduct(FinanceProduct):
             'contract_of_guarantee_admin_field',
             'bg_doc_admin_field',
             'additional_doc_admin_field',
+            'lawyers_dep_conclusion_doc_admin_field',
             'doc_ops_mgmt_conclusion_doc_admin_field',
             'sec_dep_conclusion_doc_admin_field',
             'tender_gos_number_link',

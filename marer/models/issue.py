@@ -291,6 +291,15 @@ class Issue(models.Model):
     is_issuer_has_bad_credit_history = models.NullBooleanField('Наличие текущей просроченной ссудной задолженности и отрицательной кредитной истории в кредитных организациях', blank=True, null=True)
     is_issuer_has_blocked_bank_account = models.NullBooleanField('Наличие информации о блокировке счетов', blank=True, null=True)
 
+    persons_can_acts_as_issuer_and_perms_term_info = models.TextField(verbose_name='Сведения о физических лицах, имеющих право действовать от имени Принципала без доверенности, срок окончания полномочий', blank=True, null=False, default='')
+    lawyers_dep_recommendations = models.TextField(
+        verbose_name='Сведения о физических лицах, имеющих право действовать от имени Принципала без доверенности, срок окончания полномочий',
+        help_text='Сотрудником правового управления должны быть оценена актуальность и достаточность предоставленных '
+                  'документов (устав и изменения к нему, документы, подтверждающие полномочия руководителя (включая '
+                  'сроки), соблюдение процедуры одобрения сделок (если подлежат одобрению по специальным основаниям). '
+                  'Обращено внимание на соблюдение процессуальных процедур при оформлении уставных документов.',
+        blank=True, null=False, default='')
+
     @property
     def humanized_is_issuer_has_blocked_bank_account(self):
         if self.is_issuer_has_blocked_bank_account is True:
@@ -488,6 +497,13 @@ class Issue(models.Model):
         null=True,
         blank=True,
         related_name='doc_ops_mgmt_conclusion_docs_links'
+    )
+    lawyers_dep_conclusion_doc = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='lawyers_dep_conclusion_docs_links'
     )
 
     sec_dep_conclusion_doc = models.ForeignKey(
@@ -1088,6 +1104,25 @@ class Issue(models.Model):
     sec_dep_conclusion_doc_admin_field.short_description = 'файл заключения ДБ'
     sec_dep_conclusion_doc_admin_field.allow_tags = True
 
+    def lawyers_dep_conclusion_doc_admin_field(self):
+        field_parts = []
+        if not self.lawyers_dep_conclusion_doc:
+            url = reverse('admin:marer_issue_generate_lawyers_dep_conclusion_doc', args=(self.id,))
+            field_parts.append('<b><a href="{}">сформировать</a></b>'.format(url))
+        else:
+            url = reverse('admin:marer_issue_generate_lawyers_dep_conclusion_doc', args=(self.id,))
+            field_parts.append('<b><a href="{}">переормировать</a></b>'.format(url))
+            if self.lawyers_dep_conclusion_doc.file:
+                field_parts.append('<b><a href="{}">скачать</a></b>'.format(self.lawyers_dep_conclusion_doc.file.url))
+            if self.lawyers_dep_conclusion_doc.sign:
+                field_parts.append('<b><a href="{}">ЭЦП</a></b>'.format(self.lawyers_dep_conclusion_doc.sign.url))
+        if len(field_parts) > 0:
+            return ', '.join(field_parts)
+        else:
+            return 'отсутствует'
+    lawyers_dep_conclusion_doc_admin_field.short_description = 'файл заключения ПУ'
+    lawyers_dep_conclusion_doc_admin_field.allow_tags = True
+
     @property
     def issuer_head_passport_info(self):
         info_arr = []
@@ -1409,6 +1444,27 @@ class Issue(models.Model):
         if commit:
             self.save()
         doc_ops_mgmt_conclusion_file.close()
+
+    def fill_lawyers_dep_conclusion(self, commit=True):
+
+        template_path = os.path.join(
+            settings.BASE_DIR,
+            'marer',
+            'templates',
+            'documents',
+            'issue_lawyers_conclusion.docx'
+        )
+
+        from marer.utils.documents import fill_docx_file_with_issue_data
+        lawyers_conclusion_file = fill_docx_file_with_issue_data(template_path, self)
+        lawyers_conclusion_file.name = 'lawyers_conclusion.docx'
+        lawyers_conclusion_doc = Document()
+        lawyers_conclusion_doc.file = lawyers_conclusion_file
+        lawyers_conclusion_doc.save()
+        self.lawyers_dep_conclusion_doc = lawyers_conclusion_doc
+        if commit:
+            self.save()
+        lawyers_conclusion_file.close()
 
     def fill_sec_dep_conclusion_doc(self, commit=True):
 

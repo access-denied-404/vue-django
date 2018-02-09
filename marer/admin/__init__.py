@@ -242,6 +242,11 @@ class IssueAdmin(ModelAdmin):
                 self.admin_site.admin_view(self.generate_sec_dep_conclusion_doc),
                 name='marer_issue_generate_sec_dep_conclusion_doc',
             ),
+            url(
+                r'^(.+)/generate/lawyers_dep_conclusion_doc/$',
+                self.admin_site.admin_view(self.generate_lawyers_dep_conclusion_doc),
+                name='marer_issue_generate_lawyers_dep_conclusion_doc',
+            ),
         ] + super().get_urls()
 
     def generate_doc_ops_mgmt_conclusion_doc(self, request, id, form_url=''):
@@ -287,9 +292,38 @@ class IssueAdmin(ModelAdmin):
                 for err in ve.error_list:
                     self.message_user(request, err, level=messages.ERROR)
             else:
-                self.message_user(request, 'Заключение УРДО заполнить невозможно', level=messages.ERROR)
+                self.message_user(request, 'Заключение ДБ заполнить невозможно', level=messages.ERROR)
         else:
             self.message_user(request, 'Заключение ДБ заполнено успешно')
+
+        return HttpResponseRedirect(
+            reverse(
+                '%s:%s_%s_change' % (
+                    self.admin_site.name,
+                    Issue._meta.app_label,
+                    Issue._meta.model_name,
+                ),
+                args=(issue.id,),
+            )
+        )
+
+    def generate_lawyers_dep_conclusion_doc(self, request, id, form_url=''):
+        issue_id = unquote(id)
+        try:
+            issue = Issue.objects.get(id=issue_id)
+        except ObjectDoesNotExist:
+            return self._get_obj_does_not_exist_redirect(request, Issue._meta, issue_id)
+
+        try:
+            issue.fill_lawyers_dep_conclusion()
+        except ValidationError as ve:
+            if len(ve.error_list) > 0:
+                for err in ve.error_list:
+                    self.message_user(request, err, level=messages.ERROR)
+            else:
+                self.message_user(request, 'Заключение ПУ заполнить невозможно', level=messages.ERROR)
+        else:
+            self.message_user(request, 'Заключение ПУ заполнено успешно')
 
         return HttpResponseRedirect(
             reverse(
