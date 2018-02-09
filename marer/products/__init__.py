@@ -761,6 +761,11 @@ class BankGuaranteeProduct(FinanceProduct):
                 'is_need_to_check_real_of_issuer_activity',
                 'is_real_of_issuer_activity_confirms',
                 'is_contract_corresponds_issuer_activity',),
+
+                ('contract_advance_requirements_fails',
+                'is_issuer_has_bad_credit_history',
+                'is_issuer_has_blocked_bank_account',),
+
                 'total_bank_liabilities_vol',
             ))),
 
