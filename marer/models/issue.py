@@ -1397,16 +1397,36 @@ class Issue(models.Model):
     @property
     def bank_reserving_percent(self):
         percentage = {
-            'Asgb': 1.5,
-            'Bsgb': 2.5,
-            'Esgb': 1.75,
-            'E2sgb': 2.75,
-            'Fsgb': 2,
-            'F2sgb': 3,
-            'Csgb': 3,
-            'Dsgb': 7.5
+            'Asgb': 1.25,
+            'A2sgb': 1.25,
+            'Bsgb': 2.25,
+            'B2sgb': 2.75,
+            'Esgb': 1.5,
+            'E2sgb': 2.5,
+            'Fsgb': 1.75,
+            'F2sgb': 2.75,
+            'Csgb': 2.75,
+            'Dsgb': 7.25
         }
-        return percentage.get(self.scoring_credit_rating, 7.5)
+
+        return percentage.get(self.scoring_credit_rating, 7.25)
+
+    @property
+    def bank_reserving_percent_quality_category(self):
+        categories = {
+            'Asgb': 'II-V*',
+            'A2sgb': 'II-V*',
+            'Bsgb': 'II-V*',
+            'B2sgb': 'II-V*',
+            'Esgb': 'II-V*',
+            'E2sgb': 'II-V*',
+            'Fsgb': 'II-V*',
+            'F2sgb': 'II-V*',
+            'Csgb': 'III-V*',
+            'Dsgb': 'III-V*'
+        }
+
+        return categories.get(self.scoring_credit_rating, 7.25)
 
     def fill_doc_ops_mgmt_conclusion(self, commit=True):
 
