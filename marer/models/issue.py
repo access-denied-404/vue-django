@@ -391,7 +391,7 @@ class Issue(models.Model):
     @property
     def humanized_is_issuer_executed_contracts_with_comparable_advances(self):
         if not self.tender_has_prepayment:
-            return ''
+            return ' '
         if self.is_issuer_executed_contracts_with_comparable_advances is True:
             return 'Да'
         if self.is_issuer_executed_contracts_with_comparable_advances is False:
@@ -401,7 +401,7 @@ class Issue(models.Model):
     @property
     def humanized_is_issuer_executed_gte_5_contracts_on_44_or_223_or_185_fz(self):
         if not self.tender_has_prepayment:
-            return ''
+            return ' '
         if self.is_issuer_executed_gte_5_contracts_on_44_or_223_or_185_fz is True:
             return 'Да'
         if self.is_issuer_executed_gte_5_contracts_on_44_or_223_or_185_fz is False:
@@ -411,7 +411,7 @@ class Issue(models.Model):
     @property
     def humanized_is_issuer_last_year_revenue_higher_in_5_times_than_all_bank_bgs(self):
         if not self.tender_has_prepayment:
-            return ''
+            return ' '
         if self.is_issuer_last_year_revenue_higher_in_5_times_than_all_bank_bgs is True:
             return 'Да'
         if self.is_issuer_last_year_revenue_higher_in_5_times_than_all_bank_bgs is False:
@@ -421,7 +421,7 @@ class Issue(models.Model):
     @property
     def humanized_is_issuer_has_garantor_for_advance_related_requirements(self):
         if not self.tender_has_prepayment:
-            return ''
+            return ' '
         if self.is_issuer_has_garantor_for_advance_related_requirements is True:
             return 'Да'
         if self.is_issuer_has_garantor_for_advance_related_requirements is False:
