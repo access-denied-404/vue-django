@@ -229,6 +229,7 @@ class BankGuaranteeProduct(FinanceProduct):
             kontur_req_data = kontur.req(inn=inn, ogrn=ogrn)
             kontur_egrDetails_data = kontur.egrDetails(inn=inn, ogrn=ogrn)
             kontur_beneficialOwners = kontur.beneficialOwners(inn=inn, ogrn=ogrn)
+            kontur_aff_data = kontur.companyAffiliatesReq(inn=inn, ogrn=ogrn)
             kontur_licences = kontur.licences(inn=inn, ogrn=ogrn)
             if not kontur_req_data:
                 return True
@@ -252,6 +253,21 @@ class BankGuaranteeProduct(FinanceProduct):
                     self._issue.issuer_head_last_name = head_name_arr[0]
                     self._issue.issuer_head_first_name = head_name_arr[1]
                     self._issue.issuer_head_middle_name = head_name_arr[2]
+
+            from marer.models.issue import IssueBGProdAffiliate
+            affiliates = IssueBGProdAffiliate.objects.filter(issue=self._issue)
+            affiliates.delete()
+            for aff in kontur_aff_data:
+                new_aff = IssueBGProdAffiliate()
+                new_aff.issue = self._issue
+
+                if aff.get('UL', None):
+                    new_aff.name = aff['UL']['legalName']['short'] if aff['UL']['legalName'].get('short', None) else aff['UL']['legalName']['full']
+                elif aff.get('IP', None):
+                    new_aff.name = aff['IP']['fio']
+
+                new_aff.inn = aff['inn']
+                new_aff.save()
 
             from marer.models.issue import IssueBGProdFounderLegal
             founders_legal = IssueBGProdFounderLegal.objects.filter(issue=self._issue)
