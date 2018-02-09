@@ -795,7 +795,7 @@ class BankGuaranteeProduct(FinanceProduct):
             ])
         else:
             fieldset.extend([
-                ('Сведения об организаторе тендера', dict(
+                ('Сведения о бенефициаре тендера', dict(
                     classes=('collapse',),
                     fields=tender_responsible_fields_part
                 )),

@@ -85,7 +85,6 @@ class IssueAdmin(ModelAdmin):
         'status',
         'get_user_manager',
         'get_issue_manager',
-        'user_is_broker',
         'humanized_sum',
         'created_at',
         'updated_at',
@@ -93,7 +92,6 @@ class IssueAdmin(ModelAdmin):
     list_filter = (
         ('user__manager', ManagerListFilter),
         ('manager', ManagerListFilter),
-        ('user', BrokerListFilter),
         'status',
     )
     formfield_overrides = {
@@ -128,12 +126,6 @@ class IssueAdmin(ModelAdmin):
     humanized_id.short_description = 'номер заявки'
     humanized_id.admin_order_field = 'id'
 
-    def user_is_broker(self, obj):
-        return obj.user.is_broker
-    user_is_broker.short_description = 'от брокера'
-    user_is_broker.admin_order_field = 'user__is_broker'
-    user_is_broker.boolean = True
-
     def shortened_user(self, obj):
         return '{} {},<br>{}'.format(
             obj.user.first_name or '',
@@ -150,8 +142,6 @@ class IssueAdmin(ModelAdmin):
                 (None, dict(fields=(
                     'user',
                     'manager',
-                    'private_comment',
-                    'comment',
                 ))),
             ]
         else:
@@ -160,9 +150,6 @@ class IssueAdmin(ModelAdmin):
                     'status',
                     'user',
                     'manager',
-                    'private_comment',
-                    'comment',
-                    'final_note',
                     'get_last_message',
                 ))),
             ]
@@ -347,10 +334,8 @@ class IssueAdmin(ModelAdmin):
         if obj is None:
             self.inlines = []
         else:
-            self.inlines = [IssueDocumentInlineAdmin]
-            self.inlines += obj.get_product().get_admin_issue_inlnes()
+            self.inlines = obj.get_product().get_admin_issue_inlnes()
             self.inlines += [
-                IFOPClarificationInlineAdmin,
                 IssueProposeDocumentInlineAdmin,
                 IFOPFinalDocumentInlineAdmin,
             ]
