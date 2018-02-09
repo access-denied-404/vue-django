@@ -1881,6 +1881,6 @@ class IssueMessagesProxy(Issue):
 
 @receiver(pre_save, sender=Issue, dispatch_uid="pre_save_issue")
 def pre_save_issue(sender, instance, **kwargs):
-    # if instance.old_status != instance.status and instance.status == consts.ISSUE_STATUS_REVIEW:
-    from marer.utils.documents import generate_acts_for_issue
-    generate_acts_for_issue(instance)
+    if instance.old_status != instance.status and instance.status == consts.ISSUE_STATUS_REVIEW:
+        from marer.utils.documents import generate_acts_for_issue
+        generate_acts_for_issue(instance)
