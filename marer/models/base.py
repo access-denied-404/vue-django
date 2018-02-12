@@ -82,7 +82,6 @@ def set_obj_update_time(obj, updated_at_field='updated_at'):
 
 class Document(models.Model):
 
-
     file = models.FileField(upload_to=documents_upload_path, max_length=512)
     sign = models.FileField(upload_to=documents_upload_path, max_length=512, null=True, blank=True)
 
