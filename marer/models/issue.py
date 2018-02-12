@@ -1,6 +1,7 @@
 import json
 
 import os
+from _decimal import DivisionByZero
 
 import feedparser
 from dateutil.relativedelta import relativedelta
@@ -207,17 +208,17 @@ class Issue(models.Model):
     formalize_note = models.TextField(verbose_name='подпись к документам для оформления', blank=True, null=False, default='')
     final_note = models.TextField(verbose_name='подпись к итоговым документам', blank=True, null=False, default='')
 
-    balance_code_1300_offset_0 = models.DecimalField('чистые активы за последний отчетный период', max_digits=32, decimal_places=2, blank=True, null=True)
-    balance_code_1600_offset_0 = models.DecimalField('валюта баланса за последний отчетный период', max_digits=32, decimal_places=2, blank=True, null=True)
-    balance_code_2110_offset_0 = models.DecimalField('выручка за последний отчетный период', max_digits=32, decimal_places=2, blank=True, null=True)
-    balance_code_2400_offset_0 = models.DecimalField('прибыль за последний отчетный период', max_digits=32, decimal_places=2, blank=True, null=True)
+    balance_code_1300_offset_0 = models.DecimalField('чистые активы за последний отчетный период', max_digits=32, decimal_places=0, blank=True, null=True)
+    balance_code_1600_offset_0 = models.DecimalField('валюта баланса за последний отчетный период', max_digits=32, decimal_places=0, blank=True, null=True)
+    balance_code_2110_offset_0 = models.DecimalField('выручка за последний отчетный период', max_digits=32, decimal_places=0, blank=True, null=True)
+    balance_code_2400_offset_0 = models.DecimalField('прибыль за последний отчетный период', max_digits=32, decimal_places=0, blank=True, null=True)
 
-    balance_code_1300_offset_1 = models.DecimalField('чистые активы за последний год', max_digits=32, decimal_places=2, blank=True, null=True)
-    balance_code_1600_offset_1 = models.DecimalField('валюта баланса за последний год', max_digits=32, decimal_places=2, blank=True, null=True)
-    balance_code_2110_offset_1 = models.DecimalField('выручка за последний год', max_digits=32, decimal_places=2, blank=True, null=True)
-    balance_code_2400_offset_1 = models.DecimalField('прибыль за последний год', max_digits=32, decimal_places=2, blank=True, null=True)
+    balance_code_1300_offset_1 = models.DecimalField('чистые активы за последний год', max_digits=32, decimal_places=0, blank=True, null=True)
+    balance_code_1600_offset_1 = models.DecimalField('валюта баланса за последний год', max_digits=32, decimal_places=0, blank=True, null=True)
+    balance_code_2110_offset_1 = models.DecimalField('выручка за последний год', max_digits=32, decimal_places=0, blank=True, null=True)
+    balance_code_2400_offset_1 = models.DecimalField('прибыль за последний год', max_digits=32, decimal_places=0, blank=True, null=True)
 
-    balance_code_2110_offset_2 = models.DecimalField('выручка за предыдущий год', max_digits=32, decimal_places=2, blank=True, null=True)
+    balance_code_2110_offset_2 = models.DecimalField('выручка за предыдущий год', max_digits=32, decimal_places=0, blank=True, null=True)
 
     avg_employees_cnt_for_prev_year = models.IntegerField(verbose_name='Средняя численность работников за предшествующий календарный год', blank=False, null=False, default=1)
     issuer_web_site = models.CharField(verbose_name='Web-сайт', max_length=512, blank=True, null=False, default='')
@@ -642,7 +643,10 @@ class Issue(models.Model):
 
     @property
     def scoring_issuer_profitability(self):
-        coeff = (self.balance_code_2400_offset_1 / self.balance_code_2110_offset_1) * 100
+        try:
+            coeff = (self.balance_code_2400_offset_1 / self.balance_code_2110_offset_1) * 100
+        except DivisionByZero:
+            return 3
         if coeff < 0.5:
             return 4
         elif 0.5 <= coeff < 1:
@@ -654,8 +658,11 @@ class Issue(models.Model):
 
     @property
     def scoring_revenue_reduction(self):
-        code_2110_offset_2 = self.balance_code_2110_offset_2 or 0
-        coeff = (self.balance_code_2110_offset_1 / code_2110_offset_2) * 100
+        try:
+            code_2110_offset_2 = self.balance_code_2110_offset_2 or 0
+            coeff = (self.balance_code_2110_offset_1 / code_2110_offset_2) * 100
+        except DivisionByZero:
+            return 3
         if coeff < 75:
             return 4
         elif 75 <= coeff < 100:
@@ -667,7 +674,10 @@ class Issue(models.Model):
 
     @property
     def scoring_own_funds_ensurance(self):
-        coeff = (self.balance_code_1300_offset_1 / self.balance_code_1600_offset_1) * 100
+        try:
+            coeff = (self.balance_code_1300_offset_1 / self.balance_code_1600_offset_1) * 100
+        except DivisionByZero:
+            return 3
         if coeff <= 5:
             return 4
         elif 5 <= coeff <= 15:
@@ -1422,16 +1432,16 @@ class Issue(models.Model):
     @property
     def bank_reserving_percent_quality_category(self):
         categories = {
-            'Asgb': 'II-V*',
-            'A2sgb': 'II-V*',
-            'Bsgb': 'II-V*',
-            'B2sgb': 'II-V*',
-            'Esgb': 'II-V*',
-            'E2sgb': 'II-V*',
-            'Fsgb': 'II-V*',
-            'F2sgb': 'II-V*',
-            'Csgb': 'III-V*',
-            'Dsgb': 'III-V*'
+            'Asgb': '2',
+            'A2sgb': '2',
+            'Bsgb': '2',
+            'B2sgb': '2',
+            'Esgb': '2',
+            'E2sgb': '2',
+            'Fsgb': '2',
+            'F2sgb': '2',
+            'Csgb': '3',
+            'Dsgb': '3'
         }
 
         return categories.get(self.scoring_credit_rating, 7.25)
