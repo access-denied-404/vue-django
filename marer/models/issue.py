@@ -1,6 +1,7 @@
 import json
 
 import os
+from _decimal import DivisionByZero
 
 import feedparser
 from dateutil.relativedelta import relativedelta
@@ -22,7 +23,7 @@ from marer.models.finance_org import FinanceOrganization, FinanceOrgProductPropo
 from marer.models.issuer import Issuer, IssuerDocument
 from marer.products import get_urgency_hours, get_urgency_days, get_finance_products_as_choices, FinanceProduct, get_finance_products, BankGuaranteeProduct
 from marer.utils import CustomJSONEncoder, kontur
-from marer.utils.issue import bank_commission, sum2str, generate_bg_number
+from marer.utils.issue import bank_commission, sum2str, generate_bg_number, issue_term_in_months
 from marer.utils.morph import MorpherApi
 from marer.utils.other import OKOPF_CATALOG
 
@@ -75,6 +76,7 @@ class Issue(models.Model):
     issuer_fact_address = models.CharField(verbose_name='фактический адрес заявителя', max_length=512, blank=True, null=False, default='')
     issuer_okpo = models.CharField(verbose_name='код ОКПО заявителя', max_length=32, blank=True, null=False, default='')
     issuer_okato = models.CharField(verbose_name='код ОКАТО заявителя', max_length=32, blank=True, null=False, default='')
+    issuer_oktmo = models.CharField(verbose_name='код ОКТМО заявителя', max_length=32, blank=True, null=False, default='')
     issuer_registration_date = models.DateField(verbose_name='дата регистрации', blank=True, null=True)
     issuer_ifns_reg_date = models.DateField(verbose_name='дата постановки на учет в ИФНС', blank=True, null=True)
     issuer_ifns_reg_cert_number = models.CharField(verbose_name='номер свидетельства о постановке на учет ИФНС', max_length=32, blank=True, null=False, default='')
@@ -110,6 +112,7 @@ class Issue(models.Model):
     ])
     tender_publish_date = models.DateField(verbose_name='дата публикации тендера', blank=True, null=True)
     tender_start_cost = models.DecimalField(verbose_name='начальная цена тендера', max_digits=32, decimal_places=2, blank=True, null=True)
+    tender_final_cost = models.DecimalField(verbose_name='конечная цена тендера', max_digits=32, decimal_places=2, blank=True, null=True)
 
     tender_contract_type = models.CharField(verbose_name='вид работ в тендере', max_length=32, blank=True, null=True, choices=[
         (consts.TENDER_CONTRACT_TYPE_SUPPLY_CONTRACT, 'Поставка товара'),
@@ -205,15 +208,17 @@ class Issue(models.Model):
     formalize_note = models.TextField(verbose_name='подпись к документам для оформления', blank=True, null=False, default='')
     final_note = models.TextField(verbose_name='подпись к итоговым документам', blank=True, null=False, default='')
 
-    balance_code_1300_offset_0 = models.DecimalField(max_digits=32, decimal_places=2, blank=True, null=True)
-    balance_code_1600_offset_0 = models.DecimalField(max_digits=32, decimal_places=2, blank=True, null=True)
-    balance_code_2110_offset_0 = models.DecimalField(max_digits=32, decimal_places=2, blank=True, null=True)
-    balance_code_2400_offset_0 = models.DecimalField(max_digits=32, decimal_places=2, blank=True, null=True)
+    balance_code_1300_offset_0 = models.DecimalField('чистые активы за последний отчетный период', max_digits=32, decimal_places=0, blank=True, null=True)
+    balance_code_1600_offset_0 = models.DecimalField('валюта баланса за последний отчетный период', max_digits=32, decimal_places=0, blank=True, null=True)
+    balance_code_2110_offset_0 = models.DecimalField('выручка за последний отчетный период', max_digits=32, decimal_places=0, blank=True, null=True)
+    balance_code_2400_offset_0 = models.DecimalField('прибыль за последний отчетный период', max_digits=32, decimal_places=0, blank=True, null=True)
 
-    balance_code_1300_offset_1 = models.DecimalField(max_digits=32, decimal_places=2, blank=True, null=True)
-    balance_code_1600_offset_1 = models.DecimalField(max_digits=32, decimal_places=2, blank=True, null=True)
-    balance_code_2110_offset_1 = models.DecimalField(max_digits=32, decimal_places=2, blank=True, null=True)
-    balance_code_2400_offset_1 = models.DecimalField(max_digits=32, decimal_places=2, blank=True, null=True)
+    balance_code_1300_offset_1 = models.DecimalField('чистые активы за последний год', max_digits=32, decimal_places=0, blank=True, null=True)
+    balance_code_1600_offset_1 = models.DecimalField('валюта баланса за последний год', max_digits=32, decimal_places=0, blank=True, null=True)
+    balance_code_2110_offset_1 = models.DecimalField('выручка за последний год', max_digits=32, decimal_places=0, blank=True, null=True)
+    balance_code_2400_offset_1 = models.DecimalField('прибыль за последний год', max_digits=32, decimal_places=0, blank=True, null=True)
+
+    balance_code_2110_offset_2 = models.DecimalField('выручка за предыдущий год', max_digits=32, decimal_places=0, blank=True, null=True)
 
     avg_employees_cnt_for_prev_year = models.IntegerField(verbose_name='Средняя численность работников за предшествующий календарный год', blank=False, null=False, default=1)
     issuer_web_site = models.CharField(verbose_name='Web-сайт', max_length=512, blank=True, null=False, default='')
@@ -262,6 +267,232 @@ class Issue(models.Model):
     issuer_org_management_other_name = models.CharField(verbose_name='Иной орган управления организации заявителя: наименование', max_length=512, blank=True, null=False, default='')
     issuer_org_management_other_fio = models.CharField(verbose_name='Иной орган управления организации заявителя: ФИО', max_length=512, blank=True, null=False, default='')
 
+    is_issuer_all_bank_liabilities_less_than_max = models.NullBooleanField('Лимит на Принципала (группу взаимосвязанных Заемщиков) ВСЕХ обязательств Банка менее 18 000 000 руб', blank=True, null=True)
+    is_issuer_executed_contracts_on_44_or_223_or_185_fz = models.NullBooleanField('Клиент исполнил не менее 1 контракта в рамках законов № 94-ФЗ, 44-ФЗ, 223-ФЗ, 185-ФЗ (615 ПП)', blank=True, null=True)
+    is_issuer_executed_goverment_contract_for_last_3_years = models.NullBooleanField('Наличие исполненного государственного контракта за последние 3 года', blank=True, null=True)
+    is_contract_has_prepayment = models.NullBooleanField('Контракт предусматривает выплату аванса', blank=True, null=True)
+
+    is_issuer_executed_contracts_with_comparable_advances = models.NullBooleanField('Клиент исполнял контракты с авансами сопоставимого или большего размера (допустимое отклонение в меньшую сторону не более 50 % включительно)', blank=True, null=True)
+    is_issuer_executed_gte_5_contracts_on_44_or_223_or_185_fz = models.NullBooleanField('Факт исполнения не менее 5 контрактов, заключенных в рамках законов № 44-ФЗ (включая № 94-ФЗ), 223-ФЗ, 185-ФЗ (615 ПП)', blank=True, null=True)
+    is_issuer_last_year_revenue_higher_in_5_times_than_all_bank_bgs = models.NullBooleanField('Выручка Клиента за последний завершенный год не менее, чем в 5 раз превышает сумму запрашиваемой и действующих в Банке гарантий', blank=True, null=True)
+    is_issuer_has_garantor_for_advance_related_requirements = models.NullBooleanField('Наличие Поручителя юридического лица удовлетворяющим одному из предыдущих трех условий', blank=True, null=True)
+
+    is_contract_price_reduction_lower_than_50_pct_on_supply_contract = models.NullBooleanField('Снижение цены Контракта менее 50% если предмет контракта «Поставка»', blank=True, null=True)
+    is_positive_security_department_conclusion = models.NullBooleanField('Наличие положительного Заключения СБ', blank=True, null=True)
+    is_positive_lawyers_department_conclusion = models.NullBooleanField('Наличие положительного Заключения ПУ (в соответствии с Приказом по проверке ПУ)', blank=True, null=True)
+    is_absent_info_about_court_acts_for_more_than_20_pct_of_net_assets = models.NullBooleanField('Отсутствие информации об исполнительных производствах Приницпала его Участников на сумму более 20% чистых активов Клиента', blank=True, null=True)
+    is_absent_info_about_legal_proceedings_as_defendant_for_more_than_30_pct_of_net_assets = models.NullBooleanField('Отсутствие информации о судебных разбирательствах Клиента в качестве ответчика (за исключением закрытых) на сумму более 30% чистых активов Клиента', blank=True, null=True)
+    is_need_to_check_real_of_issuer_activity = models.NullBooleanField('Есть необходимость оценки реальности деятельности', blank=True, null=True)
+    is_real_of_issuer_activity_confirms = models.NullBooleanField('Реальность деятельности подтверждается', blank=True, null=True)
+    is_contract_corresponds_issuer_activity = models.NullBooleanField('Контракт соответствует профилю деятельности клиента', blank=True, null=True)
+
+    total_bank_liabilities_vol = models.DecimalField(verbose_name='объем обязательств банка', max_digits=32, decimal_places=2, blank=True, null=True)
+
+    contract_advance_requirements_fails = models.NullBooleanField('Не выполняются требования к авансированию (при наличии в контракте аванса)', blank=True, null=True)
+    is_issuer_has_bad_credit_history = models.NullBooleanField('Наличие текущей просроченной ссудной задолженности и отрицательной кредитной истории в кредитных организациях', blank=True, null=True)
+    is_issuer_has_blocked_bank_account = models.NullBooleanField('Наличие информации о блокировке счетов', blank=True, null=True)
+
+    persons_can_acts_as_issuer_and_perms_term_info = models.TextField(verbose_name='Сведения о физических лицах, имеющих право действовать от имени Принципала без доверенности, срок окончания полномочий', blank=True, null=False, default='')
+    lawyers_dep_recommendations = models.TextField(
+        verbose_name='Сведения о физических лицах, имеющих право действовать от имени Принципала без доверенности, срок окончания полномочий',
+        help_text='Сотрудником правового управления должны быть оценена актуальность и достаточность предоставленных '
+                  'документов (устав и изменения к нему, документы, подтверждающие полномочия руководителя (включая '
+                  'сроки), соблюдение процедуры одобрения сделок (если подлежат одобрению по специальным основаниям). '
+                  'Обращено внимание на соблюдение процессуальных процедур при оформлении уставных документов.',
+        blank=True, null=False, default='')
+
+    @property
+    def humanized_is_issuer_has_blocked_bank_account(self):
+        if self.is_issuer_has_blocked_bank_account is True:
+            return 'Да'
+        elif self.is_issuer_has_blocked_bank_account is False:
+            return 'Нет'
+        else:
+            return '—'
+
+    @property
+    def humanized_contract_advance_requirements_fails(self):
+        if self.contract_advance_requirements_fails is True:
+            return 'Да'
+        elif self.contract_advance_requirements_fails is False:
+            return 'Нет'
+        else:
+            return '—'
+
+    @property
+    def humanized_is_issuer_has_bad_credit_history(self):
+        if self.is_issuer_has_bad_credit_history is True:
+            return 'Да'
+        elif self.is_issuer_has_bad_credit_history is False:
+            return 'Нет'
+        else:
+            return '—'
+
+    @property
+    def humanized_is_issuer_all_bank_liabilities_less_than_max(self):
+        if self.is_issuer_all_bank_liabilities_less_than_max is True:
+            return 'Да'
+        if self.is_issuer_all_bank_liabilities_less_than_max is False:
+            return 'Нет'
+        return '—'
+
+    @property
+    def humanized_is_issuer_executed_contracts_on_44_or_223_or_185_fz(self):
+        if self.is_issuer_executed_contracts_on_44_or_223_or_185_fz is True:
+            return 'Да'
+        if self.is_issuer_executed_contracts_on_44_or_223_or_185_fz is False:
+            return 'Нет'
+        return '—'
+
+    @property
+    def humanized_is_not_issuer_executed_contracts_on_44_or_223_or_185_fz(self):
+        return 'Нет' if self.is_issuer_executed_contracts_on_44_or_223_or_185_fz else 'Да'
+
+    @property
+    def humanized_is_issuer_executed_goverment_contract_for_last_3_years(self):
+        if self.is_issuer_executed_goverment_contract_for_last_3_years is True:
+            return 'Да'
+        if self.is_issuer_executed_goverment_contract_for_last_3_years is False:
+            return 'Нет'
+        return '—'
+
+    @property
+    def humanized_is_negative_net_assets_for_last_quarter(self):
+        return 'Да' if self.balance_code_1300_offset_0 < 0 else 'Нет'
+
+    @property
+    def humanized_is_issuer_in_blacklisted_region(self):
+        return 'Да' if self.is_issuer_in_blacklisted_region else 'Нет'
+
+    @property
+    def humanized_is_beneficiary_in_blacklisted_region(self):
+        return 'Да' if self.is_beneficiary_in_blacklisted_region else 'Нет'
+
+    @property
+    def humanized_is_bg_term_more_30_months(self):
+        return 'Да' if issue_term_in_months(self.bg_start_date, self.bg_end_date) > 30 else 'Нет'
+
+    @property
+    def humanized_is_bg_limit_exceeded_max(self):
+        return 'Да' if self.bg_sum > 18000000 else 'Нет'
+
+    @property
+    def humanized_issuer_presence_in_unfair_suppliers_registry(self):
+        kontur_principal_analytics_data = kontur.analytics(inn=self.issuer_inn, ogrn=self.issuer_ogrn)
+        return 'Да' if kontur_principal_analytics_data.get('m4001', False) else 'Нет'
+
+    @property
+    def humanized_is_contract_has_prepayment(self):
+        if self.is_contract_has_prepayment is True:
+            return 'Да'
+        if self.is_contract_has_prepayment is False:
+            return 'Нет'
+        return '—'
+
+    @property
+    def humanized_is_issuer_executed_contracts_with_comparable_advances(self):
+        if not self.tender_has_prepayment:
+            return ' '
+        if self.is_issuer_executed_contracts_with_comparable_advances is True:
+            return 'Да'
+        if self.is_issuer_executed_contracts_with_comparable_advances is False:
+            return 'Нет'
+        return '—'
+
+    @property
+    def humanized_is_issuer_executed_gte_5_contracts_on_44_or_223_or_185_fz(self):
+        if not self.tender_has_prepayment:
+            return ' '
+        if self.is_issuer_executed_gte_5_contracts_on_44_or_223_or_185_fz is True:
+            return 'Да'
+        if self.is_issuer_executed_gte_5_contracts_on_44_or_223_or_185_fz is False:
+            return 'Нет'
+        return '—'
+
+    @property
+    def humanized_is_issuer_last_year_revenue_higher_in_5_times_than_all_bank_bgs(self):
+        if not self.tender_has_prepayment:
+            return ' '
+        if self.is_issuer_last_year_revenue_higher_in_5_times_than_all_bank_bgs is True:
+            return 'Да'
+        if self.is_issuer_last_year_revenue_higher_in_5_times_than_all_bank_bgs is False:
+            return 'Нет'
+        return '—'
+
+    @property
+    def humanized_is_issuer_has_garantor_for_advance_related_requirements(self):
+        if not self.tender_has_prepayment:
+            return ' '
+        if self.is_issuer_has_garantor_for_advance_related_requirements is True:
+            return 'Да'
+        if self.is_issuer_has_garantor_for_advance_related_requirements is False:
+            return 'Нет'
+        return '—'
+
+    @property
+    def humanized_is_contract_price_reduction_lower_than_50_pct_on_supply_contract(self):
+        if self.is_contract_price_reduction_lower_than_50_pct_on_supply_contract is True:
+            return 'Да'
+        if self.is_contract_price_reduction_lower_than_50_pct_on_supply_contract is False:
+            return 'Нет'
+        return '—'
+
+    @property
+    def humanized_is_positive_security_department_conclusion(self):
+        if self.is_positive_security_department_conclusion is True:
+            return 'Да'
+        if self.is_positive_security_department_conclusion is False:
+            return 'Нет'
+        return '—'
+
+    @property
+    def humanized_is_positive_lawyers_department_conclusion(self):
+        if self.is_positive_lawyers_department_conclusion is True:
+            return 'Да'
+        if self.is_positive_lawyers_department_conclusion is False:
+            return 'Нет'
+        return '—'
+
+    @property
+    def humanized_is_absent_info_about_court_acts_for_more_than_20_pct_of_net_assets(self):
+        if self.is_absent_info_about_court_acts_for_more_than_20_pct_of_net_assets is True:
+            return 'Да'
+        if self.is_absent_info_about_court_acts_for_more_than_20_pct_of_net_assets is False:
+            return 'Нет'
+        return '—'
+
+    @property
+    def humanized_is_absent_info_about_legal_proceedings_as_defendant_for_more_than_30_pct_of_net_assets(self):
+        if self.is_absent_info_about_legal_proceedings_as_defendant_for_more_than_30_pct_of_net_assets is True:
+            return 'Да'
+        if self.is_absent_info_about_legal_proceedings_as_defendant_for_more_than_30_pct_of_net_assets is False:
+            return 'Нет'
+        return '—'
+
+    @property
+    def humanized_is_need_to_check_real_of_issuer_activity(self):
+        if self.is_need_to_check_real_of_issuer_activity is True:
+            return 'Да'
+        if self.is_need_to_check_real_of_issuer_activity is False:
+            return 'Нет'
+        return '—'
+
+    @property
+    def humanized_is_real_of_issuer_activity_confirms(self):
+        if self.is_real_of_issuer_activity_confirms is True:
+            return 'Да'
+        if self.is_real_of_issuer_activity_confirms is False:
+            return 'Нет'
+        return '—'
+
+    @property
+    def humanized_is_contract_corresponds_issuer_activity(self):
+        if self.is_contract_corresponds_issuer_activity is True:
+            return 'Да'
+        if self.is_contract_corresponds_issuer_activity is False:
+            return 'Нет'
+        return '—'
+
     application_doc = models.ForeignKey(
         Document,
         on_delete=models.SET_NULL,
@@ -275,6 +506,13 @@ class Issue(models.Model):
         null=True,
         blank=True,
         related_name='doc_ops_mgmt_conclusion_docs_links'
+    )
+    lawyers_dep_conclusion_doc = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='lawyers_dep_conclusion_docs_links'
     )
 
     sec_dep_conclusion_doc = models.ForeignKey(
@@ -397,6 +635,137 @@ class Issue(models.Model):
             return 'БЕЗ НОМЕРА'
 
     @property
+    def tender_cost_reduction(self):
+        if self.tender_start_cost and self.tender_final_cost:
+            return round((1 - self.tender_final_cost / self.tender_start_cost) * 100, 0)
+        else:
+            return '—'
+
+    @property
+    def scoring_issuer_profitability(self):
+        try:
+            coeff = (self.balance_code_2400_offset_1 / self.balance_code_2110_offset_1) * 100
+        except DivisionByZero:
+            return 3
+        if coeff < 0.5:
+            return 4
+        elif 0.5 <= coeff < 1:
+            return 3
+        elif 1 <= coeff < 3:
+            return 2
+        elif 3 <= coeff:
+            return 1
+
+    @property
+    def scoring_revenue_reduction(self):
+        try:
+            code_2110_offset_2 = self.balance_code_2110_offset_2 or 0
+            coeff = (self.balance_code_2110_offset_1 / code_2110_offset_2) * 100
+        except DivisionByZero:
+            return 3
+        if coeff < 75:
+            return 4
+        elif 75 <= coeff < 100:
+            return 3
+        elif 100 <= coeff < 110:
+            return 2
+        elif 110 <= coeff:
+            return 1
+
+    @property
+    def scoring_own_funds_ensurance(self):
+        try:
+            coeff = (self.balance_code_1300_offset_1 / self.balance_code_1600_offset_1) * 100
+        except DivisionByZero:
+            return 3
+        if coeff <= 5:
+            return 4
+        elif 5 <= coeff <= 15:
+            return 3
+        elif 15 <= coeff <= 30:
+            return 2
+        elif 30 <= coeff:
+            return 1
+
+    @property
+    def scoring_current_profit(self):
+        return 1 if self.balance_code_2400_offset_0 > 0 else 2
+
+    @property
+    def scoring_finished_contracts_count(self):
+        coeff = self.finished_contracts_count
+        if coeff <= 1:
+            return 6
+        elif 2 <= coeff <= 4:
+            return 3
+        elif 5 <= coeff <= 7:
+            return 2
+        elif 7 < coeff:
+            return 1
+
+    @property
+    def scoring_credit_history(self):
+        return 3
+
+    @property
+    def scoring_rating_sum(self):
+        return (
+            self.scoring_current_profit
+            + self.scoring_issuer_profitability
+            + self.scoring_own_funds_ensurance
+            + self.scoring_revenue_reduction
+            + self.scoring_finished_contracts_count
+            + self.scoring_credit_history
+        )
+
+    @property
+    def scoring_credit_rating(self):
+        coeff = self.scoring_rating_sum
+        if coeff <= 14 and self.bg_sum > 5000000:
+            return 'Asgb'
+        elif 15 <= coeff <= 25 and self.bg_sum > 5000000:
+            return 'Bsgb'
+        elif coeff <= 14 and 1500000 < self.bg_sum <= 5000000:
+            return 'Esgb'
+        elif 15 <= coeff <= 25 and 1500000 < self.bg_sum <= 5000000:
+            return 'E2sgb'
+        elif coeff <= 14 and self.bg_sum <= 1500000:
+            return 'Fsgb'
+        elif 15 <= coeff <= 25 and self.bg_sum <= 1500000:
+            return 'F2sgb'
+        elif 26 <= coeff <= 30:
+            return 'Csgb'
+        elif 31 <= coeff:
+            return 'Dsgb'
+
+
+    @property
+    def client_finance_situation(self):
+        coeff = self.scoring_rating_sum
+        if coeff <= 25:
+            return 'Хорошее'
+        elif 26 <= coeff <= 30:
+            return 'Среднее'
+        elif 31 <= coeff:
+            return 'Плохое'
+
+    @property
+    def humanized_is_client_finance_situation_good(self):
+        return 'Да' if self.scoring_rating_sum <= 25 else 'Нет'
+
+    @property
+    def humanized_is_not_client_finance_situation_good(self):
+        return 'Да' if not self.scoring_rating_sum <= 25 else 'Нет'
+
+    @property
+    def humanized_last_account_period_net_assets_great_than_authorized_capital(self):
+        details = kontur.egrDetails(inn=self.issuer_inn, ogrn=self.issuer_ogrn)
+        authorized_capital = 0
+        if details and details.get('UL', False):
+            authorized_capital = details.get('UL', {}).get('statedCapital', {}).get('sum', 0)
+        return 'Да' if self.balance_code_1300_offset_0 * 1000 > authorized_capital else 'Нет'
+
+    @property
     def humanized_sum(self):
         if self.bg_sum:
             fmt_sum = number_format(self.bg_sum, force_grouping=True)
@@ -451,7 +820,7 @@ class Issue(models.Model):
 
     @property
     def humanized_issuer_head_birthday(self):
-        return self.issuer_head_bithday.strftime('%d.%m.%Y') if self.issuer_head_bithday else ''
+        return self.issuer_head_birthday.strftime('%d.%m.%Y') if self.issuer_head_birthday else ''
 
     @property
     def humanized_issuer_has_overdue_debts_for_last_180_days(self):
@@ -523,7 +892,7 @@ class Issue(models.Model):
 
     @cached_property
     def first_bank_account(self):
-        return self.org_bank_accounts.order_by('id').first()
+        return self.org_bank_accounts.order_by('id').first() or IssueOrgBankAccount()
 
     @cached_property
     def founders_with_25_share(self):
@@ -535,6 +904,10 @@ class Issue(models.Model):
             'auth_capital_percentage': f['auth_capital_percentage']
         } for f in physical]
         return data
+
+    @cached_property
+    def issuer_affiliates_all(self):
+        return [obj.__dict__ for obj in self.issuer_affiliates.all()]
 
     @cached_property
     def bg_property(self):
@@ -552,7 +925,7 @@ class Issue(models.Model):
             issuer_head_short_fio = ''
 
         sign_by = {
-            'less_3000000' : {
+            'signer_1' : {
                 'sign_by': 'Евграфова Ольга Алексеевна',
                 'sign_by_rp': 'Евграфовой Ольги Алексеевны',
                 'sign_by_short': 'О.А. Евграфова',
@@ -560,19 +933,29 @@ class Issue(models.Model):
                 'post_sign_by_rp': 'Ведущего специалиста Отдела документарных операций Управления развития документарных операций',
                 'power_of_attorney': '№236 от 05 июня 2017 года',
             },
-            'more_3000000': {
+            'signer_2': {
                 'sign_by': 'Голубев Дмитрий Алексеевич',
                 'sign_by_rp': 'Голубева Дмитрия Алексеевича',
                 'sign_by_short': 'Д. А. Голубев',
                 'post_sign_by': 'Начальник Отдела документарных операций Управления развития документарных операций',
                 'post_sign_by_rp': 'Начальника Отдела документарных операций Управления развития документарных операций',
                 'power_of_attorney': '№235 от 05 июня 2017 года',
-            }
+            },
+            'signer_3': {
+                'sign_by': 'Скворцова Ирина Вячеславовна',
+                'sign_by_rp': 'Скворцовой Ирины Вячеславовны',
+                'sign_by_short': 'И. В. Скворцова',
+                'post_sign_by': 'Заместитель главного бухгалтера Московского филиала «БАНК СГБ»',
+                'post_sign_by_rp': 'Заместителя главного бухгалтера Московского филиала «БАНК СГБ»',
+                'power_of_attorney': '№59 от 27 января 2017 года',
+            },
         }
-        if self.bg_sum >= 3000000:
-            sign_by = sign_by['more_3000000']
+        if self.bg_sum < 3000000:
+            sign_by = sign_by['signer_1']
+        elif 3000000 <= self.bg_sum < 13000000:
+            sign_by = sign_by['signer_2']
         else:
-            sign_by = sign_by['less_3000000']
+            sign_by = sign_by['signer_3']
         properties = {
             'bg_number': generate_bg_number(self.created_at),
             'city': 'г. Москва',
@@ -707,6 +1090,8 @@ class Issue(models.Model):
             url = reverse('admin:marer_issue_generate_doc_ops_mgmt_conclusion_doc', args=(self.id,))
             field_parts.append('<b><a href="{}">сформировать</a></b>'.format(url))
         else:
+            url = reverse('admin:marer_issue_generate_doc_ops_mgmt_conclusion_doc', args=(self.id,))
+            field_parts.append('<b><a href="{}">переормировать</a></b>'.format(url))
             if self.doc_ops_mgmt_conclusion_doc.file:
                 field_parts.append('<b><a href="{}">скачать</a></b>'.format(self.doc_ops_mgmt_conclusion_doc.file.url))
             if self.doc_ops_mgmt_conclusion_doc.sign:
@@ -724,6 +1109,8 @@ class Issue(models.Model):
             url = reverse('admin:marer_issue_generate_sec_dep_conclusion_doc', args=(self.id,))
             field_parts.append('<b><a href="{}">сформировать</a></b>'.format(url))
         else:
+            url = reverse('admin:marer_issue_generate_sec_dep_conclusion_doc', args=(self.id,))
+            field_parts.append('<b><a href="{}">переормировать</a></b>'.format(url))
             if self.sec_dep_conclusion_doc.file:
                 field_parts.append('<b><a href="{}">скачать</a></b>'.format(self.sec_dep_conclusion_doc.file.url))
             if self.sec_dep_conclusion_doc.sign:
@@ -734,6 +1121,25 @@ class Issue(models.Model):
             return 'отсутствует'
     sec_dep_conclusion_doc_admin_field.short_description = 'файл заключения ДБ'
     sec_dep_conclusion_doc_admin_field.allow_tags = True
+
+    def lawyers_dep_conclusion_doc_admin_field(self):
+        field_parts = []
+        if not self.lawyers_dep_conclusion_doc:
+            url = reverse('admin:marer_issue_generate_lawyers_dep_conclusion_doc', args=(self.id,))
+            field_parts.append('<b><a href="{}">сформировать</a></b>'.format(url))
+        else:
+            url = reverse('admin:marer_issue_generate_lawyers_dep_conclusion_doc', args=(self.id,))
+            field_parts.append('<b><a href="{}">переормировать</a></b>'.format(url))
+            if self.lawyers_dep_conclusion_doc.file:
+                field_parts.append('<b><a href="{}">скачать</a></b>'.format(self.lawyers_dep_conclusion_doc.file.url))
+            if self.lawyers_dep_conclusion_doc.sign:
+                field_parts.append('<b><a href="{}">ЭЦП</a></b>'.format(self.lawyers_dep_conclusion_doc.sign.url))
+        if len(field_parts) > 0:
+            return ', '.join(field_parts)
+        else:
+            return 'отсутствует'
+    lawyers_dep_conclusion_doc_admin_field.short_description = 'файл заключения ПУ'
+    lawyers_dep_conclusion_doc_admin_field.allow_tags = True
 
     @property
     def issuer_head_passport_info(self):
@@ -952,29 +1358,118 @@ class Issue(models.Model):
             self.save()
         application_doc_file.close()
 
-    def fill_doc_ops_mgmt_conclusion(self, commit=True):
-
-        ve = ValidationError(None)
-        ve.error_list = []
+    @property
+    def is_org_registered_more_than_6_months_ago(self):
         issuer_reg_delta = relativedelta(
             timezone.localdate(timezone.now(), timezone.get_current_timezone()),
             self.issuer_registration_date,
         )
-        if issuer_reg_delta.years <= 0 and issuer_reg_delta.months <= 6:
+        return not (issuer_reg_delta.years <= 0 and issuer_reg_delta.months < 6)
+
+    @property
+    def humanized_is_org_registered_more_than_6_months_ago(self):
+        return 'Да' if self.is_org_registered_more_than_6_months_ago else 'Нет'
+
+    @property
+    def humanized_is_org_registered_less_than_6_months_ago(self):
+        return 'Да' if not self.is_org_registered_more_than_6_months_ago else 'Нет'
+
+    @property
+    def humanuzed_is_org_activity_for_last_year_was_profilable(self):
+        return 'Да' if self.balance_code_2400_offset_1 > 0 else 'Нет'
+
+    @property
+    def humanized_is_org_activity_for_last_year_was_not_profitable(self):
+        return 'Да' if not self.balance_code_2400_offset_1 > 0 else 'Нет'
+
+    @property
+    def humanuzed_is_org_activity_for_last_period_was_profilable(self):
+        return 'Да' if self.balance_code_2400_offset_0 > 0 else 'Нет'
+
+    @property
+    def is_issuer_in_blacklisted_region(self):
+        for bl_inn_start in ['09', '01', '05', '06', '07', '15', '17', '20', '91', '92', '2632']:
+            if self.issuer_inn.startswith(bl_inn_start):
+                return True
+        return False
+
+    @property
+    def is_beneficiary_in_blacklisted_region(self):
+        for bl_inn_start in ['91', '92']:
+            if self.tender_responsible_inn.startswith(bl_inn_start):
+                return True
+        return False
+
+    @property
+    def humanized_is_issuer_not_in_blacklisted_region(self):
+        return 'Нет' if self.is_issuer_in_blacklisted_region else 'Да'
+
+    @property
+    def humanized_is_beneficiary_not_in_blacklisted_region(self):
+        return 'Нет' if self.is_beneficiary_in_blacklisted_region else 'Да'
+
+    @property
+    def humanized_is_surety_needed(self):
+        return 'требуется' if self.bg_sum >= 5000000 else 'не требуется'
+
+    @property
+    def bank_reserving_percent(self):
+        percentage = {
+            'Asgb': 1.25,
+            'A2sgb': 1.25,
+            'Bsgb': 2.25,
+            'B2sgb': 2.75,
+            'Esgb': 1.5,
+            'E2sgb': 2.5,
+            'Fsgb': 1.75,
+            'F2sgb': 2.75,
+            'Csgb': 2.75,
+            'Dsgb': 7.25
+        }
+
+        return percentage.get(self.scoring_credit_rating, 7.25)
+
+    @property
+    def bank_reserving_percent_quality_category(self):
+        categories = {
+            'Asgb': '2',
+            'A2sgb': '2',
+            'Bsgb': '2',
+            'B2sgb': '2',
+            'Esgb': '2',
+            'E2sgb': '2',
+            'Fsgb': '2',
+            'F2sgb': '2',
+            'Csgb': '3',
+            'Dsgb': '3'
+        }
+
+        return categories.get(self.scoring_credit_rating, 7.25)
+
+    def fill_doc_ops_mgmt_conclusion(self, commit=True):
+
+        ve = ValidationError(None)
+        ve.error_list = []
+        if not self.is_org_registered_more_than_6_months_ago:
             ve.error_list.append('Обнаружен стоп-фактор: организация зарегистрирована менее 6 месецев назад')
 
-        if self.sec_dep_conclusion_doc is None or self.sec_dep_conclusion_doc.file is None:
-            ve.error_list.append('Отсутствует заключение ДБ')
+        # if self.sec_dep_conclusion_doc is None or self.sec_dep_conclusion_doc.file is None:
+        #     ve.error_list.append('Отсутствует заключение ДБ')
 
         if len(ve.error_list) > 0:
             raise ve
+
+        if self.bg_sum < 1500000:
+            domc_filename = 'issue_domc_up_to_1500000.docx'
+        else:
+            domc_filename = 'issue_domc_from_1500000.docx'
 
         template_path = os.path.join(
             settings.BASE_DIR,
             'marer',
             'templates',
             'documents',
-            'issue_doc_ops_mgmt_conclusion.docx'
+            domc_filename
         )
 
         from marer.utils.documents import fill_docx_file_with_issue_data
@@ -987,6 +1482,27 @@ class Issue(models.Model):
         if commit:
             self.save()
         doc_ops_mgmt_conclusion_file.close()
+
+    def fill_lawyers_dep_conclusion(self, commit=True):
+
+        template_path = os.path.join(
+            settings.BASE_DIR,
+            'marer',
+            'templates',
+            'documents',
+            'issue_lawyers_conclusion.docx'
+        )
+
+        from marer.utils.documents import fill_docx_file_with_issue_data
+        lawyers_conclusion_file = fill_docx_file_with_issue_data(template_path, self)
+        lawyers_conclusion_file.name = 'lawyers_conclusion.docx'
+        lawyers_conclusion_doc = Document()
+        lawyers_conclusion_doc.file = lawyers_conclusion_file
+        lawyers_conclusion_doc.save()
+        self.lawyers_dep_conclusion_doc = lawyers_conclusion_doc
+        if commit:
+            self.save()
+        lawyers_conclusion_file.close()
 
     def fill_sec_dep_conclusion_doc(self, commit=True):
 
@@ -1037,10 +1553,8 @@ class Issue(models.Model):
                 )
             if kontur_principal_analytics_data.get('m7003', False):
                 ve.error_list.append('Обнаружен стоп-фактор: организация зарегистрирована менее 6 месецев назад')
-            for bl_inn_start in ['09', '01', '05', '06', '07', '15', '17', '20', '91', '92', '2632']:
-                if self.issuer_inn.startswith(bl_inn_start):
-                    ve.error_list.append('Обнаружен стоп-фактор: исполнитель находится в необслуживаемом регионе')
-                    break
+            if self.is_issuer_in_blacklisted_region:
+                ve.error_list.append('Обнаружен стоп-фактор: исполнитель находится в необслуживаемом регионе')
             if kontur_principal_analytics_data.get('m5006', False):
                 ve.error_list.append(
                     'Обнаружен стоп-фактор: указан недостоверный адрес исполнителя')
@@ -1068,7 +1582,7 @@ class Issue(models.Model):
         error_list = []
 
         try:
-            kontur_principal_analytics_data = kontur.analytics(inn='7840474560').get('analytics', {})
+            kontur_principal_analytics_data = kontur.analytics(inn=self.issuer_inn, ogrn=self.issuer_ogrn).get('analytics', {})
             if kontur_principal_analytics_data.get('m5004', False):
                 error_list.append([
                     'Организация была найдена в списке юридических лиц, имеющих задолженность по уплате налогов.', False
@@ -1089,14 +1603,14 @@ class Issue(models.Model):
         else:
             return True
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None, create_docs=True):
         if not self.bg_start_date:
             self.bg_start_date = timezone.now()
         if not self.product or self.product == '':
             self.product = BankGuaranteeProduct().name
         super().save(force_insert, force_update, using, update_fields)
 
-        if bool(self.propose_documents.exists() is False and self.tax_system):
+        if create_docs and bool(self.propose_documents.exists() is False and self.tax_system):
             pdocs = FinanceOrgProductProposeDocument.objects.filter(
                 Q(Q(tax_system=self.tax_system) | Q(tax_system__isnull=True)),
                 Q(Q(min_bg_sum__lte=self.bg_sum) | Q(min_bg_sum__isnull=True)),
@@ -1293,11 +1807,8 @@ class IssueBGProdAffiliate(models.Model):
 
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False, related_name='issuer_affiliates')
     name = models.CharField(verbose_name='наименование', max_length=512, blank=False, null=False, default='')
-    legal_address = models.CharField(verbose_name='юридический адрес', max_length=512, blank=True, null=False, default='')
     inn = models.CharField(verbose_name='ИНН', max_length=512, blank=True, null=False, default='')
-    activity_type = models.CharField(verbose_name='вид деятельности', max_length=512, blank=True, null=False, default='')
-    aff_percentage = models.CharField(verbose_name='доля участия', max_length=512, blank=True, null=False, default='')
-    aff_type = models.CharField(verbose_name='отношение к организации', max_length=512, blank=True, null=False, default='')
+    bank_liabilities_vol = models.DecimalField(verbose_name='объем обязательств банка', max_digits=32, decimal_places=2, blank=True, null=True)
 
 
 class IssueLeasingProdAsset(models.Model):
@@ -1546,4 +2057,5 @@ class IssueMessagesProxy(Issue):
 def pre_save_issue(sender, instance, **kwargs):
     if instance.old_status != instance.status and instance.status == consts.ISSUE_STATUS_REVIEW:
         from marer.utils.documents import generate_acts_for_issue
+        instance.bg_property  # даем возможность выпасть исключению здесь, т.к. в format оно не появится
         generate_acts_for_issue(instance)

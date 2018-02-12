@@ -42,6 +42,7 @@ _admin_issue_fieldset_issuer_part = (
 
             'issuer_okpo',
             'issuer_okato',
+            'issuer_oktmo',
             'issuer_registration_date',
             'issuer_ifns_reg_date',
             'issuer_ifns_reg_cert_number',
@@ -228,6 +229,7 @@ class BankGuaranteeProduct(FinanceProduct):
             kontur_req_data = kontur.req(inn=inn, ogrn=ogrn)
             kontur_egrDetails_data = kontur.egrDetails(inn=inn, ogrn=ogrn)
             kontur_beneficialOwners = kontur.beneficialOwners(inn=inn, ogrn=ogrn)
+            kontur_aff_data = kontur.companyAffiliatesReq(inn=inn, ogrn=ogrn)
             kontur_licences = kontur.licences(inn=inn, ogrn=ogrn)
             if not kontur_req_data:
                 return True
@@ -236,6 +238,7 @@ class BankGuaranteeProduct(FinanceProduct):
             self._issue.issuer_okopf = kontur_req_data['UL']['okopf'] if 'UL' in kontur_req_data else kontur_req_data['IP']['okopf']
             self._issue.issuer_okpo = kontur_req_data['UL'].get('okpo', '') if 'UL' in kontur_req_data else kontur_req_data['IP'].get('okpo', '')
             self._issue.issuer_okato = kontur_req_data['UL'].get('okato', '') if 'UL' in kontur_req_data else ''
+            self._issue.issuer_oktmo = kontur_req_data['UL'].get('oktmo', '') if 'UL' in kontur_req_data else ''
 
             if 'UL' in kontur_req_data and len(kontur_req_data['UL']['heads']) > 0:
                 head_name_arr = kontur_req_data['UL']['heads'][0]['fio'].split(' ')
@@ -250,6 +253,21 @@ class BankGuaranteeProduct(FinanceProduct):
                     self._issue.issuer_head_last_name = head_name_arr[0]
                     self._issue.issuer_head_first_name = head_name_arr[1]
                     self._issue.issuer_head_middle_name = head_name_arr[2]
+
+            from marer.models.issue import IssueBGProdAffiliate
+            affiliates = IssueBGProdAffiliate.objects.filter(issue=self._issue)
+            affiliates.delete()
+            for aff in kontur_aff_data:
+                new_aff = IssueBGProdAffiliate()
+                new_aff.issue = self._issue
+
+                if aff.get('UL', None):
+                    new_aff.name = aff['UL']['legalName']['short'] if aff['UL']['legalName'].get('short', None) else aff['UL']['legalName']['full']
+                elif aff.get('IP', None):
+                    new_aff.name = aff['IP']['fio']
+
+                new_aff.inn = aff['inn']
+                new_aff.save()
 
             from marer.models.issue import IssueBGProdFounderLegal
             founders_legal = IssueBGProdFounderLegal.objects.filter(issue=self._issue)
@@ -697,8 +715,9 @@ class BankGuaranteeProduct(FinanceProduct):
                 'bg_deadline_date',
                 ('tender_exec_law', 'bg_type',),
                 'application_doc_admin_field',
+                'lawyers_dep_conclusion_doc_admin_field',
                 'doc_ops_mgmt_conclusion_doc_admin_field',
-                'sec_dep_conclusion_doc_admin_field',
+                # 'sec_dep_conclusion_doc_admin_field',
             ))),
             ('Договора и акты', dict(fields=(
                 'bg_contract_doc_admin_field',
@@ -712,12 +731,53 @@ class BankGuaranteeProduct(FinanceProduct):
                 'tender_placement_type',
                 'tender_publish_date',
                 'tender_start_cost',
+                'tender_final_cost',
                 'tender_contract_type',
+                'tender_contract_subject',
                 'tender_has_prepayment',
+            ))),
+            ('Финансовое положение клиента', dict(classes=('collapse',), fields=(
+                ('balance_code_1600_offset_0', 'balance_code_1600_offset_1',),
+                ('balance_code_1300_offset_0', 'balance_code_1300_offset_1',),
+                ('balance_code_2110_offset_0', 'balance_code_2110_offset_1', 'balance_code_2110_offset_2',),
+                ('balance_code_2400_offset_0', 'balance_code_2400_offset_1',),
+            ))),
+            ('Информация для наполнеиня заключения ПУ', dict(classes=('collapse',), fields=(
+                'persons_can_acts_as_issuer_and_perms_term_info',
+                'lawyers_dep_recommendations',
+            ))),
+            ('Информация для наполнеиня заключения УРДО', dict(classes=('collapse',), fields=(
+                ('is_issuer_all_bank_liabilities_less_than_max',
+                'is_issuer_executed_contracts_on_44_or_223_or_185_fz',
+                'is_issuer_executed_goverment_contract_for_last_3_years',
+                # 'is_contract_has_prepayment',
+                ),
+
+                ('is_issuer_executed_contracts_with_comparable_advances',
+                'is_issuer_executed_gte_5_contracts_on_44_or_223_or_185_fz',
+                'is_issuer_last_year_revenue_higher_in_5_times_than_all_bank_bgs',
+                'is_issuer_has_garantor_for_advance_related_requirements',),
+
+                ('is_contract_price_reduction_lower_than_50_pct_on_supply_contract',
+                'is_positive_security_department_conclusion',
+                'is_positive_lawyers_department_conclusion',
+                'is_absent_info_about_court_acts_for_more_than_20_pct_of_net_assets',),
+                ('is_absent_info_about_legal_proceedings_as_defendant_for_more_than_30_pct_of_net_assets',
+                'is_need_to_check_real_of_issuer_activity',
+                'is_real_of_issuer_activity_confirms',
+                'is_contract_corresponds_issuer_activity',),
+
+                ('contract_advance_requirements_fails',
+                'is_issuer_has_bad_credit_history',
+                'is_issuer_has_blocked_bank_account',),
+
+                'total_bank_liabilities_vol',
             ))),
 
             _admin_issue_fieldset_issuer_part,
             _admin_issue_fieldset_issuer_head_part,
+
+
 
         ]
 
@@ -746,7 +806,7 @@ class BankGuaranteeProduct(FinanceProduct):
             ])
         else:
             fieldset.extend([
-                ('Сведения об организаторе тендера', dict(
+                ('Сведения о бенефициаре тендера', dict(
                     classes=('collapse',),
                     fields=tender_responsible_fields_part
                 )),
@@ -762,6 +822,7 @@ class BankGuaranteeProduct(FinanceProduct):
             'contract_of_guarantee_admin_field',
             'bg_doc_admin_field',
             'additional_doc_admin_field',
+            'lawyers_dep_conclusion_doc_admin_field',
             'doc_ops_mgmt_conclusion_doc_admin_field',
             'sec_dep_conclusion_doc_admin_field',
             'tender_gos_number_link',

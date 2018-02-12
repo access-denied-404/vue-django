@@ -324,7 +324,7 @@
 
             $('input[type=file]').on('change', function (evt) {
 
-                if ($(this).value !== '') {
+                if ($(this).val()) {
                     $(this).closest('td').find('span.to-hide').removeClass('hidden');
                 } else {
                     $(this).closest('td').find('span.to-hide').addClass('hidden');

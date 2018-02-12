@@ -6,6 +6,7 @@ import re
 import os
 from django.conf import settings
 from django.core.files.base import ContentFile
+from django.utils import timezone
 from docx import Document
 from docx.text.paragraph import Paragraph
 from openpyxl import load_workbook
@@ -21,6 +22,7 @@ def fill_xlsx_file_with_issue_data(path: str, issue: Issue) -> ContentFile:
     self_data = issue.__dict__
     self_data['user'] = issue.user
     self_data['issue'] = issue
+    self_data['date_now'] = timezone.localdate(timezone.now(), timezone.get_current_timezone()).strftime('%d.%m.%Y')
     for ws_name in wb.sheetnames:
         ws = wb.get_sheet_by_name(ws_name)
         for cell in ws.get_cell_collection():
@@ -85,6 +87,7 @@ def fill_docx_file_with_issue_data(path: str, issue: Issue) -> ContentFile:
     self_data = issue.__dict__
     self_data['user'] = issue.user
     self_data['issue'] = issue
+    self_data['date_now'] = timezone.localdate(timezone.now(), timezone.get_current_timezone()).strftime('%d.%m.%Y')
 
     doc = Document(path)
     helper = WordDocumentHelper()

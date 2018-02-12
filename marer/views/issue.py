@@ -27,8 +27,7 @@ from marer.products import get_finance_products
 from marer.stub import create_stub_issuer
 from marer.utils.notify import notify_user_manager_about_user_created_issue, \
     notify_user_manager_about_user_updated_issue, notify_about_user_created_clarification, \
-    notify_about_user_adds_message, notify_fo_managers_about_issue_proposed_to_banks, \
-    notify_user_manager_about_issue_proposed_to_banks
+    notify_about_user_adds_message,  notify_user_manager_about_user_sign_document
 
 
 class IssueView(LoginRequiredMixin, TemplateView):
@@ -119,7 +118,15 @@ class IssueRegisteringView(IssueView):
                     new_issue = deepcopy(old_issue)
                     new_issue.pk = None
                     new_issue.user = request.user
-                    new_issue.save()
+                    new_issue.status = consts.ISSUE_STATUS_REGISTERING
+                    new_issue.application_doc = None
+                    new_issue.bg_doc = None
+                    new_issue.contract_of_guarantee = None
+                    new_issue.transfer_acceptance_act = None
+                    new_issue.additional_doc = None
+                    new_issue.bg_contract_doc = None
+                    new_issue.save(create_docs=False)
+
                     related_names = [
                         'org_bank_accounts', 'org_beneficiary_owners', 'issuer_founders_legal',
                         'issuer_founders_physical', 'issuer_licences', 'org_management_collegial',
@@ -600,6 +607,7 @@ class IssueAdditionalDocumentSignView(LoginRequiredMixin, ContextMixin, View):
                 final_sign_file.name = os.path.basename(doc.file.name) + '.sig'
                 doc.sign = final_sign_file
                 doc.save()
+                notify_user_manager_about_user_sign_document(pdoc)
                 response_dict['sign_state'] = consts.DOCUMENT_SIGN_VERIFIED
             else:
                 response_dict['sign_state'] = consts.DOCUMENT_SIGN_CORRUPTED
@@ -663,6 +671,7 @@ class IssueRemoteDocumentSignView(ContextMixin, View):
                 final_sign_file.name = os.path.basename(doc.file.name) + '.sig'
                 doc.sign = final_sign_file
                 doc.save()
+                notify_user_manager_about_user_sign_document(pdoc)
                 response_dict['sign_state'] = consts.DOCUMENT_SIGN_VERIFIED
             else:
                 response_dict['sign_state'] = consts.DOCUMENT_SIGN_CORRUPTED

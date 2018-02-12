@@ -85,7 +85,6 @@ class IssueAdmin(ModelAdmin):
         'status',
         'get_user_manager',
         'get_issue_manager',
-        'user_is_broker',
         'humanized_sum',
         'created_at',
         'updated_at',
@@ -93,7 +92,6 @@ class IssueAdmin(ModelAdmin):
     list_filter = (
         ('user__manager', ManagerListFilter),
         ('manager', ManagerListFilter),
-        ('user', BrokerListFilter),
         'status',
     )
     formfield_overrides = {
@@ -128,12 +126,6 @@ class IssueAdmin(ModelAdmin):
     humanized_id.short_description = 'номер заявки'
     humanized_id.admin_order_field = 'id'
 
-    def user_is_broker(self, obj):
-        return obj.user.is_broker
-    user_is_broker.short_description = 'от брокера'
-    user_is_broker.admin_order_field = 'user__is_broker'
-    user_is_broker.boolean = True
-
     def shortened_user(self, obj):
         return '{} {},<br>{}'.format(
             obj.user.first_name or '',
@@ -150,8 +142,6 @@ class IssueAdmin(ModelAdmin):
                 (None, dict(fields=(
                     'user',
                     'manager',
-                    'private_comment',
-                    'comment',
                 ))),
             ]
         else:
@@ -160,9 +150,6 @@ class IssueAdmin(ModelAdmin):
                     'status',
                     'user',
                     'manager',
-                    'private_comment',
-                    'comment',
-                    'final_note',
                     'get_last_message',
                 ))),
             ]
@@ -255,6 +242,11 @@ class IssueAdmin(ModelAdmin):
                 self.admin_site.admin_view(self.generate_sec_dep_conclusion_doc),
                 name='marer_issue_generate_sec_dep_conclusion_doc',
             ),
+            url(
+                r'^(.+)/generate/lawyers_dep_conclusion_doc/$',
+                self.admin_site.admin_view(self.generate_lawyers_dep_conclusion_doc),
+                name='marer_issue_generate_lawyers_dep_conclusion_doc',
+            ),
         ] + super().get_urls()
 
     def generate_doc_ops_mgmt_conclusion_doc(self, request, id, form_url=''):
@@ -300,9 +292,38 @@ class IssueAdmin(ModelAdmin):
                 for err in ve.error_list:
                     self.message_user(request, err, level=messages.ERROR)
             else:
-                self.message_user(request, 'Заключение УРДО заполнить невозможно', level=messages.ERROR)
+                self.message_user(request, 'Заключение ДБ заполнить невозможно', level=messages.ERROR)
         else:
             self.message_user(request, 'Заключение ДБ заполнено успешно')
+
+        return HttpResponseRedirect(
+            reverse(
+                '%s:%s_%s_change' % (
+                    self.admin_site.name,
+                    Issue._meta.app_label,
+                    Issue._meta.model_name,
+                ),
+                args=(issue.id,),
+            )
+        )
+
+    def generate_lawyers_dep_conclusion_doc(self, request, id, form_url=''):
+        issue_id = unquote(id)
+        try:
+            issue = Issue.objects.get(id=issue_id)
+        except ObjectDoesNotExist:
+            return self._get_obj_does_not_exist_redirect(request, Issue._meta, issue_id)
+
+        try:
+            issue.fill_lawyers_dep_conclusion()
+        except ValidationError as ve:
+            if len(ve.error_list) > 0:
+                for err in ve.error_list:
+                    self.message_user(request, err, level=messages.ERROR)
+            else:
+                self.message_user(request, 'Заключение ПУ заполнить невозможно', level=messages.ERROR)
+        else:
+            self.message_user(request, 'Заключение ПУ заполнено успешно')
 
         return HttpResponseRedirect(
             reverse(
@@ -347,10 +368,8 @@ class IssueAdmin(ModelAdmin):
         if obj is None:
             self.inlines = []
         else:
-            self.inlines = [IssueDocumentInlineAdmin]
-            self.inlines += obj.get_product().get_admin_issue_inlnes()
+            self.inlines = obj.get_product().get_admin_issue_inlnes()
             self.inlines += [
-                IFOPClarificationInlineAdmin,
                 IssueProposeDocumentInlineAdmin,
                 IFOPFinalDocumentInlineAdmin,
             ]

@@ -17,7 +17,7 @@
                 </div>
               </div>
               <div style="margin-top: 30px;">
-                <a href="#/cabinet/requests" style="margin-left: 15px;">Вернуться в личный кабинет</a>
+                <a href="#/cabinet/issues" style="margin-left: 15px;">Вернуться в личный кабинет</a>
               </div>
             </div>
           </div>
@@ -30,7 +30,7 @@
             </div>
           </div>
           <div style="margin-top: 30px;">
-            <a href="#/cabinet/requests" style="margin-left: 15px;">Вернуться в личный кабинет</a>
+            <a href="#/cabinet/issues" style="margin-left: 15px;">Вернуться в личный кабинет</a>
           </div>
         </div>
       </div>
