@@ -111,7 +111,16 @@
                                         {% endif %}
                                     <div class="pull-right">
                                         {% if not doc.document.file %}
-                                            <input type="file" name="propose_doc_{{ doc.id }}" class="input-sm pull-right {% if doc.is_required %}required{% endif %}"/>
+                                            <div class="row">
+                                                <div class="form-group">
+                                                    <div class="col-md-10">
+                                                        <input type="file" name="propose_doc_{{ doc.id }}" class="input-sm pull-right {% if doc.is_required %}required{% endif %}"/>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <span class="glyphicon glyphicon-ok text-success hidden to-hide"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         {% endif %}
                                         {% if doc.document and doc.document.file %}
                                             {% if issue.status == consts.ISSUE_STATUS_REGISTERING %}
@@ -309,4 +318,20 @@
             update_send_button_is_available();
         });
     </script>
+
+    <script type="text/javascript">
+        $(function ($) {
+
+            $('input[type=file]').on('change', function (evt) {
+
+                if ($(this).value !== '') {
+                    $(this).closest('td').find('span.to-hide').removeClass('hidden');
+                } else {
+                    $(this).closest('td').find('span.to-hide').addClass('hidden');
+                }
+
+            });
+
+        });
+	</script>
 {% endblock %}
