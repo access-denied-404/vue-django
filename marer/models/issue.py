@@ -1377,7 +1377,7 @@ class Issue(models.Model):
     @property
     def humanuzed_is_org_activity_for_last_year_was_profilable(self):
         return 'Да' if self.balance_code_2400_offset_1 > 0 else 'Нет'
-    
+
     @property
     def humanized_is_org_activity_for_last_year_was_not_profitable(self):
         return 'Да' if not self.balance_code_2400_offset_1 > 0 else 'Нет'
@@ -2057,4 +2057,5 @@ class IssueMessagesProxy(Issue):
 def pre_save_issue(sender, instance, **kwargs):
     if instance.old_status != instance.status and instance.status == consts.ISSUE_STATUS_REVIEW:
         from marer.utils.documents import generate_acts_for_issue
+        instance.bg_property  # даем возможность выпасть исключению здесь, т.к. в format оно не появится
         generate_acts_for_issue(instance)
