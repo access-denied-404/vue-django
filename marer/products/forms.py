@@ -168,7 +168,7 @@ class BGFinProdSurveyOrgCommonForm(Form):
     ]))
     agent_comission = CharField(required=False, max_length=512,
                                 widget=TextInput(attrs={'class': 'form-control input-sm',
-                                                        'placeholder': 'Комиссия агента(руб)'}))
+                                                        'placeholder': 'Предложить комиссию(руб)'}))
 
 
 class BGFinProdSurveyOrgHeadForm(Form):
