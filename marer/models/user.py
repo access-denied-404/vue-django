@@ -31,6 +31,7 @@ class User(AbstractUser):
         ]
 
     phone = models.CharField(_('contact phone'), max_length=30, blank=True)
+    middle_name = models.CharField(_('last name'), max_length=30, blank=True, null=False, default='')
     manager = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         verbose_name='менеджер пользователя',
