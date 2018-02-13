@@ -176,8 +176,7 @@ class IssueRegisteringView(IssueView):
             product.set_issue(issue)
             processed_valid = product.process_registering_form(request)
 
-            # action = request.POST.get('action', 'save')
-            action = 'next'
+            action = request.POST.get('action', 'save')
             if action == 'save':
                 url = reverse('cabinet_requests')
                 return HttpResponseRedirect(url)
