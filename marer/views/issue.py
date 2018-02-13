@@ -223,6 +223,94 @@ class IssueSurveyView(IssueView):
             return self.get(request, *args, **kwargs)
 
 
+class IssueRemoteAdditionalDocumentsRequests(TemplateView, ContextMixin, View):
+    _issue = None
+
+    def get_issue(self):
+        if self._issue is not None:
+            return self._issue
+
+        iid = self.kwargs.get('iid', None)
+        if iid is not None:
+            # fixme maybe make error 403?
+            issue = get_object_or_404(Issue, id=iid)
+            self._issue = issue
+            return issue
+
+    def get_context_data(self, **kwargs):
+        kwargs['cert_hash'] = self.get_cert_thumb()
+        kwargs['consts'] = consts
+        kwargs['issue'] = self.get_issue()
+        if 'comment_form' not in kwargs:
+            kwargs['comment_form'] = IFOPCMessageForm()
+        return super().get_context_data(**kwargs)
+
+    def get_cert_thumb(self):
+        dta = self.request.COOKIES.get('cert_thumb', None)
+        if not dta:
+            dta = self.request.session.get('cert_thumb', None)
+        return dta
+
+    def get_cert_sign(self):
+        dta = self.request.COOKIES.get('cert_sign', None)
+        if not dta:
+            dta = self.request.session.get('cert_sign', None)
+        return dta
+
+    def is_authenticated_by_cert(self):
+        thumb = self.get_cert_thumb()
+        sign = self.get_cert_sign()
+        # todo check INN for cert and issue issuer
+        if thumb and sign:
+            return True
+        else:
+            return False
+
+    def get(self, request, *args, **kwargs):
+        if 'logout' in request.GET:
+            logout(request)
+
+        if not self.is_authenticated_by_cert():
+            self.template_name = 'marer/auth/remote_sign_login.html'
+            login_form = LoginSignForm()
+            if 'login_form' not in kwargs:
+                kwargs.update(dict(login_form=login_form))
+        elif self.get_issue().status == consts.ISSUE_STATUS_REGISTERING:
+            self.template_name = 'marer/issue/remote_sign_docs_for_registering.html'
+        else:
+            self.template_name = 'marer/issue/remote_adrs.html'
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        comment_form = IFOPCMessageForm(request.POST, request.FILES)
+
+        if comment_form.is_valid():
+
+            if self.get_issue() and 'issue_additional_documents_requests' not in self.get_issue().editable_dashboard_views():
+                return self.get(request, *args, **kwargs)
+
+            new_msg = IssueClarificationMessage()
+            new_msg.issue = self.get_issue()
+            new_msg.message = comment_form.cleaned_data['message']
+            new_msg.user = request.user
+            new_msg.save()
+
+            for ffield in ['doc%s' % dnum for dnum in range(1, 9)]:
+                ffile = comment_form.cleaned_data[ffield]
+                if ffile:
+                    new_doc = Document()
+                    new_doc.file = ffile
+                    new_doc.save()
+
+                    new_clarif_doc_link = IssueFinanceOrgProposeClarificationMessageDocument()
+                    new_clarif_doc_link.clarification_message = new_msg
+                    new_clarif_doc_link.name = ffile.name
+                    new_clarif_doc_link.document = new_doc
+                    new_clarif_doc_link.save()
+
+        return self.get(request, *args, **kwargs)
+
+
 class IssueRemoteSignView(TemplateView, ContextMixin, View):
     _issue = None
 

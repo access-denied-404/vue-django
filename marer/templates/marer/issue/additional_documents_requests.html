@@ -132,23 +132,3 @@
     {% endfor %}
 {% endblock %}
 
-{% block js %}
-{#    <script>#}
-{#        $(function ($) {#}
-{##}
-{#            $('#email-btn').on('click', function (evt) {#}
-{#                var clientEmail = $('#email');#}
-{#                alert('{{ issue.user.email }}' + ', ' + clientEmail.val());#}
-{#                $.post(#}
-{#                    clientEmail.val(),#}
-{#                    '{{ user.issue.email }}',#}
-{#                    '{{ issue.bg_contract_doc.file.url }}',#}
-{#                    '{{ issue.bg_doc.file.url }}',#}
-{#                    '{{ issue.transfer_acceptance_act.file.url }}',#}
-{#                    '{{ issue.contract_of_guarantee.file.url }}',#}
-{#                    '{% static 'documents/approval_and_change_sheet.docx' %}'#}
-{#                )#}
-{#            });#}
-{#        })#}
-{#    </script>#}
-{% endblock %}

@@ -1,0 +1,106 @@
+{% extends 'marer/issue/remote_layout.html' %}
+{% load staticfiles %}
+{% block issue_content %}
+    {% if issue.status == consts.ISSUE_STATUS_REVIEW %}
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <table class="table table-condensed">
+                    <div class="h3">Документы</div>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <a href="{{ issue.bg_contract_doc.file.url }}">Договор</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="{{ issue.bg_doc.file.url }}">Проект</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="{{ issue.transfer_acceptance_act.file.url }}">Акт</a>
+                        </td>
+                    </tr>
+                    {% if issue.contract_of_guarantee %}
+                    <tr>
+                        <td>
+                            <a href="{{ issue.contract_of_guarantee.file.url }}">Согласие на взаимодействие с БКИ (поручителя)</a>
+                        </td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <td>
+                            <a href="{% static 'documents/approval_and_change_sheet.docx' %}" download="Лист_согласования_и_изменения_БГ.docx">Лист согласования и изменения БГ</a>
+                        </td>
+                    </tr>
+                     </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="panel panel-info">
+            <div class="panel-heading">Новое сообщение</div>
+            <div class="panel-body">
+                <div class="container-fluid">
+
+                    <div class="row">
+                        <div class="col-md-5">{{ comment_form.message }}</div>
+                        <div class="col-md-7">
+                            <div class="text-center"><span class="h5">Прикрепить документы</span></div>
+                            <table class="table table-condensed">
+                                <tr><td class="h5"><small>{{ comment_form.doc1 }}</small></td><td class="h5"><small>{{ comment_form.doc2 }}</small></td></tr>
+                                <tr><td class="h5"><small>{{ comment_form.doc3 }}</small></td><td class="h5"><small>{{ comment_form.doc4 }}</small></td></tr>
+                                <tr><td class="h5"><small>{{ comment_form.doc5 }}</small></td><td class="h5"><small>{{ comment_form.doc6 }}</small></td></tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    {% include 'marer/form_errors.html' with form=comment_form %}
+
+                    <div class="row text-center">
+                        <button type="submit" name="action" value="send_msg" class="btn btn-primary">Отправить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {% for msg in issue.clarification_messages.all reversed %}
+        <div class="panel panel-info">
+            <div class="panel-body">
+                <div class="container-fluid">
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="h3">{{ msg.user.get_full_name }}</span>
+                            <div class="h4">{{ msg.created_at }}</div>
+                        </div>
+                        <div class="col-md-8">
+                            <div>{{ msg.message }}</div>
+                            <br/>
+                            <div>
+                                <table class="table table-condensed">
+                                    {% for doclink in msg.documents_links.all %}
+                                        <tr>
+                                            <td>
+                                                <a href="{{ doclink.document.file.url }}">
+                                                    {{ doclink.name }} <span class="glyphicon glyphicon-download-alt pull-right"></span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
+
