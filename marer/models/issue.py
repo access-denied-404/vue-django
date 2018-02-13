@@ -1,7 +1,6 @@
 import json
 
 import os
-from _decimal import DivisionByZero
 
 import feedparser
 from dateutil.relativedelta import relativedelta
@@ -758,7 +757,7 @@ class Issue(models.Model):
     def scoring_issuer_profitability(self):
         try:
             coeff = (self.balance_code_2400_offset_1 / self.balance_code_2110_offset_1) * 100
-        except DivisionByZero:
+        except ZeroDivisionError:
             return 3
         if coeff < 0.5:
             return 4
@@ -774,7 +773,7 @@ class Issue(models.Model):
         try:
             code_2110_offset_2 = self.balance_code_2110_offset_2 or 0
             coeff = (self.balance_code_2110_offset_1 / code_2110_offset_2) * 100
-        except DivisionByZero:
+        except ZeroDivisionError:
             return 3
         if coeff < 75:
             return 4
@@ -789,7 +788,7 @@ class Issue(models.Model):
     def scoring_own_funds_ensurance(self):
         try:
             coeff = (self.balance_code_1300_offset_1 / self.balance_code_1600_offset_1) * 100
-        except DivisionByZero:
+        except ZeroDivisionError:
             return 3
         if coeff <= 5:
             return 4
