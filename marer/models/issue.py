@@ -1563,7 +1563,7 @@ class Issue(models.Model):
 
             # benefitiar stop factors
             if self.tender_exec_law in [consts.TENDER_EXEC_LAW_44_FZ, consts.TENDER_EXEC_LAW_223_FZ]:
-                if kontur_benefitiar_analytics_data.get('q4005', 0) > 0:
+                if kontur_benefitiar_analytics_data.get('q4005', 0) <= 0:
                     ve.error_list.append('Бенефициар не найден в реестре государственных заказчиков')
             for bl_inn_start in ['91', '92']:
                 if self.tender_responsible_inn.startswith(bl_inn_start):
