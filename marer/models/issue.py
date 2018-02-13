@@ -282,7 +282,7 @@ class Issue(models.Model):
     is_positive_lawyers_department_conclusion = models.NullBooleanField('Наличие положительного Заключения ПУ (в соответствии с Приказом по проверке ПУ)', blank=True, null=True)
     is_absent_info_about_court_acts_for_more_than_20_pct_of_net_assets = models.NullBooleanField('Отсутствие информации об исполнительных производствах Приницпала его Участников на сумму более 20% чистых активов Клиента', blank=True, null=True)
     is_absent_info_about_legal_proceedings_as_defendant_for_more_than_30_pct_of_net_assets = models.NullBooleanField('Отсутствие информации о судебных разбирательствах Клиента в качестве ответчика (за исключением закрытых) на сумму более 30% чистых активов Клиента', blank=True, null=True)
-    is_need_to_check_real_of_issuer_activity = models.NullBooleanField('Есть необходимость оценки реальности деятельности', blank=True, null=True)
+    is_need_to_check_real_of_issuer_activity = models.NullBooleanField('Есть необходимость оценки реальности деятельности', blank=False, null=False, default=False)
     is_real_of_issuer_activity_confirms = models.NullBooleanField('Реальность деятельности подтверждается', blank=True, null=True)
     is_contract_corresponds_issuer_activity = models.IntegerField('Соответствие контракта профилю деятельности клиента', choices=[
         (None, 'Неизвестно'),
@@ -306,6 +306,7 @@ class Issue(models.Model):
                   'сроки), соблюдение процедуры одобрения сделок (если подлежат одобрению по специальным основаниям). '
                   'Обращено внимание на соблюдение процессуальных процедур при оформлении уставных документов.',
         blank=True, null=False, default='')
+    final_documents_operations_management_conclusion_override = models.NullBooleanField('Принудительное решение УРДО в спорных ситуациях', blank=True, null=True)
 
     @property
     def humanized_is_issuer_has_blocked_bank_account(self):
@@ -383,9 +384,13 @@ class Issue(models.Model):
         return 'Да' if self.bg_sum > 18000000 else 'Нет'
 
     @property
+    def issuer_presence_in_unfair_suppliers_registry(self):
+        kontur_principal_analytics_data = kontur.analytics(inn=self.issuer_inn, ogrn=self.issuer_ogrn).get('analytics', {})
+        return kontur_principal_analytics_data.get('m4001', False)
+
+    @property
     def humanized_issuer_presence_in_unfair_suppliers_registry(self):
-        kontur_principal_analytics_data = kontur.analytics(inn=self.issuer_inn, ogrn=self.issuer_ogrn)
-        return 'Да' if kontur_principal_analytics_data.get('m4001', False) else 'Нет'
+        return 'Да' if self.issuer_presence_in_unfair_suppliers_registry else 'Нет'
 
     @property
     def humanized_is_contract_has_prepayment(self):
@@ -500,6 +505,106 @@ class Issue(models.Model):
         elif self.is_contract_corresponds_issuer_activity == 6:
             return 'Нет'
         return '—'
+
+    @property
+    def final_documents_operations_management_conclusion(self):
+        if self.bg_sum < 1500000:
+            strong_checks = []
+            variative_checks = []
+            # 1 Дата регистрации Клиента более 6 мес.
+            strong_checks.append(self.is_org_registered_more_than_6_months_ago)
+            # 2 Лимит на Принципала (группу взаимосвязанных Заемщиков) ВСЕХ обязательств Банка менее 18 000 000 руб.
+            strong_checks.append(self.is_issuer_all_bank_liabilities_less_than_max)
+            # 3 Клиент исполнил не менее 1 контракта в рамках законов № 94-ФЗ, 44-ФЗ, 223-ФЗ, 185-ФЗ (615 ПП).
+            strong_checks.append(self.is_issuer_executed_contracts_on_44_or_223_or_185_fz)
+            # 4 Наличие исполненного  государственного контракта за последние 3  года.
+            strong_checks.append(self.is_issuer_executed_goverment_contract_for_last_3_years)
+
+            # 5 При выдачи БГ по контракту предусматривающей выплату аванса
+            if self.tender_has_prepayment:
+                prepayment_checks = []
+                # 5.1 Клиент исполнял контракты с авансами сопоставимого или большего размера (допустимое отклонение в меньшую сторону не более 50 % включительно).
+                prepayment_checks.append(self.is_issuer_executed_contracts_with_comparable_advances)
+                # 5.2 Факт исполнения не менее 5 контрактов, заключенных в рамках законов № 44-ФЗ (включая № 94-ФЗ), 223-ФЗ, 185-ФЗ (615 ПП);
+                prepayment_checks.append(self.is_issuer_executed_gte_5_contracts_on_44_or_223_or_185_fz)
+                # 5.3 Выручка Клиента за последний завершенный год не менее, чем в 5 раз превышает сумму запрашиваемой и действующих в Банке гарантий
+                prepayment_checks.append(self.is_issuer_last_year_revenue_higher_in_5_times_than_all_bank_bgs)
+                # 5.4 Наличие Поручителя юридического лица удовлетворяющим одному из условий пп. 5.1, 5.2, 5.3.
+                prepayment_checks.append(self.is_issuer_has_garantor_for_advance_related_requirements)
+                prepayment_checks = [bool(check) for check in prepayment_checks]
+                strong_checks.append(True in prepayment_checks)
+
+            # 6 Величина чистых активов за последний завершенный квартал больше уставного капитала (только для организаций, предоставивших отчетность по форме № 1 и №2).
+            strong_checks.append(self.last_account_period_net_assets_great_than_authorized_capital)
+            # 7 Деятельность Клиента в течение Последнего завершенного года являлась прибыльной.
+            strong_checks.append(self.balance_code_2400_offset_1 > 0)
+            # 8 Деятельность Клиента за последний отчетный период  является прибыльной.
+            strong_checks.append(self.balance_code_2400_offset_0 > 0)
+            # 9 Снижение цены Контракта менее 50% если предмет контракта «Поставка»
+            strong_checks.append(self.is_contract_price_reduction_lower_than_50_pct_on_supply_contract)
+            # 10 Финансовое положение хорошое (Расчет производится согласно Положения о предоставлении банковских гарантий ПАО «БАНК СГБ» в рамках продукта «Экспресс - гарантии).
+            strong_checks.append(self.scoring_rating_sum <= 25)
+            # 11 Клиент не находится в регионе, с которым Банк не работает
+            strong_checks.append(self.is_issuer_in_blacklisted_region is False)
+            # 12 Бенефициар не находится в регионе, с которым Банк не работает
+            strong_checks.append(self.is_beneficiary_in_blacklisted_region is False)
+            # 13 Наличие положительного Заключения СБ
+            strong_checks.append(self.is_positive_security_department_conclusion)
+            # 14 Наличие положительного Заключения ПУ (в соответствии с Приказом по проверке ПУ)
+            strong_checks.append(self.is_positive_lawyers_department_conclusion)
+            strong_checks = [bool(check) for check in strong_checks]
+            if False in strong_checks:
+                return False
+
+            # 15* Отсутствие информации об исполнительных производствах Приницпала его Участников на сумму более 20% чистых активов (ЧА) Клиента. ЧА – сумма 3 раздела Баланса «Капитал и Резервы» на последнюю отчетную дату, за исключением исполнительных производств по госконтрактам.
+            variative_checks.append(self.is_absent_info_about_court_acts_for_more_than_20_pct_of_net_assets)
+            # 16* Отсутствие информации о судебных разбирательствах Клиента в качестве ответчика (за исключением закрытых) на сумму более 30% чистых активов (ЧА) Клиента. ЧА – сумма 3 раздела Баланса «Капитал и Резервы» на последнюю отчетную дату, за исключением судебных разбирательств в качестве ответчика  по госконтрактам.
+            variative_checks.append(self.is_absent_info_about_legal_proceedings_as_defendant_for_more_than_30_pct_of_net_assets)
+            variative_checks = [bool(check) for check in variative_checks]
+            return not False in variative_checks or self.final_documents_operations_management_conclusion_override
+        else:
+            strong_checks = []
+
+            # 1 Дата регистрации Клиента менее 6 мес.
+            strong_checks.append(self.is_org_registered_more_than_6_months_ago)
+            # 2 Клиент не исполнял контракты, заключенный с организацией, заключающей контракты в рамках законов № 94-ФЗ, 44-ФЗ, 223-ФЗ, 185-ФЗ.
+            strong_checks.append(self.is_issuer_executed_contracts_on_44_or_223_or_185_fz)
+            # 3 Отрицательная величина чистых активов за последний завершенный квартал (только для организаций, предоставивших отчетность по форме № 1 и №2).
+            strong_checks.append(self.balance_code_1300_offset_0 >= 0)
+            # 4 Деятельность Клиента в течение Последнего завершенного года и последнего завершенного квартала являлась убыточной.
+            strong_checks.append(self.balance_code_2400_offset_1 > 0)
+            # 5 Клиент не находится в регионе, с которым Банк не работает
+            strong_checks.append(self.is_issuer_in_blacklisted_region is False)
+            # 6 Бенефициар не находится в регионе, с которым Банк не работает
+            strong_checks.append(self.is_beneficiary_in_blacklisted_region is False)
+            # 7 Срок БГ более 30 мес.
+            strong_checks.append(issue_term_in_months(self.bg_start_date, self.bg_end_date) <= 30)
+            # 8 Лимит БГ на клиента превышает 15 млн.руб. (в т.ч. при запросе тендерной БГ)
+            strong_checks.append(self.bg_sum <= 18000000)
+            # 9 Не выполняются требования к авансированию (при наличии в контракте аванса)
+            strong_checks.append(self.contract_advance_requirements_fails is False)
+            # 10 Наличие текущей просроченной ссудной задолженности и отрицательной кредитной истории в кредитных организациях.
+            strong_checks.append(self.is_issuer_has_bad_credit_history is False)
+            # 11 Наличие Клиента в реестре недобросовестных поставщиков.
+            strong_checks.append(self.issuer_presence_in_unfair_suppliers_registry is False)
+            # 12 Наличие информации о блокировке счетов
+            strong_checks.append(self.is_issuer_has_blocked_bank_account is False)
+            # 13 Финансовое положение средние или плохое
+            strong_checks.append(self.scoring_rating_sum <= 25)
+            strong_checks = [bool(check) for check in strong_checks]
+            if False in strong_checks:
+                return False
+            else:
+                return True
+
+    @property
+    def humanized_final_documents_operations_management_conclusion(self):
+        if self.final_documents_operations_management_conclusion is True:
+            return 'Положительное'
+        if self.final_documents_operations_management_conclusion is False:
+            return 'Отрицательное'
+        if self.final_documents_operations_management_conclusion is None:
+            return 'Не определено'
 
     application_doc = models.ForeignKey(
         Document,
@@ -767,12 +872,16 @@ class Issue(models.Model):
         return 'Да' if not self.scoring_rating_sum <= 25 else 'Нет'
 
     @property
-    def humanized_last_account_period_net_assets_great_than_authorized_capital(self):
+    def last_account_period_net_assets_great_than_authorized_capital(self):
         details = kontur.egrDetails(inn=self.issuer_inn, ogrn=self.issuer_ogrn)
         authorized_capital = 0
         if details and details.get('UL', False):
             authorized_capital = details.get('UL', {}).get('statedCapital', {}).get('sum', 0)
-        return 'Да' if self.balance_code_1300_offset_0 * 1000 > authorized_capital else 'Нет'
+        return self.balance_code_1300_offset_0 * 1000 > authorized_capital
+
+    @property
+    def humanized_last_account_period_net_assets_great_than_authorized_capital(self):
+        return 'Да' if self.last_account_period_net_assets_great_than_authorized_capital else 'Нет'
 
     @property
     def humanized_sum(self):
