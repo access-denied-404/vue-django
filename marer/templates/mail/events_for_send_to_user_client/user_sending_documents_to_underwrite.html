@@ -1,0 +1,15 @@
+{% extends 'mail/base.html' %}
+
+{% block content %}
+    <tr>
+        <td class="plr-20" bgcolor="#f9f9f9"
+            style="padding:30px 48px; font:18px/25px DINPro, Arial, Helvetica, sans-serif; color:#757c83;">
+            <p>Вам отправили документы для подписания</p>
+            <p>Документы можно скачать по ссылке:</p>
+            <p>
+                <a href="http://sgbmarertest.ru{% url 'issue_additional_documents_requests' issue_id %}"></a>
+            </p>
+        </td>
+    </tr>
+
+{% endblock %}
