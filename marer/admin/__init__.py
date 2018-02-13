@@ -592,6 +592,7 @@ class MarerUserAdmin(UserAdmin):
                 'username',
                 'email',
                 'first_name',
+                'middle_name',
                 'last_name',
                 'phone',
                 'comment',
@@ -695,7 +696,7 @@ class MarerUserAdmin(UserAdmin):
     def get_fieldsets(self, request, obj=None):
         full_fieldsets = (
             (None, {'fields': ('username', 'password', 'manager',)}),
-            (_('Personal info'), {'fields': ('first_name', 'last_name', 'email', 'phone', 'comment')}),
+            (_('Personal info'), {'fields': ('first_name', 'middle_name', 'last_name', 'email', 'phone', 'comment')}),
             (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'is_broker',
                                            'groups', 'user_permissions')}),
             (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
@@ -703,7 +704,7 @@ class MarerUserAdmin(UserAdmin):
         )
         limited_fieldsets = (
             (None, {'fields': ('username', 'password',)}),
-            (_('Personal info'), {'fields': ('first_name', 'last_name', 'email', 'phone', 'comment')}),
+            (_('Personal info'), {'fields': ('first_name', 'middle_name', 'last_name', 'email', 'phone', 'comment')}),
             (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
         )
         if obj:
