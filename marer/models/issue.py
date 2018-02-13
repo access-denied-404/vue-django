@@ -284,7 +284,13 @@ class Issue(models.Model):
     is_absent_info_about_legal_proceedings_as_defendant_for_more_than_30_pct_of_net_assets = models.NullBooleanField('Отсутствие информации о судебных разбирательствах Клиента в качестве ответчика (за исключением закрытых) на сумму более 30% чистых активов Клиента', blank=True, null=True)
     is_need_to_check_real_of_issuer_activity = models.NullBooleanField('Есть необходимость оценки реальности деятельности', blank=True, null=True)
     is_real_of_issuer_activity_confirms = models.NullBooleanField('Реальность деятельности подтверждается', blank=True, null=True)
-    is_contract_corresponds_issuer_activity = models.NullBooleanField('Контракт соответствует профилю деятельности клиента', blank=True, null=True)
+    is_contract_corresponds_issuer_activity = models.IntegerField('Соответствие контракта профилю деятельности клиента', choices=[
+        (None, 'Неизвестно'),
+        (1, 'Да — 1 балл рейтинга'),
+        (2, 'Да — 2 балла рейтинга'),
+        (4, 'Да — 4 балла рейтинга'),
+        (6, 'Нет — 6 баллов рейтинга'),
+    ], blank=True, null=True)
 
     total_bank_liabilities_vol = models.DecimalField(verbose_name='объем обязательств банка', max_digits=32, decimal_places=2, blank=True, null=True)
 
@@ -487,9 +493,11 @@ class Issue(models.Model):
 
     @property
     def humanized_is_contract_corresponds_issuer_activity(self):
-        if self.is_contract_corresponds_issuer_activity is True:
+        if self.is_contract_corresponds_issuer_activity is None:
+            return '—'
+        elif self.is_contract_corresponds_issuer_activity < 6:
             return 'Да'
-        if self.is_contract_corresponds_issuer_activity is False:
+        elif self.is_contract_corresponds_issuer_activity == 6:
             return 'Нет'
         return '—'
 
@@ -716,6 +724,7 @@ class Issue(models.Model):
             + self.scoring_revenue_reduction
             + self.scoring_finished_contracts_count
             + self.scoring_credit_history
+            + self.is_contract_corresponds_issuer_activity
         )
 
     @property
