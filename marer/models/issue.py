@@ -378,7 +378,7 @@ class Issue(models.Model):
 
     @property
     def humanized_issuer_presence_in_unfair_suppliers_registry(self):
-        kontur_principal_analytics_data = kontur.analytics(inn=self.issuer_inn, ogrn=self.issuer_ogrn)
+        kontur_principal_analytics_data = kontur.analytics(inn=self.issuer_inn, ogrn=self.issuer_ogrn).get('analytics', {})
         return 'Да' if kontur_principal_analytics_data.get('m4001', False) else 'Нет'
 
     @property
@@ -1543,7 +1543,9 @@ class Issue(models.Model):
 
         try:
             kontur_benefitiar_analytics_data = kontur.analytics(inn=self.tender_responsible_inn, ogrn=self.tender_responsible_ogrn)
+            kontur_benefitiar_analytics_data = kontur_benefitiar_analytics_data.get('analytics', {})
             kontur_principal_analytics_data = kontur.analytics(inn=self.issuer_inn, ogrn=self.issuer_ogrn)
+            kontur_principal_analytics_data = kontur_principal_analytics_data.get('analytics', {})
 
             # principal stop factors
             if kontur_principal_analytics_data.get('m4001', False):
