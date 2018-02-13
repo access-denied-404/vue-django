@@ -10,7 +10,7 @@ from marer.models import Issue
 from marer.serializers import ProfileSerializer, IssueListSerializer, IssueSerializer
 from marer import consts
 from marer.forms import RestTenderForm, IssueBankCommissionForm
-from marer.utils.issue import bank_commission
+from marer.utils.issue import calculate_bank_commission
 
 
 def _parse_date(src_date_raw):
@@ -149,7 +149,7 @@ class IssueBankCommissionView(APIView):
     def get(self, request, format=None):
         form = IssueBankCommissionForm(request.GET)
         if form.is_valid():
-            commission = bank_commission(
+            commission = calculate_bank_commission(
                 form.cleaned_data['bg_start_date'],
                 form.cleaned_data['bg_end_date'],
                 form.cleaned_data['bg_sum'],

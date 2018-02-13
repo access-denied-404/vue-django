@@ -18,8 +18,8 @@ def issue_term_in_months(start_date, end_date):
     return months
 
 
-def bank_commission(bg_start_date, bg_end_date, bg_sum, bg_is_beneficiary_form, bg_type, tender_exec_law,
-                    tender_has_prepayment, contract_term_extend=False, contract_exec_verification_more_5_doc=False):
+def calculate_bank_commission(bg_start_date, bg_end_date, bg_sum, bg_is_beneficiary_form, bg_type, tender_exec_law,
+                              tender_has_prepayment, contract_term_extend=False, contract_exec_verification_more_5_doc=False):
     """
     Расчет банковской комиссии
     :param bg_start_date:
