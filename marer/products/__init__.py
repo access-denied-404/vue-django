@@ -717,7 +717,7 @@ class BankGuaranteeProduct(FinanceProduct):
                 'application_doc_admin_field',
                 'lawyers_dep_conclusion_doc_admin_field',
                 'doc_ops_mgmt_conclusion_doc_admin_field',
-                # 'sec_dep_conclusion_doc_admin_field',
+                'sec_dep_conclusion_doc_admin_field',
             ))),
             ('Договора и акты', dict(fields=(
                 'bg_contract_doc_admin_field',
