@@ -8,8 +8,10 @@ from django.conf import settings
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.files.base import ContentFile
+from django.core.mail import send_mail
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404
+from django.template.loader import get_template
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -18,7 +20,7 @@ from django.views.generic import TemplateView, RedirectView
 from django.views.generic.base import ContextMixin
 
 from marer import consts
-from marer.forms import IssueRegisteringForm, IFOPCMessageForm, LoginSignForm
+from marer.forms import IssueRegisteringForm, IFOPCMessageForm, LoginSignForm, EmailForm
 from marer.models import Issue, Document, Issuer
 from marer.models.issue import IssueClarificationMessage, \
     IssueFinanceOrgProposeClarificationMessageDocument, IssueClarification, \
@@ -219,6 +221,94 @@ class IssueSurveyView(IssueView):
             return HttpResponseRedirect(url)
         else:
             return self.get(request, *args, **kwargs)
+
+
+class IssueRemoteAdditionalDocumentsRequests(TemplateView, ContextMixin, View):
+    _issue = None
+
+    def get_issue(self):
+        if self._issue is not None:
+            return self._issue
+
+        iid = self.kwargs.get('iid', None)
+        if iid is not None:
+            # fixme maybe make error 403?
+            issue = get_object_or_404(Issue, id=iid)
+            self._issue = issue
+            return issue
+
+    def get_context_data(self, **kwargs):
+        kwargs['cert_hash'] = self.get_cert_thumb()
+        kwargs['consts'] = consts
+        kwargs['issue'] = self.get_issue()
+        if 'comment_form' not in kwargs:
+            kwargs['comment_form'] = IFOPCMessageForm()
+        return super().get_context_data(**kwargs)
+
+    def get_cert_thumb(self):
+        dta = self.request.COOKIES.get('cert_thumb', None)
+        if not dta:
+            dta = self.request.session.get('cert_thumb', None)
+        return dta
+
+    def get_cert_sign(self):
+        dta = self.request.COOKIES.get('cert_sign', None)
+        if not dta:
+            dta = self.request.session.get('cert_sign', None)
+        return dta
+
+    def is_authenticated_by_cert(self):
+        thumb = self.get_cert_thumb()
+        sign = self.get_cert_sign()
+        # todo check INN for cert and issue issuer
+        if thumb and sign:
+            return True
+        else:
+            return False
+
+    def get(self, request, *args, **kwargs):
+        if 'logout' in request.GET:
+            logout(request)
+
+        if not self.is_authenticated_by_cert():
+            self.template_name = 'marer/auth/remote_sign_login.html'
+            login_form = LoginSignForm()
+            if 'login_form' not in kwargs:
+                kwargs.update(dict(login_form=login_form))
+        elif self.get_issue().status == consts.ISSUE_STATUS_REGISTERING:
+            self.template_name = 'marer/issue/remote_sign_docs_for_registering.html'
+        else:
+            self.template_name = 'marer/issue/remote_adrs.html'
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        comment_form = IFOPCMessageForm(request.POST, request.FILES)
+
+        if comment_form.is_valid():
+
+            if self.get_issue() and 'issue_additional_documents_requests' not in self.get_issue().editable_dashboard_views():
+                return self.get(request, *args, **kwargs)
+
+            new_msg = IssueClarificationMessage()
+            new_msg.issue = self.get_issue()
+            new_msg.message = comment_form.cleaned_data['message']
+            new_msg.user = request.user
+            new_msg.save()
+
+            for ffield in ['doc%s' % dnum for dnum in range(1, 9)]:
+                ffile = comment_form.cleaned_data[ffield]
+                if ffile:
+                    new_doc = Document()
+                    new_doc.file = ffile
+                    new_doc.save()
+
+                    new_clarif_doc_link = IssueFinanceOrgProposeClarificationMessageDocument()
+                    new_clarif_doc_link.clarification_message = new_msg
+                    new_clarif_doc_link.name = ffile.name
+                    new_clarif_doc_link.document = new_doc
+                    new_clarif_doc_link.save()
+
+        return self.get(request, *args, **kwargs)
 
 
 class IssueRemoteSignView(TemplateView, ContextMixin, View):
@@ -438,37 +528,54 @@ class IssueAdditionalDocumentsRequestsView(IssueView):
 
     def get_context_data(self, **kwargs):
         kwargs['consts'] = consts
+        if 'email_form' not in kwargs:
+            kwargs['email_form'] = EmailForm()
         if 'comment_form' not in kwargs:
             kwargs['comment_form'] = IFOPCMessageForm()
         return super().get_context_data(**kwargs)
 
     def post(self, request, *args, **kwargs):
 
-        comment_form = IFOPCMessageForm(request.POST, request.FILES)
+        action = request.POST.get('action', False)
 
-        if comment_form.is_valid():
+        if action == 'send_mail':
+            email_form = EmailForm(request.POST)
+            if email_form.is_valid():
+                client_email = [email_form.cleaned_data['email']]
+                html_template_filename = 'mail/events_for_send_to_user_client/user_sending_documents_to_underwrite.html'
+                context = dict(
+                    issue_id=self.get_issue().id
+                )
+                if html_template_filename:
+                    msg_tmpl = get_template(html_template_filename)
+                    message = msg_tmpl.render(context or {})
+                    send_mail('Документы на согласование', '', request.user.email, client_email, html_message=message)
+        elif action == 'send_msg':
+            comment_form = IFOPCMessageForm(request.POST, request.FILES)
 
-            if self.get_issue() and 'issue_additional_documents_requests' not in self.get_issue().editable_dashboard_views():
-                return self.get(request, *args, **kwargs)
+            if comment_form.is_valid():
 
-            new_msg = IssueClarificationMessage()
-            new_msg.issue = self.get_issue()
-            new_msg.message = comment_form.cleaned_data['message']
-            new_msg.user = request.user
-            new_msg.save()
+                if self.get_issue() and 'issue_additional_documents_requests' not in self.get_issue().editable_dashboard_views():
+                    return self.get(request, *args, **kwargs)
 
-            for ffield in ['doc%s' % dnum for dnum in range(1, 9)]:
-                ffile = comment_form.cleaned_data[ffield]
-                if ffile:
-                    new_doc = Document()
-                    new_doc.file = ffile
-                    new_doc.save()
+                new_msg = IssueClarificationMessage()
+                new_msg.issue = self.get_issue()
+                new_msg.message = comment_form.cleaned_data['message']
+                new_msg.user = request.user
+                new_msg.save()
 
-                    new_clarif_doc_link = IssueFinanceOrgProposeClarificationMessageDocument()
-                    new_clarif_doc_link.clarification_message = new_msg
-                    new_clarif_doc_link.name = ffile.name
-                    new_clarif_doc_link.document = new_doc
-                    new_clarif_doc_link.save()
+                for ffield in ['doc%s' % dnum for dnum in range(1, 9)]:
+                    ffile = comment_form.cleaned_data[ffield]
+                    if ffile:
+                        new_doc = Document()
+                        new_doc.file = ffile
+                        new_doc.save()
+
+                        new_clarif_doc_link = IssueFinanceOrgProposeClarificationMessageDocument()
+                        new_clarif_doc_link.clarification_message = new_msg
+                        new_clarif_doc_link.name = ffile.name
+                        new_clarif_doc_link.document = new_doc
+                        new_clarif_doc_link.save()
 
         return self.get(request, *args, **kwargs)
 
