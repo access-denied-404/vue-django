@@ -20,7 +20,7 @@
                         Комиссия банка
                         <br/>
                         {% if issue.passed_prescoring %}
-                            {{ issue.bank_commission |floatformat:2 }} руб.
+                            {{ issue.auto_bank_commission |floatformat:2 }} руб.
                         {% else %}
                             <span class="text-danger h3">Не в рамках продукта</span>
                         {% endif %}
