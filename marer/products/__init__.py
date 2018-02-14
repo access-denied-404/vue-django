@@ -258,16 +258,17 @@ class BankGuaranteeProduct(FinanceProduct):
             affiliates = IssueBGProdAffiliate.objects.filter(issue=self._issue)
             affiliates.delete()
             for aff in kontur_aff_data:
-                new_aff = IssueBGProdAffiliate()
-                new_aff.issue = self._issue
+                if aff['inn'] != self._issue.issuer_inn:
+                    new_aff = IssueBGProdAffiliate()
+                    new_aff.issue = self._issue
 
-                if aff.get('UL', None):
-                    new_aff.name = aff['UL']['legalName']['short'] if aff['UL']['legalName'].get('short', None) else aff['UL']['legalName']['full']
-                elif aff.get('IP', None):
-                    new_aff.name = aff['IP']['fio']
+                    if aff.get('UL', None):
+                        new_aff.name = aff['UL']['legalName']['short'] if aff['UL']['legalName'].get('short', None) else aff['UL']['legalName']['full']
+                    elif aff.get('IP', None):
+                        new_aff.name = aff['IP']['fio']
 
-                new_aff.inn = aff['inn']
-                new_aff.save()
+                    new_aff.inn = aff['inn']
+                    new_aff.save()
 
             from marer.models.issue import IssueBGProdFounderLegal
             founders_legal = IssueBGProdFounderLegal.objects.filter(issue=self._issue)
