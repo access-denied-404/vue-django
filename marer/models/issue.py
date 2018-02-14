@@ -3,6 +3,7 @@ import json
 import os
 
 import feedparser
+import requests
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
@@ -386,6 +387,34 @@ class Issue(models.Model):
     def issuer_presence_in_unfair_suppliers_registry(self):
         kontur_principal_analytics_data = kontur.analytics(inn=self.issuer_inn, ogrn=self.issuer_ogrn).get('analytics', {})
         return kontur_principal_analytics_data.get('m4001', False)
+
+    @property
+    def humanized_issuer_is_not_present_in_unfair_suppliers_registry(self):
+        return 'Да' if not self.issuer_presence_in_unfair_suppliers_registry else 'Нет'
+
+    @property
+    def is_issuer_liquidating_or_bankrupt(self):
+        kontur_principal_analytics_data = kontur.analytics(inn=self.issuer_inn, ogrn=self.issuer_ogrn).get('analytics', {})
+        return kontur_principal_analytics_data.get('m7014', False)
+
+    @property
+    def humanized_is_not_issuer_liquidating_or_bankrupt(self):
+        return 'Да' if not self.is_issuer_liquidating_or_bankrupt else 'Нет'
+    
+    @property
+    def is_issuer_present_in_terrorists_list(self):
+        url = 'http://www.fedsfm.ru/TerroristSearch'
+        json = dict(pageLength=50, rowIndex=0, searchText=self.issuer_inn)
+        result = requests.post(url, json=json).json()
+        if result.get('IsError', False) and result.get('recordsTotal', 1) == 0:
+            return False
+        elif result.get('IsError', False) and result.get('recordsTotal', 1) > 0:
+            return True
+
+    @property
+    def humanized_is_issuer_not_present_in_terrorists_list(self):
+        return 'Да' if not self.is_issuer_present_in_terrorists_list else 'Нет'
+
 
     @property
     def humanized_issuer_presence_in_unfair_suppliers_registry(self):
@@ -1629,18 +1658,27 @@ class Issue(models.Model):
             timezone.localdate(timezone.now(), timezone.get_current_timezone()),
             self.issuer_registration_date,
         )
-        if issuer_reg_delta.years <= 0 and issuer_reg_delta.months <= 6:
+        if not self.is_org_registered_more_than_6_months_ago:
             ve.error_list.append('Обнаружен стоп-фактор: организация зарегистрирована менее 6 месецев назад')
 
         if len(ve.error_list) > 0:
             raise ve
+
+        if self.bg_sum < 500000:
+            filename = 'issue_sec_dep_conclusion_up_to_500000.docx'
+        elif self.bg_sum < 1500000:
+            filename = 'issue_sec_dep_conclusion_more_500000_up_to_1500000.docx'
+        elif self.bg_sum < 5000000:
+            filename = 'issue_sec_dep_conclusion_more_1500000_up_to_5000000.docx'
+        else:
+            filename = 'issue_sec_dep_conclusion_more_5000000.docx'
 
         template_path = os.path.join(
             settings.BASE_DIR,
             'marer',
             'templates',
             'documents',
-            'issue_sec_dep_conclusion.docx'
+            filename
         )
 
         from marer.utils.documents import fill_docx_file_with_issue_data
