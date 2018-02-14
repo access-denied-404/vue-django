@@ -3,6 +3,7 @@ from rest_framework.serializers import ModelSerializer
 
 from marer import consts
 from marer.models import Issue, User
+from marer.models.base import Document
 from marer.models.issue import IssueOrgManagementCollegial, IssueOrgManagementDirectors, IssueOrgManagementOthers
 
 
@@ -36,12 +37,33 @@ class TenderSerializer(ReadOnlySerializer):
     publisher = TenderPublisherSerializer(many=False)
 
 
-
 class IssueListSerializer(ModelSerializer):
 
     class Meta:
         model = Issue
-        fields = ('id', 'product', 'bg_sum', 'issuer_short_name', 'issuer_inn',)
+        fields = ('id', 'product', 'bg_sum', 'issuer_short_name', 'issuer_inn', 'bg_doc',
+                  'transfer_acceptance_act', 'contract_of_guarantee', 'status')
+
+
+class ContractOfGuaranteeSerializer(ModelSerializer):
+
+    class Meta:
+        model = Document
+        fields = ['file', 'sign', 'sign_state']
+
+
+class TransferAcceptanceActSerializer(ModelSerializer):
+
+    class Meta:
+        model = Document
+        fields = ['file', 'sign', 'sign_state']
+
+
+class BGDocumentSerializer(ModelSerializer):
+
+    class Meta:
+        model = Document
+        fields = ['file', 'sign', 'sign_state']
 
 
 class IssueOrgManagementCollegialSerializer(ModelSerializer):
@@ -69,6 +91,9 @@ class IssueSerializer(ModelSerializer):
     org_management_collegial = IssueOrgManagementCollegialSerializer(many=True)
     org_management_directors = IssueOrgManagementDirectorsSerializer(many=True)
     org_management_others = IssueOrgManagementOthersSerializer(many=True)
+    bg_doc = BGDocumentSerializer()
+    transfer_acceptance_act = TransferAcceptanceActSerializer()
+    contract_of_guarantee = ContractOfGuaranteeSerializer()
 
     class Meta:
         model = Issue
