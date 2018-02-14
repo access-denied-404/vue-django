@@ -3,6 +3,7 @@ from rest_framework.serializers import ModelSerializer
 
 from marer import consts
 from marer.models import Issue, User
+from marer.models.issue import IssueOrgManagementCollegial, IssueOrgManagementDirectors, IssueOrgManagementOthers
 
 
 class ReadOnlySerializer(serializers.Serializer):
@@ -35,6 +36,7 @@ class TenderSerializer(ReadOnlySerializer):
     publisher = TenderPublisherSerializer(many=False)
 
 
+
 class IssueListSerializer(ModelSerializer):
 
     class Meta:
@@ -42,7 +44,31 @@ class IssueListSerializer(ModelSerializer):
         fields = ('id', 'product', 'bg_sum', 'issuer_short_name', 'issuer_inn',)
 
 
+class IssueOrgManagementCollegialSerializer(ModelSerializer):
+
+    class Meta:
+        model = IssueOrgManagementCollegial
+        fields = ['id', 'org_name', 'fio']
+
+
+class IssueOrgManagementDirectorsSerializer(ModelSerializer):
+
+    class Meta:
+        model = IssueOrgManagementDirectors
+        fields = ['id', 'org_name', 'fio']
+
+
+class IssueOrgManagementOthersSerializer(ModelSerializer):
+
+    class Meta:
+        model = IssueOrgManagementOthers
+        fields = ['id', 'org_name', 'fio']
+
+
 class IssueSerializer(ModelSerializer):
+    org_management_collegial = IssueOrgManagementCollegialSerializer(many=True)
+    org_management_directors = IssueOrgManagementDirectorsSerializer(many=True)
+    org_management_others = IssueOrgManagementOthersSerializer(many=True)
 
     class Meta:
         model = Issue
