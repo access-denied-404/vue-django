@@ -90,8 +90,8 @@ class IssueAdmin(ModelAdmin):
         'updated_at',
     )
     list_filter = (
-        ('user__manager', ManagerListFilter),
         ('manager', ManagerListFilter),
+        ('user__manager', ManagerListFilter),
         'status',
     )
     formfield_overrides = {
