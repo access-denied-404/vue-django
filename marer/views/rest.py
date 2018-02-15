@@ -172,7 +172,14 @@ class IssueBankCommissionView(APIView):
 
 class IssuesView(APIView):
     def get(self, request, format=None):
-        issues_qs = Issue.objects.filter(user_id=request.user.id)
+        if request.user.is_superuser:
+            issues_qs = Issue.objects.all()
+        elif request.user.is_staff:
+            issues_qs = Issue.objects.filter(manager_id=request.user.id)
+        elif request.user.is_authenticated:
+            issues_qs = Issue.objects.filter(user_id=request.user.id)
+        else:
+            issues_qs = Issue.objects.none()
         ilist_ser = IssueListSerializer(issues_qs, many=True)
         return Response(ilist_ser.data)
 
