@@ -263,7 +263,7 @@
           tender_exec_law: '',
           tender_placement_type: '',
           tender_publish_date: '',
-          tender_start_cost: '',
+          tender_start_cost: 0,
 
           tender_application_ensure_cost: '',
           tender_contract_execution_ensure_cost: '',
