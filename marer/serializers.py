@@ -2,8 +2,10 @@ from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
 from marer import consts
-from marer.models import Issue, User
-from marer.models.issue import IssueOrgManagementCollegial, IssueOrgManagementDirectors, IssueOrgManagementOthers
+from marer.models import Issue, User, Document
+from marer.models.issue import IssueOrgManagementCollegial, IssueOrgManagementDirectors, IssueOrgManagementOthers, \
+    IssueOrgBeneficiaryOwner, IssueOrgBankAccount, IssueBGProdFounderPhysical, IssueBGProdFounderLegal, \
+    IssueProposeDocument
 
 
 class ReadOnlySerializer(serializers.Serializer):
@@ -36,7 +38,6 @@ class TenderSerializer(ReadOnlySerializer):
     publisher = TenderPublisherSerializer(many=False)
 
 
-
 class IssueListSerializer(ModelSerializer):
 
     class Meta:
@@ -65,10 +66,64 @@ class IssueOrgManagementOthersSerializer(ModelSerializer):
         fields = ['id', 'org_name', 'fio']
 
 
+class IssueOrgBeneficiaryOwnerSerializer(ModelSerializer):
+
+    class Meta:
+        model = IssueOrgBeneficiaryOwner
+        fields = ['id', 'fio', 'legal_address', 'fact_address', 'post_address', 'inn_or_snils', 'on_belong_to_pub_persons_info']
+
+
+class IssueOrgBankAccountSerializer(ModelSerializer):
+
+    class Meta:
+        model = IssueOrgBankAccount
+        fields = ['id', 'name', 'bik']
+
+
+class IssueBGProdFounderPhysicalSerializer(ModelSerializer):
+
+    class Meta:
+        model = IssueBGProdFounderPhysical
+        fields = ['id', 'fio', 'add_date', 'additional_business', 'country', 'auth_capital_percentage', 'address', 'passport_data']
+
+
+class IssueBGProdFounderLegalSerializer(ModelSerializer):
+
+    class Meta:
+        model = IssueBGProdFounderLegal
+        fields = ['id', 'name', 'add_date', 'additional_business', 'country', 'auth_capital_percentage', 'legal_address']
+
+
+class DocumentSerializer(ModelSerializer):
+
+    class Meta:
+        model = Document
+        fields = ['id', 'file', 'sign', 'sign_state']
+
+
+class IssueProposeDocumentSerializer(ModelSerializer):
+    document = DocumentSerializer()
+    sample = DocumentSerializer()
+
+    class Meta:
+        model = IssueProposeDocument
+        fields = ['id', 'name', 'document', 'sample', 'type', 'is_required', 'is_approved_by_manager']
+
+
 class IssueSerializer(ModelSerializer):
     org_management_collegial = IssueOrgManagementCollegialSerializer(many=True)
     org_management_directors = IssueOrgManagementDirectorsSerializer(many=True)
     org_management_others = IssueOrgManagementOthersSerializer(many=True)
+    org_beneficiary_owners = IssueOrgBeneficiaryOwnerSerializer(many=True)
+    org_bank_accounts = IssueOrgBankAccountSerializer(many=True)
+    issuer_founders_legal = IssueBGProdFounderLegalSerializer(many=True)
+    issuer_founders_physical = IssueBGProdFounderPhysicalSerializer(many=True)
+    application_doc = DocumentSerializer()
+    propose_documents = IssueProposeDocumentSerializer(many=True)
+
+    bg_contract_doc = DocumentSerializer()
+    bg_doc = DocumentSerializer()
+    transfer_acceptance_act = DocumentSerializer()
 
     class Meta:
         model = Issue
