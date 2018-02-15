@@ -19,6 +19,7 @@
         - uwsgi
         - uwsgi-plugin-python3
         - gettext
+        - redis-server
       become: true
 
     - name: Setting locale
