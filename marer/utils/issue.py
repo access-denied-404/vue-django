@@ -116,7 +116,16 @@ def sum2str(value):
         ['миллион', 'миллиона', 'миллионов', 0],
         ['миллиард', 'милиарда', 'миллиардов', 0],
     ]
-    rub, kop = ('%3.2f' % float(value)).split('.')
+
+    value = str(value).replace(' ', '')
+    if '.' in value:
+        rub, kop = ('%3.2f' % float(value)).split('.')
+    elif ',' in value:
+        rub, kop = ('%3.2f' % float(value)).split(',')
+    else:
+        rub = float(value)
+        kop = 0
+
     output = []
 
     def split_by_groups(value: str, count: int):
