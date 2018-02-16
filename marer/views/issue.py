@@ -762,9 +762,14 @@ class IssueRemoteDocumentSignView(ContextMixin, View):
         )
         if str(doc_id) == str(self.get_issue().application_doc_id):
             doc = self.get_issue().application_doc
+            pdoc = IssueProposeDocument()
+            pdoc.id = -1  # saving avoid
+            pdoc.name = 'Заялвление на предоставление банковской гарантии'
         elif doc_id and self.get_issue().propose_documents.filter(document_id=doc_id).exists():
             pdoc = IssueProposeDocument.objects.filter(document_id=doc_id)[0]
             doc = pdoc.document
+        else:
+            pdoc = None
 
         raw_check_sign_class = settings.FILE_SIGN_CHECK_CLASS
         if raw_check_sign_class is not None and raw_check_sign_class != '':
