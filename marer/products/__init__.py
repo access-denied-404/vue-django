@@ -723,6 +723,7 @@ class BankGuaranteeProduct(FinanceProduct):
             ('Договора и акты', dict(fields=(
                 'bg_contract_doc_admin_field',
                 'bg_doc_admin_field',
+                'payment_of_fee_admin_field',
                 'transfer_acceptance_act_admin_field',
                 'contract_of_guarantee_admin_field',
             ))),
@@ -822,6 +823,7 @@ class BankGuaranteeProduct(FinanceProduct):
             'transfer_acceptance_act_admin_field',
             'contract_of_guarantee_admin_field',
             'bg_doc_admin_field',
+            'payment_of_fee_admin_field',
             'additional_doc_admin_field',
             'lawyers_dep_conclusion_doc_admin_field',
             'doc_ops_mgmt_conclusion_doc_admin_field',

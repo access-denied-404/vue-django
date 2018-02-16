@@ -974,6 +974,11 @@
                           <a href="{{ issue.bg_contract_doc.file }}">Договор</a>
                         </td>
                       </tr>
+                      <tr v-if="issue.payment_of_fee">
+                        <td>
+                          <a href="{{ issue.payment_of_fee.file }}">Счет</a>
+                        </td>
+                      </tr>
                       <tr v-if="issue.bg_doc">
                         <td>
                           <a href="{{ issue.bg_doc.file}}">Проект</a>
