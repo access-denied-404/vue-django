@@ -690,9 +690,16 @@ class IssueAdditionalDocumentSignView(LoginRequiredMixin, ContextMixin, View):
             document=doc_id,
             sign_state=consts.DOCUMENT_SIGN_NONE,
         )
+        if str(doc_id) == str(self.get_issue().application_doc_id):
+            doc = self.get_issue().application_doc
+            pdoc = IssueProposeDocument()
+            pdoc.id = -1  # saving avoid
+            pdoc.name = 'Заялвление на предоставление банковской гарантии'
         if doc_id and self.get_issue().propose_documents.filter(document_id=doc_id).exists():
             pdoc = IssueProposeDocument.objects.filter(document_id=doc_id)[0]
             doc = pdoc.document
+        else:
+            pdoc = None
 
         raw_check_sign_class = settings.FILE_SIGN_CHECK_CLASS
         if raw_check_sign_class is not None and raw_check_sign_class != '':
@@ -713,7 +720,8 @@ class IssueAdditionalDocumentSignView(LoginRequiredMixin, ContextMixin, View):
                 final_sign_file.name = os.path.basename(doc.file.name) + '.sig'
                 doc.sign = final_sign_file
                 doc.save()
-                notify_user_manager_about_user_sign_document(pdoc)
+                if pdoc:
+                    notify_user_manager_about_user_sign_document(pdoc)
                 response_dict['sign_state'] = consts.DOCUMENT_SIGN_VERIFIED
             else:
                 response_dict['sign_state'] = consts.DOCUMENT_SIGN_CORRUPTED
