@@ -695,7 +695,7 @@ class IssueAdditionalDocumentSignView(LoginRequiredMixin, ContextMixin, View):
             pdoc = IssueProposeDocument()
             pdoc.issue = self.get_issue()
             pdoc.id = -1  # saving avoid
-            pdoc.name = 'Заялвление на предоставление банковской гарантии'
+            pdoc.name = 'Заявление на предоставление банковской гарантии'
         if doc_id and self.get_issue().propose_documents.filter(document_id=doc_id).exists():
             pdoc = IssueProposeDocument.objects.filter(document_id=doc_id)[0]
             doc = pdoc.document
@@ -766,7 +766,7 @@ class IssueRemoteDocumentSignView(ContextMixin, View):
             pdoc = IssueProposeDocument()
             pdoc.issue = self.get_issue()
             pdoc.id = -1  # saving avoid
-            pdoc.name = 'Заялвление на предоставление банковской гарантии'
+            pdoc.name = 'Заявление на предоставление банковской гарантии'
         elif doc_id and self.get_issue().propose_documents.filter(document_id=doc_id).exists():
             pdoc = IssueProposeDocument.objects.filter(document_id=doc_id)[0]
             doc = pdoc.document
