@@ -124,6 +124,7 @@ class IssueSerializer(ModelSerializer):
     bg_contract_doc = DocumentSerializer()
     bg_doc = DocumentSerializer()
     transfer_acceptance_act = DocumentSerializer()
+    payment_of_fee = DocumentSerializer()
 
     class Meta:
         model = Issue
