@@ -1141,6 +1141,14 @@ class Issue(models.Model):
         return properties
 
     @cached_property
+    def bank_account_for_payment_fee(self):
+        """
+        Счет для оплаты банковской комиссии
+        :return: string
+        """
+        return "70601810319002750311" if self.issuer_okopf.replace(' ', '') == '50102' else "70601810419002750211"
+
+    @cached_property
     def licences_as_string(self):
         return '\n'.join(['%s от %s' % (l.number, l.date_from.strftime('%d.%m.%Y')) for l in self.issuer_licences.all() if l.is_active()])
 
