@@ -152,7 +152,11 @@ class WordDocumentHelper:
             while row_idx < rows_cnt:
                 end_row = None  # конечная строка для копирования
                 # ищем в первой ячейке признак начала цикла
-                first_cell = self.get_cells(table, row_idx)[0]
+                first_cell = self.get_cells(table, row_idx)
+                if not first_cell:
+                    row_idx += 1
+                    continue
+                first_cell = first_cell[0]
                 found = re.findall(r'{[^{}]*\|for}', self.get_text(first_cell))
                 if found:  # как только нашли начало цикла, ищем его конец
                     found = found[0][1:-5]
@@ -256,4 +260,8 @@ def generate_acts_for_issue(issue: Issue)-> Issue:
         issue.additional_doc = generate_doc(os.path.join(settings.BASE_DIR, path), 'additional_doc.docx', issue)
     if issue.bg_sum > 5000000:
         issue.contract_of_guarantee = generate_doc(os.path.join(settings.BASE_DIR, 'marer/templates/documents/acts/contract_of_guarantee.docx'), 'contract_of_guarantee.docx', issue)
+
+    issue.payment_of_fee = generate_doc(
+        os.path.join(settings.BASE_DIR, 'marer/templates/documents/payment_of_fee.docx'),
+        'payment_of_fee.docx', issue)
     return issue

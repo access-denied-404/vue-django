@@ -704,6 +704,14 @@ class Issue(models.Model):
         related_name='additional_doc'
     )
 
+    payment_of_fee = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='payment_of_fee'
+    )
+
     def get_urgency_for_user(self, user):
         messages = list(self.clarification_messages.all().order_by('-id'))
         if messages:
@@ -1112,7 +1120,7 @@ class Issue(models.Model):
             'city': 'г. Москва',
             'bg_type': bg_type,
             'bg_sum_str': sum2str(self.bg_sum),
-            'bank_commission_str': sum2str(self.bank_commission),
+            'bank_commission_str': sum2str(self.bank_commission or 0),
             'indisputable': 'Гарант предоставляет Бенефициару право на бесспорное списание денежных средств со счета Гаранта, если Гарантом в течение пяти рабочих дней не исполнено требование Бенефициара об уплате денежной суммы по Гарантии, направленное с соблюдением условий Гарантии.' if self.is_indisputable_charge_off else 'Не указано в заявлениии',
             'requisites': '\n'.join([
                 'Московский филиал «БАНК СГБ»',
@@ -1183,6 +1191,21 @@ class Issue(models.Model):
         return output
     bg_doc_admin_field.short_description = 'Проект'
     bg_doc_admin_field.allow_tags = True
+
+    def payment_of_fee_admin_field(self):
+        doc = self.payment_of_fee
+        field_parts = []
+        if doc:
+            if doc.file:
+                field_parts.append('<b><a href="{}">скачать</a></b>'.format(doc.file.url))
+        if len(field_parts) > 0:
+            output = ', '.join(field_parts)
+        else:
+            output = 'отсутствует'
+        output += ' <input type="file" name="bg_doc_document" />'
+        return output
+    payment_of_fee_admin_field.short_description = 'Счет'
+    payment_of_fee_admin_field.allow_tags = True
 
     def contract_of_guarantee_admin_field(self):
         doc = self.contract_of_guarantee
