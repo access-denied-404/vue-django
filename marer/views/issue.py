@@ -216,7 +216,6 @@ class IssueSurveyView(IssueView):
             return HttpResponseRedirect(url)
         elif action == 'next' and all_ok:
             if not self.get_issue().agent_commission_passed:
-                print('a')
                 return self.get(request, *args, **kwargs)
             self.get_issue().fill_application_doc(commit=True)
             notify_user_manager_about_user_updated_issue(self.get_issue())
