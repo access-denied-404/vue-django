@@ -94,6 +94,12 @@ class IssueAdmin(ModelAdmin):
         ('user__manager', ManagerListFilter),
         'status',
     )
+    search_fields = (
+        'issuer_short_name',
+        'issuer_full_name',
+        'issuer_inn',
+        'issuer_ogrn',
+    )
     formfield_overrides = {
         TextField: dict(widget=Textarea(dict(rows=4)))
     }
