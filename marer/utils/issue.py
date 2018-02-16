@@ -3,7 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from marer import consts
 from marer.models import BankMinimalCommission
-from marer.utils.datetime_utils import get_datetime_as_excel_number
+from marer.utils.datetime_utils import get_datetime_as_excel_number, get_date_diff_in_days
 
 
 def issue_term_in_months(start_date, end_date):
@@ -16,6 +16,23 @@ def issue_term_in_months(start_date, end_date):
 
     months = 1 + (_year(end_date) - _year(start_date)) * 12 + _month(end_date) - _month(start_date)
     return months
+
+
+def calculate_effective_rate(bg_sum, commission, bg_start_date, bg_end_date):
+    """
+    Расчет эффективной процентной ставки
+    :param bg_sum:
+    :param auto_commission:
+    :param agent_commission:
+    :param bg_start_date:
+    :param bg_end_date:
+    :return:
+    """
+    AN10 = get_date_diff_in_days(bg_end_date, bg_start_date)
+
+    Y16 = commission * 100 / bg_sum
+
+    return Y16 / AN10 * 365
 
 
 def calculate_bank_commission(bg_start_date, bg_end_date, bg_sum, bg_is_beneficiary_form, bg_type, tender_exec_law,
