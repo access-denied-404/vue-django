@@ -62,11 +62,11 @@ def notify_user_manager_about_user_sign_document(document: IssueProposeDocument)
         html_template_filename='mail/events_for_send_to_user_manager/user_sign_document.html',
         context=dict(
             user_full_name=issue.user.__str__(),
-            new_issue_id=issue.id,
-            new_issue_number=issue.humanized_id,
+            issue_id=issue.id,
+            issue_number=issue.humanized_id,
             finance_product=issue.get_product().humanized_name,
             issuer_short_name=issue.issuer_short_name,
-            document_name = document.name,
+            document_name=document.name,
         )
     )
 
