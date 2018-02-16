@@ -14,41 +14,19 @@
             <th class="h6">Последний<br/>комментарий</th>
             <th></th>
           </tr>
-          <tr v-for="issue in issues">
-            <td v-if="issue.status === 'review'" class="bg-info"><a :href="'#/cabinet/issues/'+issue.id">{{issue.id}}</a></td>
-            <td v-if="issue.status === 'registering'" class="bg-warning"><a :href="'#/cabinet/issues/'+issue.id">{{issue.id}}</a></td>
-            <td v-if="issue.status === 'cancelled'" class="bg-danger"><a :href="'#/cabinet/issues/'+issue.id">{{issue.id}}</a></td>
-            <td v-if="issue.status === 'finished'" class="bg-success"><a :href="'#/cabinet/issues/'+issue.id">{{issue.id}}</a></td>
-
-            <td v-if="issue.status === 'review'" class="bg-info"></td>
-            <td v-if="issue.status === 'registering'" class="bg-warning"></td>
-            <td v-if="issue.status === 'cancelled'" class="bg-danger"></td>
-            <td v-if="issue.status === 'finished'" class="bg-success"></td>
-
-            <td v-if="issue.status === 'review'" class="bg-info">{{issue.issuer_short_name}}</td>
-            <td v-if="issue.status === 'registering'" class="bg-warning">{{issue.issuer_short_name}}</td>
-            <td v-if="issue.status === 'cancelled'" class="bg-danger">{{issue.issuer_short_name}}</td>
-            <td v-if="issue.status === 'finished'" class="bg-success">{{issue.issuer_short_name}}</td>
-
-            <td v-if="issue.status === 'review'" class="bg-info">{{issue.bg_sum}}</td>
-            <td v-if="issue.status === 'registering'" class="bg-warning">{{issue.bg_sum}}</td>
-            <td v-if="issue.status === 'cancelled'" class="bg-danger">{{issue.bg_sum}}</td>
-            <td v-if="issue.status === 'finished'" class="bg-success">{{issue.bg_sum}}</td>
-
-            <td v-if="issue.status === 'review'" class="bg-info"></td>
-            <td v-if="issue.status === 'registering'" class="bg-warning"></td>
-            <td v-if="issue.status === 'cancelled'" class="bg-danger"></td>
-            <td v-if="issue.status === 'finished'" class="bg-success"></td>
-
-            <td v-if="issue.status === 'review'" class="bg-info"></td>
-            <td v-if="issue.status === 'registering'" class="bg-warning"></td>
-            <td v-if="issue.status === 'cancelled'" class="bg-danger"></td>
-            <td v-if="issue.status === 'finished'" class="bg-success"></td>
-
-            <td v-if="issue.status === 'review'" class="bg-info"></td>
-            <td v-if="issue.status === 'registering'" class="bg-warning"></td>
-            <td v-if="issue.status === 'cancelled'" class="bg-danger"></td>
-            <td v-if="issue.status === 'finished'" class="bg-success"></td>
+          <tr v-for="issue in issues"
+          v-bind:class="{
+              'bg-warning': isReview(issue.status),
+              'bg-info': isRegistering(issue.status),
+              'bg-danger': isCancelled(issue.status),
+              'bg-success': isFinished(issue.status) }">
+            <td><a :href="'#/cabinet/issues/'+issue.id">{{issue.id}}</a></td>
+            <td></td>
+            <td>{{issue.issuer_short_name}}</td>
+            <td>{{issue.bg_sum}}</td>
+            <td></td>
+            <td></td>
+            <td></td>
           </tr>
         </tbody>
       </table>
@@ -69,6 +47,36 @@
       jQuery.getJSON('/rest/issues?format=json', (data, status, xhr) => {
         this.issues = data
       })
+    },
+    methods: {
+      isReview: function (status) {
+        if (status === 'review') {
+          return true
+        } else {
+          return false
+        }
+      },
+      isRegistering: function (status) {
+        if (status === 'registering') {
+          return true
+        } else {
+          return false
+        }
+      },
+      isCancelled: function (status) {
+        if (status === 'cancelled') {
+          return true
+        } else {
+          return false
+        }
+      },
+      isFinished: function (status) {
+        if (status === 'finished') {
+          return true
+        } else {
+          return false
+        }
+      }
     }
   }
 </script>
