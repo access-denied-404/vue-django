@@ -14,7 +14,6 @@
               <div class="panel panel-default">
                 <div class="list-group">
                   <a class="list-group-item" :href="'#/cabinet/issues/' + issue.id">Сведения о заявлении</a>
-                  <a class="list-group-item" :href="'#/cabinet/issues/' + issue.id + '/requests'">Запросы и обсуждения</a>
                 </div>
               </div>
               <div style="margin-top: 30px;">

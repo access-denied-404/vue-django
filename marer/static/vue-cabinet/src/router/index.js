@@ -4,7 +4,6 @@ import Cabinet from '@/components/Cabinet'
 import CabinetIssues from '@/components/CabinetIssues'
 import CabinetProfile from '@/components/CabinetProfile'
 import Issue from '@/components/Issue'
-import Requests from '@/components/Requests'
 
 Vue.use(Router)
 
@@ -36,11 +35,6 @@ export default new Router({
       path: '/cabinet/issues/:id',
       name: 'issue',
       component: Issue
-    },
-    {
-      path: '/cabinet/issues/:id/requests',
-      name: 'requests',
-      component: Requests
     }
   ]
 })

@@ -15,12 +15,40 @@
             <th></th>
           </tr>
           <tr v-for="issue in issues">
-            <td><a :href="'#/cabinet/issues/'+issue.id">{{issue.id}}</a></td>
-            <td></td>
-            <td>{{issue.issuer_short_name}}</td>
-            <td>{{issue.bg_sum}}</td>
-            <td></td>
-            <td></td>
+            <td v-if="issue.status === 'review'" class="bg-info"><a :href="'#/cabinet/issues/'+issue.id">{{issue.id}}</a></td>
+            <td v-if="issue.status === 'registering'" class="bg-warning"><a :href="'#/cabinet/issues/'+issue.id">{{issue.id}}</a></td>
+            <td v-if="issue.status === 'cancelled'" class="bg-danger"><a :href="'#/cabinet/issues/'+issue.id">{{issue.id}}</a></td>
+            <td v-if="issue.status === 'finished'" class="bg-success"><a :href="'#/cabinet/issues/'+issue.id">{{issue.id}}</a></td>
+
+            <td v-if="issue.status === 'review'" class="bg-info"></td>
+            <td v-if="issue.status === 'registering'" class="bg-warning"></td>
+            <td v-if="issue.status === 'cancelled'" class="bg-danger"></td>
+            <td v-if="issue.status === 'finished'" class="bg-success"></td>
+
+            <td v-if="issue.status === 'review'" class="bg-info">{{issue.issuer_short_name}}</td>
+            <td v-if="issue.status === 'registering'" class="bg-warning">{{issue.issuer_short_name}}</td>
+            <td v-if="issue.status === 'cancelled'" class="bg-danger">{{issue.issuer_short_name}}</td>
+            <td v-if="issue.status === 'finished'" class="bg-success">{{issue.issuer_short_name}}</td>
+
+            <td v-if="issue.status === 'review'" class="bg-info">{{issue.bg_sum}}</td>
+            <td v-if="issue.status === 'registering'" class="bg-warning">{{issue.bg_sum}}</td>
+            <td v-if="issue.status === 'cancelled'" class="bg-danger">{{issue.bg_sum}}</td>
+            <td v-if="issue.status === 'finished'" class="bg-success">{{issue.bg_sum}}</td>
+
+            <td v-if="issue.status === 'review'" class="bg-info"></td>
+            <td v-if="issue.status === 'registering'" class="bg-warning"></td>
+            <td v-if="issue.status === 'cancelled'" class="bg-danger"></td>
+            <td v-if="issue.status === 'finished'" class="bg-success"></td>
+
+            <td v-if="issue.status === 'review'" class="bg-info"></td>
+            <td v-if="issue.status === 'registering'" class="bg-warning"></td>
+            <td v-if="issue.status === 'cancelled'" class="bg-danger"></td>
+            <td v-if="issue.status === 'finished'" class="bg-success"></td>
+
+            <td v-if="issue.status === 'review'" class="bg-info"></td>
+            <td v-if="issue.status === 'registering'" class="bg-warning"></td>
+            <td v-if="issue.status === 'cancelled'" class="bg-danger"></td>
+            <td v-if="issue.status === 'finished'" class="bg-success"></td>
           </tr>
         </tbody>
       </table>
