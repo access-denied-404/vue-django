@@ -686,7 +686,7 @@ class Issue(models.Model):
         null=True,
         blank=True,
         related_name='contract_of_guaranties',
-        verbose_name='Согласие на взаимодействие с БКИ (поручителя)'
+        verbose_name='Договор поручительства'
     )
     transfer_acceptance_act = models.ForeignKey(
         Document,
@@ -1198,7 +1198,7 @@ class Issue(models.Model):
             output = 'отсутствует'
         output += ' <input type="file" name="contract_of_guarantee_document" />'
         return output
-    contract_of_guarantee_admin_field.short_description = 'Согласие на взаимодействие с БКИ (поручителя)'
+    contract_of_guarantee_admin_field.short_description = 'Договор поручительства'
     contract_of_guarantee_admin_field.allow_tags = True
 
     def transfer_acceptance_act_admin_field(self):
