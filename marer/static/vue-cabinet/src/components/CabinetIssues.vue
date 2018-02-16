@@ -16,8 +16,8 @@
           </tr>
           <tr v-for="issue in issues"
           v-bind:class="{
-              'bg-warning': isReview(issue.status),
-              'bg-info': isRegistering(issue.status),
+              'bg-info': isReview(issue.status),
+              'bg-warning': isRegistering(issue.status),
               'bg-danger': isCancelled(issue.status),
               'bg-success': isFinished(issue.status) }">
             <td><a :href="'#/cabinet/issues/'+issue.id">{{issue.id}}</a></td>
