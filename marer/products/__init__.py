@@ -442,8 +442,8 @@ class BankGuaranteeProduct(FinanceProduct):
             self._issue.issuer_post_address = form_org_common.cleaned_data['issuer_post_address']
             self._issue.issuer_has_overdue_debts_for_last_180_days = form_org_common.cleaned_data['issuer_has_overdue_debts_for_last_180_days']
             self._issue.issuer_overdue_debts_info = form_org_common.cleaned_data['issuer_overdue_debts_info']
-            self._issue.tax_system = form_org_common.cleaned_data['tax_system']
             self._issue.agent_comission = form_org_common.cleaned_data['agent_comission']
+            self._issue.tax_system = form_org_common.cleaned_data['tax_system']
 
         else:
             processed_sucessfully_flag = False

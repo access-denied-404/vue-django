@@ -3,6 +3,7 @@ from rest_framework.serializers import ModelSerializer
 
 from marer import consts
 from marer.models import Issue, User, Document
+from marer.models.base import Document
 from marer.models.issue import IssueOrgManagementCollegial, IssueOrgManagementDirectors, IssueOrgManagementOthers, \
     IssueOrgBeneficiaryOwner, IssueOrgBankAccount, IssueBGProdFounderPhysical, IssueBGProdFounderLegal, \
     IssueProposeDocument
@@ -42,7 +43,28 @@ class IssueListSerializer(ModelSerializer):
 
     class Meta:
         model = Issue
-        fields = ('id', 'product', 'bg_sum', 'issuer_short_name', 'issuer_inn',)
+        fields = ('id', 'product', 'bg_sum', 'issuer_short_name', 'issuer_inn', 'status')
+
+
+class ContractOfGuaranteeSerializer(ModelSerializer):
+
+    class Meta:
+        model = Document
+        fields = ['file', 'sign', 'sign_state']
+
+
+class TransferAcceptanceActSerializer(ModelSerializer):
+
+    class Meta:
+        model = Document
+        fields = ['file', 'sign', 'sign_state']
+
+
+class BGDocumentSerializer(ModelSerializer):
+
+    class Meta:
+        model = Document
+        fields = ['file', 'sign', 'sign_state']
 
 
 class IssueOrgManagementCollegialSerializer(ModelSerializer):
@@ -125,6 +147,7 @@ class IssueSerializer(ModelSerializer):
     bg_doc = DocumentSerializer()
     transfer_acceptance_act = DocumentSerializer()
     payment_of_fee = DocumentSerializer()
+    contract_of_guarantee = ContractOfGuaranteeSerializer()
 
     class Meta:
         model = Issue

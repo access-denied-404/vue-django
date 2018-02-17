@@ -24,7 +24,7 @@ from marer.models.finance_org import FinanceOrganization, FinanceOrgProductPropo
 from marer.models.issuer import Issuer, IssuerDocument
 from marer.products import get_urgency_hours, get_urgency_days, get_finance_products_as_choices, FinanceProduct, get_finance_products, BankGuaranteeProduct
 from marer.utils import CustomJSONEncoder, kontur
-from marer.utils.issue import calculate_bank_commission, sum2str, generate_bg_number, issue_term_in_months
+from marer.utils.issue import calculate_bank_commission, sum2str, generate_bg_number, issue_term_in_months, calculate_effective_rate
 from marer.utils.morph import MorpherApi
 from marer.utils.other import OKOPF_CATALOG
 
@@ -778,8 +778,30 @@ class Issue(models.Model):
         )
 
     @cached_property
+    def agent_effective_rate(self):
+        return calculate_effective_rate(
+            self.bg_sum,
+            self.agent_comission,
+            self.bg_start_date,
+            self.bg_end_date
+        )
+
+    @cached_property
+    def agent_commission_passed(self):
+        if self.agent_comission:
+            if int(self.agent_comission) > int(0.7 * self.auto_bank_commission) and self.agent_effective_rate > 0.27:
+                return True
+            else:
+                return False
+        else:
+            return False
+
+    @cached_property
     def bank_commission(self):
-        return self.agent_comission or self.auto_bank_commission
+        if self.agent_commission_passed:
+            return self.agent_comission
+        else:
+            return self.auto_bank_commission
 
     @property
     def humanized_id(self):
