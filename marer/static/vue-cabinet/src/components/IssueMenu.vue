@@ -5,7 +5,13 @@
         <div class="col-md-3">
           <div class="panel panel-default">
             <div class="list-group">
-              <a class="list-group-item" :href="'#/cabinet/issues/' + this.id">Сведения о заявлении</a>
+              <a class="list-group-item" :href="'#/cabinet/issues/' + this.id + '/info'" v-bind:class="{'active': this.$route.name === 'issue-info'}">Сведения о заявлении</a>
+              <a class="list-group-item" :href="'#/cabinet/issues/' + this.id + '/survey'" v-bind:class="{'active': this.$route.name === 'issue-survey'}">Анкета</a>
+              <a class="list-group-item" :href="'#/cabinet/issues/' + this.id + '/documents'" v-bind:class="{'active': this.$route.name === 'issue-documents'}">Пакет документов</a>
+              <a class="list-group-item" :href="'#/cabinet/issues/' + this.id + '/security-mgmt'" v-bind:class="{'active': this.$route.name === 'issue-security-mgmt'}">Департамент безопасности</a>
+              <a class="list-group-item" :href="'#/cabinet/issues/' + this.id + '/lawyers-mgmt'" v-bind:class="{'active': this.$route.name === 'issue-lawyers-mgmt'}">Правовое управление</a>
+              <a class="list-group-item" :href="'#/cabinet/issues/' + this.id + '/doc-ops-mgmt'" v-bind:class="{'active': this.$route.name === 'issue-doc-ops-mgmt'}">Управление развития ДО</a>
+              <a class="list-group-item" :href="'#/cabinet/issues/' + this.id + '/messaging'" v-bind:class="{'active': this.$route.name === 'issue-messaging'}">Обсуждения</a>
             </div>
           </div>
           <div style="margin-top: 30px;">
@@ -18,7 +24,13 @@
       <div class="h4 text-center text-primary">Этапы прохождения заявки</div>
       <div class="panel panel-default">
         <div class="list-group">
-          <a class="list-group-item" :href="'#/cabinet/issues/' + this.id">Сведения о заявлении</a>
+          <a class="list-group-item" :href="'#/cabinet/issues/' + this.id + '/info'" v-bind:class="{'active': this.$route.name === 'issue-info'}">Сведения о заявлении</a>
+          <a class="list-group-item" :href="'#/cabinet/issues/' + this.id + '/survey'" v-bind:class="{'active': this.$route.name === 'issue-survey'}">Анкета</a>
+          <a class="list-group-item" :href="'#/cabinet/issues/' + this.id + '/documents'" v-bind:class="{'active': this.$route.name === 'issue-documents'}">Пакет документов</a>
+          <a class="list-group-item" :href="'#/cabinet/issues/' + this.id + '/security-mgmt'" v-bind:class="{'active': this.$route.name === 'issue-security-mgmt'}">Департамент безопасности</a>
+          <a class="list-group-item" :href="'#/cabinet/issues/' + this.id + '/lawyers-mgmt'" v-bind:class="{'active': this.$route.name === 'issue-lawyers-mgmt'}">Правовое управление</a>
+          <a class="list-group-item" :href="'#/cabinet/issues/' + this.id + '/doc-ops-mgmt'" v-bind:class="{'active': this.$route.name === 'issue-doc-ops-mgmt'}">Управление развития ДО</a>
+          <a class="list-group-item" :href="'#/cabinet/issues/' + this.id + '/messaging'" v-bind:class="{'active': this.$route.name === 'issue-messaging'}">Обсуждения</a>
         </div>
       </div>
       <div style="margin-top: 30px;">

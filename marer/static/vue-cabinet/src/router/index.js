@@ -33,7 +33,41 @@ export default new Router({
     },
     {
       path: '/cabinet/issues/:id',
-      name: 'issue',
+      redirect: '/cabinet/issues/:id/info'
+    },
+    {
+      path: '/cabinet/issues/:id/info',
+      name: 'issue-info',
+      component: Issue
+    },
+    {
+      path: '/cabinet/issues/:id/survey',
+      name: 'issue-survey',
+      component: Issue
+    },
+    {
+      path: '/cabinet/issues/:id/documents',
+      name: 'issue-documents',
+      component: Issue
+    },
+    {
+      path: '/cabinet/issues/:id/security-mgmt',
+      name: 'issue-security-mgmt',
+      component: Issue
+    },
+    {
+      path: '/cabinet/issues/:id/lawyers-mgmt',
+      name: 'issue-lawyers-mgmt',
+      component: Issue
+    },
+    {
+      path: '/cabinet/issues/:id/doc-ops-mgmt',
+      name: 'issue-doc-ops-mgmt',
+      component: Issue
+    },
+    {
+      path: '/cabinet/issues/:id/messaging',
+      name: 'issue-messaging',
       component: Issue
     }
   ]
