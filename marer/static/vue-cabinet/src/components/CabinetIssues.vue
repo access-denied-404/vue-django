@@ -16,7 +16,6 @@
           </tr>
           <tr v-for="issue in issues"
           v-bind:class="{
-              'bg-info': isReview(issue.status),
               'bg-warning': isRegistering(issue.status),
               'bg-danger': isCancelled(issue.status),
               'bg-success': isFinished(issue.status) }">
@@ -49,13 +48,6 @@
       })
     },
     methods: {
-      isReview: function (status) {
-        if (status === 'review') {
-          return true
-        } else {
-          return false
-        }
-      },
       isRegistering: function (status) {
         if (status === 'registering') {
           return true
