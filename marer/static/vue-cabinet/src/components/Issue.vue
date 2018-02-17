@@ -7,33 +7,7 @@
       <!--</div>-->
     </div>
     <div class="row">
-      <div class="col-md-3">
-        <div class="visible-md visible-lg container" data-spy="affix">
-          <div class="row">
-            <div class="col-md-3">
-              <div class="panel panel-default">
-                <div class="list-group">
-                  <a class="list-group-item" :href="'#/cabinet/issues/' + issue.id">Сведения о заявлении</a>
-                </div>
-              </div>
-              <div style="margin-top: 30px;">
-                <a href="#/cabinet/issues" style="margin-left: 15px;">Вернуться в личный кабинет</a>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="visible-sm visible-xs">
-          <div class="h4 text-center text-primary">Этапы прохождения заявки</div>
-          <div class="panel panel-default">
-            <div class="list-group">
-              <a class="list-group-item" :href="'#/cabinet/issues/' + issue.id">Сведения о заявлении</a>
-            </div>
-          </div>
-          <div style="margin-top: 30px;">
-            <a href="#/cabinet/issues" style="margin-left: 15px;">Вернуться в личный кабинет</a>
-          </div>
-        </div>
-      </div>
+      <issue-menu :id="this.issue.id"></issue-menu>
       <div class="col-md-9">
         <div class="panel panel-info">
           <div class="panel-heading">Сведения об истребуемой гарантии</div>
@@ -658,7 +632,8 @@
           <div class="col-md-12">
             <div class="panel panel-info">
               <div class="panel-heading">Кредитные организации, в которых у принципала открыты счета</div>
-              <div class="panel-body formset" data-formset-prefix="{{ formset.prefix }}">
+              <!--<div class="panel-body formset" data-formset-prefix="{{ formset.prefix }}">-->
+              <div class="panel-body formset">
                 <div class="container-fluid">
                   <div class="row">
 
@@ -865,9 +840,9 @@
                     <table class="table table-condensed">
                       <tr class="application_doc" v-if="issue.application_doc">
                         <td class="h6">
-                          <a href="{{ issue.application_doc.file }}">
+                          <!--<a href="{{ issue.application_doc.file }}">-->
                             <b>Заявление на предоставление банковской гарантии</b>
-                          </a>
+                          <!--</a>-->
                           <div class="clearfix"></div>
                         </td>
                       </tr>
@@ -878,7 +853,7 @@
                       </tr>
                       <tr v-for="doc in finance_documents">
                         <td class="h6">
-                          <a v-if="doc.document.file" href="{{ doc.document.file }}">{{ doc.name }}</a>
+                          <!--<a v-if="doc.document.file" href="{{ doc.document.file }}">{{ doc.name }}</a>-->
                           <div v-if="!doc.document.file">
                             {{ doc.name }} <span v-if="doc.is_required" class="text-danger"><b>*</b></span>
                           </div>
@@ -886,18 +861,18 @@
                             <div class="row" v-if="!doc.document.file">
                               <div class="form-group">
                                 <div class="col-md-10">
-                                  <input type="file" name="propose_doc_{{ doc.id }}"
-                                         v-bind:class="{'required': doc.is_required}" class="input-sm pull-right"/>
+                                  <!--<input type="file" name="propose_doc_{{ doc.id }}"-->
+                                         <!--v-bind:class="{'required': doc.is_required}" class="input-sm pull-right"/>-->
                                 </div>
                                 <div class="col-md-2">
                                   <span class="glyphicon glyphicon-ok text-success hidden to-hide"></span>
                                 </div>
                               </div>
                             </div>
-                            <button v-if="issue.status == 'registering'" type="submit"
-                                    class="btn btn-link btn-xs pull-right" form="propose_doc_{{ doc.id }}_del_form">
+                            <!--<button v-if="issue.status == 'registering'" type="submit"-->
+                                    <!--class="btn btn-link btn-xs pull-right" form="propose_doc_{{ doc.id }}_del_form">-->
                               <span class="glyphicon glyphicon-remove text-danger"></span>
-                            </button>
+                            <!--</button>-->
                             <div class="clearfix"></div>
                           </div>
                         </td>
@@ -909,7 +884,7 @@
                       </tr>
                       <tr v-for="doc in legal_documents">
                         <td class="h6">
-                          <a v-if="doc.document.file" href="{{ doc.document.file }}">{{ doc.name }}</a>
+                          <!--<a v-if="doc.document.file" href="{{ doc.document.file }}">{{ doc.name }}</a>-->
                           <div v-if="!doc.document.file">
                             {{ doc.name }} <span v-if="doc.is_required" class="text-danger"><b>*</b></span>
                           </div>
@@ -917,18 +892,18 @@
                             <div class="row" v-if="!doc.document.file">
                               <div class="form-group">
                                 <div class="col-md-10">
-                                  <input type="file" name="propose_doc_{{ doc.id }}"
-                                         v-bind:class="{'required': doc.is_required}" class="input-sm pull-right"/>
+                                  <!--<input type="file" name="propose_doc_{{ doc.id }}"-->
+                                         <!--v-bind:class="{'required': doc.is_required}" class="input-sm pull-right"/>-->
                                 </div>
                                 <div class="col-md-2">
                                   <span class="glyphicon glyphicon-ok text-success hidden to-hide"></span>
                                 </div>
                               </div>
                             </div>
-                            <button v-if="issue.status == 'registering'" type="submit"
-                                    class="btn btn-link btn-xs pull-right" form="propose_doc_{{ doc.id }}_del_form">
+                            <!--<button v-if="issue.status == 'registering'" type="submit"-->
+                                    <!--class="btn btn-link btn-xs pull-right" form="propose_doc_{{ doc.id }}_del_form">-->
                               <span class="glyphicon glyphicon-remove text-danger"></span>
-                            </button>
+                            <!--</button>-->
                             <div class="clearfix"></div>
                           </div>
                         </td>
@@ -940,7 +915,7 @@
                       </tr>
                       <tr v-for="doc in other_documents">
                         <td class="h6">
-                          <a v-if="doc.document.file" href="{{ doc.document.file }}">{{ doc.name }}</a>
+                          <!--<a v-if="doc.document.file" href="{{ doc.document.file }}">{{ doc.name }}</a>-->
                           <div v-if="!doc.document.file">
                             {{ doc.name }} <span v-if="doc.is_required" class="text-danger"><b>*</b></span>
                           </div>
@@ -948,18 +923,18 @@
                             <div class="row" v-if="!doc.document.file">
                               <div class="form-group">
                                 <div class="col-md-10">
-                                  <input type="file" name="propose_doc_{{ doc.id }}"
-                                         v-bind:class="{'required': doc.is_required}" class="input-sm pull-right"/>
+                                  <!--<input type="file" name="propose_doc_{{ doc.id }}"-->
+                                         <!--v-bind:class="{'required': doc.is_required}" class="input-sm pull-right"/>-->
                                 </div>
                                 <div class="col-md-2">
                                   <span class="glyphicon glyphicon-ok text-success hidden to-hide"></span>
                                 </div>
                               </div>
                             </div>
-                            <button v-if="issue.status == 'registering'" type="submit"
-                                    class="btn btn-link btn-xs pull-right" form="propose_doc_{{ doc.id }}_del_form">
+                            <!--<button v-if="issue.status == 'registering'" type="submit"-->
+                                    <!--class="btn btn-link btn-xs pull-right" form="propose_doc_{{ doc.id }}_del_form">-->
                               <span class="glyphicon glyphicon-remove text-danger"></span>
-                            </button>
+                            <!--</button>-->
                             <div class="clearfix"></div>
                           </div>
                         </td>
@@ -971,22 +946,22 @@
                       </tr>
                       <tr v-if="issue.bg_contract_doc">
                         <td>
-                          <a href="{{ issue.bg_contract_doc.file }}">Договор</a>
+                          <!--<a href="{{ issue.bg_contract_doc.file }}">Договор</a>-->
                         </td>
                       </tr>
                       <tr v-if="issue.payment_of_fee">
                         <td>
-                          <a href="{{ issue.payment_of_fee.file }}">Счет</a>
+                          <!--<a href="{{ issue.payment_of_fee.file }}">Счет</a>-->
                         </td>
                       </tr>
                       <tr v-if="issue.bg_doc">
                         <td>
-                          <a href="{{ issue.bg_doc.file}}">Проект</a>
+                          <!--<a href="{{ issue.bg_doc.file}}">Проект</a>-->
                         </td>
                       </tr>
                       <tr v-if="issue.transfer_acceptance_act">
                         <td>
-                          <a href="{{ issue.transfer_acceptance_act.file }}">Акт</a>
+                          <!--<a href="{{ issue.transfer_acceptance_act.file }}">Акт</a>-->
                         </td>
                       </tr>
                     </table>
@@ -994,7 +969,7 @@
                   </div>
             </div>
         </div>
-    </div>
+            </div>
           </div>
         </div>
         <div class="row">
@@ -1259,6 +1234,7 @@
   import DateTimePicker from 'vue-bootstrap-datetimepicker'
   import BS3SelectField from '@/components/inputs/BS3SelectField'
   import BS3RadioField from '@/components/inputs/BS3RadioField'
+  import IssueMenu from '@/components/IssueMenu'
   import 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css'
   import {Money} from 'v-money'
 
@@ -1274,7 +1250,8 @@
       'bs3-select-field': BS3SelectField,
       'bs3-radio-field': BS3RadioField,
       'date-time-picker': DateTimePicker,
-      'Money': Money
+      'Money': Money,
+      'issue-menu': IssueMenu
     },
     props: ['id'],
     data () {
