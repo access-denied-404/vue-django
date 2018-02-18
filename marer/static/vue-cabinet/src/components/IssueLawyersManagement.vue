@@ -17,10 +17,11 @@
 
                 <div class="row">
                   <div class="col-md-12">
-                    В процессе наполнения
+                    <checkbox :checked.sync="issue.is_positive_lawyers_department_conclusion" :type="'primary'">
+                      Наличие положительного Заключения ПУ (в соответствии с Приказом по проверке ПУ)
+                    </checkbox>
                   </div>
                 </div>
-
               </div>
             </div>
           </div>

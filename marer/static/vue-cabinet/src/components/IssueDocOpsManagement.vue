@@ -89,22 +89,6 @@
 
                 <div class="row">
                   <div class="col-md-12">
-                    <checkbox :checked.sync="issue.is_positive_security_department_conclusion" :type="'primary'">
-                      Наличие положительного Заключения СБ
-                    </checkbox>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-12">
-                    <checkbox :checked.sync="issue.is_positive_lawyers_department_conclusion" :type="'primary'">
-                      Наличие положительного Заключения ПУ (в соответствии с Приказом по проверке ПУ)
-                    </checkbox>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-12">
                     <checkbox :checked.sync="issue.is_absent_info_about_court_acts_for_more_than_20_pct_of_net_assets" :type="'primary'">
                       Отсутствие информации об исполнительных производствах Приницпала его Участников на сумму более 20% чистых активов Клиента
                     </checkbox>
