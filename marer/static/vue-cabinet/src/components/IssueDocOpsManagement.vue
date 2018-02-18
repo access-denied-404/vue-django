@@ -17,224 +17,155 @@
 
                 <div class="row">
                   <div class="col-md-12">
-                    <checkbox :checked.sync="issue.is_issuer_all_bank_liabilities_less_than_max" type="primary">
+                    <checkbox :checked.sync="issue.is_issuer_all_bank_liabilities_less_than_max" :type="'primary'">
                       Лимит на Принципала (группу взаимосвязанных Заемщиков) ВСЕХ обязательств Банка менее 18 000 000 руб
                     </checkbox>
-
                   </div>
                 </div>
 
                 <div class="row">
                   <div class="col-md-12">
-                    <checkbox :checked.sync="issue.is_issuer_executed_contracts_on_44_or_223_or_185_fz" type="primary">
+                    <checkbox :checked.sync="issue.is_issuer_executed_contracts_on_44_or_223_or_185_fz" :type="'primary'">
                       Клиент исполнил не менее 1 контракта в рамках законов № 94-ФЗ, 44-ФЗ, 223-ФЗ, 185-ФЗ (615 ПП)
                     </checkbox>
                   </div>
-
                 </div>
 
                 <div class="row">
-                  <div class="col-md-1">
-                    <input type="checkbox" class="form-control pull-right"
-                           v-model="issue.is_issuer_executed_goverment_contract_for_last_3_years"/>
-                  </div>
-                  <div class="col-md-11">
-                    <label>
+                  <div class="col-md-12">
+                    <checkbox :checked.sync="issue.is_issuer_executed_goverment_contract_for_last_3_years" :type="'primary'">
                       Наличие исполненного государственного контракта за последние 3 года
-                    </label>
+                    </checkbox>
                   </div>
                 </div>
 
                 <div class="row">
-                  <div class="col-md-1">
-                    <input type="checkbox" class="form-control pull-right" v-model="issue.is_contract_has_prepayment"/>
-                  </div>
-                  <div class="col-md-11">
-                    <label>
+                  <div class="col-md-12">
+                    <checkbox :checked.sync="issue.is_contract_has_prepayment" :type="'primary'">
                       Контракт предусматривает выплату аванса
-                    </label>
+                    </checkbox>
                   </div>
                 </div>
 
                 <div class="row">
-                  <div class="col-md-1">
-                    <input type="checkbox" class="form-control pull-right"
-                           v-model="issue.is_issuer_executed_contracts_with_comparable_advances"/>
-                  </div>
-                  <div class="col-md-11">
-                    <label>
+                  <div class="col-md-12">
+                    <checkbox :checked.sync="issue.is_issuer_executed_contracts_with_comparable_advances" :type="'primary'">
                       Клиент исполнял контракты с авансами сопоставимого или большего размера (допустимое отклонение в меньшую сторону не более 50 % включительно)
-                    </label>
+                    </checkbox>
                   </div>
                 </div>
 
                 <div class="row">
-                  <div class="col-md-1">
-                    <input type="checkbox" class="form-control pull-right"
-                           v-model="issue.is_issuer_executed_gte_5_contracts_on_44_or_223_or_185_fz"/>
-                  </div>
-                  <div class="col-md-11">
-                    <label>
+                  <div class="col-md-12">
+                    <checkbox :checked.sync="issue.is_issuer_executed_gte_5_contracts_on_44_or_223_or_185_fz" :type="'primary'">
                       Факт исполнения не менее 5 контрактов, заключенных в рамках законов № 44-ФЗ (включая № 94-ФЗ), 223-ФЗ, 185-ФЗ (615 ПП)
-                    </label>
+                    </checkbox>
                   </div>
                 </div>
 
                 <div class="row">
-                  <div class="col-md-1">
-                    <input type="checkbox" class="form-control pull-right"
-                           v-model="issue.is_issuer_last_year_revenue_higher_in_5_times_than_all_bank_bgs"/>
-                  </div>
-                  <div class="col-md-11">
-                    <label>
+                  <div class="col-md-12">
+                    <checkbox :checked.sync="issue.is_issuer_last_year_revenue_higher_in_5_times_than_all_bank_bgs" :type="'primary'">
                       Выручка Клиента за последний завершенный год не менее, чем в 5 раз превышает сумму запрашиваемой и действующих в Банке гарантий
-                    </label>
+                    </checkbox>
                   </div>
                 </div>
 
                 <div class="row">
-                  <div class="col-md-1">
-                    <input type="checkbox" class="form-control pull-right"
-                           v-model="issue.is_issuer_has_garantor_for_advance_related_requirements"/>
-                  </div>
-                  <div class="col-md-11">
-                    <label>
+                  <div class="col-md-12">
+                    <checkbox :checked.sync="issue.is_issuer_has_garantor_for_advance_related_requirements" :type="'primary'">
                       Наличие Поручителя юридического лица удовлетворяющим одному из предыдущих трех условий
-                    </label>
+                    </checkbox>
                   </div>
                 </div>
 
                 <div class="row">
-                  <div class="col-md-1">
-                    <input type="checkbox" class="form-control pull-right"
-                           v-model="issue.is_contract_price_reduction_lower_than_50_pct_on_supply_contract"/>
-                  </div>
-                  <div class="col-md-11">
-                    <label>
+                  <div class="col-md-12">
+                    <checkbox :checked.sync="issue.is_contract_price_reduction_lower_than_50_pct_on_supply_contract" :type="'primary'">
                       Снижение цены Контракта менее 50% если предмет контракта «Поставка»
-                    </label>
+                    </checkbox>
                   </div>
                 </div>
 
                 <div class="row">
-                  <div class="col-md-1">
-                    <input type="checkbox" class="form-control pull-right"
-                           v-model="issue.is_positive_security_department_conclusion"/>
-                  </div>
-                  <div class="col-md-11">
-                    <label>
+                  <div class="col-md-12">
+                    <checkbox :checked.sync="issue.is_positive_security_department_conclusion" :type="'primary'">
                       Наличие положительного Заключения СБ
-                    </label>
+                    </checkbox>
                   </div>
                 </div>
 
                 <div class="row">
-                  <div class="col-md-1">
-                    <input type="checkbox" class="form-control pull-right"
-                           v-model="issue.is_positive_lawyers_department_conclusion"/>
-                  </div>
-                  <div class="col-md-11">
-                    <label>
+                  <div class="col-md-12">
+                    <checkbox :checked.sync="issue.is_positive_lawyers_department_conclusion" :type="'primary'">
                       Наличие положительного Заключения ПУ (в соответствии с Приказом по проверке ПУ)
-                    </label>
+                    </checkbox>
                   </div>
                 </div>
 
                 <div class="row">
-                  <div class="col-md-1">
-                    <input type="checkbox" class="form-control pull-right"
-                           v-model="issue.is_absent_info_about_court_acts_for_more_than_20_pct_of_net_assets"/>
-                  </div>
-                  <div class="col-md-11">
-                    <label>
+                  <div class="col-md-12">
+                    <checkbox :checked.sync="issue.is_absent_info_about_court_acts_for_more_than_20_pct_of_net_assets" :type="'primary'">
                       Отсутствие информации об исполнительных производствах Приницпала его Участников на сумму более 20% чистых активов Клиента
-                    </label>
+                    </checkbox>
                   </div>
                 </div>
 
                 <div class="row">
-                  <div class="col-md-1">
-                    <input type="checkbox" class="form-control pull-right"
-                           v-model="issue.is_absent_info_about_legal_proceedings_as_defendant_for_more_than_30_pct_of_net_assets"/>
-                  </div>
-                  <div class="col-md-11">
-                    <label>
+                  <div class="col-md-12">
+                    <checkbox :checked.sync="issue.is_absent_info_about_legal_proceedings_as_defendant_for_more_than_30_pct_of_net_assets" :type="'primary'">
                       Отсутствие информации о судебных разбирательствах Клиента в качестве ответчика (за исключением закрытых) на сумму более 30% чистых активов Клиента
-                    </label>
+                    </checkbox>
                   </div>
                 </div>
 
                 <div class="row">
-                  <div class="col-md-1">
-                    <input type="checkbox" class="form-control pull-right"
-                           v-model="issue.is_need_to_check_real_of_issuer_activity"/>
-                  </div>
-                  <div class="col-md-11">
-                    <label>
+                  <div class="col-md-12">
+                    <checkbox :checked.sync="issue.is_need_to_check_real_of_issuer_activity" :type="'primary'">
                       Есть необходимость оценки реальности деятельности
-                    </label>
+                    </checkbox>
                   </div>
                 </div>
 
                 <div class="row">
-                  <div class="col-md-1">
-                    <input type="checkbox" class="form-control pull-right"
-                           v-model="issue.is_real_of_issuer_activity_confirms"/>
-                  </div>
-                  <div class="col-md-11">
-                    <label>
+                  <div class="col-md-12">
+                    <checkbox :checked.sync="issue.is_real_of_issuer_activity_confirms" :type="'primary'">
                       Реальность деятельности подтверждается
-                    </label>
+                    </checkbox>
                   </div>
                 </div>
 
                 <div class="row">
-                  <div class="col-md-1">
-                    <input type="checkbox" class="form-control pull-right"
-                           v-model="issue.is_contract_corresponds_issuer_activity"/>
-                  </div>
-                  <div class="col-md-11">
-                    <label>
+                  <div class="col-md-12">
+                    <checkbox :checked.sync="issue.is_contract_corresponds_issuer_activity" :type="'primary'">
                       Контракт соответствует профилю деятельности клиента
-                    </label>
+                    </checkbox>
                   </div>
                 </div>
 
                 <!-- only big conclusion fields -->
                 <div v-if="this.issue.bg_sum >= 1500000">
                   <div class="row">
-                    <div class="col-md-1">
-                      <input type="checkbox" class="form-control pull-right"
-                             v-model="issue.contract_advance_requirements_fails"/>
-                    </div>
-                    <div class="col-md-11">
-                      <label>
+                    <div class="col-md-12">
+                      <checkbox :checked.sync="issue.contract_advance_requirements_fails" :type="'primary'">
                         Не выполняются требования к авансированию (при наличии в контракте аванса)
-                      </label>
+                      </checkbox>
                     </div>
                   </div>
 
                   <div class="row">
-                    <div class="col-md-1">
-                      <input type="checkbox" class="form-control pull-right"
-                             v-model="issue.is_issuer_has_bad_credit_history"/>
-                    </div>
-                    <div class="col-md-11">
-                      <label>
+                    <div class="col-md-12">
+                      <checkbox :checked.sync="issue.is_issuer_has_bad_credit_history" :type="'primary'">
                         Наличие текущей просроченной ссудной задолженности и отрицательной кредитной истории в кредитных организациях
-                      </label>
+                      </checkbox>
                     </div>
                   </div>
 
                   <div class="row">
-                    <div class="col-md-1">
-                      <input type="checkbox" class="form-control pull-right"
-                             v-model="issue.is_issuer_has_blocked_bank_account"/>
-                    </div>
-                    <div class="col-md-11">
-                      <label>
+                    <div class="col-md-12">
+                      <checkbox :checked.sync="issue.is_issuer_has_blocked_bank_account" :type="'primary'">
                         Наличие информации о блокировке счетов
-                      </label>
+                      </checkbox>
                     </div>
                   </div>
                 </div>
