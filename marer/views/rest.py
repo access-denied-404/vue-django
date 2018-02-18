@@ -7,7 +7,8 @@ from rest_framework.views import APIView
 from urllib3.exceptions import MaxRetryError
 
 from marer.models import Issue
-from marer.serializers import ProfileSerializer, IssueListSerializer, IssueSerializer
+from marer.serializers import ProfileSerializer, IssueListSerializer, IssueSerializer, IssueSecDepSerializer, \
+    IssueLawyersDepSerializer
 from marer import consts
 from marer.forms import RestTenderForm, IssueBankCommissionForm
 from marer.utils.issue import calculate_bank_commission
@@ -184,20 +185,34 @@ class IssuesView(APIView):
         return Response(ilist_ser.data)
 
 
-class IssueView(APIView):
+class IssueBaseAPIView(APIView):
+    serializer = IssueSerializer
+
     def get(self, request, iid, format=None):
         issue = Issue.objects.get(id=iid)
-        ser = IssueSerializer(issue)
+        ser = self.serializer(issue)
         return Response(ser.data)
 
     def post(self, request, iid):
         issue = Issue.objects.get(id=iid)
-        ser = IssueSerializer(issue, data=request.data)
+        ser = self.serializer(issue, data=request.data)
         if ser.is_valid():
             ser.save()
             return Response(ser.data)
         else:
             return Response(ser.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class IssueView(IssueBaseAPIView):
+    serializer = IssueSerializer
+
+
+class IssueSecDepView(IssueBaseAPIView):
+    serializer = IssueSecDepSerializer
+
+
+class IssueLawyersDepView(IssueBaseAPIView):
+    serializer = IssueLawyersDepSerializer
 
 
 class ProfileView(APIView):

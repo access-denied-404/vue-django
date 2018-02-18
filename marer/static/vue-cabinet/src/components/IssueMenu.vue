@@ -8,8 +8,20 @@
               <a class="list-group-item" :href="'#/cabinet/issues/' + this.id + '/info'" v-bind:class="{'active': this.$route.name === 'issue-info'}">Сведения о заявлении</a>
               <a class="list-group-item" :href="'#/cabinet/issues/' + this.id + '/survey'" v-bind:class="{'active': this.$route.name === 'issue-survey'}">Анкета</a>
               <a class="list-group-item" :href="'#/cabinet/issues/' + this.id + '/documents'" v-bind:class="{'active': this.$route.name === 'issue-documents'}">Пакет документов</a>
-              <a class="list-group-item" :href="'#/cabinet/issues/' + this.id + '/security-mgmt'" v-bind:class="{'active': this.$route.name === 'issue-security-mgmt'}">Департамент безопасности</a>
-              <a class="list-group-item" :href="'#/cabinet/issues/' + this.id + '/lawyers-mgmt'" v-bind:class="{'active': this.$route.name === 'issue-lawyers-mgmt'}">Правовое управление</a>
+              <a class="list-group-item"
+                 :href="'#/cabinet/issues/' + this.id + '/security-mgmt'"
+                 v-bind:class="{
+                   'active': this.$route.name === 'issue-security-mgmt',
+                   'list-group-item-success': this.issue.sec_dep_conclusion_doc && this.issue.is_positive_security_department_conclusion,
+                   'list-group-item-danger': this.issue.sec_dep_conclusion_doc && !this.issue.is_positive_security_department_conclusion
+                 }">Департамент безопасности</a>
+              <a class="list-group-item"
+                 :href="'#/cabinet/issues/' + this.id + '/lawyers-mgmt'"
+                 v-bind:class="{
+                   'active': this.$route.name === 'issue-lawyers-mgmt',
+                   'list-group-item-success': this.issue.lawyers_dep_conclusion_doc && this.issue.is_positive_lawyers_department_conclusion,
+                   'list-group-item-danger': this.issue.lawyers_dep_conclusion_doc && !this.issue.is_positive_lawyers_department_conclusion
+                 }">Правовое управление</a>
               <a class="list-group-item" :href="'#/cabinet/issues/' + this.id + '/doc-ops-mgmt'" v-bind:class="{'active': this.$route.name === 'issue-doc-ops-mgmt'}">Управление развития ДО</a>
               <a class="list-group-item" :href="'#/cabinet/issues/' + this.id + '/messaging'" v-bind:class="{'active': this.$route.name === 'issue-messaging'}">Обсуждения</a>
             </div>

@@ -154,6 +154,26 @@ class IssueSerializer(ModelSerializer):
         exclude = ('issuer', 'user',)
 
 
+class IssueSecDepSerializer(ModelSerializer):
+    class Meta:
+        model = Issue
+        fields = (
+            'id',
+            'is_positive_security_department_conclusion',
+        )
+
+
+class IssueLawyersDepSerializer(ModelSerializer):
+    class Meta:
+        model = Issue
+        fields = (
+            'id',
+            'persons_can_acts_as_issuer_and_perms_term_info',
+            'lawyers_dep_recommendations',
+            'is_positive_lawyers_department_conclusion',
+        )
+
+
 class ProfileSerializer(ModelSerializer):
 
     class Meta:
