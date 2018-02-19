@@ -215,7 +215,7 @@ class IssueSurveyView(IssueView):
             url = reverse('cabinet_requests')
             return HttpResponseRedirect(url)
         elif action == 'next' and all_ok:
-            if not self.get_issue().agent_commission_passed:
+            if self.get_issue().agent_comission and not self.get_issue().agent_commission_passed:
                 return self.get(request, *args, **kwargs)
             self.get_issue().fill_application_doc(commit=True)
             notify_user_manager_about_user_updated_issue(self.get_issue())

@@ -793,12 +793,10 @@ class Issue(models.Model):
                 return True
             else:
                 return False
-        else:
-            return False
 
     @cached_property
     def bank_commission(self):
-        if self.agent_commission_passed:
+        if self.agent_comission and self.agent_commission_passed:
             return self.agent_comission
         else:
             return self.auto_bank_commission
