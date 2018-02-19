@@ -2026,8 +2026,16 @@ class IssueClarificationMessage(models.Model):
     )
     message = models.TextField(verbose_name='сообщение', blank=False, null=False, default='')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='пользователь',
-                             on_delete=models.DO_NOTHING, null=False)
+                             on_delete=models.DO_NOTHING, null=True)
     created_at = models.DateTimeField(verbose_name='время создания', auto_now_add=True, null=False)
+
+    @property
+    def user_repr(self):
+        return self.user.__str__() if self.user else 'Клиент'
+
+    @property
+    def user_full_name_repr(self):
+        return self.user.get_full_name() if self.user else 'Клиент'
 
     def __str__(self):
         return 'Сообщение по заявке №{num} от пользователя {user} в {created}'.format(

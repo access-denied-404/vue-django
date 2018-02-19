@@ -307,7 +307,8 @@ class IssueRemoteAdditionalDocumentsRequests(TemplateView, ContextMixin, View):
             new_msg = IssueClarificationMessage()
             new_msg.issue = self.get_issue()
             new_msg.message = comment_form.cleaned_data['message']
-            new_msg.user = request.user
+            if request.user.is_authenticated:
+                new_msg.user = request.user  # catch a fake client
             new_msg.save()
 
             for ffield in ['doc%s' % dnum for dnum in range(1, 9)]:

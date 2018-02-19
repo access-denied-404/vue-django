@@ -190,7 +190,7 @@ class IssueAdmin(ModelAdmin):
 
         msg = obj.clarification_messages.all().order_by('-created_at').first()
         obj_tmpl = '<div>{msg}</div><br/><div>{msg_docs}</div>'
-        line_tmpl = '<b><{msg.user}</b><br/>{msg_created}:<br/><br/>{msg.message}'
+        line_tmpl = '<b><{msg.user_repr}</b><br/>{msg_created}:<br/><br/>{msg.message}'
         line_doc_tmpl = '<div><a href="{doc_url}">{doc_name}</a></div>'
         ret_text = ''
         if msg:
@@ -498,7 +498,7 @@ class IssueMessagesProxyAdmin(ModelAdmin):
     def get_messages(self, obj):
         messages = obj.clarification_messages.all().order_by('created_at')
         obj_tmpl = '<div>{msg}</div><br/><div>{msg_docs}</div>'
-        line_tmpl = '<b><{msg.user}</b><br/>{msg_created}:<br/><br/>{msg.message}'
+        line_tmpl = '<b><{msg.user_repr}</b><br/>{msg_created}:<br/><br/>{msg.message}'
         line_doc_tmpl = '<div><a href="{doc_url}">{doc_name}</a></div>'
         ret_text = ''
         idx = 1
