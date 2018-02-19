@@ -562,8 +562,8 @@
   import 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css'
   import {Money} from 'v-money'
 
-  moment.locale = 'ru';
-  let dateformat = 'DD.MM.YYYY';
+  moment.locale = 'ru'
+  let dateformat = 'DD.MM.YYYY'
 
   export default {
     name: 'issue',
@@ -593,10 +593,10 @@
       date_range: {
         get () {
           if (this.issue.bg_end_date) {
-            let val;
-            let start = moment(this.issue.bg_start_date, dateformat);
-            let end = this.issue.bg_end_date;
-            val = 1 + (end.year() - start.year()) * 12 + end.month() - start.month();
+            let val
+            let start = moment(this.issue.bg_start_date, dateformat)
+            let end = this.issue.bg_end_date
+            val = 1 + (end.year() - start.year()) * 12 + end.month() - start.month()
             if (isNaN(val)) {
               return ''
             } else {
@@ -611,19 +611,19 @@
     },
     methods: {
       update_form_data (data) {
-        data.csrfmiddlewaretoken = this.$cookie.get('csrftoken');
-        this.issue = data;
-        this.issue.bg_start_date = moment(data.bg_start_date, dateformat);
-        this.issue.bg_end_date = moment(data.bg_end_date, dateformat);
-        this.issue.bg_commercial_contract_sign_date = moment(data.bg_commercial_contract_sign_date, dateformat);
-        this.issue.bg_commercial_contract_end_date = moment(data.bg_commercial_contract_end_date, dateformat);
+        data.csrfmiddlewaretoken = this.$cookie.get('csrftoken')
+        this.issue = data
+        this.issue.bg_start_date = moment(data.bg_start_date, dateformat)
+        this.issue.bg_end_date = moment(data.bg_end_date, dateformat)
+        this.issue.bg_commercial_contract_sign_date = moment(data.bg_commercial_contract_sign_date, dateformat)
+        this.issue.bg_commercial_contract_end_date = moment(data.bg_commercial_contract_end_date, dateformat)
 
         this.finance_documents = jQuery.grep(data.propose_documents, function (n, i) {
           return n.type === 2
-        });
+        })
         this.legal_documents = jQuery.grep(data.propose_documents, function (n, i) {
           return n.type === 1
-        });
+        })
         this.other_documents = jQuery.grep(data.propose_documents, function (n, i) {
           return n.type === 3
         })
