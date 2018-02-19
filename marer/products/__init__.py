@@ -442,8 +442,8 @@ class BankGuaranteeProduct(FinanceProduct):
             self._issue.issuer_post_address = form_org_common.cleaned_data['issuer_post_address']
             self._issue.issuer_has_overdue_debts_for_last_180_days = form_org_common.cleaned_data['issuer_has_overdue_debts_for_last_180_days']
             self._issue.issuer_overdue_debts_info = form_org_common.cleaned_data['issuer_overdue_debts_info']
-            self._issue.tax_system = form_org_common.cleaned_data['tax_system']
             self._issue.agent_comission = form_org_common.cleaned_data['agent_comission']
+            self._issue.tax_system = form_org_common.cleaned_data['tax_system']
 
         else:
             processed_sucessfully_flag = False
@@ -723,6 +723,7 @@ class BankGuaranteeProduct(FinanceProduct):
             ('Договора и акты', dict(fields=(
                 'bg_contract_doc_admin_field',
                 'bg_doc_admin_field',
+                'payment_of_fee_admin_field',
                 'transfer_acceptance_act_admin_field',
                 'contract_of_guarantee_admin_field',
             ))),
@@ -822,6 +823,7 @@ class BankGuaranteeProduct(FinanceProduct):
             'transfer_acceptance_act_admin_field',
             'contract_of_guarantee_admin_field',
             'bg_doc_admin_field',
+            'payment_of_fee_admin_field',
             'additional_doc_admin_field',
             'lawyers_dep_conclusion_doc_admin_field',
             'doc_ops_mgmt_conclusion_doc_admin_field',

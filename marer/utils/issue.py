@@ -3,7 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from marer import consts
 from marer.models import BankMinimalCommission
-from marer.utils.datetime_utils import get_datetime_as_excel_number
+from marer.utils.datetime_utils import get_datetime_as_excel_number, get_date_diff_in_days
 
 
 def issue_term_in_months(start_date, end_date):
@@ -18,8 +18,25 @@ def issue_term_in_months(start_date, end_date):
     return months
 
 
-def bank_commission(bg_start_date, bg_end_date, bg_sum, bg_is_beneficiary_form, bg_type, tender_exec_law,
-                    tender_has_prepayment, contract_term_extend=False, contract_exec_verification_more_5_doc=False):
+def calculate_effective_rate(bg_sum, commission, bg_start_date, bg_end_date):
+    """
+    Расчет эффективной процентной ставки
+    :param bg_sum:
+    :param auto_commission:
+    :param agent_commission:
+    :param bg_start_date:
+    :param bg_end_date:
+    :return:
+    """
+    AN10 = get_date_diff_in_days(bg_end_date, bg_start_date)
+
+    Y16 = commission * 100 / bg_sum
+
+    return Y16 / AN10 * 365
+
+
+def calculate_bank_commission(bg_start_date, bg_end_date, bg_sum, bg_is_beneficiary_form, bg_type, tender_exec_law,
+                              tender_has_prepayment, contract_term_extend=False, contract_exec_verification_more_5_doc=False):
     """
     Расчет банковской комиссии
     :param bg_start_date:
@@ -116,7 +133,16 @@ def sum2str(value):
         ['миллион', 'миллиона', 'миллионов', 0],
         ['миллиард', 'милиарда', 'миллиардов', 0],
     ]
-    rub, kop = ('%3.2f' % float(value)).split('.')
+
+    value = str(value).replace(' ', '')
+    if '.' in value:
+        rub, kop = ('%3.2f' % float(value)).split('.')
+    elif ',' in value:
+        rub, kop = ('%3.2f' % float(value)).split(',')
+    else:
+        rub = float(value)
+        kop = 0
+
     output = []
 
     def split_by_groups(value: str, count: int):

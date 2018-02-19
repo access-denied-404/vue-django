@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^cabinet/requests/(?P<iid>\d+)/srv$', issue.IssueSurveyView.as_view(), name='issue_survey'),
     url(r'^cabinet/requests/(?P<iid>\d+)/scr$', issue.IssueScoringView.as_view(), name='issue_scoring'),
     url(r'^cabinet/requests/(?P<iid>\d+)/rsr$', issue.IssueRemoteSurveyView.as_view(), name='issue_remote_survey'),
+    url(r'^cabinet/requests/(?P<iid>\d+)/radr$', issue.IssueRemoteAdditionalDocumentsRequests.as_view(), name='issue_remote_add_docs_requests'),
     url(r'^cabinet/requests/(?P<iid>\d+)/rsd$', issue.IssueRemoteSignView.as_view(), name='issue_remote_for_sign'),
     url(r'^cabinet/requests/(?P<iid>\d+)/rsd/sign-file$', issue.IssueRemoteDocumentSignView.as_view(), name='issue_remote_file_sign'),
     url(r'^cabinet/requests/(?P<iid>\d+)/adr/clr$', issue.IssueAdditionalDocumentsRequestView.as_view(), name='issue_additional_documents_request_new'),
@@ -41,8 +42,10 @@ urlpatterns = [
     url(r'^rest/tender$', rest.TenderDataView.as_view(), name='rest_tender'),
     url(r'^rest/bank_commission$', csrf_exempt(rest.IssueBankCommissionView.as_view()), name='rest_bank_commission'),
 
-    url(r'^rest/issues', rest.IssuesView.as_view(), name='rest_issues'),
-    url(r'^rest/issue/(?P<iid>\d+)', rest.IssueView.as_view(), name='rest_issue'),
-    url(r'^rest/profile', rest.ProfileView.as_view(), name='rest_profile'),
+    url(r'^rest/issues$', rest.IssuesView.as_view(), name='rest_issues'),
+    url(r'^rest/issue/(?P<iid>\d+)$', rest.IssueView.as_view(), name='rest_issue'),
+    url(r'^rest/issue/(?P<iid>\d+)/sec-dep-mgmt$', rest.IssueSecDepView.as_view(), name='rest_issue_sec_dep_mgmt'),
+    url(r'^rest/issue/(?P<iid>\d+)/lawyers-dep-mgmt$', rest.IssueLawyersDepView.as_view(), name='rest_issue_lawyers_dep_mgmt'),
+    url(r'^rest/profile$', rest.ProfileView.as_view(), name='rest_profile'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

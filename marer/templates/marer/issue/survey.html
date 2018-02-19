@@ -20,13 +20,16 @@
                         Комиссия банка
                         <br/>
                         {% if issue.passed_prescoring %}
-                            {{ issue.bank_commission |floatformat:2 }} руб.
+                            {{ issue.auto_bank_commission |floatformat:2 }} руб.
                         {% else %}
                             <span class="text-danger h3">Не в рамках продукта</span>
                         {% endif %}
                     </div>
                     <div class="h6">
                         {{ form_org_common.agent_comission }}
+                        {% if not issue.agent_commission_passed and issue.agent_comission %}
+                            <div class="text-danger text-center">Вы предложили слишком маленькую комиссию</div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

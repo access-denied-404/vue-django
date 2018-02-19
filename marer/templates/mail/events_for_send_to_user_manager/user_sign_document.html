@@ -4,7 +4,7 @@
     <tr>
         <td class="plr-20" bgcolor="#f9f9f9"
             style="padding:30px 48px; font:18px/25px DINPro, Arial, Helvetica, sans-serif; color:#757c83;">
-            <p>Пользователь {{ user_full_name }} подписал документ {{ document_name }}</p>
+            <p>Пользователь {{ user_full_name }} подписал документ <b>{{ document_name }}</b></p>
             <p>
                 Номер заявки:
                 <a href="http://sgbmarertest.ru{% url 'admin:marer_issue_change' issue_id %}">
@@ -13,7 +13,6 @@
             </p>
             {% if issuer_short_name %}<p>Заявитель: <strong>{{ issuer_short_name }}</strong></p>{% endif %}
             <p>Банковский продукт: <strong>{{ finance_product }}</strong></p>
-            <p>Финансовая организация: <strong>{{ finance_org_name }}</strong></p>
             <p>
                 <a href="http://sgbmarertest.ru{% url 'admin:marer_issue_change' issue_id %}">
                     Ссылка на страницу с документами

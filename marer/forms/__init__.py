@@ -328,3 +328,10 @@ class IFOPCMessageForm(Form):
     doc6 = fields.FileField(required=False)
     doc7 = fields.FileField(required=False)
     doc8 = fields.FileField(required=False)
+
+
+class EmailForm(Form):
+    email = fields.EmailField(required=False,
+                              widget=TextInput(attrs={'class': 'form-control send-to-client',
+                                                      'id': 'email',
+                                                      'placeholder': 'Введите email клиента'}))

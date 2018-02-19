@@ -1,6 +1,7 @@
 import json
 
 import os
+from _decimal import InvalidOperation
 
 import feedparser
 import requests
@@ -23,7 +24,7 @@ from marer.models.finance_org import FinanceOrganization, FinanceOrgProductPropo
 from marer.models.issuer import Issuer, IssuerDocument
 from marer.products import get_urgency_hours, get_urgency_days, get_finance_products_as_choices, FinanceProduct, get_finance_products, BankGuaranteeProduct
 from marer.utils import CustomJSONEncoder, kontur
-from marer.utils.issue import bank_commission, sum2str, generate_bg_number, issue_term_in_months
+from marer.utils.issue import calculate_bank_commission, sum2str, generate_bg_number, issue_term_in_months, calculate_effective_rate
 from marer.utils.morph import MorpherApi
 from marer.utils.other import OKOPF_CATALOG
 
@@ -111,7 +112,7 @@ class Issue(models.Model):
         (consts.TENDER_EXEC_LAW_VAT, 'Возврат НДС'),
     ])
     tender_publish_date = models.DateField(verbose_name='дата публикации тендера', blank=True, null=True)
-    tender_start_cost = models.DecimalField(verbose_name='начальная цена тендера', max_digits=32, decimal_places=2, blank=True, null=True)
+    tender_start_cost = models.DecimalField(verbose_name='начальная цена тендера', max_digits=32, decimal_places=2, blank=False, null=False, default=0)
     tender_final_cost = models.DecimalField(verbose_name='конечная цена тендера', max_digits=32, decimal_places=2, blank=True, null=True)
 
     tender_contract_type = models.CharField(verbose_name='вид работ в тендере', max_length=32, blank=True, null=True, choices=[
@@ -300,7 +301,7 @@ class Issue(models.Model):
 
     persons_can_acts_as_issuer_and_perms_term_info = models.TextField(verbose_name='Сведения о физических лицах, имеющих право действовать от имени Принципала без доверенности, срок окончания полномочий', blank=True, null=False, default='')
     lawyers_dep_recommendations = models.TextField(
-        verbose_name='Сведения о физических лицах, имеющих право действовать от имени Принципала без доверенности, срок окончания полномочий',
+        verbose_name='Рекомендации',
         help_text='Сотрудником правового управления должны быть оценена актуальность и достаточность предоставленных '
                   'документов (устав и изменения к нему, документы, подтверждающие полномочия руководителя (включая '
                   'сроки), соблюдение процедуры одобрения сделок (если подлежат одобрению по специальным основаниям). '
@@ -685,7 +686,7 @@ class Issue(models.Model):
         null=True,
         blank=True,
         related_name='contract_of_guaranties',
-        verbose_name='Согласие на взаимодействие с БКИ (поручителя)'
+        verbose_name='Договор поручительства'
     )
     transfer_acceptance_act = models.ForeignKey(
         Document,
@@ -701,6 +702,14 @@ class Issue(models.Model):
         null=True,
         blank=True,
         related_name='additional_doc'
+    )
+
+    payment_of_fee = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='payment_of_fee'
     )
 
     def get_urgency_for_user(self, user):
@@ -754,11 +763,11 @@ class Issue(models.Model):
 
     @cached_property
     def passed_prescoring(self):
-        return self.bank_commission and self.check_stop_factors_validity
+        return self.auto_bank_commission and self.check_stop_factors_validity
 
     @cached_property
-    def bank_commission(self):
-        return bank_commission(
+    def auto_bank_commission(self):
+        return calculate_bank_commission(
             self.bg_start_date,
             self.bg_end_date,
             self.bg_sum,
@@ -767,6 +776,30 @@ class Issue(models.Model):
             self.tender_exec_law,
             self.tender_has_prepayment,
         )
+
+    @cached_property
+    def agent_effective_rate(self):
+        return calculate_effective_rate(
+            self.bg_sum,
+            self.agent_comission,
+            self.bg_start_date,
+            self.bg_end_date
+        )
+
+    @cached_property
+    def agent_commission_passed(self):
+        if self.agent_comission:
+            if int(self.agent_comission) > int(0.7 * self.auto_bank_commission) and self.agent_effective_rate > 0.27:
+                return True
+            else:
+                return False
+
+    @cached_property
+    def bank_commission(self):
+        if self.agent_comission and self.agent_commission_passed:
+            return self.agent_comission
+        else:
+            return self.auto_bank_commission
 
     @property
     def humanized_id(self):
@@ -786,7 +819,7 @@ class Issue(models.Model):
     def scoring_issuer_profitability(self):
         try:
             coeff = (self.balance_code_2400_offset_1 / self.balance_code_2110_offset_1) * 100
-        except ZeroDivisionError:
+        except ArithmeticError:
             return 3
         if coeff < 0.5:
             return 4
@@ -802,7 +835,7 @@ class Issue(models.Model):
         try:
             code_2110_offset_2 = self.balance_code_2110_offset_2 or 0
             coeff = (self.balance_code_2110_offset_1 / code_2110_offset_2) * 100
-        except ZeroDivisionError:
+        except ArithmeticError:
             return 3
         if coeff < 75:
             return 4
@@ -817,7 +850,7 @@ class Issue(models.Model):
     def scoring_own_funds_ensurance(self):
         try:
             coeff = (self.balance_code_1300_offset_1 / self.balance_code_1600_offset_1) * 100
-        except ZeroDivisionError:
+        except ArithmeticError:
             return 3
         if coeff <= 5:
             return 4
@@ -1093,7 +1126,7 @@ class Issue(models.Model):
                 'sign_by_short': 'И. В. Скворцова',
                 'post_sign_by': 'Заместитель главного бухгалтера Московского филиала «БАНК СГБ»',
                 'post_sign_by_rp': 'Заместителя главного бухгалтера Московского филиала «БАНК СГБ»',
-                'power_of_attorney': '№59 от 27 января 2017 года',
+                'power_of_attorney': '№30 от 25 января 2018 года',
             },
         }
         if self.bg_sum < 3000000:
@@ -1107,7 +1140,7 @@ class Issue(models.Model):
             'city': 'г. Москва',
             'bg_type': bg_type,
             'bg_sum_str': sum2str(self.bg_sum),
-            'bank_commission_str': sum2str(self.bank_commission),
+            'bank_commission_str': sum2str(self.bank_commission or 0),
             'indisputable': 'Гарант предоставляет Бенефициару право на бесспорное списание денежных средств со счета Гаранта, если Гарантом в течение пяти рабочих дней не исполнено требование Бенефициара об уплате денежной суммы по Гарантии, направленное с соблюдением условий Гарантии.' if self.is_indisputable_charge_off else 'Не указано в заявлениии',
             'requisites': '\n'.join([
                 'Московский филиал «БАНК СГБ»',
@@ -1126,6 +1159,14 @@ class Issue(models.Model):
         }
         properties.update(sign_by)
         return properties
+
+    @cached_property
+    def bank_account_for_payment_fee(self):
+        """
+        Счет для оплаты банковской комиссии
+        :return: string
+        """
+        return "70601810319002750311" if self.issuer_okopf.replace(' ', '') == '50102' else "70601810419002750211"
 
     @cached_property
     def licences_as_string(self):
@@ -1179,6 +1220,21 @@ class Issue(models.Model):
     bg_doc_admin_field.short_description = 'Проект'
     bg_doc_admin_field.allow_tags = True
 
+    def payment_of_fee_admin_field(self):
+        doc = self.payment_of_fee
+        field_parts = []
+        if doc:
+            if doc.file:
+                field_parts.append('<b><a href="{}">скачать</a></b>'.format(doc.file.url))
+        if len(field_parts) > 0:
+            output = ', '.join(field_parts)
+        else:
+            output = 'отсутствует'
+        output += ' <input type="file" name="bg_doc_document" />'
+        return output
+    payment_of_fee_admin_field.short_description = 'Счет'
+    payment_of_fee_admin_field.allow_tags = True
+
     def contract_of_guarantee_admin_field(self):
         doc = self.contract_of_guarantee
         field_parts = []
@@ -1193,7 +1249,7 @@ class Issue(models.Model):
             output = 'отсутствует'
         output += ' <input type="file" name="contract_of_guarantee_document" />'
         return output
-    contract_of_guarantee_admin_field.short_description = 'Согласие на взаимодействие с БКИ (поручителя)'
+    contract_of_guarantee_admin_field.short_description = 'Договор поручительства'
     contract_of_guarantee_admin_field.allow_tags = True
 
     def transfer_acceptance_act_admin_field(self):
@@ -1698,7 +1754,9 @@ class Issue(models.Model):
 
         try:
             kontur_benefitiar_analytics_data = kontur.analytics(inn=self.tender_responsible_inn, ogrn=self.tender_responsible_ogrn)
+            kontur_benefitiar_analytics_data = kontur_benefitiar_analytics_data.get('analytics', {})
             kontur_principal_analytics_data = kontur.analytics(inn=self.issuer_inn, ogrn=self.issuer_ogrn)
+            kontur_principal_analytics_data = kontur_principal_analytics_data.get('analytics', {})
 
             # principal stop factors
             if kontur_principal_analytics_data.get('m4001', False):
@@ -1716,7 +1774,7 @@ class Issue(models.Model):
 
             # benefitiar stop factors
             if self.tender_exec_law in [consts.TENDER_EXEC_LAW_44_FZ, consts.TENDER_EXEC_LAW_223_FZ]:
-                if kontur_benefitiar_analytics_data.get('q4005', 0) > 0:
+                if kontur_benefitiar_analytics_data.get('q4005', 0) <= 0:
                     ve.error_list.append('Бенефициар не найден в реестре государственных заказчиков')
             for bl_inn_start in ['91', '92']:
                 if self.tender_responsible_inn.startswith(bl_inn_start):

@@ -90,9 +90,15 @@ class IssueAdmin(ModelAdmin):
         'updated_at',
     )
     list_filter = (
-        ('user__manager', ManagerListFilter),
         ('manager', ManagerListFilter),
+        ('user__manager', ManagerListFilter),
         'status',
+    )
+    search_fields = (
+        'issuer_short_name',
+        'issuer_full_name',
+        'issuer_inn',
+        'issuer_ogrn',
     )
     formfield_overrides = {
         TextField: dict(widget=Textarea(dict(rows=4)))
@@ -101,7 +107,7 @@ class IssueAdmin(ModelAdmin):
     def save_form(self, request, form, change):
         obj = super(IssueAdmin, self).save_form(request, form, change)
         issue = form.instance
-        for file_name in ['bg_contract_doc', 'bg_doc', 'transfer_acceptance_act', 'contract_of_guarantee']:
+        for file_name in ['bg_contract_doc', 'bg_doc', 'transfer_acceptance_act', 'contract_of_guarantee', 'payment_of_fee']:
             file_content = request.FILES.get('%s_document' % file_name)
             file_document = getattr(issue, file_name)
             if file_content and file_document:
