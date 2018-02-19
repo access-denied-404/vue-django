@@ -8,6 +8,7 @@ Vue.config.productionTip = false
 
 var products = JSON.parse(document.getElementById('app').getAttribute('products'))
 var dadataToken = document.getElementById('app').getAttribute('dadata_token')
+var issueID = document.getElementById('app').getAttribute('issue-id')
 window.regdata = document.getElementById('app').getAttribute('regdata')
 
 /* eslint-disable no-new */
@@ -17,8 +18,9 @@ new Vue({
   data: {
     csrf: document.getElementById('app').getAttribute('csrf'),
     products: products,
-    token: dadataToken
+    token: dadataToken,
+    issue_id: issueID
   },
-  template: '<App :csrf="csrf" :products="products" :token="token"/>',
+  template: '<App :csrf="csrf" :products="products" :token="token" :issue_id="issue_id" />',
   components: { App }
 })

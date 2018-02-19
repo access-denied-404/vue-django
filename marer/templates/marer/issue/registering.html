@@ -1,5 +1,7 @@
 {% extends 'marer/issue/layout.html' %}
 
+{% load l10n %}
+
 {% block issue_content %}
     <div
             id=app
@@ -11,5 +13,6 @@
                 regdata="{{ issue.serialize_registering_data }}"
             {% endif %}
             dadata_token="{{ dadata_token }}"
+            issue-id="{{ issue.id | unlocalize }}"
     ></div>
 {% endblock %}

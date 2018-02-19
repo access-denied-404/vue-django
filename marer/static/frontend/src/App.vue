@@ -1,6 +1,6 @@
 <template>
   <div id="app-root">
-    <form method="post">
+    <form method="post" :action="this.getFormAction()">
 
       <div class="alert alert-danger" v-if="errors.stop_factors">
         <p v-for="err in errors.stop_factors" class="text-center">
@@ -122,7 +122,7 @@
   require('suggestions-jquery')
   export default {
     name: 'app',
-    props: ['csrf', 'products', 'token'],
+    props: ['csrf', 'products', 'token', 'issue_id'],
     components: {
       'bs-input': input,
       'bs3-select-field': BS3SelectField
@@ -167,6 +167,15 @@
     watch: {
       product (e) {
         window.location.hash = '/' + this.product
+      }
+    },
+    methods: {
+      getFormAction: function () {
+        if (this.issue_id) {
+          return '/cabinet/requests/' + this.issue_id + '/reg'
+        } else {
+          return ''
+        }
       }
     },
     created () {
