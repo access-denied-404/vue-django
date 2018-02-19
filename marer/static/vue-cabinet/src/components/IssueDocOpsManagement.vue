@@ -17,7 +17,7 @@
 
                 <div class="row">
                   <div class="col-md-12">
-                    <checkbox :checked.sync="issue.is_issuer_all_bank_liabilities_less_than_max" :type="'primary'">
+                    <checkbox v-model="issue.is_issuer_all_bank_liabilities_less_than_max" :type="'primary'">
                       Лимит на Принципала (группу взаимосвязанных Заемщиков) ВСЕХ обязательств Банка менее 18 000 000 руб
                     </checkbox>
                   </div>
@@ -25,7 +25,7 @@
 
                 <div class="row">
                   <div class="col-md-12">
-                    <checkbox :checked.sync="issue.is_issuer_executed_contracts_on_44_or_223_or_185_fz" :type="'primary'">
+                    <checkbox v-model="issue.is_issuer_executed_contracts_on_44_or_223_or_185_fz" :type="'primary'">
                       Клиент исполнил не менее 1 контракта в рамках законов № 94-ФЗ, 44-ФЗ, 223-ФЗ, 185-ФЗ (615 ПП)
                     </checkbox>
                   </div>
@@ -33,7 +33,7 @@
 
                 <div class="row">
                   <div class="col-md-12">
-                    <checkbox :checked.sync="issue.is_issuer_executed_goverment_contract_for_last_3_years" :type="'primary'">
+                    <checkbox v-model="issue.is_issuer_executed_goverment_contract_for_last_3_years" :type="'primary'">
                       Наличие исполненного государственного контракта за последние 3 года
                     </checkbox>
                   </div>
@@ -41,7 +41,7 @@
 
                 <div class="row">
                   <div class="col-md-12">
-                    <checkbox :checked.sync="issue.is_contract_has_prepayment" :type="'primary'">
+                    <checkbox v-model="issue.is_contract_has_prepayment" :type="'primary'">
                       Контракт предусматривает выплату аванса
                     </checkbox>
                   </div>
@@ -49,7 +49,7 @@
 
                 <div class="row">
                   <div class="col-md-12">
-                    <checkbox :checked.sync="issue.is_issuer_executed_contracts_with_comparable_advances" :type="'primary'">
+                    <checkbox v-model="issue.is_issuer_executed_contracts_with_comparable_advances" :type="'primary'">
                       Клиент исполнял контракты с авансами сопоставимого или большего размера (допустимое отклонение в меньшую сторону не более 50 % включительно)
                     </checkbox>
                   </div>
@@ -57,7 +57,7 @@
 
                 <div class="row">
                   <div class="col-md-12">
-                    <checkbox :checked.sync="issue.is_issuer_executed_gte_5_contracts_on_44_or_223_or_185_fz" :type="'primary'">
+                    <checkbox v-model="issue.is_issuer_executed_gte_5_contracts_on_44_or_223_or_185_fz" :type="'primary'">
                       Факт исполнения не менее 5 контрактов, заключенных в рамках законов № 44-ФЗ (включая № 94-ФЗ), 223-ФЗ, 185-ФЗ (615 ПП)
                     </checkbox>
                   </div>
@@ -65,7 +65,7 @@
 
                 <div class="row">
                   <div class="col-md-12">
-                    <checkbox :checked.sync="issue.is_issuer_last_year_revenue_higher_in_5_times_than_all_bank_bgs" :type="'primary'">
+                    <checkbox v-model="issue.is_issuer_last_year_revenue_higher_in_5_times_than_all_bank_bgs" :type="'primary'">
                       Выручка Клиента за последний завершенный год не менее, чем в 5 раз превышает сумму запрашиваемой и действующих в Банке гарантий
                     </checkbox>
                   </div>
@@ -73,7 +73,7 @@
 
                 <div class="row">
                   <div class="col-md-12">
-                    <checkbox :checked.sync="issue.is_issuer_has_garantor_for_advance_related_requirements" :type="'primary'">
+                    <checkbox v-model="issue.is_issuer_has_garantor_for_advance_related_requirements" :type="'primary'">
                       Наличие Поручителя юридического лица удовлетворяющим одному из предыдущих трех условий
                     </checkbox>
                   </div>
@@ -81,7 +81,7 @@
 
                 <div class="row">
                   <div class="col-md-12">
-                    <checkbox :checked.sync="issue.is_contract_price_reduction_lower_than_50_pct_on_supply_contract" :type="'primary'">
+                    <checkbox v-model="issue.is_contract_price_reduction_lower_than_50_pct_on_supply_contract" :type="'primary'">
                       Снижение цены Контракта менее 50% если предмет контракта «Поставка»
                     </checkbox>
                   </div>
@@ -89,7 +89,7 @@
 
                 <div class="row">
                   <div class="col-md-12">
-                    <checkbox :checked.sync="issue.is_absent_info_about_court_acts_for_more_than_20_pct_of_net_assets" :type="'primary'">
+                    <checkbox v-model="issue.is_absent_info_about_court_acts_for_more_than_20_pct_of_net_assets" :type="'primary'">
                       Отсутствие информации об исполнительных производствах Приницпала его Участников на сумму более 20% чистых активов Клиента
                     </checkbox>
                   </div>
@@ -97,7 +97,7 @@
 
                 <div class="row">
                   <div class="col-md-12">
-                    <checkbox :checked.sync="issue.is_absent_info_about_legal_proceedings_as_defendant_for_more_than_30_pct_of_net_assets" :type="'primary'">
+                    <checkbox v-model="issue.is_absent_info_about_legal_proceedings_as_defendant_for_more_than_30_pct_of_net_assets" :type="'primary'">
                       Отсутствие информации о судебных разбирательствах Клиента в качестве ответчика (за исключением закрытых) на сумму более 30% чистых активов Клиента
                     </checkbox>
                   </div>
@@ -105,7 +105,7 @@
 
                 <div class="row">
                   <div class="col-md-12">
-                    <checkbox :checked.sync="issue.is_need_to_check_real_of_issuer_activity" :type="'primary'">
+                    <checkbox v-model="issue.is_need_to_check_real_of_issuer_activity" :type="'primary'">
                       Есть необходимость оценки реальности деятельности
                     </checkbox>
                   </div>
@@ -113,7 +113,7 @@
 
                 <div class="row">
                   <div class="col-md-12">
-                    <checkbox :checked.sync="issue.is_real_of_issuer_activity_confirms" :type="'primary'">
+                    <checkbox v-model="issue.is_real_of_issuer_activity_confirms" :type="'primary'">
                       Реальность деятельности подтверждается
                     </checkbox>
                   </div>
@@ -121,7 +121,7 @@
 
                 <div class="row">
                   <div class="col-md-12">
-                    <checkbox :checked.sync="issue.is_contract_corresponds_issuer_activity" :type="'primary'">
+                    <checkbox v-model="issue.is_contract_corresponds_issuer_activity" :type="'primary'">
                       Контракт соответствует профилю деятельности клиента
                     </checkbox>
                   </div>
@@ -131,7 +131,7 @@
                 <div v-if="this.issue.bg_sum >= 1500000">
                   <div class="row">
                     <div class="col-md-12">
-                      <checkbox :checked.sync="issue.contract_advance_requirements_fails" :type="'primary'">
+                      <checkbox v-model="issue.contract_advance_requirements_fails" :type="'primary'">
                         Не выполняются требования к авансированию (при наличии в контракте аванса)
                       </checkbox>
                     </div>
@@ -139,7 +139,7 @@
 
                   <div class="row">
                     <div class="col-md-12">
-                      <checkbox :checked.sync="issue.is_issuer_has_bad_credit_history" :type="'primary'">
+                      <checkbox v-model="issue.is_issuer_has_bad_credit_history" :type="'primary'">
                         Наличие текущей просроченной ссудной задолженности и отрицательной кредитной истории в кредитных организациях
                       </checkbox>
                     </div>
@@ -147,7 +147,7 @@
 
                   <div class="row">
                     <div class="col-md-12">
-                      <checkbox :checked.sync="issue.is_issuer_has_blocked_bank_account" :type="'primary'">
+                      <checkbox v-model="issue.is_issuer_has_blocked_bank_account" value="true" :type="'primary'">
                         Наличие информации о блокировке счетов
                       </checkbox>
                     </div>
@@ -156,10 +156,7 @@
 
                 <div class="row">
                   <div class="col-md-4 col-md-push-4">
-                    <label>
-                      Объем обязательств банка
-                    </label>
-                    <input type="number" class="form-control pull-right" v-model="issue.total_bank_liabilities_vol"/>
+                    <bs-input type="number" :label="'Объем обязательств банка'" class="pull-right" v-model="issue.total_bank_liabilities_vol"></bs-input>
                   </div>
                 </div>
 
@@ -189,6 +186,7 @@
   import IssueMenu from '@/components/IssueMenu'
   import 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css'
   import {Money} from 'v-money'
+  import axios from 'axios'
 
   moment.locale = 'ru'
   let dateformat = 'DD.MM.YYYY'
@@ -239,26 +237,13 @@
     },
     methods: {
       update_form_data (data) {
-        data.csrfmiddlewaretoken = this.$cookie.get('csrftoken')
         this.issue = data
-        this.issue.bg_start_date = moment(data.bg_start_date, dateformat)
-        this.issue.bg_end_date = moment(data.bg_end_date, dateformat)
-        this.issue.bg_commercial_contract_sign_date = moment(data.bg_commercial_contract_sign_date, dateformat)
-        this.issue.bg_commercial_contract_end_date = moment(data.bg_commercial_contract_end_date, dateformat)
-
-        this.finance_documents = jQuery.grep(data.propose_documents, function (n, i) {
-          return n.type === 2
-        })
-        this.legal_documents = jQuery.grep(data.propose_documents, function (n, i) {
-          return n.type === 1
-        })
-        this.other_documents = jQuery.grep(data.propose_documents, function (n, i) {
-          return n.type === 3
-        })
       },
       save_issue () {
-        jQuery.ajax(this.api_url + this.$route.params.id, this.issue, (data) => {
-          this.update_form_data(data)
+        axios.post(this.api_url + this.$route.params.id, {
+          body: this.issue
+        }).then(response => {
+          this.update_form_data(response.data)
         })
       }
     }

@@ -92,7 +92,6 @@
     },
     methods: {
       update_form_data (data) {
-        data.csrfmiddlewaretoken = this.$cookie.get('csrftoken')
         this.issue = data
         this.issue.bg_start_date = moment(data.bg_start_date, dateformat)
         this.issue.bg_end_date = moment(data.bg_end_date, dateformat)

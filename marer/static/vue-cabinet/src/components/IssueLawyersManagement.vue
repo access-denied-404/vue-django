@@ -71,6 +71,7 @@
   import IssueMenu from '@/components/IssueMenu'
   import 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css'
   import {Money} from 'v-money'
+  import axios from 'axios'
 
   export default {
     name: 'issue',
@@ -98,9 +99,10 @@
     },
     methods: {
       save_issue () {
-        this.issue.csrfmiddlewaretoken = this.$cookie.get('csrftoken')
-        jQuery.post(this.api_url + this.$route.params.id + '/lawyers-dep-mgmt?format=json', this.issue, (data) => {
-          jQuery.extend(this.issue, data)
+        axios.post(this.api_url + this.$route.params.id + '/lawyers-dep-mgmt?format=json', {
+          body: this.issue
+        }).then(response => {
+          this.update_form_data(response.data)
         })
       }
     }

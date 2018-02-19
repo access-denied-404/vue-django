@@ -211,9 +211,9 @@
                     <th class="h6 col-md-5">ФИО</th>
                     <th class="col-md-1">&nbsp;</th>
                   </tr>
-                  <tbody data-formset-body>
+                  <tbody >
 
-                  <tr v-for="item in issue.org_management_collegial">
+                  <tr v-for="(item, index) in issue.org_management_collegial">
                     <td class="h6">
                       <bs-input
                         :name="'org_management_collegial_ogrn_name'"
@@ -230,7 +230,7 @@
                       ></bs-input>
                     </td>
                     <td class="h6">
-                      <button type="button" class="btn btn-link btn-xs" data-formset-delete-button>
+                      <button type="button" class="btn btn-link btn-xs" @click="delete_management_collegial(index)">
                         <span class="glyphicon glyphicon-remove text-danger"></span>
                       </button>
                     </td>
@@ -238,7 +238,7 @@
                   </tbody>
                   <tr>
                     <td colspan="8" class="text-center">
-                      <button type="button" class="btn btn-primary" data-formset-add>
+                      <button type="button" class="btn btn-primary" @click="add_management_collegial">
                         Добавить коллегиальный орган
                       </button>
                     </td>
@@ -253,11 +253,10 @@
                     <th class="h6 col-md-5">ФИО</th>
                     <th class="col-md-1">&nbsp;</th>
                   </tr>
-                  <tbody data-formset-body>
-                  <tr v-for="item in issue.org_management_directors">
+                  <tbody >
+                  <tr v-for="(item, index) in issue.org_management_directors">
                     <td class="h6">
                       <bs-input
-                        :name="'org_management_collegial_ogrn_name'"
                         :label="''"
                         v-model="item.org_name"
                       ></bs-input>
@@ -265,13 +264,12 @@
                     </td>
                     <td class="h6">
                       <bs-input
-                        :name="'org_management_collegial_fio'"
                         :label="''"
                         v-model="item.fio"
                       ></bs-input>
                     </td>
                     <td class="h6">
-                      <button type="button" class="btn btn-link btn-xs" data-formset-delete-button>
+                      <button type="button" class="btn btn-link btn-xs" @click="delete_management_director(index)">
                         <span class="glyphicon glyphicon-remove text-danger"></span>
                       </button>
                     </td>
@@ -279,7 +277,7 @@
                   </tbody>
                   <tr>
                     <td colspan="8" class="text-center">
-                      <button type="button" class="btn btn-primary" data-formset-add>
+                      <button type="button" class="btn btn-primary" @click="add_management_director">
                         Добавить совет директоров
                       </button>
                     </td>
@@ -294,11 +292,10 @@
                     <th class="h6 col-md-5">ФИО</th>
                     <th class="col-md-1">&nbsp;</th>
                   </tr>
-                  <tbody data-formset-body>
-                  <tr v-for="item in issue.org_management_others">
+                  <tbody >
+                  <tr v-for="(item, index) in issue.org_management_others">
                     <td class="h6">
                       <bs-input
-                        :name="'org_management_collegial_ogrn_name'"
                         :label="''"
                         v-model="item.org_name"
                       ></bs-input>
@@ -306,13 +303,12 @@
                     </td>
                     <td class="h6">
                       <bs-input
-                        :name="'org_management_collegial_fio'"
                         :label="''"
                         v-model="item.fio"
                       ></bs-input>
                     </td>
                     <td class="h6">
-                      <button type="button" class="btn btn-link btn-xs" >
+                      <button type="button" class="btn btn-link btn-xs" @click="delete_management_other(index)">
                         <span class="glyphicon glyphicon-remove text-danger"></span>
                       </button>
                     </td>
@@ -320,7 +316,7 @@
                   </tbody>
                   <tr>
                     <td colspan="8" class="text-center">
-                      <button type="button" class="btn btn-primary" data-formset-add>
+                      <button type="button" class="btn btn-primary" @click="add_management_other">
                         Добавить иной орган управления
                       </button>
                     </td>
@@ -339,14 +335,12 @@
                 <div class="container-fluid">
                   <div class="row">
                     <table class="table">
-                      <tbody data-formset-body>
-                      <tr v-for="beneficiar in issue.org_beneficiary_owners" data-formset-form>
+                      <tbody >
+                      <tr v-for="(beneficiar, index) in issue.org_beneficiary_owners">
                         <td class="h6">
                           <div class="row">
                             <div class="col-md-6">
                               <b>ФИО</b>
-                              {{ beneficiar.id }}
-
                               <bs-input v-model="beneficiar.fio"></bs-input>
                             </div>
                             <div class="col-md-6">
@@ -372,7 +366,7 @@
                         <td>
                           <div class="row">
                             <div class="col-md-1">
-                              <button type="button" class="btn btn-link btn-xs" data-formset-delete-button>
+                              <button type="button" class="btn btn-link btn-xs" @click="delete_beneficiar(index)">
                                 <span class="glyphicon glyphicon-remove text-danger"></span>
                               </button>
                             </div>
@@ -382,7 +376,7 @@
                       </tbody>
                       <tr>
                         <td colspan="7" class="text-center">
-                          <button type="button" class="btn btn-primary tr-crt" data-formset-add>
+                          <button type="button" class="btn btn-primary tr-crt" @click="add_beneficiar">
                             Добавить бенефициарного владельца
                           </button>
                         </td>
@@ -409,19 +403,17 @@
                         <th class="h6 col-md-5"><b>БИК</b></th>
                         <th class="col-md-1">&nbsp;</th>
                       </tr>
-                      <tbody data-formset-body>
+                      <tbody >
 
-                      <tr v-for="bank in issue.org_bank_accounts">
+                      <tr v-for="(bank, index) in issue.org_bank_accounts">
                         <td class="h6">
-                          {{ bank.id }}
                           <bs-input v-model="bank.name"></bs-input>
                         </td>
                         <td class="h6">
                           <bs-input v-model="bank.bik"></bs-input>
                         </td>
                         <td class="h6">
-
-                          <button type="button" class="btn btn-link btn-xs" data-formset-delete-button>
+                          <button type="button" class="btn btn-link btn-xs" @click="delete_bank(index)">
                             <span class="glyphicon glyphicon-remove text-danger"></span>
                           </button>
                         </td>
@@ -430,7 +422,7 @@
                       </tbody>
                       <tr>
                         <td colspan="7" class="text-center">
-                          <button type="button" class="btn btn-primary" data-formset-add>
+                          <button type="button" class="btn btn-primary" v-on:click="add_bank">
                             Добавить кредитную организацию
                           </button>
                         </td>
@@ -459,11 +451,10 @@
                         <th class="h6 col-md-5"><b>Доля в УК</b></th>
                         <th class="col-md-1">&nbsp;</th>
                       </tr>
-                      <tbody data-formset-body>
+                      <tbody >
 
-                      <tr v-for="person in issue.issuer_founders_physical">
+                      <tr v-for="(person, index) in issue.issuer_founders_physical">
                         <td class="h6">
-                          {{ person.id }}
                           <bs-input v-model="person.fio"></bs-input>
                         </td>
                         <td class="h6">
@@ -471,7 +462,7 @@
                         </td>
                         <td class="h6">
 
-                          <button type="button" class="btn btn-link btn-xs" data-formset-delete-button>
+                          <button type="button" class="btn btn-link btn-xs" @click="delete_founder_physical(index)">
                             <span class="glyphicon glyphicon-remove text-danger"></span>
                           </button>
                         </td>
@@ -480,17 +471,15 @@
                       </tbody>
                       <tr>
                         <td colspan="8" class="text-center">
-                          <button type="button" class="btn btn-primary" data-formset-add>
+                          <button type="button" class="btn btn-primary" @click="add_founder_physical">
                             Добавить физическое лицо
                           </button>
                         </td>
                       </tr>
                     </table>
-
                   </div>
 
                   <div class="row formset">
-
                     <span class="h4">Юридические лица</span>
                     <table class="table">
                       <tr>
@@ -498,20 +487,16 @@
                         <th class="h6 col-md-5"><b>Доля в УК</b></th>
                         <th class="col-md-1">&nbsp;</th>
                       </tr>
-                      <tbody data-formset-body>
-
-                      <tr v-for="company in issue.issuer_founders_legal">
+                      <tbody>
+                      <tr v-for="(company, index) in issue.issuer_founders_legal">
                         <td class="h6">
-                          {{ company.id }}
                           <bs-input v-model="company.name"></bs-input>
-
                         </td>
                         <td class="h6">
                           <bs-input v-model="company.auth_capital_percentage"></bs-input>
-
                         </td>
                         <td class="h6">
-                          <button type="button" class="btn btn-link btn-xs" data-formset-delete-button>
+                          <button type="button" class="btn btn-link btn-xs" @click="delete_founder_legal(index)">
                             <span class="glyphicon glyphicon-remove text-danger"></span>
                           </button>
                         </td>
@@ -520,7 +505,7 @@
                       </tbody>
                       <tr>
                         <td colspan="7" class="text-center">
-                          <button type="button" class="btn btn-primary" data-formset-add>
+                          <button type="button" class="btn btn-primary" @click="add_founder_legal">
                             Добавить юридическое лицо
                           </button>
                         </td>
@@ -554,6 +539,7 @@
   import IssueMenu from '@/components/IssueMenu'
   import 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css'
   import {Money} from 'v-money'
+  import axios from 'axios'
 
   moment.locale = 'ru'
   let dateformat = 'DD.MM.YYYY'
@@ -603,27 +589,63 @@
       }
     },
     methods: {
-      update_form_data (data) {
-        data.csrfmiddlewaretoken = this.$cookie.get('csrftoken')
-        this.issue = data
-        this.issue.bg_start_date = moment(data.bg_start_date, dateformat)
-        this.issue.bg_end_date = moment(data.bg_end_date, dateformat)
-        this.issue.bg_commercial_contract_sign_date = moment(data.bg_commercial_contract_sign_date, dateformat)
-        this.issue.bg_commercial_contract_end_date = moment(data.bg_commercial_contract_end_date, dateformat)
-
-        this.finance_documents = jQuery.grep(data.propose_documents, function (n, i) {
-          return n.type === 2
-        })
-        this.legal_documents = jQuery.grep(data.propose_documents, function (n, i) {
-          return n.type === 1
-        })
-        this.other_documents = jQuery.grep(data.propose_documents, function (n, i) {
-          return n.type === 3
+      add_bank () {
+        this.issue.org_bank_accounts.push({id: null, name: '', bik: ''})
+      },
+      delete_bank (index) {
+        this.issue.org_bank_accounts.splice(index, 1)
+      },
+      add_beneficiar () {
+        this.issue.org_beneficiary_owners.push({
+          id: null,
+          fio: '',
+          inn_or_snils: '',
+          legal_address: '',
+          fact_address: '',
+          post_address: ''
         })
       },
+      delete_beneficiar (index) {
+        this.issue.org_beneficiary_owners.splice(index, 1)
+      },
+      add_founder_physical () {
+        this.issue.issuer_founders_physical.push({id: null, fio: '', auth_capital_percentage: ''})
+      },
+      delete_founder_physical (index) {
+        this.issue.issuer_founders_physical.splice(index, 1)
+      },
+      add_founder_legal () {
+        this.issue.issuer_founders_legal.push({id: null, name: '', auth_capital_percentage: ''})
+      },
+      delete_founder_legal (index) {
+        this.issue.issuer_founders_legal.splice(index, 1)
+      },
+      add_management_collegial () {
+        this.issue.org_management_collegial.push({id: null, org_name: '', fio: ''})
+      },
+      delete_management_collegial (index) {
+        this.issue.org_management_collegial.splice(index, 1)
+      },
+      add_management_director () {
+        this.issue.org_management_directors.push({id: null, org_name: '', fio: ''})
+      },
+      delete_management_director (index) {
+        this.issue.org_management_directors.splice(index, 1)
+      },
+      add_management_other () {
+        this.issue.org_management_others.push({id: null, org_name: '', fio: ''})
+      },
+      delete_management_other (index) {
+        this.issue.org_management_others.splice(index, 1)
+      },
+      update_form_data (data) {
+        this.issue = data
+      },
       save_issue () {
-        jQuery.ajax(this.api_url + this.$route.params.id, this.issue, (data) => {
-          this.update_form_data(data)
+        axios.post(this.api_url + this.$route.params.id, {
+          body: this.issue
+        }).then(response => {
+          this.update_form_data(response.data)
         })
       }
     }

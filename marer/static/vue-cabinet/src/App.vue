@@ -41,6 +41,8 @@
 
 <script>
   import jQuery from 'jquery'
+  import axios from 'axios'
+
   export default {
     name: 'app',
     data () {
@@ -49,6 +51,8 @@
       }
     },
     mounted: function () {
+      axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+      axios.defaults.xsrfCookieName = 'csrftoken'
       jQuery.getJSON('/rest/profile?format=json', (data, status, xhr) => {
         this.profile = data
       })

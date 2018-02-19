@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
+from rest_framework.utils import model_meta
 
 from marer import consts
 from marer.models import Issue, User, Document
@@ -68,6 +69,7 @@ class BGDocumentSerializer(ModelSerializer):
 
 
 class IssueOrgManagementCollegialSerializer(ModelSerializer):
+    id = serializers.IntegerField(required=False, allow_null=True)
 
     class Meta:
         model = IssueOrgManagementCollegial
@@ -75,6 +77,7 @@ class IssueOrgManagementCollegialSerializer(ModelSerializer):
 
 
 class IssueOrgManagementDirectorsSerializer(ModelSerializer):
+    id = serializers.IntegerField(required=False, allow_null=True)
 
     class Meta:
         model = IssueOrgManagementDirectors
@@ -82,6 +85,7 @@ class IssueOrgManagementDirectorsSerializer(ModelSerializer):
 
 
 class IssueOrgManagementOthersSerializer(ModelSerializer):
+    id = serializers.IntegerField(required=False, allow_null=True)
 
     class Meta:
         model = IssueOrgManagementOthers
@@ -89,13 +93,15 @@ class IssueOrgManagementOthersSerializer(ModelSerializer):
 
 
 class IssueOrgBeneficiaryOwnerSerializer(ModelSerializer):
+    id = serializers.IntegerField(required=False, allow_null=True)
 
     class Meta:
         model = IssueOrgBeneficiaryOwner
-        fields = ['id', 'fio', 'legal_address', 'fact_address', 'post_address', 'inn_or_snils', 'on_belong_to_pub_persons_info']
+        fields = ['id', 'fio', 'legal_address', 'fact_address', 'post_address', 'inn_or_snils']
 
 
 class IssueOrgBankAccountSerializer(ModelSerializer):
+    id = serializers.IntegerField(required=False, allow_null=True)
 
     class Meta:
         model = IssueOrgBankAccount
@@ -103,6 +109,7 @@ class IssueOrgBankAccountSerializer(ModelSerializer):
 
 
 class IssueBGProdFounderPhysicalSerializer(ModelSerializer):
+    id = serializers.IntegerField(required=False, allow_null=True)
 
     class Meta:
         model = IssueBGProdFounderPhysical
@@ -110,6 +117,7 @@ class IssueBGProdFounderPhysicalSerializer(ModelSerializer):
 
 
 class IssueBGProdFounderLegalSerializer(ModelSerializer):
+    id = serializers.IntegerField(required=False, allow_null=True)
 
     class Meta:
         model = IssueBGProdFounderLegal
@@ -117,6 +125,7 @@ class IssueBGProdFounderLegalSerializer(ModelSerializer):
 
 
 class DocumentSerializer(ModelSerializer):
+    id = serializers.IntegerField(required=False, allow_null=True)
 
     class Meta:
         model = Document
@@ -124,6 +133,7 @@ class DocumentSerializer(ModelSerializer):
 
 
 class IssueProposeDocumentSerializer(ModelSerializer):
+    id = serializers.IntegerField(required=False, allow_null=True)
     document = DocumentSerializer()
     sample = DocumentSerializer()
 
@@ -140,8 +150,8 @@ class IssueSerializer(ModelSerializer):
     org_bank_accounts = IssueOrgBankAccountSerializer(many=True)
     issuer_founders_legal = IssueBGProdFounderLegalSerializer(many=True)
     issuer_founders_physical = IssueBGProdFounderPhysicalSerializer(many=True)
-    application_doc = DocumentSerializer()
-    propose_documents = IssueProposeDocumentSerializer(many=True)
+    application_doc = DocumentSerializer(read_only=True)
+    propose_documents = IssueProposeDocumentSerializer(many=True, read_only=True)
 
     bg_contract_doc = DocumentSerializer()
     bg_doc = DocumentSerializer()
@@ -150,9 +160,35 @@ class IssueSerializer(ModelSerializer):
     contract_of_guarantee = ContractOfGuaranteeSerializer()
     bank_commission = serializers.CharField(max_length=512)
 
+    def update(self, instance, validated_data):
+        related_fields = [
+            'org_management_collegial', 'org_management_directors', 'org_management_others',
+            'org_beneficiary_owners', 'org_bank_accounts', 'issuer_founders_legal',
+            'issuer_founders_physical'
+        ]
+        for field in related_fields:
+            ids = []
+            for data in validated_data[field]:
+                id = data.pop('id')
+                if id:
+                    getattr(instance, field).filter(id=id).update(**data)
+                    ids.append(id)
+                else:
+                    obj = getattr(instance, field).create(**data)
+                    ids.append(obj.id)
+            getattr(instance, field).exclude(id__in=ids).delete()
+        info = model_meta.get_field_info(instance)
+        for attr, value in validated_data.items():
+            if not (attr in info.relations and info.relations[attr].to_many):
+                setattr(instance, attr, value)
+        instance.save()
+        return instance
+
     class Meta:
         model = Issue
-        exclude = ('issuer', 'user',)
+        exclude = ('issuer', 'user', 'product')
+        read_only_fields = ('created_at', 'updated_at')
+
 
 
 class IssueSecDepSerializer(ModelSerializer):
