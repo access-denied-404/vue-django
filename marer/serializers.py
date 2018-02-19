@@ -46,13 +46,6 @@ class IssueListSerializer(ModelSerializer):
         fields = ('id', 'product', 'bg_sum', 'issuer_short_name', 'issuer_inn', 'status')
 
 
-class IssueBankCommission(ModelSerializer):
-
-    class Meta:
-        model = Issue
-        fields = ['bank_commission']
-
-
 class ContractOfGuaranteeSerializer(ModelSerializer):
 
     class Meta:
@@ -155,15 +148,11 @@ class IssueSerializer(ModelSerializer):
     transfer_acceptance_act = DocumentSerializer()
     payment_of_fee = DocumentSerializer()
     contract_of_guarantee = ContractOfGuaranteeSerializer()
+    bank_commission = serializers.CharField(max_length=512)
 
     class Meta:
         model = Issue
-        # exclude = ('issuer', 'user',)
-        fields = ['org_management_collegial', 'org_management_directors',
-                  'org_management_others', 'org_beneficiary_owners', 'org_bank_accounts',
-                  'issuer_founders_legal', 'issuer_founders_physical', 'application_doc',
-                  'propose_documents', 'bg_contract_doc', 'bg_doc', 'transfer_acceptance_act',
-                  'payment_of_fee', 'contract_of_guarantee', 'bank_commission']
+        exclude = ('issuer', 'user',)
 
 
 class IssueSecDepSerializer(ModelSerializer):
