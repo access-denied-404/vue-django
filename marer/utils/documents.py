@@ -14,13 +14,13 @@ from openpyxl.writer.excel import save_virtual_workbook
 from lxml import etree
 
 from marer import consts
-from marer.models import Issue
+from marer.models import Issue, User
 
 
-def fill_xlsx_file_with_issue_data(path: str, issue: Issue) -> ContentFile:
+def fill_xlsx_file_with_issue_data(path: str, issue: Issue, user: User = None) -> ContentFile:
     wb = load_workbook(path, keep_vba=True, guess_types=False)
     self_data = issue.__dict__
-    self_data['user'] = issue.user
+    self_data['user'] = user
     self_data['issue'] = issue
     self_data['date_now'] = timezone.localdate(timezone.now(), timezone.get_current_timezone()).strftime('%d.%m.%Y')
     for ws_name in wb.sheetnames:
@@ -83,9 +83,9 @@ def _fill_docx_paragraph_with_dict(paragraph: Paragraph, data: dict) -> None:
                 run.text = new_text
 
 
-def fill_docx_file_with_issue_data(path: str, issue: Issue) -> ContentFile:
+def fill_docx_file_with_issue_data(path: str, issue: Issue, user: User = None) -> ContentFile:
     self_data = issue.__dict__
-    self_data['user'] = issue.user
+    self_data['user'] = user
     self_data['issue'] = issue
     self_data['date_now'] = timezone.localdate(timezone.now(), timezone.get_current_timezone()).strftime('%d.%m.%Y')
 

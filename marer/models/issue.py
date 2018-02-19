@@ -1694,7 +1694,7 @@ class Issue(models.Model):
 
         return categories.get(self.scoring_credit_rating, 7.25)
 
-    def fill_doc_ops_mgmt_conclusion(self, commit=True):
+    def fill_doc_ops_mgmt_conclusion(self, commit=True, **kwargs):
 
         ve = ValidationError(None)
         ve.error_list = []
@@ -1721,7 +1721,7 @@ class Issue(models.Model):
         )
 
         from marer.utils.documents import fill_docx_file_with_issue_data
-        doc_ops_mgmt_conclusion_file = fill_docx_file_with_issue_data(template_path, self)
+        doc_ops_mgmt_conclusion_file = fill_docx_file_with_issue_data(template_path, self, **kwargs)
         doc_ops_mgmt_conclusion_file.name = 'doc_ops_mgmt_conclusion.docx'
         domc_doc = Document()
         domc_doc.file = doc_ops_mgmt_conclusion_file
@@ -1731,7 +1731,7 @@ class Issue(models.Model):
             self.save()
         doc_ops_mgmt_conclusion_file.close()
 
-    def fill_lawyers_dep_conclusion(self, commit=True):
+    def fill_lawyers_dep_conclusion(self, commit=True, **kwargs):
 
         template_path = os.path.join(
             settings.BASE_DIR,
@@ -1742,7 +1742,7 @@ class Issue(models.Model):
         )
 
         from marer.utils.documents import fill_docx_file_with_issue_data
-        lawyers_conclusion_file = fill_docx_file_with_issue_data(template_path, self)
+        lawyers_conclusion_file = fill_docx_file_with_issue_data(template_path, self, **kwargs)
         lawyers_conclusion_file.name = 'lawyers_conclusion.docx'
         lawyers_conclusion_doc = Document()
         lawyers_conclusion_doc.file = lawyers_conclusion_file
@@ -1752,7 +1752,7 @@ class Issue(models.Model):
             self.save()
         lawyers_conclusion_file.close()
 
-    def fill_sec_dep_conclusion_doc(self, commit=True):
+    def fill_sec_dep_conclusion_doc(self, commit=True, **kwargs):
 
         ve = ValidationError(None)
         ve.error_list = []
@@ -1784,7 +1784,7 @@ class Issue(models.Model):
         )
 
         from marer.utils.documents import fill_docx_file_with_issue_data
-        sec_dep_conclusion_file = fill_docx_file_with_issue_data(template_path, self)
+        sec_dep_conclusion_file = fill_docx_file_with_issue_data(template_path, self, **kwargs)
         sec_dep_conclusion_file.name = 'sec_dep_conclusion.docx'
         new_doc = Document()
         new_doc.file = sec_dep_conclusion_file

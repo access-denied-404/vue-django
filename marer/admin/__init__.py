@@ -263,7 +263,7 @@ class IssueAdmin(ModelAdmin):
             return self._get_obj_does_not_exist_redirect(request, Issue._meta, issue_id)
 
         try:
-            issue.fill_doc_ops_mgmt_conclusion()
+            issue.fill_doc_ops_mgmt_conclusion(user=request.user)
         except ValidationError as ve:
             if len(ve.error_list) > 0:
                 for err in ve.error_list:
@@ -292,7 +292,7 @@ class IssueAdmin(ModelAdmin):
             return self._get_obj_does_not_exist_redirect(request, Issue._meta, issue_id)
 
         try:
-            issue.fill_sec_dep_conclusion_doc()
+            issue.fill_sec_dep_conclusion_doc(user=request.user)
         except ValidationError as ve:
             if len(ve.error_list) > 0:
                 for err in ve.error_list:
@@ -321,7 +321,7 @@ class IssueAdmin(ModelAdmin):
             return self._get_obj_does_not_exist_redirect(request, Issue._meta, issue_id)
 
         try:
-            issue.fill_lawyers_dep_conclusion()
+            issue.fill_lawyers_dep_conclusion(user=request.user)
         except ValidationError as ve:
             if len(ve.error_list) > 0:
                 for err in ve.error_list:
