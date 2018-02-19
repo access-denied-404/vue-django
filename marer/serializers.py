@@ -43,7 +43,14 @@ class IssueListSerializer(ModelSerializer):
 
     class Meta:
         model = Issue
-        fields = ('id', 'product', 'bg_sum', 'issuer_short_name', 'issuer_inn', 'status',)
+        fields = ('id', 'product', 'bg_sum', 'issuer_short_name', 'issuer_inn', 'status')
+
+
+class IssueBankCommission(ModelSerializer):
+
+    class Meta:
+        model = Issue
+        fields = ['bank_commission']
 
 
 class ContractOfGuaranteeSerializer(ModelSerializer):
@@ -123,13 +130,6 @@ class DocumentSerializer(ModelSerializer):
         fields = ['id', 'file', 'sign', 'sign_state']
 
 
-class IssueCommissionSerializer(ModelSerializer):
-
-    class Meta:
-        model = Issue
-        fields = ['bank_commission']
-
-
 class IssueProposeDocumentSerializer(ModelSerializer):
     document = DocumentSerializer()
     sample = DocumentSerializer()
@@ -149,7 +149,6 @@ class IssueSerializer(ModelSerializer):
     issuer_founders_physical = IssueBGProdFounderPhysicalSerializer(many=True)
     application_doc = DocumentSerializer()
     propose_documents = IssueProposeDocumentSerializer(many=True)
-    bank_commission = IssueCommissionSerializer()
 
     bg_contract_doc = DocumentSerializer()
     bg_doc = DocumentSerializer()
@@ -159,7 +158,12 @@ class IssueSerializer(ModelSerializer):
 
     class Meta:
         model = Issue
-        exclude = ('issuer', 'user',)
+        # exclude = ('issuer', 'user',)
+        fields = ['org_management_collegial', 'org_management_directors',
+                  'org_management_others', 'org_beneficiary_owners', 'org_bank_accounts',
+                  'issuer_founders_legal', 'issuer_founders_physical', 'application_doc',
+                  'propose_documents', 'bg_contract_doc', 'bg_doc', 'transfer_acceptance_act',
+                  'payment_of_fee', 'contract_of_guarantee', 'bank_commission']
 
 
 class IssueSecDepSerializer(ModelSerializer):
