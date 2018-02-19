@@ -789,7 +789,7 @@ class Issue(models.Model):
     @cached_property
     def agent_commission_passed(self):
         if self.agent_comission:
-            if int(self.agent_comission) > int(0.7 * self.auto_bank_commission) and self.agent_effective_rate > 0.27:
+            if int(self.agent_comission) > int(0.7 * float(self.auto_bank_commission)) and self.agent_effective_rate > 0.27:
                 return True
             else:
                 return False
