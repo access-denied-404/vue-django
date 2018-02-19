@@ -8,6 +8,7 @@
     </div>
     <div class="row">
       <issue-menu :id="this.issue.id"></issue-menu>
+
       <div class="col-md-9">
         <div class="well well-sm dang text-center">
           <strong>
@@ -17,6 +18,15 @@
           <a class="btn btn-link btn-xs" :href="'http://sgbmarertest.ru/cabinet/requests/' + issue.id + '/rsr'" target="_blank">
             <span class="glyphicon glyphicon glyphicon-new-window"></span>
           </a>
+        </div>
+      </div>
+
+        <div class="row">
+          <div class="col-md-12">
+            <div class="h1 text-center">
+              Комиссия банка: {{issue.bank_commission}}
+            </div>
+          </div>
         </div>
         <div class="row">
           <div class="col-md-12">
