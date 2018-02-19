@@ -13,7 +13,7 @@
           <div class="panel-heading">Сведения об истребуемой гарантии</div>
           <div class="panel-body">
             <div class="row">
-              <div class="col-md-4" v-bind:class="{'has-error': !sum_is_appropriate}">
+              <div class="col-md-4">
                 <div class="form-group">
                   <label for="id_bg_sum">Требуемая сумма (не более 18 млн.)</label>
                   <money type="text" id="id_bg_sum" name="bg_sum"
@@ -26,7 +26,7 @@
                   <date-time-picker
                     :name="'bg_start_date'"
                     v-model="issue.bg_start_date"
-                    :config="{'format':'L','locale':'ru'}"
+                    :config="datetime_config"
                     required
                   ></date-time-picker>
                 </div>
@@ -37,7 +37,7 @@
                   <date-time-picker
                     :name="'bg_end_date'"
                     v-model="issue.bg_end_date"
-                    :config="{'format':'L','locale':'ru'}"
+                    :config="datetime_config"
                     required
                   ></date-time-picker>
                 </div>
@@ -49,7 +49,6 @@
                   label="Срок БГ, месяцев (не более 30)"
                   readonly
                   required
-                  v-bind:class="{'has-error': !date_range_is_appropriate}"
                 ></bs-input>
               </div>
             </div>
@@ -149,21 +148,23 @@
               </div>
               <div class="row">
                 <div class="col-md-3">
+                  <label>Дата регистрации компании</label>
                   <div class="form-group">
-                    <bs-input
+                    <date-time-picker
                       :name="'issuer_registration_date'"
-                      :label="'Дата регистрации компании'"
                       v-model="issue.issuer_registration_date"
-                    ></bs-input>
+                      :config="datetime_config"
+                    ></date-time-picker>
                   </div>
                 </div>
                 <div class="col-md-3">
                   <div class="form-group">
-                    <bs-input
+                    <label>Дата постановки на учет в ИФНС</label>
+                    <date-time-picker
                       :name="'issuer_ifns_reg_date'"
-                      :label="'Дата постановки на учет в ИФНС'"
                       v-model="issue.issuer_ifns_reg_date"
-                    ></bs-input>
+                      :config="datetime_config"
+                    ></date-time-picker>
                   </div>
                 </div>
                 <div class="col-md-6">
@@ -271,7 +272,11 @@
                   </div>
                 </div>
                 <div class="col-md-3"><label>Дата публикации</label>
-                  <date-time-picker :name="'tender_publish_date'" v-model="issue.tender_publish_date" :config="{'format':'L','locale':'ru'}"></date-time-picker>
+                  <date-time-picker
+                    :name="'tender_publish_date'"
+                    v-model="issue.tender_publish_date"
+                    :config="datetime_config">
+                  </date-time-picker>
                 </div>
                 <div class="col-md-4">
                   <label>Начальная цена контракта</label>
@@ -339,10 +344,12 @@
   import IssueMenu from '@/components/IssueMenu'
   import 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css'
   import {Money} from 'v-money'
+  import axios from 'axios'
 
   moment.locale = 'ru'
-  let dateformat = 'DD.MM.YYYY'
 
+  let dateformat = 'DD.MM.YYYY'
+  let fromDatetime = 'YYYY-MM-DD'
   export default {
     name: 'issue',
     components: {
@@ -359,7 +366,8 @@
     data () {
       return {
         api_url: window.debug ? 'http://localhost:8000/rest/issue/' : '/rest/issue/',
-        issue: {}
+        issue: {},
+        datetime_config: {'format': dateformat, 'locale': 'ru'}
       }
     },
     mounted: function () {
@@ -372,7 +380,7 @@
         get () {
           if (this.issue.bg_end_date) {
             let val
-            let start = moment(this.issue.bg_start_date, dateformat)
+            let start = moment(this.issue.bg_start_date, fromDatetime)
             let end = this.issue.bg_end_date
             val = 1 + (end.year() - start.year()) * 12 + end.month() - start.month()
             if (isNaN(val)) {
@@ -388,27 +396,43 @@
       }
     },
     methods: {
+      from_server (dateField) {
+        if (this.issue[dateField]) {
+          this.$set(this.issue, dateField, moment(this.issue[dateField], fromDatetime))
+        } else {
+          this.$set(this.issue, dateField, null)
+        }
+      },
+      to_server (dateField) {
+        if (this.issue[dateField]) {
+          this.$set(this.issue, dateField, moment(this.issue[dateField], dateformat).format(fromDatetime))
+        } else {
+          this.$set(this.issue, dateField, null)
+        }
+      },
       update_form_data (data) {
-        data.csrfmiddlewaretoken = this.$cookie.get('csrftoken')
         this.issue = data
-        this.issue.bg_start_date = moment(data.bg_start_date, dateformat)
-        this.issue.bg_end_date = moment(data.bg_end_date, dateformat)
-        this.issue.bg_commercial_contract_sign_date = moment(data.bg_commercial_contract_sign_date, dateformat)
-        this.issue.bg_commercial_contract_end_date = moment(data.bg_commercial_contract_end_date, dateformat)
-
-        this.finance_documents = jQuery.grep(data.propose_documents, function (n, i) {
-          return n.type === 2
-        })
-        this.legal_documents = jQuery.grep(data.propose_documents, function (n, i) {
-          return n.type === 1
-        })
-        this.other_documents = jQuery.grep(data.propose_documents, function (n, i) {
-          return n.type === 3
-        })
+        this.from_server('bg_start_date')
+        this.from_server('bg_end_date')
+        this.from_server('bg_commercial_contract_sign_date')
+        this.from_server('bg_commercial_contract_end_date')
+        this.from_server('issuer_registration_date')
+        this.from_server('issuer_ifns_reg_date')
+        this.from_server('tender_publish_date')
       },
       save_issue () {
-        jQuery.ajax(this.api_url + this.$route.params.id, this.issue, (data) => {
-          this.update_form_data(data)
+        this.to_server('bg_start_date')
+        this.to_server('bg_end_date')
+        this.to_server('bg_commercial_contract_sign_date')
+        this.to_server('bg_commercial_contract_end_date')
+        this.to_server('issuer_registration_date')
+        this.to_server('issuer_ifns_reg_date')
+        this.to_server('tender_publish_date')
+
+        axios.post(this.api_url + this.$route.params.id, {
+          body: this.issue
+        }).then(response => {
+          this.update_form_data(response.data)
         })
       }
     }

@@ -173,6 +173,7 @@
   import IssueMenu from '@/components/IssueMenu'
   import 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css'
   import {Money} from 'v-money'
+  import axios from 'axios'
 
   moment.locale = 'ru'
   let dateformat = 'DD.MM.YYYY'
@@ -223,7 +224,6 @@
     },
     methods: {
       update_form_data (data) {
-        data.csrfmiddlewaretoken = this.$cookie.get('csrftoken')
         this.issue = data
         this.issue.bg_start_date = moment(data.bg_start_date, dateformat)
         this.issue.bg_end_date = moment(data.bg_end_date, dateformat)
@@ -241,8 +241,10 @@
         })
       },
       save_issue () {
-        jQuery.ajax(this.api_url + this.$route.params.id, this.issue, (data) => {
-          this.update_form_data(data)
+        axios.post(this.api_url + this.$route.params.id, {
+          body: this.issue
+        }).then(response => {
+          this.update_form_data(response.data)
         })
       }
     }

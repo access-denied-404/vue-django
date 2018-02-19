@@ -195,7 +195,7 @@ class IssueBaseAPIView(APIView):
 
     def post(self, request, iid):
         issue = Issue.objects.get(id=iid)
-        ser = self.serializer(issue, data=request.data)
+        ser = self.serializer(issue, data=request.data['body'])
         if ser.is_valid():
             ser.save()
             return Response(ser.data)
