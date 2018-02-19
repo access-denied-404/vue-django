@@ -24,7 +24,7 @@
         <div class="row">
           <div class="col-md-12">
             <div class="h1 text-center">
-              Комиссия банка: {{issue.bank_commission}}
+              Комиссия банка: {{issue.bank_commission}} руб
             </div>
           </div>
         </div>
