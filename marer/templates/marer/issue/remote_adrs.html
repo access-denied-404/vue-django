@@ -8,19 +8,18 @@
                     <div class="h3">Документы</div>
                     <tbody>
                     <tr>
-                        <td>
-                            <a href="{{ issue.bg_contract_doc.file.url }}">Договор</a>
-                        </td>
-                    </tr>
-                    <tr>
+                        {% if issue.bg_doc %}
                         <td>
                             <a href="{{ issue.bg_doc.file.url }}">Проект</a>
                         </td>
+                        {% endif %}
                     </tr>
                     <tr>
+                        {% if issue.transfer_acceptance_act %}
                         <td>
                             <a href="{{ issue.transfer_acceptance_act.file.url }}">Акт</a>
                         </td>
+                        {% endif %}
                     </tr>
                     <tr>
                         <td>

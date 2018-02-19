@@ -8,7 +8,18 @@
     </div>
     <div class="row">
       <issue-menu :id="this.issue.id"></issue-menu>
+
       <div class="col-md-9">
+        <div class="well well-sm text-center">
+          Ссылка для подписания заявления клиентом:
+          <strong>
+          http://sgbmarertest.ru/cabinet/requests/{{issue.id}}/rsd
+          </strong>
+          <a class="btn btn-link btn-xs" :href="'http://sgbmarertest.ru/cabinet/requests/' + issue.id + '/rsd'" target="_blank">
+            <span class="glyphicon glyphicon glyphicon-new-window"></span>
+          </a>
+        </div>
+
         <div class="row">
           <div class="col-md-12">
             <div class="panel panel-info">
