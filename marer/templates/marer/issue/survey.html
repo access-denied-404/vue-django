@@ -26,10 +26,10 @@
                         {% endif %}
                     </div>
                     <div class="h6">
-                        {% if not issue.agent_commission_passed and issue.agent_comission %}
-                            <div>Вы предложили слишком маленькую комиссию</div>
-                        {% endif %}
                         {{ form_org_common.agent_comission }}
+                        {% if not issue.agent_commission_passed and issue.agent_comission %}
+                            <div class="text-danger text-center">Вы предложили слишком маленькую комиссию</div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
