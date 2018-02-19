@@ -773,6 +773,9 @@ class BankGuaranteeProduct(FinanceProduct):
                 'is_issuer_has_bad_credit_history',
                 'is_issuer_has_blocked_bank_account',),
 
+                ('total_credit_pay_term_expiration_events',
+                'total_credit_pay_term_overdue_days',),
+
                 'total_bank_liabilities_vol',
             ))),
 

@@ -309,6 +309,9 @@ class Issue(models.Model):
         blank=True, null=False, default='')
     final_documents_operations_management_conclusion_override = models.NullBooleanField('Принудительное решение УРДО в спорных ситуациях', blank=True, null=True)
 
+    total_credit_pay_term_expiration_events = models.IntegerField('Количество случаев просрочки', blank=True, null=True)
+    total_credit_pay_term_overdue_days = models.IntegerField('Совокупное количество дней просрочки', blank=True, null=True)
+
     @property
     def humanized_is_issuer_has_blocked_bank_account(self):
         if self.is_issuer_has_blocked_bank_account is True:
@@ -904,7 +907,25 @@ class Issue(models.Model):
 
     @property
     def scoring_credit_history(self):
-        return 3
+        if self.bg_sum < 1500000:
+            return 3
+
+        if self.total_credit_pay_term_expiration_events == 0 and self.total_credit_pay_term_overdue_days == 0:
+            return 1
+        issuer_has_no_credit_history = self.total_credit_pay_term_expiration_events is None and self.total_credit_pay_term_overdue_days is None
+        if issuer_has_no_credit_history or (self.total_credit_pay_term_expiration_events == 1 and self.total_credit_pay_term_overdue_days <= 5):
+            return 2
+        if self.total_credit_pay_term_expiration_events <= 2:
+            return 3
+        return 4
+
+    @property
+    def humanized_total_credit_pay_term_expiration_events(self):
+        return self.total_credit_pay_term_expiration_events or '—'
+
+    @property
+    def humanized_total_credit_pay_term_overdue_days(self):
+        return self.total_credit_pay_term_overdue_days or '—'
 
     @property
     def scoring_rating_sum(self):
