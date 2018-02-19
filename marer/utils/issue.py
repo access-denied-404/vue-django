@@ -30,7 +30,7 @@ def calculate_effective_rate(bg_sum, commission, bg_start_date, bg_end_date):
     """
     AN10 = get_date_diff_in_days(bg_end_date, bg_start_date)
 
-    Y16 = commission * 100 / bg_sum
+    Y16 = int(commission) * 100 / int(bg_sum)
 
     return Y16 / AN10 * 365
 
