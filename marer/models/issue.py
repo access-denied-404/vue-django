@@ -26,7 +26,7 @@ from marer.products import get_urgency_hours, get_urgency_days, get_finance_prod
 from marer.utils import CustomJSONEncoder, kontur
 from marer.utils.issue import calculate_bank_commission, sum2str, generate_bg_number, issue_term_in_months, calculate_effective_rate
 from marer.utils.morph import MorpherApi
-from marer.utils.other import OKOPF_CATALOG
+from marer.utils.other import OKOPF_CATALOG, get_tender_info
 
 __all__ = [
     'Issue', 'IssueDocument', 'IssueClarification', 'IssueMessagesProxy',
@@ -809,11 +809,36 @@ class Issue(models.Model):
             return 'БЕЗ НОМЕРА'
 
     @property
+    def humanized_custom_tender_contract_sum(self):
+        if self.tender_final_cost:
+            return '{} рублей'.format(self.tender_final_cost)
+        else:
+            return 'тендер не разыгран'
+
+    @property
     def tender_cost_reduction(self):
         if self.tender_start_cost and self.tender_final_cost:
             return round((1 - self.tender_final_cost / self.tender_start_cost) * 100, 0)
+
+    @property
+    def humanized_custom_tender_cost_reduction(self):
+        if self.tender_cost_reduction:
+            return '{}%'.format(self.tender_cost_reduction)
         else:
             return '—'
+
+    @property
+    def humanized_custom_if_need_additionally_contract_guarantee_issue_with_cost(self):
+        if self.bg_type == consts.BG_TYPE_APPLICATION_ENSURE and self.tender_gos_number:
+            tender_info = get_tender_info(self.tender_gos_number)
+            if tender_info and type(tender_info) == dict:
+                contract_ensure_cost = tender_info['contract_execution_ensure_cost']
+                if contract_ensure_cost and contract_ensure_cost > 0:
+                    template_text = 'Одновременно принимается решение о выдачи гарантии ' \
+                                    'исполнения обязательств по контракту:' \
+                                    '\nСумма гарантии: {} рублей'
+                    return template_text.format(contract_ensure_cost)
+        return ' '
 
     @property
     def scoring_issuer_profitability(self):
