@@ -284,6 +284,19 @@ class IssueRemoteAdditionalDocumentsRequests(TemplateView, ContextMixin, View):
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+
+        if not self.is_authenticated_by_cert():
+            login_form = LoginSignForm(request.POST)
+            if login_form.is_valid():
+                request.COOKIES['cert_thumb'] = login_form.cleaned_data['cert']
+                request.COOKIES['cert_sign'] = login_form.cleaned_data['signature']
+                request.session['cert_thumb'] = login_form.cleaned_data['cert']
+                request.session['cert_sign'] = login_form.cleaned_data['signature']
+
+                url = reverse('issue_remote_add_docs_requests', args=[self.get_issue().id])
+                response = HttpResponseRedirect(url)
+                return response
+
         comment_form = IFOPCMessageForm(request.POST, request.FILES)
 
         if comment_form.is_valid():
