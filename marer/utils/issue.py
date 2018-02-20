@@ -143,7 +143,8 @@ def sum2str(value):
         rub = float(value)
         kop = 0
 
-    output = []
+    digits = []
+    currency = []
 
     def split_by_groups(value: str, count: int):
         extended_length = len(value) * 1.0 / count
@@ -168,18 +169,24 @@ def sum2str(value):
             unit_id = len(groups) - id
             current_unit = unit[unit_id]
             gender = current_unit[3]
-            output.append(hundred[i1])
+            digits.append(hundred[i1])
             if i2 > 1:
-                text = tens[i2] + ' ' + ten[gender][i3]  # 20-99
-                output.append(text)
+                if i3 != 0:
+                    text = tens[i2] + ' ' + ten[gender][i3]
+                else:
+                    text = tens[i2] # 20-99
+                digits.append(text)
             else:
                 if i2 > 0:
                     text = a20[i3]
                 else:
                     text = ten[gender][i3]  # 10-19 | 1-9
-                output.append(text)
+                digits.append(text)
             if unit_id > 0:
-                output.append(morph(group, *current_unit[:3]))
-        output.append(str(kop) if int(kop) > 0 else zero)
-        output.append(morph(kop, *unit[0][:3]))
-    return ' '.join(output)
+                if id == len(groups) - 1:
+                    currency.append(morph(group, *current_unit[:3]))
+                else:
+                    digits.append(morph(group, *current_unit[:3]))
+        currency.append(str(kop) if int(kop) > 0 else zero)
+        currency.append(morph(kop, *unit[0][:3]))
+    return '(' + ' '.join(digits).strip() + ') ' + ' '.join(currency).strip()
