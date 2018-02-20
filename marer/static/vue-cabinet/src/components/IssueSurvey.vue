@@ -15,7 +15,7 @@
             http://sgbmarertest.ru/cabinet/requests/{{issue.id}}/rsr
             </strong>
             <a class="btn btn-link btn-xs" :href="'http://sgbmarertest.ru/cabinet/requests/' + issue.id + '/rsr'" target="_blank">
-              <span class="glyphicon glyphicon glyphicon-new-window"></span>
+              <span class="glyphicon glyphicon-new-window"></span>
             </a>
         </div>
           <div class="h1 text-center">
