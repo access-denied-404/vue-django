@@ -16,7 +16,7 @@
           http://sgbmarertest.ru/cabinet/requests/{{issue.id}}/rsd
           </strong>
           <a class="btn btn-link btn-xs" :href="'http://sgbmarertest.ru/cabinet/requests/' + issue.id + '/rsd'" target="_blank">
-            <span class="glyphicon glyphicon glyphicon-new-window"></span>
+            <span class="glyphicon glyphicon-new-window"></span>
           </a>
         </div>
 
