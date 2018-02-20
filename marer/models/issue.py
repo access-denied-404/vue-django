@@ -312,6 +312,53 @@ class Issue(models.Model):
     total_credit_pay_term_expiration_events = models.IntegerField('Количество случаев просрочки', blank=True, null=True)
     total_credit_pay_term_overdue_days = models.IntegerField('Совокупное количество дней просрочки', blank=True, null=True)
 
+    validity_of_shareholders_participants_issuer_head_passports = models.NullBooleanField('Действительность паспортов акционеров/участников, руководителя Принципала', blank=True, null=True)
+
+    @property
+    def humanized_validity_of_shareholders_participants_issuer_head_passports(self):
+        return 'Да' if self.validity_of_shareholders_participants_issuer_head_passports else 'Нет'
+
+    issuer_fact_address_check = models.NullBooleanField(
+        'Проверка адреса, заявленного Принципалом как фактического',
+        help_text='Проверка документов, подтверждающих основание нахождения по адресу, заявленному '
+             'как фактический, проверка компании арендодателя (как действующего  юридического '
+             'лица, так и индивидуального предпринимателя) на наличие государственной '
+             'регистрации в налоговых органах',
+        blank=True, null=True
+    )
+
+    @property
+    def humanized_issuer_fact_address_check(self):
+        return 'Да' if self.issuer_fact_address_check else 'Нет'
+
+    issuer_shareholders_participants_or_self_court_cases_info = models.TextField(verbose_name='Данные о Принципале, его участниках в базе данных исполнительных производств', blank=True, null=False, default='')
+    issuer_courts_cases_as_defendant_and_its_acts_info = models.TextField(verbose_name='Информация о судебных разбирательствах Принципала (в качестве ответчика), о находящихся в суде делах и принятых по ним судебным актам', blank=True, null=False, default='')
+
+    is_absent_info_about_court_cases_on_ifns_or_bankrupts_or_contracts_as_defendant = models.NullBooleanField('Отсутствие наличия информации о судебных разбирательствах по искам, ответчиком по которым является Принципал: по судебным разбирательствам с ИФНС, по заявлениям о признании Принципала несостоятельным (банкротом), по искам неисполнения государственных контрактов', blank=True, null=True)
+
+    @property
+    def humanized_is_absent_info_about_court_cases_on_ifns_or_bankrupts_or_contracts_as_defendant(self):
+        return 'Да' if self.is_absent_info_about_court_cases_on_ifns_or_bankrupts_or_contracts_as_defendant else 'Нет'
+
+    is_absent_info_about_prev_convictions_on_issuer_head_or_shareholders_or_participants_or_guarantor = models.NullBooleanField('Отсутствие судимостей в отношении физических лиц (генеральный директор, участники юридического лица (c наибольшей долей участия, Поручитель)', blank=True, null=True)
+
+    @property
+    def humanized_is_absent_info_about_prev_convictions_on_issuer_head_or_shareholders_or_participants_or_guarantor(self):
+        return 'Да' if self.is_absent_info_about_prev_convictions_on_issuer_head_or_shareholders_or_participants_or_guarantor else 'Нет'
+
+    has_issuer_bad_info_on_credit_history = models.NullBooleanField('Наличие негативной информации по кредитной истории', blank=True, null=True)
+    has_issuer_bad_info_on_bank_abs = models.NullBooleanField('Наличие негативной информации по АБС Банка', blank=True, null=True)
+    has_issuer_bad_info_on_kontur_and_spark = models.NullBooleanField('Наличие негативной информации в информационной системе "Контур-фокус" / "Спарк"', blank=True, null=True)
+    has_issuer_bad_info_on_fns_site = models.NullBooleanField('Наличие негативной информации на сайте ФНС России', blank=True, null=True)
+    has_issuer_bad_info_on_ros_fin_monitoring = models.NullBooleanField('Наличие негативной информации на сайте Росфинмониторинга', blank=True, null=True)
+    has_issuer_bad_info_on_arbitr_ru_site = models.NullBooleanField('Наличие негативной информации на сайте Арбитражного суда РФ', blank=True, null=True)
+    has_issuer_bad_info_on_sudrf_ru = models.NullBooleanField('Наличие негативной информации на сайтах судов общей юрисдикции (мировых судов)', blank=True, null=True)
+    has_issuer_bad_info_on_fssp = models.NullBooleanField('Наличие негативной информации на сайте ФССП  России', blank=True, null=True)
+    has_issuer_bad_info_on_public_sources_sites = models.NullBooleanField('Получение информации о юридическом лице из открытых интернет источников', blank=True, null=True)
+    has_issuer_bad_info_on_persons_have_impact_on_issue_activity = models.NullBooleanField('Наличие негативной информации по лицам, имеющим влияние на деятельность юридического лица ', blank=True, null=True)
+    has_issuer_bad_info_on_guarantors = models.NullBooleanField('Наличие негативной информации по поручителям', blank=True, null=True)
+    has_issuer_bad_info_on_security_db = models.NullBooleanField('Наличие негативной информации в информационной базе ДБ Банка', blank=True, null=True)
+
     @property
     def humanized_is_issuer_has_blocked_bank_account(self):
         if self.is_issuer_has_blocked_bank_account is True:
@@ -326,6 +373,114 @@ class Issue(models.Model):
         if self.contract_advance_requirements_fails is True:
             return 'Да'
         elif self.contract_advance_requirements_fails is False:
+            return 'Нет'
+        else:
+            return '—'
+
+    @property
+    def humanized_has_issuer_bad_info_on_security_db(self):
+        if self.has_issuer_bad_info_on_security_db is True:
+            return 'Да'
+        elif self.has_issuer_bad_info_on_security_db is False:
+            return 'Нет'
+        else:
+            return '—'
+
+    @property
+    def humanized_has_issuer_bad_info_on_guarantors(self):
+        if self.has_issuer_bad_info_on_guarantors is True:
+            return 'Да'
+        elif self.has_issuer_bad_info_on_guarantors is False:
+            return 'Нет'
+        else:
+            return '—'
+
+    @property
+    def humanized_has_issuer_bad_info_on_persons_have_impact_on_issue_activity(self):
+        if self.has_issuer_bad_info_on_persons_have_impact_on_issue_activity is True:
+            return 'Да'
+        elif self.has_issuer_bad_info_on_persons_have_impact_on_issue_activity is False:
+            return 'Нет'
+        else:
+            return '—'
+
+    @property
+    def humanized_has_issuer_bad_info_on_public_sources_sites(self):
+        if self.has_issuer_bad_info_on_public_sources_sites is True:
+            return 'Да'
+        elif self.has_issuer_bad_info_on_public_sources_sites is False:
+            return 'Нет'
+        else:
+            return '—'
+
+    @property
+    def humanized_has_issuer_bad_info_on_fssp(self):
+        if self.has_issuer_bad_info_on_fssp is True:
+            return 'Да'
+        elif self.has_issuer_bad_info_on_fssp is False:
+            return 'Нет'
+        else:
+            return '—'
+
+    @property
+    def humanized_has_issuer_bad_info_on_sudrf_ru(self):
+        if self.has_issuer_bad_info_on_sudrf_ru is True:
+            return 'Да'
+        elif self.has_issuer_bad_info_on_sudrf_ru is False:
+            return 'Нет'
+        else:
+            return '—'
+
+    @property
+    def humanized_has_issuer_bad_info_on_arbitr_ru_site(self):
+        if self.has_issuer_bad_info_on_arbitr_ru_site is True:
+            return 'Да'
+        elif self.has_issuer_bad_info_on_arbitr_ru_site is False:
+            return 'Нет'
+        else:
+            return '—'
+
+    @property
+    def humanized_has_issuer_bad_info_on_ros_fin_monitoring(self):
+        if self.has_issuer_bad_info_on_ros_fin_monitoring is True:
+            return 'Да'
+        elif self.has_issuer_bad_info_on_ros_fin_monitoring is False:
+            return 'Нет'
+        else:
+            return '—'
+
+    @property
+    def humanized_has_issuer_bad_info_on_fns_site(self):
+        if self.has_issuer_bad_info_on_fns_site is True:
+            return 'Да'
+        elif self.has_issuer_bad_info_on_fns_site is False:
+            return 'Нет'
+        else:
+            return '—'
+
+    @property
+    def humanized_has_issuer_bad_info_on_kontur_and_spark(self):
+        if self.has_issuer_bad_info_on_kontur_and_spark is True:
+            return 'Да'
+        elif self.has_issuer_bad_info_on_kontur_and_spark is False:
+            return 'Нет'
+        else:
+            return '—'
+
+    @property
+    def humanized_has_issuer_bad_info_on_bank_abs(self):
+        if self.has_issuer_bad_info_on_bank_abs is True:
+            return 'Да'
+        elif self.has_issuer_bad_info_on_bank_abs is False:
+            return 'Нет'
+        else:
+            return '—'
+
+    @property
+    def humanized_has_issuer_bad_info_on_credit_history(self):
+        if self.has_issuer_bad_info_on_credit_history is True:
+            return 'Да'
+        elif self.has_issuer_bad_info_on_credit_history is False:
             return 'Нет'
         else:
             return '—'
