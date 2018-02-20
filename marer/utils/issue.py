@@ -28,7 +28,7 @@ def calculate_effective_rate(bg_sum, commission, bg_start_date, bg_end_date):
     :param bg_end_date:
     :return:
     """
-    AN10 = get_date_diff_in_days(bg_end_date, bg_start_date)
+    AN10 = get_date_diff_in_days(bg_start_date, bg_end_date)
 
     Y16 = int(commission) * 100 / int(bg_sum)
 
