@@ -136,10 +136,11 @@ class IssueProposeDocumentSerializer(ModelSerializer):
     id = serializers.IntegerField(required=False, allow_null=True)
     document = DocumentSerializer()
     sample = DocumentSerializer()
+    visible = serializers.BooleanField(default=True)
 
     class Meta:
         model = IssueProposeDocument
-        fields = ['id', 'name', 'document', 'sample', 'type', 'is_required', 'is_approved_by_manager']
+        fields = ['id', 'name', 'document', 'sample', 'type', 'is_required', 'is_approved_by_manager', 'visible']
 
 
 class IssueSerializer(ModelSerializer):
