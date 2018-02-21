@@ -217,7 +217,6 @@ class IssueSurveyView(IssueView):
         elif action == 'next' and all_ok:
             if self.get_issue().agent_comission and not self.get_issue().agent_commission_passed:
                 return self.get(request, *args, **kwargs)
-            self.get_issue().fill_application_doc(commit=True)
             notify_user_manager_about_user_updated_issue(self.get_issue())
             url = reverse('issue_scoring', args=[self.get_issue().id])
             return HttpResponseRedirect(url)
@@ -475,16 +474,9 @@ class IssueRemoteSurveyView(TemplateView, ContextMixin, View):
                 return self.get(request, *args, **kwargs)
 
             all_ok = self.get_issue().get_product().process_survey_post_data(request)
-            app_doc = self.get_issue().application_doc
-            if app_doc is not None and app_doc.sign_state != consts.DOCUMENT_SIGN_NONE:
-                app_doc.sign = None
-                app_doc.sign_state = consts.DOCUMENT_SIGN_NONE
-                app_doc.save()
             if all_ok:
-                # self.get_issue().fill_application_doc(commit=True)
                 notify_user_manager_about_user_updated_issue(self.get_issue())
             if request.POST.get('action', '') == 'fill_application_doc':
-                self.get_issue().fill_application_doc()
                 url = reverse('issue_remote_for_sign', args=[self.get_issue().id])
                 return HttpResponseRedirect(url)
 

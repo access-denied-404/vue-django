@@ -26,7 +26,7 @@ from marer.products import get_urgency_hours, get_urgency_days, get_finance_prod
 from marer.utils import CustomJSONEncoder, kontur
 from marer.utils.issue import calculate_bank_commission, sum2str, generate_bg_number, issue_term_in_months, calculate_effective_rate
 from marer.utils.morph import MorpherApi
-from marer.utils.other import OKOPF_CATALOG, get_tender_info
+from marer.utils.other import OKOPF_CATALOG, get_tender_info, are_docx_files_identical
 
 __all__ = [
     'Issue', 'IssueDocument', 'IssueClarification', 'IssueMessagesProxy',
@@ -2022,6 +2022,16 @@ class Issue(models.Model):
             self.bg_start_date = timezone.now()
         if not self.product or self.product == '':
             self.product = BankGuaranteeProduct().name
+
+        self.fill_application_doc(commit=False)
+        if self.old_application_doc is not None and self.application_doc is not None and self.old_application_doc.id != self.application_doc.id:
+            identical = are_docx_files_identical(
+                self.old_application_doc.file.path,
+                self.application_doc.file.path
+            )
+            if identical:
+                self.application_doc = self.old_application_doc
+
         super().save(force_insert, force_update, using, update_fields)
 
         if create_docs and bool(self.propose_documents.exists() is False and self.tax_system):
@@ -2046,6 +2056,7 @@ class Issue(models.Model):
     def __init__(self, *args, **kwargs):
         super(Issue, self).__init__(*args, **kwargs)
         self.old_status = self.status
+        self.old_application_doc = self.application_doc
 
 
 class IssueDocument(models.Model):
