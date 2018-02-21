@@ -30,10 +30,9 @@
                     <table class="table table-condensed">
                       <tr class="application_doc" v-if="issue.application_doc">
                         <td class="h6">
-                          <!--<a href="{{ issue.application_doc.file }}">-->
+                          <a :href="issue.application_doc.file">
                             <b>Заявление на предоставление банковской гарантии</b>
-                          <!--</a>-->
-                          <div class="clearfix"></div>
+                          </a>
                         </td>
                       </tr>
                       <tr v-if="finance_documents">
@@ -41,61 +40,37 @@
                           <h4 style="font-weight: bold;">Финансовые документы</h4>
                         </td>
                       </tr>
-                      <tr v-for="doc in finance_documents">
-                        <td class="h6">
-                          <!--<a v-if="doc.document.file" href="{{ doc.document.file }}">{{ doc.name }}</a>-->
-                          <div v-if="!doc.document.file">
-                            {{ doc.name }} <span v-if="doc.is_required" class="text-danger"><b>*</b></span>
-                          </div>
-                          <div class="pull-right">
-                            <div class="row" v-if="!doc.document.file">
-                              <div class="form-group">
-                                <div class="col-md-10">
-                                  <!--<input type="file" name="propose_doc_{{ doc.id }}"-->
-                                         <!--v-bind:class="{'required': doc.is_required}" class="input-sm pull-right"/>-->
+                      <tr v-for="(doc, index) in finance_documents">
+                          <td class="h6" :id="'fin-doc-' + doc.id" v-show="doc.visible">
+                            <div class="row">
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <a v-if="doc.document.file" :href="doc.document.file" v-text="doc.name"></a>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <span @click="isVisible('fin', doc, index)" class="glyphicon glyphicon-remove text-danger pull-right"></span>
+                                    </div>
                                 </div>
-                                <div class="col-md-2">
-                                  <span class="glyphicon glyphicon-ok text-success hidden to-hide"></span>
-                                </div>
-                              </div>
                             </div>
-                            <!--<button v-if="issue.status == 'registering'" type="submit"-->
-                                    <!--class="btn btn-link btn-xs pull-right" form="propose_doc_{{ doc.id }}_del_form">-->
-                              <span class="glyphicon glyphicon-remove text-danger"></span>
-                            <!--</button>-->
-                            <div class="clearfix"></div>
-                          </div>
-                        </td>
+                          </td>
                       </tr>
                       <tr v-if="legal_documents">
                         <td>
                           <h4 style="font-weight: bold;">Юридические документы</h4>
                         </td>
                       </tr>
-                      <tr v-for="doc in legal_documents">
-                        <td class="h6">
-                          <!--<a v-if="doc.document.file" href="{{ doc.document.file }}">{{ doc.name }}</a>-->
-                          <div v-if="!doc.document.file">
-                            {{ doc.name }} <span v-if="doc.is_required" class="text-danger"><b>*</b></span>
-                          </div>
-                          <div class="pull-right">
-                            <div class="row" v-if="!doc.document.file">
-                              <div class="form-group">
-                                <div class="col-md-10">
-                                  <!--<input type="file" name="propose_doc_{{ doc.id }}"-->
-                                         <!--v-bind:class="{'required': doc.is_required}" class="input-sm pull-right"/>-->
+                      <tr v-for="(doc, index) in legal_documents">
+                        <td class="h6" :id="'jur-doc-' + doc.id" v-show="doc.visible">
+                            <div class="row">
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <a v-if="doc.document.file" :href="doc.document.file" v-text="doc.name"></a>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <span @click="isVisible('jur', doc, index)" class="glyphicon glyphicon-remove text-danger pull-right"></span>
+                                    </div>
                                 </div>
-                                <div class="col-md-2">
-                                  <span class="glyphicon glyphicon-ok text-success hidden to-hide"></span>
-                                </div>
-                              </div>
                             </div>
-                            <!--<button v-if="issue.status == 'registering'" type="submit"-->
-                                    <!--class="btn btn-link btn-xs pull-right" form="propose_doc_{{ doc.id }}_del_form">-->
-                              <span class="glyphicon glyphicon-remove text-danger"></span>
-                            <!--</button>-->
-                            <div class="clearfix"></div>
-                          </div>
                         </td>
                       </tr>
                       <tr v-if="other_documents">
@@ -103,30 +78,18 @@
                           <h4 style="font-weight: bold;">Прочее</h4>
                         </td>
                       </tr>
-                      <tr v-for="doc in other_documents">
-                        <td class="h6">
-                          <!--<a v-if="doc.document.file" href="{{ doc.document.file }}">{{ doc.name }}</a>-->
-                          <div v-if="!doc.document.file">
-                            {{ doc.name }} <span v-if="doc.is_required" class="text-danger"><b>*</b></span>
-                          </div>
-                          <div class="pull-right">
-                            <div class="row" v-if="!doc.document.file">
-                              <div class="form-group">
-                                <div class="col-md-10">
-                                  <!--<input type="file" name="propose_doc_{{ doc.id }}"-->
-                                         <!--v-bind:class="{'required': doc.is_required}" class="input-sm pull-right"/>-->
+                      <tr v-for="(doc, index) in other_documents">
+                        <td class="h6" :id="'oth-doc-' + doc.id" v-show="doc.visible">
+                            <div class="row">
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <a v-if="doc.document.file" :href="doc.document.file" v-text="doc.name"></a>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <span @click="isVisible('oth', doc, index)" class="glyphicon glyphicon-remove text-danger pull-right"></span>
+                                    </div>
                                 </div>
-                                <div class="col-md-2">
-                                  <span class="glyphicon glyphicon-ok text-success hidden to-hide"></span>
-                                </div>
-                              </div>
                             </div>
-                            <!--<button v-if="issue.status == 'registering'" type="submit"-->
-                                    <!--class="btn btn-link btn-xs pull-right" form="propose_doc_{{ doc.id }}_del_form">-->
-                              <span class="glyphicon glyphicon-remove text-danger"></span>
-                            <!--</button>-->
-                            <div class="clearfix"></div>
-                          </div>
                         </td>
                       </tr>
                       <tr v-if="issue.bg_contract_doc || issue.bg_doc || issue.transfer_acceptance_act">
@@ -136,24 +99,34 @@
                       </tr>
                       <tr v-if="issue.bg_contract_doc">
                         <td>
-                          <!--<a href="{{ issue.bg_contract_doc.file }}">Договор</a>-->
+                          <a href="{{ issue.bg_contract_doc.file }}">Договор</a>
                         </td>
                       </tr>
                       <tr v-if="issue.payment_of_fee">
                         <td>
-                          <!--<a href="{{ issue.payment_of_fee.file }}">Счет</a>-->
+                          <a href="{{ issue.payment_of_fee.file }}">Счет</a>
                         </td>
                       </tr>
                       <tr v-if="issue.bg_doc">
                         <td>
-                          <!--<a href="{{ issue.bg_doc.file}}">Проект</a>-->
+                          <a href="{{ issue.bg_doc.file}}">Проект</a>
                         </td>
                       </tr>
                       <tr v-if="issue.transfer_acceptance_act">
                         <td>
-                          <!--<a href="{{ issue.transfer_acceptance_act.file }}">Акт</a>-->
+                          <a href="{{ issue.transfer_acceptance_act.file }}">Акт</a>
                         </td>
                       </tr>
+                      <tr v-if="issue.contract_of_guarantee">
+                        <td>
+                            <a href="{{ issue.contract_of_guarantee.file.url }}">Договор поручительства</a>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                            <a href="/static/documents/approval_and_change_sheet.docx" download="Лист_согласования_и_изменения_БГ.docx">Лист согласования и изменения БГ</a>
+                        </td>
+                    </tr>
                     </table>
 
                   </div>
@@ -233,6 +206,24 @@
       }
     },
     methods: {
+      deleteDoc (docs, selDoc, index) {
+        docs.forEach(doc => {
+          if (doc.id === selDoc.id) {
+            docs.splice(index, 1)
+            doc.visible = false
+            this.delete_data_from_issue()
+          }
+        })
+      },
+      isVisible (docType, selDoc, index) {
+        if (docType === 'fin') {
+          this.deleteDoc(this.finance_documents, selDoc, index)
+        } else if (docType === 'jur') {
+          this.deleteDoc(this.legal_documents, selDoc, index)
+        } else if (docType === 'oth') {
+          this.deleteDoc(this.other_documents, selDoc, index)
+        }
+      },
       update_form_data (data) {
         data.csrfmiddlewaretoken = this.$cookie.get('csrftoken')
         this.issue = data
@@ -250,6 +241,9 @@
         this.other_documents = jQuery.grep(data.propose_documents, function (n, i) {
           return n.type === 3
         })
+      },
+      delete_data_from_issue () {
+        jQuery.post(this.api_url + this.$route.params.id, this.issue)
       },
       save_issue () {
         jQuery.ajax(this.api_url + this.$route.params.id, this.issue, (data) => {

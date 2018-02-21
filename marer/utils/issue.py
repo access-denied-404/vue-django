@@ -174,7 +174,7 @@ def sum2str(value):
                 if i3 != 0:
                     text = tens[i2] + ' ' + ten[gender][i3]
                 else:
-                    text = tens[i2] # 20-99
+                    text = tens[i2]  # 20-99
                 digits.append(text)
             else:
                 if i2 > 0:
