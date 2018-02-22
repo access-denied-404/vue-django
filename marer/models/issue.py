@@ -227,7 +227,7 @@ class Issue(models.Model):
     issuer_post_address = models.CharField(verbose_name='почтовый адрес заявителя (с индексом) в т.ч. для отправки банковской гарантии', max_length=512, blank=True, null=False, default='')
     bg_is_benefeciary_form = models.NullBooleanField(verbose_name='БГ по форме Бенефециара', blank=True, null=True)
     is_indisputable_charge_off = models.NullBooleanField(verbose_name='право на бесспорное списание', blank=True, null=True)
-    tender_contract_subject = models.CharField(verbose_name='предмет контракта', max_length=512, blank=True, null=False, default='')
+    tender_contract_subject = models.CharField(verbose_name='предмет контракта', max_length=8192, blank=True, null=False, default='')
     issuer_has_overdue_debts_for_last_180_days = models.NullBooleanField(verbose_name='Наличие просроченной задолженности по всем кредитам за последние 180 дней', blank=True, null=True)
     issuer_overdue_debts_info = models.TextField(verbose_name='Причины и обстоятельства просрочек', blank=True, null=False, default='')
     tax_system = models.CharField(verbose_name='Система налогообложения', max_length=32, blank=True, null=True, choices=[
