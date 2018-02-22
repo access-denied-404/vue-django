@@ -27,7 +27,7 @@ from marer.utils import CustomJSONEncoder, kontur
 from marer.utils.issue import calculate_bank_commission, sum2str, generate_bg_number, issue_term_in_months, \
     calculate_effective_rate, CalculateUnderwritingCriteria
 from marer.utils.morph import MorpherApi
-from marer.utils.other import OKOPF_CATALOG, get_tender_info
+from marer.utils.other import OKOPF_CATALOG, get_tender_info, are_docx_files_identical
 
 __all__ = [
     'Issue', 'IssueDocument', 'IssueClarification', 'IssueMessagesProxy',
@@ -103,7 +103,7 @@ class Issue(models.Model):
     issuer_prev_org_info = models.CharField(verbose_name='предыдущее место работы руководителя, отрасль, должность', max_length=512, blank=True, null=False, default='')
 
     tender_gos_number = models.CharField(verbose_name='госномер или ссылка на тендер', max_length=512, blank=True, null=False, default='')
-    tender_placement_type = models.CharField(verbose_name='способ определения поставщика в тендере', max_length=32, blank=True, null=False, default='')
+    tender_placement_type = models.CharField(verbose_name='способ определения поставщика в тендере', max_length=512, blank=True, null=False, default='')
     tender_exec_law = models.CharField(verbose_name='вид банковской гарантии', max_length=32, blank=True, null=True, choices=[
         (consts.TENDER_EXEC_LAW_44_FZ, '44-ФЗ'),
         (consts.TENDER_EXEC_LAW_223_FZ, '223-ФЗ'),
@@ -230,7 +230,7 @@ class Issue(models.Model):
     issuer_post_address = models.CharField(verbose_name='почтовый адрес заявителя (с индексом) в т.ч. для отправки банковской гарантии', max_length=512, blank=True, null=False, default='')
     bg_is_benefeciary_form = models.NullBooleanField(verbose_name='БГ по форме Бенефециара', blank=True, null=True)
     is_indisputable_charge_off = models.NullBooleanField(verbose_name='право на бесспорное списание', blank=True, null=True)
-    tender_contract_subject = models.CharField(verbose_name='предмет контракта', max_length=512, blank=True, null=False, default='')
+    tender_contract_subject = models.CharField(verbose_name='предмет контракта', max_length=8192, blank=True, null=False, default='')
     issuer_has_overdue_debts_for_last_180_days = models.NullBooleanField(verbose_name='Наличие просроченной задолженности по всем кредитам за последние 180 дней', blank=True, null=True)
     issuer_overdue_debts_info = models.TextField(verbose_name='Причины и обстоятельства просрочек', blank=True, null=False, default='')
     tax_system = models.CharField(verbose_name='Система налогообложения', max_length=32, blank=True, null=True, choices=[
@@ -1689,7 +1689,7 @@ class Issue(models.Model):
         else:
             return available_views
 
-        if self.application_doc_id is not None:
+        if self.application_doc_id is not None and self.check_all_application_required_fields_filled():
             available_views.append('issue_scoring')
 
         if not self.status == consts.ISSUE_STATUS_REGISTERING:
@@ -2060,6 +2060,17 @@ class Issue(models.Model):
             self.bg_start_date = timezone.now()
         if not self.product or self.product == '':
             self.product = BankGuaranteeProduct().name
+
+        if self.check_all_application_required_fields_filled():
+            self.fill_application_doc(commit=False)
+            if self.old_application_doc is not None and self.application_doc is not None and self.old_application_doc.id != self.application_doc.id:
+                identical = are_docx_files_identical(
+                    self.old_application_doc.file.path,
+                    self.application_doc.file.path
+                )
+                if identical:
+                    self.application_doc = self.old_application_doc
+
         super().save(force_insert, force_update, using, update_fields)
 
         if create_docs and bool(self.propose_documents.exists() is False and self.tax_system):
@@ -2084,6 +2095,7 @@ class Issue(models.Model):
     def __init__(self, *args, **kwargs):
         super(Issue, self).__init__(*args, **kwargs)
         self.old_status = self.status
+        self.old_application_doc = self.application_doc
 
 
 class IssueDocument(models.Model):

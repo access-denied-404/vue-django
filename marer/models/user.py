@@ -30,7 +30,8 @@ class User(AbstractUser):
             ('can_add_managed_users_issues_proposes_clarifications_messages', 'Can add managed users issues proposes clarifications messages'),
         ]
 
-    phone = models.CharField(_('contact phone'), max_length=30, blank=True)
+    phone = models.CharField('Контактный телефон', max_length=30, blank=True)
+    legal_name = models.CharField('Наименование агента', max_length=512, blank=True, null=False, default='')
     middle_name = models.CharField('Отчество', max_length=30, blank=True, null=False, default='')
     manager = models.ForeignKey(
         settings.AUTH_USER_MODEL,

@@ -1,3 +1,6 @@
+import hashlib
+import zipfile
+
 import requests
 from django.utils.dateparse import parse_datetime
 from urllib3.exceptions import MaxRetryError
@@ -121,6 +124,33 @@ def get_tender_info(gos_number):
         pass
 
     return tender_data
+
+
+def are_docx_files_identical(zip1_path: str, zip2_path: str) -> bool:
+    zip1 = zipfile.ZipFile(zip1_path)
+    zip2 = zipfile.ZipFile(zip2_path)
+
+    def _check_zip_filelist_for_identity(z1, z2):
+        fnames_z1 = [z.filename for z in z1.filelist]
+        fnames_z2 = [z.filename for z in z2.filelist]
+        for fname in fnames_z1:
+            if str(fname).endswith('.rels'):
+                continue
+            if fname not in fnames_z2:
+                return False
+            zfile1 = z1.read(fname)
+            zfile2 = z2.read(fname)
+            md5_1 = hashlib.md5(zfile1).hexdigest()
+            md5_2 = hashlib.md5(zfile2).hexdigest()
+            if md5_1 != md5_2:
+                return False
+        return True
+
+    check_z1_z2 = _check_zip_filelist_for_identity(zip1, zip2)
+    check_z2_z1 = _check_zip_filelist_for_identity(zip2, zip1)
+
+    return check_z1_z2 and check_z2_z1
+
 
 # TODO: нормальзировать форму
 OKOPF_CATALOG = {

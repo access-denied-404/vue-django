@@ -571,8 +571,8 @@ class IssueMessagesProxyAdmin(ModelAdmin):
 @register(models.User)
 class MarerUserAdmin(UserAdmin):
     list_display = (
-        'username',
-        'first_name_noempty',
+        'legal_name_noempty',
+        'first_name',
         'last_name',
         'email',
         'phone',
@@ -587,7 +587,7 @@ class MarerUserAdmin(UserAdmin):
         'groups'
     )
     reset_user_password_template = None
-    search_fields = ('username', 'first_name', 'last_name', 'email', 'phone')
+    search_fields = ('legal_name', 'first_name', 'last_name', 'email', 'phone')
     readonly_fields = ('last_login', 'date_joined',)
     form = MarerUserChangeForm
     add_form = UserCreationForm
@@ -597,6 +597,7 @@ class MarerUserAdmin(UserAdmin):
             'fields': (
                 'username',
                 'email',
+                'legal_name',
                 'first_name',
                 'middle_name',
                 'last_name',
@@ -606,16 +607,16 @@ class MarerUserAdmin(UserAdmin):
         }),
     )
 
-    def first_name_noempty(self, obj):
-        if obj.first_name is None or obj.first_name == '':
+    def legal_name_noempty(self, obj):
+        if obj.legal_name is None or obj.legal_name == '':
             max_rndi = 10
             if randint(0, max_rndi) == max_rndi:
                 return '¯\_(ツ)_/¯'
-            return 'ИМЯ НЕ УКАЗАНО'
+            return 'не указано'
         else:
-            return obj.first_name
-    first_name_noempty.short_description = 'имя'
-    first_name_noempty.admin_order_field = 'first_name'
+            return obj.legal_name
+    legal_name_noempty.short_description = 'наименование'
+    legal_name_noempty.admin_order_field = 'legal_name'
 
     def get_urls(self):
         return [
@@ -702,7 +703,7 @@ class MarerUserAdmin(UserAdmin):
     def get_fieldsets(self, request, obj=None):
         full_fieldsets = (
             (None, {'fields': ('username', 'password', 'manager',)}),
-            (_('Personal info'), {'fields': ('first_name', 'middle_name', 'last_name', 'email', 'phone', 'comment')}),
+            (_('Personal info'), {'fields': ('first_name', 'middle_name', 'last_name', 'legal_name', 'email', 'phone', 'comment')}),
             (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'is_broker',
                                            'groups', 'user_permissions')}),
             (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
@@ -710,7 +711,7 @@ class MarerUserAdmin(UserAdmin):
         )
         limited_fieldsets = (
             (None, {'fields': ('username', 'password',)}),
-            (_('Personal info'), {'fields': ('first_name', 'middle_name', 'last_name', 'email', 'phone', 'comment')}),
+            (_('Personal info'), {'fields': ('first_name', 'middle_name', 'last_name', 'legal_name', 'email', 'phone', 'comment')}),
             (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
         )
         if obj:
@@ -759,6 +760,8 @@ class MarerUserAdmin(UserAdmin):
         return qs
 
     def save_model(self, request, obj, form, change):
+        if not change:
+            obj.username = User.normalize_username(obj.email)
         if obj.id is None and obj.manager is None:
             obj.manager = request.user
         return super().save_model(request, obj, form, change)

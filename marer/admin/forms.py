@@ -83,14 +83,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = models.User
-        fields = (
-            'username',
-            'email',
-            'first_name',
-            'middle_name',
-            'last_name',
-            'phone',
-        )
+        fields = ()
         field_classes = {'email': UsernameField}
 
     def __init__(self, *args, **kwargs):
