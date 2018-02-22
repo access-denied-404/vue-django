@@ -64,11 +64,7 @@
                                         {% csrf_token %}
                                         <div class="h3">Документы для подписания</div>
                                         <table class="table table-condensed">
-                                            <tr>
-                                                <h4 style="font-weight: bold;">Финансовые документы</h4>
-                                            </tr>
                                             {% for propose_doc in issue.propose_documents_for_remote_sign %}
-                                                {% if propose_doc.document.type == 'Финансовые документы' %}
                                                 <tr>
                                                     <td class="h6">
                                                         {% if propose_doc.document and propose_doc.document.file %}
@@ -126,144 +122,10 @@
                                                         <div class="clearfix"></div>
                                                     </td>
                                                 </tr>
-                                                {% endif %}
                                             {% endfor %}
 
                                         </table>
-                                        <table class="table table-condensed">
-                                            <tr>
-                                                <h4 style="font-weight: bold;">Юридические документы</h4>
-                                            </tr>
-                                            {% for propose_doc in issue.propose_documents_for_remote_sign %}
-                                                {% if propose_doc.document.type == 'Юридические документы' %}
-                                                <tr>
-                                                    <td class="h6">
-                                                        {% if propose_doc.document and propose_doc.document.file %}
-                                                            <a href="{{ propose_doc.document.file.url }}">
-                                                                {{ propose_doc.name }}
-                                                            </a>
-                                                        {% endif %}
-                                                        {% if propose_doc.document and propose_doc.document.file %}
 
-                                                            {% if cert_hash != '' or propose_doc.document.sign_state == consts.DOCUMENT_SIGN_VERIFIED %}
-                                                                <script type="text/javascript">
-                                                                    filesB64ForSign[{{ propose_doc.document.id }}] = "{{ propose_doc.document.base64_content }}";
-                                                                </script>
-
-                                                                <a
-                                                                        href="#" id="btn-sign-file-id{{ propose_doc.document.id }}"
-                                                                        class="btn btn-primary btn-xs pull-right {% if propose_doc.document.sign_state != consts.DOCUMENT_SIGN_NONE %}hidden{% endif %}"
-                                                                        onclick="signFile({{ propose_doc.document.id }});return false;">
-                                                                    <span class="glyphicon glyphicon-certificate"></span>
-                                                                    Подписать и отправить
-                                                                </a>
-
-                                                                <a
-                                                                        href="#" id="btn-signed-file-id{{ propose_doc.document.id }}"
-                                                                        class="btn btn-xs pull-right btn-success {% if propose_doc.document.sign_state != consts.DOCUMENT_SIGN_VERIFIED %}hidden{% endif %}"
-                                                                        onclick="return false;">
-                                                                    <span class="glyphicon glyphicon-ok-sign"></span>
-                                                                    Подписано и отправлено
-                                                                </a>
-
-                                                                <a
-                                                                        href="#" id="btn-signing-file-id{{ propose_doc.document.id }}"
-                                                                        class="btn btn-xs pull-right btn-warning hidden"
-                                                                        onclick="signFile({{ propose_doc.document.id }});return false;">
-                                                                    <span class="glyphicon glyphicon-time"></span>
-                                                                    Подписание...
-                                                                </a>
-
-                                                                <a
-                                                                        href="#" id="btn-resign-file-id{{ propose_doc.document.id }}"
-                                                                        class="btn btn-xs pull-right btn-danger {% if propose_doc.document.sign_state != consts.DOCUMENT_SIGN_CORRUPTED %}hidden{% endif %}"
-                                                                        onclick="signFile({{ propose_doc.document.id }});return false;">
-                                                                    <span class="glyphicon glyphicon-exclamation-sign"></span>
-                                                                    Переподписать и отправить
-                                                                </a>
-                                                            {% endif %}
-
-                                                        {% elif propose_doc.sample and propose_doc.sample.file %}
-                                                            <a
-                                                                    href="{{ propose_doc.sample.file.url }}"
-                                                                    class="btn btn-link btn-xs pull-right">
-                                                                Образец <span class="glyphicon glyphicon-download-alt"></span>
-                                                            </a>
-                                                        {% endif %}
-                                                        <div class="clearfix"></div>
-                                                    </td>
-                                                </tr>
-                                                {% endif %}
-                                            {% endfor %}
-
-                                        </table>
-                                        <table class="table table-condensed">
-                                            <tr>
-                                                <h4 style="font-weight: bold;">Прочее</h4>
-                                            </tr>
-                                            {% for propose_doc in issue.propose_documents_for_remote_sign %}
-                                                {% if propose_doc.document.type == 'Прочее' %}
-                                                <tr>
-                                                    <td class="h6">
-                                                        {% if propose_doc.document and propose_doc.document.file %}
-                                                            <a href="{{ propose_doc.document.file.url }}">
-                                                                {{ propose_doc.name }}
-                                                            </a>
-                                                        {% endif %}
-                                                        {% if propose_doc.document and propose_doc.document.file %}
-
-                                                            {% if cert_hash != '' or propose_doc.document.sign_state == consts.DOCUMENT_SIGN_VERIFIED %}
-                                                                <script type="text/javascript">
-                                                                    filesB64ForSign[{{ propose_doc.document.id }}] = "{{ propose_doc.document.base64_content }}";
-                                                                </script>
-
-                                                                <a
-                                                                        href="#" id="btn-sign-file-id{{ propose_doc.document.id }}"
-                                                                        class="btn btn-primary btn-xs pull-right {% if propose_doc.document.sign_state != consts.DOCUMENT_SIGN_NONE %}hidden{% endif %}"
-                                                                        onclick="signFile({{ propose_doc.document.id }});return false;">
-                                                                    <span class="glyphicon glyphicon-certificate"></span>
-                                                                    Подписать и отправить
-                                                                </a>
-
-                                                                <a
-                                                                        href="#" id="btn-signed-file-id{{ propose_doc.document.id }}"
-                                                                        class="btn btn-xs pull-right btn-success {% if propose_doc.document.sign_state != consts.DOCUMENT_SIGN_VERIFIED %}hidden{% endif %}"
-                                                                        onclick="return false;">
-                                                                    <span class="glyphicon glyphicon-ok-sign"></span>
-                                                                    Подписано и отправлено
-                                                                </a>
-
-                                                                <a
-                                                                        href="#" id="btn-signing-file-id{{ propose_doc.document.id }}"
-                                                                        class="btn btn-xs pull-right btn-warning hidden"
-                                                                        onclick="signFile({{ propose_doc.document.id }});return false;">
-                                                                    <span class="glyphicon glyphicon-time"></span>
-                                                                    Подписание...
-                                                                </a>
-
-                                                                <a
-                                                                        href="#" id="btn-resign-file-id{{ propose_doc.document.id }}"
-                                                                        class="btn btn-xs pull-right btn-danger {% if propose_doc.document.sign_state != consts.DOCUMENT_SIGN_CORRUPTED %}hidden{% endif %}"
-                                                                        onclick="signFile({{ propose_doc.document.id }});return false;">
-                                                                    <span class="glyphicon glyphicon-exclamation-sign"></span>
-                                                                    Переподписать и отправить
-                                                                </a>
-                                                            {% endif %}
-
-                                                        {% elif propose_doc.sample and propose_doc.sample.file %}
-                                                            <a
-                                                                    href="{{ propose_doc.sample.file.url }}"
-                                                                    class="btn btn-link btn-xs pull-right">
-                                                                Образец <span class="glyphicon glyphicon-download-alt"></span>
-                                                            </a>
-                                                        {% endif %}
-                                                        <div class="clearfix"></div>
-                                                    </td>
-                                                </tr>
-                                                {% endif %}
-                                            {% endfor %}
-
-                                        </table>
                                     </form>
                                 </div>
                             </div>

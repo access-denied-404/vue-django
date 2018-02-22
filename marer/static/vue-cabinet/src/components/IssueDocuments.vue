@@ -51,6 +51,9 @@
                             </div>
                           </td>
                       </tr>
+                      <tr>
+                          <a class="btn btn-primary btn-sm pull-right" href="#">Скачать архив</a>
+                      </tr>
                       <tr v-if="legal_documents">
                         <td>
                           <h4 style="font-weight: bold;">Юридические документы</h4>
@@ -66,6 +69,9 @@
                                 </div>
                             </div>
                         </td>
+                      </tr>
+                      <tr>
+                          <a class="btn btn-primary btn-sm pull-right" href="#">Скачать архив</a>
                       </tr>
                       <tr v-if="other_documents">
                         <td>
@@ -83,6 +89,9 @@
                             </div>
                         </td>
                       </tr>
+                      <tr>
+                          <a class="btn btn-primary btn-sm pull-right" href="#">Скачать архив</a>
+                      </tr>
                       <tr v-if="issue.bg_contract_doc || issue.bg_doc || issue.transfer_acceptance_act">
                         <td>
                           <h4 style="font-weight: bold;">Договора и акты</h4>
@@ -90,27 +99,27 @@
                       </tr>
                       <tr v-if="issue.bg_contract_doc">
                         <td>
-                          <a href="{{ issue.bg_contract_doc.file }}">Договор</a>
+                          <a :href="issue.bg_contract_doc.file">Договор</a>
                         </td>
                       </tr>
                       <tr v-if="issue.payment_of_fee">
                         <td>
-                          <a href="{{ issue.payment_of_fee.file }}">Счет</a>
+                          <a :href="issue.payment_of_fee.file">Счет</a>
                         </td>
                       </tr>
                       <tr v-if="issue.bg_doc">
                         <td>
-                          <a href="{{ issue.bg_doc.file}}">Проект</a>
+                          <a :href="issue.bg_doc.file">Проект</a>
                         </td>
                       </tr>
                       <tr v-if="issue.transfer_acceptance_act">
                         <td>
-                          <a href="{{ issue.transfer_acceptance_act.file }}">Акт</a>
+                          <a :href="issue.transfer_acceptance_act.file">Акт</a>
                         </td>
                       </tr>
                       <tr v-if="issue.contract_of_guarantee">
                         <td>
-                            <a href="{{ issue.contract_of_guarantee.file.url }}">Договор поручительства</a>
+                            <a :href="issue.contract_of_guarantee.file.url">Договор поручительства</a>
                         </td>
                       </tr>
                       <tr>
