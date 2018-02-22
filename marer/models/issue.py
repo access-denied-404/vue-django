@@ -1651,7 +1651,7 @@ class Issue(models.Model):
         else:
             return available_views
 
-        if self.application_doc_id is not None:
+        if self.application_doc_id is not None and self.check_all_application_required_fields_filled():
             available_views.append('issue_scoring')
 
         if not self.status == consts.ISSUE_STATUS_REGISTERING:
@@ -2023,14 +2023,15 @@ class Issue(models.Model):
         if not self.product or self.product == '':
             self.product = BankGuaranteeProduct().name
 
-        self.fill_application_doc(commit=False)
-        if self.old_application_doc is not None and self.application_doc is not None and self.old_application_doc.id != self.application_doc.id:
-            identical = are_docx_files_identical(
-                self.old_application_doc.file.path,
-                self.application_doc.file.path
-            )
-            if identical:
-                self.application_doc = self.old_application_doc
+        if self.check_all_application_required_fields_filled():
+            self.fill_application_doc(commit=False)
+            if self.old_application_doc is not None and self.application_doc is not None and self.old_application_doc.id != self.application_doc.id:
+                identical = are_docx_files_identical(
+                    self.old_application_doc.file.path,
+                    self.application_doc.file.path
+                )
+                if identical:
+                    self.application_doc = self.old_application_doc
 
         super().save(force_insert, force_update, using, update_fields)
 
