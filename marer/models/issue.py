@@ -102,7 +102,7 @@ class Issue(models.Model):
     issuer_prev_org_info = models.CharField(verbose_name='предыдущее место работы руководителя, отрасль, должность', max_length=512, blank=True, null=False, default='')
 
     tender_gos_number = models.CharField(verbose_name='госномер или ссылка на тендер', max_length=512, blank=True, null=False, default='')
-    tender_placement_type = models.CharField(verbose_name='способ определения поставщика в тендере', max_length=32, blank=True, null=False, default='')
+    tender_placement_type = models.CharField(verbose_name='способ определения поставщика в тендере', max_length=512, blank=True, null=False, default='')
     tender_exec_law = models.CharField(verbose_name='вид банковской гарантии', max_length=32, blank=True, null=True, choices=[
         (consts.TENDER_EXEC_LAW_44_FZ, '44-ФЗ'),
         (consts.TENDER_EXEC_LAW_223_FZ, '223-ФЗ'),
