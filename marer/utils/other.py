@@ -131,13 +131,10 @@ def are_docx_files_identical(zip1_path: str, zip2_path: str) -> bool:
     zip2 = zipfile.ZipFile(zip2_path)
 
     def _check_zip_filelist_for_identity(z1, z2):
-        blacklisted_filenames = [
-            '_rels/.rels'
-        ]
         fnames_z1 = [z.filename for z in z1.filelist]
         fnames_z2 = [z.filename for z in z2.filelist]
         for fname in fnames_z1:
-            if fname in blacklisted_filenames:
+            if str(fname).endswith('.rels'):
                 continue
             if fname not in fnames_z2:
                 return False
