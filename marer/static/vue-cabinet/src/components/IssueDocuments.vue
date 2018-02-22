@@ -41,14 +41,11 @@
                         </td>
                       </tr>
                       <tr v-for="(doc, index) in finance_documents">
-                          <td class="h6" :id="'fin-doc-' + doc.id" v-show="doc.visible">
+                          <td v-if="doc" :id="'fin-doc-' + doc.id" v-show="doc.visible">
                             <div class="row">
                                 <div class="form-group">
-                                    <div class="col-md-10">
+                                    <div class="col-md-12">
                                         <a v-if="doc.document.file" :href="doc.document.file" v-text="doc.name"></a>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <span @click="isVisible('fin', doc, index)" class="glyphicon glyphicon-remove text-danger pull-right"></span>
                                     </div>
                                 </div>
                             </div>
@@ -60,14 +57,11 @@
                         </td>
                       </tr>
                       <tr v-for="(doc, index) in legal_documents">
-                        <td class="h6" :id="'jur-doc-' + doc.id" v-show="doc.visible">
+                        <td v-if="doc" :id="'jur-doc-' + doc.id" v-show="doc.visible">
                             <div class="row">
                                 <div class="form-group">
-                                    <div class="col-md-10">
+                                    <div class="col-md-12">
                                         <a v-if="doc.document.file" :href="doc.document.file" v-text="doc.name"></a>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <span @click="isVisible('jur', doc, index)" class="glyphicon glyphicon-remove text-danger pull-right"></span>
                                     </div>
                                 </div>
                             </div>
@@ -79,14 +73,11 @@
                         </td>
                       </tr>
                       <tr v-for="(doc, index) in other_documents">
-                        <td class="h6" :id="'oth-doc-' + doc.id" v-show="doc.visible">
+                        <td v-if="doc" :id="'oth-doc-' + doc.id" v-show="doc.visible">
                             <div class="row">
                                 <div class="form-group">
-                                    <div class="col-md-10">
+                                    <div class="col-md-12">
                                         <a v-if="doc.document.file" :href="doc.document.file" v-text="doc.name"></a>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <span @click="isVisible('oth', doc, index)" class="glyphicon glyphicon-remove text-danger pull-right"></span>
                                     </div>
                                 </div>
                             </div>
@@ -207,24 +198,6 @@
       }
     },
     methods: {
-      deleteDoc (docs, selDoc, index) {
-        docs.forEach(doc => {
-          if (doc.id === selDoc.id) {
-            docs.splice(index, 1)
-            doc.visible = false
-            this.delete_data_from_issue()
-          }
-        })
-      },
-      isVisible (docType, selDoc, index) {
-        if (docType === 'fin') {
-          this.deleteDoc(this.finance_documents, selDoc, index)
-        } else if (docType === 'jur') {
-          this.deleteDoc(this.legal_documents, selDoc, index)
-        } else if (docType === 'oth') {
-          this.deleteDoc(this.other_documents, selDoc, index)
-        }
-      },
       update_form_data (data) {
         this.issue = data
         this.issue.bg_start_date = moment(data.bg_start_date, dateformat)
@@ -241,9 +214,6 @@
         this.other_documents = jQuery.grep(data.propose_documents, function (n, i) {
           return n.type === 3
         })
-      },
-      delete_data_from_issue () {
-        jQuery.post(this.api_url + this.$route.params.id, this.issue)
       },
       save_issue () {
         axios.post(this.api_url + this.$route.params.id, {
