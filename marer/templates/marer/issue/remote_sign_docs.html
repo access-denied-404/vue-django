@@ -68,7 +68,7 @@
                                                 <h4 style="font-weight: bold;">Финансовые документы</h4>
                                             </tr>
                                             {% for propose_doc in issue.propose_documents_for_remote_sign %}
-                                                {% if propose_doc.document.type == 'Финансовые документы' %}
+                                                {% if propose_doc.type == 2 %}
                                                 <tr>
                                                     <td class="h6">
                                                         {% if propose_doc.document and propose_doc.document.file %}
@@ -135,7 +135,7 @@
                                                 <h4 style="font-weight: bold;">Юридические документы</h4>
                                             </tr>
                                             {% for propose_doc in issue.propose_documents_for_remote_sign %}
-                                                {% if propose_doc.document.type == 'Юридические документы' %}
+                                                {% if propose_doc.type == 1 %}
                                                 <tr>
                                                     <td class="h6">
                                                         {% if propose_doc.document and propose_doc.document.file %}
@@ -202,7 +202,7 @@
                                                 <h4 style="font-weight: bold;">Прочее</h4>
                                             </tr>
                                             {% for propose_doc in issue.propose_documents_for_remote_sign %}
-                                                {% if propose_doc.document.type == 'Прочее' %}
+                                                {% if propose_doc.type == 3 %}
                                                 <tr>
                                                     <td class="h6">
                                                         {% if propose_doc.document and propose_doc.document.file %}
@@ -264,8 +264,6 @@
                                             {% endfor %}
 
                                         </table>
-
-
 
                                         <div class="text-center">
                                             <button type="button" class="btn btn-primary" onclick="signAllFiles();">

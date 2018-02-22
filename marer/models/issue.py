@@ -1712,11 +1712,7 @@ class Issue(models.Model):
             app_doc.document = self.application_doc
             docs.append(app_doc)
         if self.status == consts.ISSUE_STATUS_REVIEW:
-            pdocs = self.propose_documents.filter(
-                is_approved_by_manager=True
-            ).exclude(
-                document__sign_state=consts.DOCUMENT_SIGN_VERIFIED
-            ).order_by('name')
+            pdocs = self.propose_documents_ordered
             docs.extend(pdocs)
         return docs
 
