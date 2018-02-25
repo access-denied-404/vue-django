@@ -1,5 +1,6 @@
 import math
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.timezone import now
 
 from marer import consts
 from marer.models import BankMinimalCommission
@@ -147,6 +148,7 @@ def sum2str(value):
     currency = []
 
     def split_by_groups(value: str, count: int):
+        value = str(int(value))
         extended_length = len(value) * 1.0 / count
         extended_value = value.rjust(math.ceil(extended_length) * count, '0')
         return [extended_value[i: i + count] for i in range(0, len(extended_value), count)]
@@ -190,3 +192,178 @@ def sum2str(value):
         currency.append(str(kop) if int(kop) > 0 else zero)
         currency.append(morph(kop, *unit[0][:3]))
     return '(' + ' '.join(digits).strip() + ') ' + ' '.join(currency).strip()
+
+
+class CalculateUnderwritingCriteria:
+
+    def score_1(self, value):
+        total = 100
+        if 80 <= value <= 100:
+            score = 0.25
+        elif 100 < value <= 150:
+            score = 0.5
+        elif 150 < value <= 200:
+            score = 0.75
+        elif 200 < value:
+            score = 1
+        else:
+            score = 0
+        return total - total * score
+
+    def score_2(self, value):
+        total = 200
+        if 100 <= value <= 150:
+            score = 0.5
+        elif 150 < value <= 200:
+            score = 0.75
+        elif 200 < value:
+            score = 1
+        else:
+            score = 0
+        return total - total * score
+
+    def score_3(self, value):
+        total = 50
+        if 30 <= value <= 50:
+            score = 0.25
+        elif 50 < value <= 75:
+            score = 0.5
+        elif 75 < value <= 100:
+            score = 1
+        else:
+            score = 0
+        return total - total * score
+
+    def score_4(self, value):
+        return self.score_3(value)
+
+    def score_51(self, value, bg_sum):
+        total = 200
+        if 5000000 <= bg_sum < 10000000:
+            if 1.5 <= value <= 2:
+                score = 0.25
+            elif 2 < value <= 4:
+                score = 0.75
+            else:
+                score = 1
+            return total - total * score
+        return 0
+
+    def score_52(self, value, bg_sum):
+        total = 200
+        if 10000000 <= bg_sum <= 18000000:
+            if 1.3 <= value <= 2:
+                score = 0.35
+            elif 2 < value <= 3:
+                score = 0.9
+            else:
+                score = 1
+            return total - total * score
+        return 0
+
+    def score_6(self, value):
+        total = 125
+
+        if 2 <= value <= 3:
+            score = 0.5
+        elif 3 < value:
+            score = 1
+        else:
+            score = 0
+        return total - total * score
+
+
+    def score_71(self, value, bg_sum):
+        total = 125
+        if 5000000 <= bg_sum < 10000000:
+            if 1.5 <= value <= 2:
+                score = 0.25
+            elif 2 < value <= 4:
+                score = 0.75
+            else:
+                score = 1
+            return total - total * score
+        return 0
+
+    def score_72(self, value, bg_sum):
+        total = 125
+        if 10000000 <= bg_sum <= 18000000:
+            if 1.3 <= value <= 2:
+                score = 0.35
+            elif 2 < value <= 3:
+                score = 0.9
+            else:
+                score = 1
+            return total - total * score
+        return 0
+
+    def score_8(self, value):
+        total = 50
+        return total if not value else 0
+
+    def score_9(self, value):
+        total = 25
+        return total if not value else 0
+
+    def score_10(self, value):
+        total = 25
+        return total if not value else 0
+
+    def score_11(self, value):
+        total = 50
+        return total if value > 70 else 0
+
+    def calc(self, issue):
+        value_1 = (issue.bg_sum / issue.balance_code_1600_offset_0 * 100) if issue.bg_sum and issue.balance_code_1600_offset_0 else 0
+        value_2 = (issue.tender_final_cost / issue.balance_code_2110_offset_1 * 100) if issue.balance_code_2110_offset_1 and issue.tender_final_cost else 0
+        value_3 = ((1 - issue.balance_code_2110_offset_1 / issue.balance_code_2110_offset_2) * 100) if issue.balance_code_2110_offset_1 and issue.balance_code_2110_offset_2 else 1
+        value_4 = (issue.balance_code_2110_offset_0 / issue.balance_code_2110_analog_offset_0 * 100) if issue.balance_code_2110_offset_0 and issue.balance_code_2110_analog_offset_0 else 0
+        value_5 = (issue.bg_sum / issue.similar_contract_sum) if issue.bg_sum and issue.similar_contract_sum  else 0
+        value_6 = ((now() - issue.similar_contract_date).days / 365) if issue.similar_contract_date else 0
+        value_7 = (issue.bg_sum / issue.biggest_contract_sum) if issue.bg_sum and issue.biggest_contract_sum else 0
+        value_8 = (issue.bg_sum <= issue.tender_final_cost) if issue.bg_sum and issue.tender_final_cost else False
+        value_11 = (issue.balance_code_1230_offset_0 / issue.balance_code_1600_offset_0 * 100) if issue.balance_code_1230_offset_0 and issue.balance_code_1600_offset_0 else 0
+        data = {
+            "value_1": '{:0.2f} %'.format(value_1),
+            "score_1": self.score_1(value_1),
+
+            "value_2": '{:0.2f} %'.format(value_2),
+            "score_2": self.score_2(value_2),
+
+            "value_3": '{:0.2f} %'.format(value_3),
+            "score_3": self.score_3(value_3),
+
+            "value_4": '{:0.2f} %'.format(value_4),
+            "score_4": self.score_4(value_4),
+
+            "value_5": '{:0.1f}'.format(value_5),
+            "score_51": self.score_51(value_5, issue.bg_sum),
+            "score_52": self.score_52(value_5, issue.bg_sum),
+
+            "value_6": '{:0.1f}'.format(value_6),
+            "score_6": self.score_6(value_6),
+
+            "value_7": '{:0.1f}'.format(value_7),
+            "score_71": self.score_71(value_7, issue.bg_sum),
+            "score_72": self.score_72(value_7, issue.bg_sum),
+
+            "value_8": 'ДА' if value_8 else 'НЕТ',
+            "score_8": self.score_8(value_8),
+
+            "value_9": 'ДА' if issue.has_fines_on_zakupki_gov_ru else 'НЕТ',
+            "score_9": self.score_9(issue.has_fines_on_zakupki_gov_ru),
+
+            "value_10": 'ДА' if issue.has_arbitration else 'НЕТ',
+            "score_10": self.score_10(issue.has_arbitration),
+
+            "value_11": '{:0.2f} %'.format(value_11),
+            "score_11": self.score_11(value_11),
+        }
+
+        total = 0
+        for key, value in data.items():
+            if key.startswith('score_'):
+                total += value
+
+        data['result'] = total
+        return data

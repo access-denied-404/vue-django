@@ -24,7 +24,8 @@ from marer.models.finance_org import FinanceOrganization, FinanceOrgProductPropo
 from marer.models.issuer import Issuer, IssuerDocument
 from marer.products import get_urgency_hours, get_urgency_days, get_finance_products_as_choices, FinanceProduct, get_finance_products, BankGuaranteeProduct
 from marer.utils import CustomJSONEncoder, kontur
-from marer.utils.issue import calculate_bank_commission, sum2str, generate_bg_number, issue_term_in_months, calculate_effective_rate
+from marer.utils.issue import calculate_bank_commission, sum2str, generate_bg_number, issue_term_in_months, \
+    calculate_effective_rate, CalculateUnderwritingCriteria
 from marer.utils.morph import MorpherApi
 from marer.utils.other import OKOPF_CATALOG, get_tender_info, are_docx_files_identical
 
@@ -213,6 +214,7 @@ class Issue(models.Model):
     balance_code_1600_offset_0 = models.DecimalField('валюта баланса за последний отчетный период', max_digits=32, decimal_places=0, blank=True, null=True)
     balance_code_2110_offset_0 = models.DecimalField('выручка за последний отчетный период', max_digits=32, decimal_places=0, blank=True, null=True)
     balance_code_2400_offset_0 = models.DecimalField('прибыль за последний отчетный период', max_digits=32, decimal_places=0, blank=True, null=True)
+    balance_code_1230_offset_0 = models.DecimalField('размер дебиторской задолженности за последний отчетный период', max_digits=32, decimal_places=0, blank=True, null=True)
 
     balance_code_1300_offset_1 = models.DecimalField('чистые активы за последний год', max_digits=32, decimal_places=0, blank=True, null=True)
     balance_code_1600_offset_1 = models.DecimalField('валюта баланса за последний год', max_digits=32, decimal_places=0, blank=True, null=True)
@@ -220,6 +222,7 @@ class Issue(models.Model):
     balance_code_2400_offset_1 = models.DecimalField('прибыль за последний год', max_digits=32, decimal_places=0, blank=True, null=True)
 
     balance_code_2110_offset_2 = models.DecimalField('выручка за предыдущий год', max_digits=32, decimal_places=0, blank=True, null=True)
+    balance_code_2110_analog_offset_0 = models.DecimalField('выручка за аналогичный период', help_text='выручка за период, аналогичный последнему отчетному периоду, в предыдущем году (например 3 кв 2017 и 3 кв 2016)', max_digits=32, decimal_places=0, blank=True, null=True)
 
     avg_employees_cnt_for_prev_year = models.IntegerField(verbose_name='Средняя численность работников за предшествующий календарный год', blank=False, null=False, default=1)
     issuer_web_site = models.CharField(verbose_name='Web-сайт', max_length=512, blank=True, null=False, default='')
@@ -861,7 +864,21 @@ class Issue(models.Model):
         blank=True,
         related_name='additional_doc'
     )
-
+    underwriting_criteria_doc = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='underwriting_criteria_doc'
+    )
+    underwriting_criteria_score = models.FloatField(verbose_name='Оценка по критериям андеррайтинга', blank=True, null=True)
+    approval_and_change_sheet = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='approval_and_change_sheet'
+    )
     payment_of_fee = models.ForeignKey(
         Document,
         on_delete=models.SET_NULL,
@@ -869,6 +886,12 @@ class Issue(models.Model):
         blank=True,
         related_name='payment_of_fee'
     )
+    
+    similar_contract_sum = models.FloatField(blank=True, null=True, default=0)
+    biggest_contract_sum = models.FloatField(blank=True, null=True, default=0)
+    similar_contract_date = models.DateField(blank=True, null=True)
+    has_fines_on_zakupki_gov_ru = models.BooleanField(default=False, help_text='наличие штрафов по контрактом, отраженных на сайте Госзакупок')
+    has_arbitration = models.BooleanField(default=False, help_text='наличие арбитражей по нарушениям выполнения условий гос. контрактов')
 
     def get_urgency_for_user(self, user):
         messages = list(self.clarification_messages.all().order_by('-id'))
@@ -1356,10 +1379,15 @@ class Issue(models.Model):
             'org_form': org_form,
             'issuer_head_short_fio': issuer_head_short_fio,
             'issuer_head_fio_rp': MorpherApi.get_response(issuer_head_fio, 'Р'),
+            'issuer_head_post_rp': MorpherApi.get_response(self.issuer_head_org_position_and_permissions, 'Р').lower(),
             'arbitration': 'г. Москвы',
         }
         properties.update(sign_by)
         return properties
+
+    @cached_property
+    def underwriting_criteria(self):
+        return CalculateUnderwritingCriteria().calc(self)
 
     @cached_property
     def bank_account_for_payment_fee(self):
@@ -1420,6 +1448,20 @@ class Issue(models.Model):
         return output
     bg_doc_admin_field.short_description = 'Проект'
     bg_doc_admin_field.allow_tags = True
+
+    def approval_and_change_sheet_admin_field(self):
+        doc = self.approval_and_change_sheet
+        field_parts = []
+        if doc:
+            if doc.file:
+                field_parts.append('<b><a href="{}">скачать</a></b>'.format(doc.file.url))
+        if len(field_parts) > 0:
+            output = ', '.join(field_parts)
+        else:
+            output = 'отсутствует'
+        return output
+    approval_and_change_sheet_admin_field.short_description = 'Лист согласования и изменения БГ'
+    approval_and_change_sheet_admin_field.allow_tags = True
 
     def payment_of_fee_admin_field(self):
         doc = self.payment_of_fee
@@ -1486,6 +1528,23 @@ class Issue(models.Model):
         return output
     additional_doc_admin_field.short_description = 'Дополнительно'
     additional_doc_admin_field.allow_tags = True
+
+    def underwriting_criteria_doc_admin_field(self):
+        doc = self.underwriting_criteria_doc
+        field_parts = []
+        if doc:
+            if doc.file:
+                field_parts.append('<b><a href="{}">скачать</a></b>'.format(doc.file.url))
+            if doc.sign:
+                field_parts.append('<b><a href="{}">ЭЦП</a></b>'.format(doc.sign.url))
+        if len(field_parts) > 0:
+            output = ', '.join(field_parts)
+        else:
+            output = 'отсутствует'
+        output += ' <input type="file" name="underwriting_criteria_doc" />'
+        return output
+    underwriting_criteria_doc_admin_field.short_description = 'Критерии андеррайтинга'
+    underwriting_criteria_doc_admin_field.allow_tags = True
 
     def doc_ops_mgmt_conclusion_doc_admin_field(self):
         field_parts = []
@@ -1570,8 +1629,8 @@ class Issue(models.Model):
         checks.append(self.issuer_head_passport_issue_date is not None)
         checks.append(self.issuer_head_residence_address is not None and self.issuer_head_residence_address != '')
         checks.append(self.issuer_head_passport_issued_by is not None and self.issuer_head_passport_issued_by != '')
-        for tr in self.org_management_collegial.all():
-            checks.append(tr.legal_addres is not None and tr.legal_address != '')
+        for tr in self.org_beneficiary_owners.all():
+            checks.append(tr.legal_address is not None and tr.legal_address != '')
             checks.append(tr.fact_address is not None and tr.fact_address != '')
         return not False in checks
 
@@ -2485,7 +2544,21 @@ class IssueMessagesProxy(Issue):
 
 @receiver(pre_save, sender=Issue, dispatch_uid="pre_save_issue")
 def pre_save_issue(sender, instance, **kwargs):
+    from marer.utils.documents import generate_doc
     if instance.old_status != instance.status and instance.status == consts.ISSUE_STATUS_REVIEW:
         from marer.utils.documents import generate_acts_for_issue
         instance.bg_property  # даем возможность выпасть исключению здесь, т.к. в format оно не появится
         generate_acts_for_issue(instance)
+
+    if not instance.approval_and_change_sheet and instance.id:
+        instance.approval_and_change_sheet = generate_doc(
+            os.path.join(settings.BASE_DIR, 'marer/templates/documents/acts/approval_and_change_sheet.docx'),
+            'approval_and_change_sheet_%s.docx' % instance.id, instance)
+
+
+@receiver(post_save, sender=Issue, dispatch_uid="post_save_issue")
+def post_save_issue(sender, instance, **kwargs):
+    from marer.utils.documents import generate_underwriting_criteria
+    instance.underwriting_criteria  # даем возможность выпасть исключению здесь, т.к. в format оно не появится
+    underwriting_criteria_doc, underwriting_criteria_score = generate_underwriting_criteria(instance)
+    Issue.objects.filter(id=instance.id).update(underwriting_criteria_doc=underwriting_criteria_doc, underwriting_criteria_score=underwriting_criteria_score)

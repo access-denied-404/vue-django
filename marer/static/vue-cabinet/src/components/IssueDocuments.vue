@@ -124,7 +124,7 @@
                       </tr>
                       <tr>
                         <td>
-                            <a href="/static/documents/approval_and_change_sheet.docx" download="Лист_согласования_и_изменения_БГ.docx">Лист согласования и изменения БГ</a>
+                            <a :href="issue.approval_and_change_sheet.file.url" :download="'Лист_согласования_и_изменения_БГ_'+issue.id +'.docx'">Лист согласования и изменения БГ</a>
                         </td>
                     </tr>
                     </table>

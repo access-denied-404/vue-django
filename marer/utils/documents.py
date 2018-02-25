@@ -4,6 +4,8 @@ from string import Formatter
 import re
 
 import os
+
+import xlrd
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.utils import timezone
@@ -18,7 +20,7 @@ from marer.models import Issue, User
 
 
 def fill_xlsx_file_with_issue_data(path: str, issue: Issue, user: User = None) -> ContentFile:
-    wb = load_workbook(path, keep_vba=True, guess_types=False)
+    wb = load_workbook(path)
     self_data = issue.__dict__
     self_data['user'] = user
     self_data['issue'] = issue
@@ -233,6 +235,12 @@ def generate_doc(path:str, new_name:str, data: Issue):
     doc.save()
     doc_file.close()
     return doc
+
+
+def generate_underwriting_criteria(issue: Issue):
+    doc = generate_doc('marer/templates/documents/acts/underwriting_criteria.docx', 'underwriting_criteria.docx', issue)
+    score = issue.underwriting_criteria['result']
+    return doc, float(score)
 
 
 def generate_acts_for_issue(issue: Issue)-> Issue:

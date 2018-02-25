@@ -158,6 +158,7 @@ class IssueSerializer(ModelSerializer):
     bg_doc = DocumentSerializer()
     transfer_acceptance_act = DocumentSerializer()
     payment_of_fee = DocumentSerializer()
+    approval_and_change_sheet = DocumentSerializer()
     contract_of_guarantee = ContractOfGuaranteeSerializer()
     bank_commission = serializers.CharField(max_length=512)
 

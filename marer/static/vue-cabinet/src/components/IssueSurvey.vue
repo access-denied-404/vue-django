@@ -27,16 +27,17 @@
               <div class="panel-heading">Основные финансовые показатели клиента</div>
               <div class="panel-body">
                 <div class="row">
-                  <div class="col-md-4 h6">Показатель</div>
-                  <div class="col-md-2 h6">Код строки</div>
+                  <div class="col-md-3 h6">Показатель</div>
+                  <div class="col-md-1 h6">Код строки</div>
                   <div class="col-md-2 h6">Последний завершенный квартал</div>
                   <div class="col-md-2 h6">Последний завершенный год</div>
                   <div class="col-md-2 h6">Предыдущий завершенный год</div>
+                  <div class="col-md-2 h6">Период аналогичный последнему завершенному</div>
                 </div>
 
                 <div class="row">
-                  <div class="col-md-4">Валюта баланса</div>
-                  <div class="col-md-2">1600</div>
+                  <div class="col-md-3">Валюта баланса</div>
+                  <div class="col-md-1">1600</div>
                   <div class="col-md-2">
                     <input class="form-control input-sm" type="text" v-model="issue.balance_code_1600_offset_0"/>
                   </div>
@@ -46,8 +47,8 @@
                 </div>
 
                 <div class="row">
-                  <div class="col-md-4">Чистые активы</div>
-                  <div class="col-md-2">1300</div>
+                  <div class="col-md-3">Чистые активы</div>
+                  <div class="col-md-1">1300</div>
                   <div class="col-md-2">
                     <input class="form-control input-sm" type="text" v-model="issue.balance_code_1300_offset_0"/>
                   </div>
@@ -57,8 +58,8 @@
                 </div>
 
                 <div class="row">
-                  <div class="col-md-4">Выручка</div>
-                  <div class="col-md-2">2110</div>
+                  <div class="col-md-3">Выручка</div>
+                  <div class="col-md-1">2110</div>
                   <div class="col-md-2">
                     <input class="form-control input-sm" type="text" v-model="issue.balance_code_2110_offset_0"/>
                   </div>
@@ -68,11 +69,14 @@
                   <div class="col-md-2">
                     <input class="form-control input-sm" type="text" v-model="issue.balance_code_2110_offset_2"/>
                   </div>
+                  <div class="col-md-2">
+                    <input class="form-control input-sm" type="text" v-model="issue.balance_code_2110_analog_offset_0"/>
+                  </div>
                 </div>
 
                 <div class="row">
-                  <div class="col-md-4">Прибыль</div>
-                  <div class="col-md-2">2400</div>
+                  <div class="col-md-3">Прибыль</div>
+                  <div class="col-md-1">2400</div>
                   <div class="col-md-2">
                     <input class="form-control input-sm" type="text" v-model="issue.balance_code_2400_offset_0"/>
                   </div>
@@ -81,6 +85,52 @@
                   </div>
                 </div>
 
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-info" v-if="big_sum">
+          <div class="panel-heading">Дополнительные финансовые данные</div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <bs-input
+                    :label="'Сумма последнего профильного контракта'"
+                    v-model="issue.similar_contract_sum"
+                  ></bs-input>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <bs-input
+                    :label="'Дата последнего профильного контракта'"
+                    v-model="issue.similar_contract_date"
+                  ></bs-input>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <bs-input
+                    :label="'Сумма максимального профильного контракта'"
+                    v-model="issue.biggest_contract_sum"
+                  ></bs-input>
+
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <checkbox v-model="issue.has_fines_on_zakupki_gov_ru" :type="'primary'">
+                  Наличие штрафов по контрактом, отраженных на сайте Госзакупок
+                </checkbox>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <checkbox v-model="issue.has_arbitration" :type="'primary'">
+                  Наличие арбитражей по нарушениям выполнения условий гос. контрактов
+                </checkbox>
               </div>
             </div>
           </div>
@@ -569,6 +619,11 @@
       })
     },
     computed: {
+      big_sum: {
+        get () {
+          return this.issue.bg_sum > 5000000
+        }
+      },
       date_range: {
         get () {
           if (this.issue.bg_end_date) {
