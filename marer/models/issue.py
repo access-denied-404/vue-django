@@ -872,7 +872,13 @@ class Issue(models.Model):
         related_name='underwriting_criteria_doc'
     )
     underwriting_criteria_score = models.FloatField(verbose_name='Оценка по критериям андеррайтинга', blank=True, null=True)
-
+    approval_and_change_sheet = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='approval_and_change_sheet'
+    )
     payment_of_fee = models.ForeignKey(
         Document,
         on_delete=models.SET_NULL,
@@ -1443,6 +1449,20 @@ class Issue(models.Model):
     bg_doc_admin_field.short_description = 'Проект'
     bg_doc_admin_field.allow_tags = True
 
+    def approval_and_change_sheet_admin_field(self):
+        doc = self.approval_and_change_sheet
+        field_parts = []
+        if doc:
+            if doc.file:
+                field_parts.append('<b><a href="{}">скачать</a></b>'.format(doc.file.url))
+        if len(field_parts) > 0:
+            output = ', '.join(field_parts)
+        else:
+            output = 'отсутствует'
+        return output
+    approval_and_change_sheet_admin_field.short_description = 'Лист согласования и изменения БГ'
+    approval_and_change_sheet_admin_field.allow_tags = True
+
     def payment_of_fee_admin_field(self):
         doc = self.payment_of_fee
         field_parts = []
@@ -1609,9 +1629,9 @@ class Issue(models.Model):
         checks.append(self.issuer_head_passport_issue_date is not None)
         checks.append(self.issuer_head_residence_address is not None and self.issuer_head_residence_address != '')
         checks.append(self.issuer_head_passport_issued_by is not None and self.issuer_head_passport_issued_by != '')
-        for tr in self.org_management_collegial.all():
-            checks.append(tr.legal_addres is not None and tr.legal_address != '')
-            checks.append(tr.fact_address is not None and tr.fact_address != '')
+        # for tr in self.org_management_collegial.all():
+        #     checks.append(tr.legal_address is not None and tr.legal_address != '')
+        #     checks.append(tr.fact_address is not None and tr.fact_address != '')
         return not False in checks
 
     def fill_from_issuer(self):
@@ -2528,10 +2548,15 @@ class IssueMessagesProxy(Issue):
 
 @receiver(pre_save, sender=Issue, dispatch_uid="pre_save_issue")
 def pre_save_issue(sender, instance, **kwargs):
+    from marer.utils.documents import generate_underwriting_criteria, generate_doc
     if instance.old_status != instance.status and instance.status == consts.ISSUE_STATUS_REVIEW:
         from marer.utils.documents import generate_acts_for_issue
         instance.bg_property  # даем возможность выпасть исключению здесь, т.к. в format оно не появится
         generate_acts_for_issue(instance)
-    from marer.utils.documents import generate_underwriting_criteria
+
     instance.underwriting_criteria  # даем возможность выпасть исключению здесь, т.к. в format оно не появится
     instance.underwriting_criteria_doc, instance.underwriting_criteria_score = generate_underwriting_criteria(instance)
+    if not instance.approval_and_change_sheet and instance.id:
+        instance.approval_and_change_sheet = generate_doc(
+            os.path.join(settings.BASE_DIR, 'marer/templates/documents/acts/approval_and_change_sheet.docx'),
+            'approval_and_change_sheet_%s.docx' % instance.id, instance)

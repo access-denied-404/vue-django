@@ -11,7 +11,7 @@ import mptt.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('marer', '0117_add_issue_sec_dep_conclusions_related_fields'),
+        ('marer', '0120_enlarge_issue_tender_contract_subject'),
     ]
 
     operations = [
