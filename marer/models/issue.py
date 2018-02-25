@@ -1373,6 +1373,7 @@ class Issue(models.Model):
             'org_form': org_form,
             'issuer_head_short_fio': issuer_head_short_fio,
             'issuer_head_fio_rp': MorpherApi.get_response(issuer_head_fio, 'Р'),
+            'issuer_head_post_rp': MorpherApi.get_response(self.issuer_head_org_position_and_permissions, 'Р').lower(),
             'arbitration': 'г. Москвы',
         }
         properties.update(sign_by)
