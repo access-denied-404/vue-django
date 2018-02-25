@@ -2548,15 +2548,21 @@ class IssueMessagesProxy(Issue):
 
 @receiver(pre_save, sender=Issue, dispatch_uid="pre_save_issue")
 def pre_save_issue(sender, instance, **kwargs):
-    from marer.utils.documents import generate_underwriting_criteria, generate_doc
+    from marer.utils.documents import generate_doc
     if instance.old_status != instance.status and instance.status == consts.ISSUE_STATUS_REVIEW:
         from marer.utils.documents import generate_acts_for_issue
         instance.bg_property  # даем возможность выпасть исключению здесь, т.к. в format оно не появится
         generate_acts_for_issue(instance)
 
-    instance.underwriting_criteria  # даем возможность выпасть исключению здесь, т.к. в format оно не появится
-    instance.underwriting_criteria_doc, instance.underwriting_criteria_score = generate_underwriting_criteria(instance)
     if not instance.approval_and_change_sheet and instance.id:
         instance.approval_and_change_sheet = generate_doc(
             os.path.join(settings.BASE_DIR, 'marer/templates/documents/acts/approval_and_change_sheet.docx'),
             'approval_and_change_sheet_%s.docx' % instance.id, instance)
+
+
+@receiver(post_save, sender=Issue, dispatch_uid="post_save_issue")
+def post_save_issue(sender, instance, **kwargs):
+    from marer.utils.documents import generate_underwriting_criteria
+    instance.underwriting_criteria  # даем возможность выпасть исключению здесь, т.к. в format оно не появится
+    underwriting_criteria_doc, underwriting_criteria_score = generate_underwriting_criteria(instance)
+    Issue.objects.filter(id=instance.id).update(underwriting_criteria_doc=underwriting_criteria_doc, underwriting_criteria_score=underwriting_criteria_score)
