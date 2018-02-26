@@ -272,7 +272,6 @@ class CalculateUnderwritingCriteria:
             score = 0
         return total - total * score
 
-
     def score_71(self, value, bg_sum):
         total = 125
         if 5000000 <= bg_sum < 10000000:

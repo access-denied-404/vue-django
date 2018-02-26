@@ -1763,6 +1763,31 @@ class Issue(models.Model):
         return pdocs
 
     @property
+    def propose_documents_fin(self):
+        return self.propose_docs_by_type(consts.DOCUMENT_TYPE_FINANCE)
+
+    @property
+    def propose_documents_leg(self):
+        return self.propose_docs_by_type(consts.DOCUMENT_TYPE_LEGAL)
+
+    @property
+    def propose_documents_oth(self):
+        return self.propose_docs_by_type(consts.DOCUMENT_TYPE_OTHER)
+
+    @property
+    def is_leg_doc_filled(self):
+        return self.is_doc_exist(self.propose_documents_leg)
+
+    @property
+    def is_fin_doc_filled(self):
+        return self.is_doc_exist(self.propose_documents_fin)
+
+    @property
+    def is_oth_doc_filled(self):
+        return self.is_doc_exist(self.propose_documents_oth)
+
+
+    @property
     def propose_documents_for_remote_sign(self):
         docs = []
         if self.application_doc and self.application_doc.file:
@@ -1903,6 +1928,19 @@ class Issue(models.Model):
         }
 
         return categories.get(self.scoring_credit_rating, 7.25)
+
+    def is_doc_exist(self, doc_list):
+        is_exist = False
+        for doc in doc_list:
+            if doc.document:
+                is_exist = True
+                break
+        return is_exist
+
+    def propose_docs_by_type(self, type):
+        pdocs = []
+        pdocs.extend(self.propose_documents.filter(type=type).order_by('name'))
+        return pdocs
 
     def fill_doc_ops_mgmt_conclusion(self, commit=True, **kwargs):
 
