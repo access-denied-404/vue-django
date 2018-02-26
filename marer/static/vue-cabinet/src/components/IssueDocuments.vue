@@ -45,7 +45,7 @@
                             <div class="row">
                                 <div class="form-group">
                                     <div class="col-md-10">
-                                        <a v-if="doc.document.file" :href="doc.document.file" v-text="doc.name"></a>
+                                        <a v-if="doc.document" :href="doc.document.file" v-text="doc.name"></a>
                                     </div>
                                     <div class="col-md-2">
                                         <span @click="isVisible('fin', doc, index)" class="glyphicon glyphicon-remove text-danger pull-right"></span>
@@ -64,7 +64,7 @@
                             <div class="row">
                                 <div class="form-group">
                                     <div class="col-md-10">
-                                        <a v-if="doc.document.file" :href="doc.document.file" v-text="doc.name"></a>
+                                        <a v-if="doc.document" :href="doc.document.file" v-text="doc.name"></a>
                                     </div>
                                     <div class="col-lg-2">
                                         <span @click="isVisible('jur', doc, index)" class="glyphicon glyphicon-remove text-danger pull-right"></span>
@@ -83,7 +83,7 @@
                             <div class="row">
                                 <div class="form-group">
                                     <div class="col-md-10">
-                                        <a v-if="doc.document.file" :href="doc.document.file" v-text="doc.name"></a>
+                                        <a v-if="doc.document" :href="doc.document.file" v-text="doc.name"></a>
                                     </div>
                                     <div class="col-lg-2">
                                         <span @click="isVisible('oth', doc, index)" class="glyphicon glyphicon-remove text-danger pull-right"></span>
@@ -119,14 +119,14 @@
                       </tr>
                       <tr v-if="issue.contract_of_guarantee">
                         <td>
-                            <a :href="issue.contract_of_guarantee.file.url">Договор поручительства</a>
+                            <a :href="issue.contract_of_guarantee.file">Договор поручительства</a>
                         </td>
                       </tr>
-                      <tr>
+                      <tr v-if="issue.approval_and_change_sheet && issue.approval_and_change_sheet.file">
                         <td>
-                            <a :href="issue.approval_and_change_sheet.file.url" :download="'Лист_согласования_и_изменения_БГ_'+issue.id +'.docx'">Лист согласования и изменения БГ</a>
+                            <a :href="issue.approval_and_change_sheet.file" :download="'Лист_согласования_и_изменения_БГ_'+issue.id +'.docx'">Лист согласования и изменения БГ</a>
                         </td>
-                    </tr>
+                      </tr>
                     </table>
 
                   </div>
