@@ -1,5 +1,6 @@
 import math
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.formats import number_format
 from django.utils.timezone import now
 
 from marer import consts
@@ -111,7 +112,7 @@ def generate_bg_number(date):
     return '%s%s-%s%s' % (prefix, part1, part2, suffix)
 
 
-def sum2str(value):
+def sum_str_format(value):
     zero = 'ноль'
     ten = (
         ('', 'один', 'два', 'три', 'четыре', 'пять', 'шесть', 'семь', 'восемь', 'девять'),
@@ -166,12 +167,14 @@ def sum2str(value):
 
     if int(rub) > 0:
         groups = split_by_groups(rub, 3)
+        rub_formatted = str(number_format(rub, force_grouping=True))
         for id, group in enumerate(groups):
             i1, i2, i3 = list([int(g) for g in group])
             unit_id = len(groups) - id
             current_unit = unit[unit_id]
             gender = current_unit[3]
-            digits.append(hundred[i1])
+            if i1 > 0:
+                digits.append(hundred[i1])
             if i2 > 1:
                 if i3 != 0:
                     text = tens[i2] + ' ' + ten[gender][i3]
@@ -187,11 +190,12 @@ def sum2str(value):
             if unit_id > 0:
                 if id == len(groups) - 1:
                     currency.append(morph(group, *current_unit[:3]))
-                else:
+                elif int(group) > 0:
                     digits.append(morph(group, *current_unit[:3]))
-        currency.append(str(kop) if int(kop) > 0 else zero)
+        currency.append(str(kop))
         currency.append(morph(kop, *unit[0][:3]))
-    return '(' + ' '.join(digits).strip() + ') ' + ' '.join(currency).strip()
+    digits_str = ' '.join(digits).strip()
+    return rub_formatted + ' (' + digits_str.capitalize() + ') ' + ' '.join(currency).strip()
 
 
 class CalculateUnderwritingCriteria:

@@ -24,7 +24,7 @@ from marer.models.finance_org import FinanceOrganization, FinanceOrgProductPropo
 from marer.models.issuer import Issuer, IssuerDocument
 from marer.products import get_urgency_hours, get_urgency_days, get_finance_products_as_choices, FinanceProduct, get_finance_products, BankGuaranteeProduct
 from marer.utils import CustomJSONEncoder, kontur
-from marer.utils.issue import calculate_bank_commission, sum2str, generate_bg_number, issue_term_in_months, \
+from marer.utils.issue import calculate_bank_commission, sum_str_format, generate_bg_number, issue_term_in_months, \
     calculate_effective_rate, CalculateUnderwritingCriteria
 from marer.utils.morph import MorpherApi
 from marer.utils.other import OKOPF_CATALOG, get_tender_info, are_docx_files_identical
@@ -1363,8 +1363,8 @@ class Issue(models.Model):
             'bg_number': generate_bg_number(self.created_at),
             'city': 'г. Москва',
             'bg_type': bg_type,
-            'bg_sum_str': sum2str(self.bg_sum),
-            'bank_commission_str': sum2str(self.bank_commission or 0),
+            'bg_sum_str': sum_str_format(self.bg_sum),
+            'bank_commission_str': sum_str_format(self.bank_commission or 0),
             'indisputable': 'Гарант предоставляет Бенефициару право на бесспорное списание денежных средств со счета Гаранта, если Гарантом в течение пяти рабочих дней не исполнено требование Бенефициара об уплате денежной суммы по Гарантии, направленное с соблюдением условий Гарантии.' if self.is_indisputable_charge_off else 'Не указано в заявлениии',
             'requisites': '\n'.join([
                 'Московский филиал «БАНК СГБ»',
