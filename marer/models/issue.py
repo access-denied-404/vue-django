@@ -1771,11 +1771,7 @@ class Issue(models.Model):
             app_doc.document = self.application_doc
             docs.append(app_doc)
         if self.status == consts.ISSUE_STATUS_REVIEW:
-            pdocs = self.propose_documents.filter(
-                is_approved_by_manager=True
-            ).exclude(
-                document__sign_state=consts.DOCUMENT_SIGN_VERIFIED
-            ).order_by('name')
+            pdocs = self.propose_documents_ordered
             docs.extend(pdocs)
         return docs
 
@@ -2554,15 +2550,17 @@ def pre_save_issue(sender, instance, **kwargs):
         instance.bg_property  # даем возможность выпасть исключению здесь, т.к. в format оно не появится
         generate_acts_for_issue(instance)
 
-    if not instance.approval_and_change_sheet and instance.id:
-        instance.approval_and_change_sheet = generate_doc(
-            os.path.join(settings.BASE_DIR, 'marer/templates/documents/acts/approval_and_change_sheet.docx'),
-            'approval_and_change_sheet_%s.docx' % instance.id, instance)
+    if instance.status == consts.ISSUE_STATUS_REVIEW:
+        from marer.utils.documents import generate_underwriting_criteria
+        try:
+            # исключениям выпадать не даем: пусть не заполняется целиком, если есть пропуски
+            underwriting_criteria_doc, underwriting_criteria_score = generate_underwriting_criteria(instance)
+            instance.underwriting_criteria_doc = underwriting_criteria_doc
+            instance.underwriting_criteria_score = underwriting_criteria_score
+        except Exception:
+            pass
 
-
-@receiver(post_save, sender=Issue, dispatch_uid="post_save_issue")
-def post_save_issue(sender, instance, **kwargs):
-    from marer.utils.documents import generate_underwriting_criteria
-    instance.underwriting_criteria  # даем возможность выпасть исключению здесь, т.к. в format оно не появится
-    underwriting_criteria_doc, underwriting_criteria_score = generate_underwriting_criteria(instance)
-    Issue.objects.filter(id=instance.id).update(underwriting_criteria_doc=underwriting_criteria_doc, underwriting_criteria_score=underwriting_criteria_score)
+        if not instance.approval_and_change_sheet:
+            instance.approval_and_change_sheet = generate_doc(
+                os.path.join(settings.BASE_DIR, 'marer/templates/documents/acts/approval_and_change_sheet.docx'),
+                'approval_and_change_sheet_%s.docx' % instance.id, instance)

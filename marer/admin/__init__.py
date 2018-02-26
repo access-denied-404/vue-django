@@ -826,7 +826,7 @@ class FinanceOrgProductProposeDocumentAdmin(ModelAdmin):
         'max_bg_sum',
         'is_required',
     )
-
+    filter_horizontal = ('form_ownership',)
     form = forms.FinanceOrgProductProposeDocumentForm
 
 

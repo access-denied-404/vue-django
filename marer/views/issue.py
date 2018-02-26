@@ -802,6 +802,15 @@ class IssueRemoteDocumentSignView(ContextMixin, View):
                 doc.save()
                 notify_user_manager_about_user_sign_document(pdoc)
                 response_dict['sign_state'] = consts.DOCUMENT_SIGN_VERIFIED
+
+                if self.get_issue().status == consts.ISSUE_STATUS_REGISTERING \
+                        and self.get_issue().check_all_application_required_fields_filled() \
+                        and self.get_issue().is_all_required_propose_docs_filled \
+                        and self.get_issue().application_doc \
+                        and self.get_issue().application_doc.sign_state == consts.DOCUMENT_SIGN_VERIFIED:
+                    self.get_issue().status = consts.ISSUE_STATUS_REVIEW
+                    self.get_issue().save()
+
             else:
                 response_dict['sign_state'] = consts.DOCUMENT_SIGN_CORRUPTED
             temp_sign_file.close()

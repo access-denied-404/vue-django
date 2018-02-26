@@ -212,7 +212,6 @@ class IssueProposeDocumentInlineAdminForm(forms.ModelForm):
 
 
 class FinanceOrgProductProposeDocumentForm(forms.ModelForm):
-    form_ownership = forms.ModelMultipleChoiceField(FormOwnership.objects.all(), label='Форма собственности')
 
     class Meta:
         model = FinanceOrgProductProposeDocument
