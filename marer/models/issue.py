@@ -1,5 +1,5 @@
 import json
-
+import warnings
 import os
 from _decimal import InvalidOperation
 
@@ -28,6 +28,7 @@ from marer.utils.issue import calculate_bank_commission, sum2str, generate_bg_nu
     calculate_effective_rate, CalculateUnderwritingCriteria
 from marer.utils.morph import MorpherApi
 from marer.utils.other import OKOPF_CATALOG, get_tender_info, are_docx_files_identical
+from marer.utils.notify import _get_default_manager
 
 __all__ = [
     'Issue', 'IssueDocument', 'IssueClarification', 'IssueMessagesProxy',
@@ -61,6 +62,19 @@ class Issue(models.Model):
         null=True,
         related_name='managed_issues'
     )
+
+    @cached_property
+    def current_manager(self):
+        """
+        Возвращает менеджера, работающего в данный момент с заявкой, поле manager в данный момент может быть пустым
+        :return:
+        """
+        manager = self.manager or self.user.manager
+        if not manager:
+            warnings.warn('No manager for issue #{issue_id}'.format(issue_id=self.id,))
+            manager = _get_default_manager()
+        return manager
+
     comment = models.TextField(verbose_name='комментарий к заявке', blank=True, null=False, default='')
     private_comment = models.TextField(verbose_name='приватный комментарий к заявке', blank=True, null=False, default='')
     updated_at = models.DateTimeField(verbose_name='время обновления', auto_now=True, null=False)
@@ -2549,6 +2563,7 @@ def pre_save_issue(sender, instance, **kwargs):
         from marer.utils.documents import generate_acts_for_issue
         instance.bg_property  # даем возможность выпасть исключению здесь, т.к. в format оно не появится
         generate_acts_for_issue(instance)
+
 
     if instance.status == consts.ISSUE_STATUS_REVIEW:
         from marer.utils.documents import generate_underwriting_criteria

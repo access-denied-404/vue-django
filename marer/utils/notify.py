@@ -112,6 +112,26 @@ def notify_user_manager_about_user_updated_issue(issue: Issue):
     )
 
 
+def notify_managers_issue_in_review(issue: Issue):
+    """
+    Заявка перешла в статус рассмотрение
+    :param issue:
+    """
+    # клиент отправил заявку на рассмотрение, уведомить менеджера
+    if issue.current_manager:
+        issue.current_manager.email_user(
+            subject="Заявка перешла в статус 'рассмотрение'",
+            html_template_filename='mail/events_for_send_to_user_manager/issue_in_review.html',
+            context=dict(
+                user_full_name=issue.user.__str__(),
+                issue_id=issue.id,
+                issue_number=issue.humanized_id,
+                finance_product=issue.get_product().humanized_name,
+                issuer_short_name=issue.issuer_short_name,
+            )
+        )
+
+
 def notify_fo_managers_about_issue_proposed_to_banks(proposes: list):
     if len(proposes) == 0:
         return
@@ -347,74 +367,26 @@ def notify_about_user_adds_message(msg: IssueClarificationMessage):
         )
 
 
-def notify_about_user_manager_adds_message(msg: IssueClarificationMessage):
-    # notify user and fo manager
-
-    # DISABLED
-    # user = msg.clarification.propose.issue.user
-    # user.email_user(
-    #     subject="Ваш менеджер добавил сообщение по дозапросу к заявке в банк",
-    #     html_template_filename='mail/events_for_send_to_user/.html',
-    #     context=dict(
-    #         # issue_id=propose.issue.id,
-    #         # issue_number=propose.issue.humanized_id,
-    #         # finance_product=propose.issue.get_product().humanized_name,
-    #         # finance_org_name=propose.finance_org.name,
-    #         # propose_id=propose.id,
-    #         # issuer_short_name=propose.issue.issuer_short_name,
-    #     )
-    # )
-
-    if not msg.clarification.propose.finance_org.manager_id:
-        warnings.warn('No manager for FO #{org_id} got notify of clarification for propose #{propose_id}'.format(
-            org_id=msg.clarification.propose.finance_org.id,
-            propose_id=msg.clarification.propose_id,
-        ))
-    else:
-        msg.clarification.propose.finance_org.manager.email_user(
-            subject="Менеджер клиента добавил сообщение по дозапросу к заявке в Ваш банк",
-            html_template_filename='mail/events_for_send_to_fo_manager/user_manager_added_clarification_message.html',
-            context=dict(
-                issue_id=msg.clarification.propose.issue.id,
-                issue_number=msg.clarification.propose.issue.humanized_id,
-                finance_product=msg.clarification.propose.issue.get_product().humanized_name,
-                issuer_short_name=msg.clarification.propose.issue.issuer_short_name,
-                finance_org_name=msg.clarification.propose.finance_org.name,
-                clarification_id=msg.clarification.id,
+def notify_managers_about_new_message_in_chat(message: IssueClarificationMessage):
+    author_role = 'Агент' if message.user == message.issue.user else 'Менеджер банка'
+    context = dict(
+        author_role=author_role,
+        issue_number=message.issue.humanized_id,
+        issue_id=message.issue.id,
+        finance_product=message.issue.get_product().humanized_name,
+        issuer_short_name=message.issue.issuer_short_name,
+    )
+    subject = '%s добавил сообщение по дозапросу к заявке' % author_role
+    if message.user == message.issue.user:
+        if message.issue.current_manager:
+            message.issue.current_manager.email_user(
+                subject=subject,
+                html_template_filename='mail/events_for_send_to_user_manager/new_message_in_chat.html',
+                context=context
             )
+    else:
+        message.issue.user.email_user(
+            subject=subject,
+            html_template_filename='mail/events_for_send_to_user_manager/new_message_in_chat.html',
+            context=context
         )
-
-
-def notify_about_fo_manager_adds_message(msg: IssueClarificationMessage):
-    # notify user and user manager
-
-    user = msg.clarification.propose.issue.user
-    user.email_user(
-        subject="Менеджер банка добавил сообщение по дозапросу к заявке в банк",
-        html_template_filename='mail/events_for_send_to_user/fo_manager_added_clarification_message.html',
-        context=dict(
-            clarification_id=msg.clarification.id,
-            issue_id=msg.clarification.propose.issue.id,
-            issue_number=msg.clarification.propose.issue.humanized_id,
-            finance_product=msg.clarification.propose.issue.get_product().humanized_name,
-            finance_org_name=msg.clarification.propose.finance_org.name,
-            issuer_short_name=msg.clarification.propose.issue.issuer_short_name,
-        )
-    )
-
-    user_manager = msg.clarification.propose.issue.user.manager
-    if user_manager is None:
-        user_manager = _get_default_manager()
-
-    user_manager.email_user(
-        subject="Менеджер банка добавил сообщение по дозапросу к заявке в банк",
-        html_template_filename='mail/events_for_send_to_user/fo_manager_added_clarification_message.html',
-        context=dict(
-            clarification_id=msg.clarification.id,
-            issue_number=msg.clarification.propose.issue.humanized_id,
-            issue_id=msg.clarification.propose.issue.id,
-            finance_product=msg.clarification.propose.issue.get_product().humanized_name,
-            finance_org_name=msg.clarification.propose.finance_org.name,
-            issuer_short_name=msg.clarification.propose.issue.issuer_short_name,
-        )
-    )
