@@ -214,8 +214,6 @@
         this.issue = data
         this.issue.bg_start_date = moment(data.bg_start_date, dateformat)
         this.issue.bg_end_date = moment(data.bg_end_date, dateformat)
-        this.issue.bg_commercial_contract_sign_date = moment(data.bg_commercial_contract_sign_date, dateformat)
-        this.issue.bg_commercial_contract_end_date = moment(data.bg_commercial_contract_end_date, dateformat)
 
         this.finance_documents = jQuery.grep(data.propose_documents, function (n, i) {
           return n.type === 2
