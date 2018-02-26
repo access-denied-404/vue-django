@@ -41,18 +41,19 @@
                         </td>
                       </tr>
                       <tr v-for="(doc, index) in finance_documents">
-                          <td v-if="doc" :id="'fin-doc-' + doc.id" v-show="doc.visible">
+                          <td :id="'fin-doc-' + doc.id" v-show="doc.visible">
                             <div class="row">
                                 <div class="form-group">
                                     <div class="col-md-12">
-                                        <a v-if="doc.document.file" :href="doc.document.file" v-text="doc.name"></a>
+                                        <a v-if="doc.document" :href="doc.document.file" v-text="doc.name"></a>
+                                        <div v-else v-text="doc.name"></div>
                                     </div>
                                 </div>
                             </div>
                           </td>
                       </tr>
-                      <tr>
-                          <a class="btn btn-primary btn-sm pull-right" href="#">Скачать архив</a>
+                      <tr v-if="finance_documents">
+                          <a class="btn btn-primary btn-sm pull-right">Скачать архив</a>
                       </tr>
                       <tr v-if="legal_documents">
                         <td>
@@ -60,18 +61,19 @@
                         </td>
                       </tr>
                       <tr v-for="(doc, index) in legal_documents">
-                        <td v-if="doc" :id="'jur-doc-' + doc.id" v-show="doc.visible">
+                        <td :id="'jur-doc-' + doc.id" v-show="doc.visible">
                             <div class="row">
                                 <div class="form-group">
                                     <div class="col-md-12">
-                                        <a v-if="doc.document.file" :href="doc.document.file" v-text="doc.name"></a>
+                                        <a v-if="doc.document" :href="doc.document.file" v-text="doc.name"></a>
+                                        <div v-else v-text="doc.name"></div>
                                     </div>
                                 </div>
                             </div>
                         </td>
                       </tr>
-                      <tr>
-                          <a class="btn btn-primary btn-sm pull-right" href="#">Скачать архив</a>
+                      <tr v-if="legal_documents">
+                          <a class="btn btn-primary btn-sm pull-right">Скачать архив</a>
                       </tr>
                       <tr v-if="other_documents">
                         <td>
@@ -79,18 +81,19 @@
                         </td>
                       </tr>
                       <tr v-for="(doc, index) in other_documents">
-                        <td v-if="doc" :id="'oth-doc-' + doc.id" v-show="doc.visible">
+                        <td :id="'oth-doc-' + doc.id" v-show="doc.visible">
                             <div class="row">
                                 <div class="form-group">
                                     <div class="col-md-12">
-                                        <a v-if="doc.document.file" :href="doc.document.file" v-text="doc.name"></a>
+                                        <a v-if="doc.document" :href="doc.document.file" v-text="doc.name"></a>
+                                        <div v-else v-text="doc.name"></div>
                                     </div>
                                 </div>
                             </div>
                         </td>
                       </tr>
-                      <tr>
-                          <a class="btn btn-primary btn-sm pull-right" href="#">Скачать архив</a>
+                      <tr v-if="other_documents">
+                          <a class="btn btn-primary btn-sm pull-right">Скачать архив</a>
                       </tr>
                       <tr v-if="issue.bg_contract_doc || issue.bg_doc || issue.transfer_acceptance_act">
                         <td>
@@ -122,9 +125,12 @@
                             <a :href="issue.contract_of_guarantee.file">Договор поручительства</a>
                         </td>
                       </tr>
-                      <tr v-if="issue.approval_and_change_sheet && issue.approval_and_change_sheet.file">
+                      <tr v-if="issue.approval_and_change_sheet">
                         <td>
-                            <a :href="issue.approval_and_change_sheet.file" :download="'Лист_согласования_и_изменения_БГ_'+issue.id +'.docx'">Лист согласования и изменения БГ</a>
+                            <a :href="issue.approval_and_change_sheet.file"
+                               :download="'Лист_согласования_и_изменения_БГ_'+ issue.id +'.docx'">
+                                Лист согласования и изменения БГ
+                            </a>
                         </td>
                       </tr>
                     </table>
@@ -211,8 +217,6 @@
         this.issue = data
         this.issue.bg_start_date = moment(data.bg_start_date, dateformat)
         this.issue.bg_end_date = moment(data.bg_end_date, dateformat)
-        this.issue.bg_commercial_contract_sign_date = moment(data.bg_commercial_contract_sign_date, dateformat)
-        this.issue.bg_commercial_contract_end_date = moment(data.bg_commercial_contract_end_date, dateformat)
 
         this.finance_documents = jQuery.grep(data.propose_documents, function (n, i) {
           return n.type === 2
