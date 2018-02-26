@@ -321,10 +321,10 @@ class CalculateUnderwritingCriteria:
         value_2 = (tender_final_cost_thousands / issue.balance_code_2110_offset_1 * 100) if issue.balance_code_2110_offset_1 and tender_final_cost_thousands else 0
         value_3 = ((1 - issue.balance_code_2110_offset_1 / issue.balance_code_2110_offset_2) * 100) if issue.balance_code_2110_offset_1 and issue.balance_code_2110_offset_2 else 1
         value_4 = (issue.balance_code_2110_offset_0 / issue.balance_code_2110_analog_offset_0 * 100) if issue.balance_code_2110_offset_0 and issue.balance_code_2110_analog_offset_0 else 0
-        value_5 = (issue.bg_sum / issue.similar_contract_sum) if issue.bg_sum and issue.similar_contract_sum  else 0
+        value_5 = (issue.bg_sum / issue.similar_contract_sum) if issue.bg_sum and issue.similar_contract_sum else 0
         value_6 = ((now() - issue.similar_contract_date).days / 365) if issue.similar_contract_date else 0
         value_7 = (issue.bg_sum / issue.biggest_contract_sum) if issue.bg_sum and issue.biggest_contract_sum else 0
-        value_8 = (issue.bg_sum <= issue.tender_final_cost) if issue.bg_sum and issue.tender_final_cost else False
+        value_8 = (issue.bg_sum >= issue.tender_final_cost) if issue.bg_sum and issue.tender_final_cost else False
         value_11 = (issue.balance_code_1230_offset_0 / issue.balance_code_1600_offset_0 * 100) if issue.balance_code_1230_offset_0 and issue.balance_code_1600_offset_0 else 0
         data = {
             "value_1": '{:0.2f} %'.format(value_1),
