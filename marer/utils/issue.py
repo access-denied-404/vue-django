@@ -314,8 +314,11 @@ class CalculateUnderwritingCriteria:
         return total if value > 70 else 0
 
     def calc(self, issue):
-        value_1 = (issue.bg_sum / issue.balance_code_1600_offset_0 * 100) if issue.bg_sum and issue.balance_code_1600_offset_0 else 0
-        value_2 = (issue.tender_final_cost / issue.balance_code_2110_offset_1 * 100) if issue.balance_code_2110_offset_1 and issue.tender_final_cost else 0
+        bg_sum_thousands = (issue.bg_sum / 1000) if issue.bg_sum else 0
+        tender_final_cost_thousands = (issue.tender_final_cost / 1000) if issue.tender_final_cost else 0
+
+        value_1 = (bg_sum_thousands / issue.balance_code_1600_offset_0 * 100) if bg_sum_thousands and issue.balance_code_1600_offset_0 else 0
+        value_2 = (tender_final_cost_thousands / issue.balance_code_2110_offset_1 * 100) if issue.balance_code_2110_offset_1 and tender_final_cost_thousands else 0
         value_3 = ((1 - issue.balance_code_2110_offset_1 / issue.balance_code_2110_offset_2) * 100) if issue.balance_code_2110_offset_1 and issue.balance_code_2110_offset_2 else 1
         value_4 = (issue.balance_code_2110_offset_0 / issue.balance_code_2110_analog_offset_0 * 100) if issue.balance_code_2110_offset_0 and issue.balance_code_2110_analog_offset_0 else 0
         value_5 = (issue.bg_sum / issue.similar_contract_sum) if issue.bg_sum and issue.similar_contract_sum  else 0
