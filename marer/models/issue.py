@@ -2560,7 +2560,7 @@ def pre_save_issue(sender, instance, **kwargs):
         except Exception:
             pass
 
-    if not instance.approval_and_change_sheet and instance.id:
-        instance.approval_and_change_sheet = generate_doc(
-            os.path.join(settings.BASE_DIR, 'marer/templates/documents/acts/approval_and_change_sheet.docx'),
-            'approval_and_change_sheet_%s.docx' % instance.id, instance)
+        if not instance.approval_and_change_sheet:
+            instance.approval_and_change_sheet = generate_doc(
+                os.path.join(settings.BASE_DIR, 'marer/templates/documents/acts/approval_and_change_sheet.docx'),
+                'approval_and_change_sheet_%s.docx' % instance.id, instance)
