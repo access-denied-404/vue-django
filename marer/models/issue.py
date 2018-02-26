@@ -2552,10 +2552,13 @@ def pre_save_issue(sender, instance, **kwargs):
 
     if instance.status == consts.ISSUE_STATUS_REVIEW:
         from marer.utils.documents import generate_underwriting_criteria
-        # исключениям выпадать не даем: пусть не заполняется целиком, если есть пропуски
-        underwriting_criteria_doc, underwriting_criteria_score = generate_underwriting_criteria(instance)
-        instance.underwriting_criteria_doc = underwriting_criteria_doc
-        instance.underwriting_criteria_score = underwriting_criteria_score
+        try:
+            # исключениям выпадать не даем: пусть не заполняется целиком, если есть пропуски
+            underwriting_criteria_doc, underwriting_criteria_score = generate_underwriting_criteria(instance)
+            instance.underwriting_criteria_doc = underwriting_criteria_doc
+            instance.underwriting_criteria_score = underwriting_criteria_score
+        except Exception:
+            pass
 
     if not instance.approval_and_change_sheet and instance.id:
         instance.approval_and_change_sheet = generate_doc(
