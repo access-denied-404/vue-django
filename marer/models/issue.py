@@ -1850,6 +1850,10 @@ class Issue(models.Model):
         return not (issuer_reg_delta.years <= 0 and issuer_reg_delta.months < 6)
 
     @property
+    def lawyers_executor_role(self):
+        return 'Менеджер' if self.bg_sum < 5000000 else 'Юрист'
+
+    @property
     def humanized_is_org_registered_more_than_6_months_ago(self):
         return 'Да' if self.is_org_registered_more_than_6_months_ago else 'Нет'
 
