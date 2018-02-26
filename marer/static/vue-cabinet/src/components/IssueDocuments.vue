@@ -41,11 +41,12 @@
                         </td>
                       </tr>
                       <tr v-for="(doc, index) in finance_documents">
-                          <td v-if="doc.document" :id="'fin-doc-' + doc.id" v-show="doc.visible">
+                          <td :id="'fin-doc-' + doc.id" v-show="doc.visible">
                             <div class="row">
                                 <div class="form-group">
                                     <div class="col-md-12">
-                                        <a :href="doc.document.file" v-text="doc.name"></a>
+                                        <a v-if="doc.document" :href="doc.document.file" v-text="doc.name"></a>
+                                        <div v-else v-text="doc.name"></div>
                                     </div>
                                 </div>
                             </div>
@@ -60,11 +61,12 @@
                         </td>
                       </tr>
                       <tr v-for="(doc, index) in legal_documents">
-                        <td v-if="doc.document" :id="'jur-doc-' + doc.id" v-show="doc.visible">
+                        <td :id="'jur-doc-' + doc.id" v-show="doc.visible">
                             <div class="row">
                                 <div class="form-group">
                                     <div class="col-md-12">
-                                        <a :href="doc.document.file" v-text="doc.name"></a>
+                                        <a v-if="doc.document" :href="doc.document.file" v-text="doc.name"></a>
+                                        <div v-else v-text="doc.name"></div>
                                     </div>
                                 </div>
                             </div>
@@ -79,11 +81,12 @@
                         </td>
                       </tr>
                       <tr v-for="(doc, index) in other_documents">
-                        <td v-if="doc.document" :id="'oth-doc-' + doc.id" v-show="doc.visible">
+                        <td :id="'oth-doc-' + doc.id" v-show="doc.visible">
                             <div class="row">
                                 <div class="form-group">
                                     <div class="col-md-12">
-                                        <a :href="doc.document.file" v-text="doc.name"></a>
+                                        <a v-if="doc.document" :href="doc.document.file" v-text="doc.name"></a>
+                                        <div v-else v-text="doc.name"></div>
                                     </div>
                                 </div>
                             </div>
