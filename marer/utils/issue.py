@@ -1,7 +1,12 @@
+import os
 import math
+import zipfile
+import io
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.formats import number_format
 from django.utils.timezone import now
+from django.conf import settings
 
 from marer import consts
 from marer.models import BankMinimalCommission
@@ -373,3 +378,16 @@ class CalculateUnderwritingCriteria:
 
         data['result'] = total
         return data
+
+
+def zip_docs(doc_list):
+    zip_io = io.BytesIO()
+
+    with zipfile.ZipFile(zip_io, mode='w') as zip:
+        for doc in doc_list:
+            if doc.document:
+                zip.write('media/' + doc.document.file.name)
+                if doc.document.sign:
+                    zip.write(doc.document.sign.file.name)
+        zip.close()
+    return zip_io.getvalue()

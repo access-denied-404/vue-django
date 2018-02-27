@@ -1,13 +1,15 @@
-from django.http import HttpResponseNotFound
+import io
+
+from django.http import HttpResponseNotFound, HttpResponse
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.views import APIView, View
 
 from marer.models import Issue
 from marer.serializers import ProfileSerializer, IssueListSerializer, IssueSerializer, IssueSecDepSerializer, \
     IssueLawyersDepSerializer
 from marer.forms import RestTenderForm, IssueBankCommissionForm
-from marer.utils.issue import calculate_bank_commission
+from marer.utils.issue import calculate_bank_commission, zip_docs
 from marer.utils.other import parse_date_to_frontend_format, get_tender_info
 
 
@@ -71,6 +73,30 @@ class IssuesView(APIView):
             issues_qs = Issue.objects.none()
         ilist_ser = IssueListSerializer(issues_qs, many=True)
         return Response(ilist_ser.data)
+
+
+class DocsZipView(View):
+
+    def get(self, request, iid):
+        type = request.GET.get('group', '')
+        issue = Issue.objects.get(id=iid)
+        if type == '1':
+            response = self.calculate_response(issue.propose_documents_leg)
+            response['Content-Disposition'] = 'attachment; filename=leg_docs.zip'
+        elif type == '2':
+            response = self.calculate_response(issue.propose_documents_fin)
+            response['Content-Disposition'] = 'attachment; filename=fin_docs.zip'
+        elif type == '3':
+            response = self.calculate_response(issue.propose_documents_oth)
+            response['Content-Disposition'] = 'attachment; filename=oth_docs.zip'
+        else:
+            response = HttpResponse('')
+        return response
+
+    def calculate_response(self, doc_list):
+        file = zip_docs(doc_list)
+        resp = HttpResponse(file, content_type='application/zip')
+        return resp
 
 
 class IssueBaseAPIView(APIView):

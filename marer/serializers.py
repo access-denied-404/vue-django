@@ -192,7 +192,6 @@ class IssueSerializer(ModelSerializer):
         read_only_fields = ('created_at', 'updated_at')
 
 
-
 class IssueSecDepSerializer(ModelSerializer):
     class Meta:
         model = Issue
