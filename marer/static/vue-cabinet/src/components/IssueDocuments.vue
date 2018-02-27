@@ -53,7 +53,10 @@
                           </td>
                       </tr>
                       <tr v-if="finance_documents">
-                          <a class="btn btn-primary btn-sm pull-right">Скачать архив</a>
+                          <a class="btn btn-primary btn-sm pull-right"
+                             :href="'issue/' + issue.id + '/docs-zip?group=2'"
+                             target="_blank">Скачать архив
+                          </a>
                       </tr>
                       <tr v-if="legal_documents">
                         <td>
@@ -73,7 +76,10 @@
                         </td>
                       </tr>
                       <tr v-if="legal_documents">
-                          <a class="btn btn-primary btn-sm pull-right">Скачать архив</a>
+                          <a class="btn btn-primary btn-sm pull-right"
+                             :href="'issue/' + issue.id + '/docs-zip?group=1'"
+                             target="_blank">Скачать архив
+                          </a>
                       </tr>
                       <tr v-if="other_documents">
                         <td>
@@ -93,7 +99,10 @@
                         </td>
                       </tr>
                       <tr v-if="other_documents">
-                          <a class="btn btn-primary btn-sm pull-right">Скачать архив</a>
+                          <a class="btn btn-primary btn-sm pull-right"
+                             :href="'issue/' + issue.id + '/docs-zip?group=3'"
+                             target="_blank">Скачать архив
+                          </a>
                       </tr>
                       <tr v-if="issue.bg_contract_doc || issue.bg_doc || issue.transfer_acceptance_act">
                         <td>

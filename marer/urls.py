@@ -48,4 +48,6 @@ urlpatterns = [
     url(r'^rest/issue/(?P<iid>\d+)/lawyers-dep-mgmt$', rest.IssueLawyersDepView.as_view(), name='rest_issue_lawyers_dep_mgmt'),
     url(r'^rest/profile$', rest.ProfileView.as_view(), name='rest_profile'),
 
+    url(r'^issue/(?P<iid>\d+)/docs-zip/', rest.DocsZipView.as_view(), name='docs_zip'),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
