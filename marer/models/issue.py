@@ -1,16 +1,15 @@
 import json
-
+import warnings
 import os
-from _decimal import InvalidOperation
 
 import feedparser
 import requests
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.urls import reverse
 from django.utils import timezone
@@ -19,8 +18,8 @@ from django.utils.functional import cached_property
 from django.utils.timezone import now
 
 from marer import consts
-from marer.models.base import Document, set_obj_update_time, BankMinimalCommission, FormOwnership
-from marer.models.finance_org import FinanceOrganization, FinanceOrgProductProposeDocument
+from marer.models.base import Document, set_obj_update_time, FormOwnership
+from marer.models.finance_org import FinanceOrgProductProposeDocument
 from marer.models.issuer import Issuer, IssuerDocument
 from marer.products import get_urgency_hours, get_urgency_days, get_finance_products_as_choices, FinanceProduct, get_finance_products, BankGuaranteeProduct
 from marer.utils import CustomJSONEncoder, kontur
@@ -28,6 +27,7 @@ from marer.utils.issue import calculate_bank_commission, sum_str_format, generat
     calculate_effective_rate, CalculateUnderwritingCriteria
 from marer.utils.morph import MorpherApi
 from marer.utils.other import OKOPF_CATALOG, get_tender_info, are_docx_files_identical
+
 
 __all__ = [
     'Issue', 'IssueDocument', 'IssueClarification', 'IssueMessagesProxy',
@@ -61,6 +61,20 @@ class Issue(models.Model):
         null=True,
         related_name='managed_issues'
     )
+
+    @cached_property
+    def current_manager(self):
+        """
+        Возвращает менеджера, работающего в данный момент с заявкой, поле manager в данный момент может быть пустым
+        :return:
+        """
+        from marer.utils.notify import _get_default_manager
+        manager = self.manager or self.user.manager
+        if not manager:
+            warnings.warn('No manager for issue #{issue_id}'.format(issue_id=self.id,))
+            manager = _get_default_manager()
+        return manager
+
     comment = models.TextField(verbose_name='комментарий к заявке', blank=True, null=False, default='')
     private_comment = models.TextField(verbose_name='приватный комментарий к заявке', blank=True, null=False, default='')
     updated_at = models.DateTimeField(verbose_name='время обновления', auto_now=True, null=False)
@@ -2591,6 +2605,7 @@ def pre_save_issue(sender, instance, **kwargs):
         from marer.utils.documents import generate_acts_for_issue
         instance.bg_property  # даем возможность выпасть исключению здесь, т.к. в format оно не появится
         generate_acts_for_issue(instance)
+
 
     if instance.status == consts.ISSUE_STATUS_REVIEW:
         from marer.utils.documents import generate_underwriting_criteria

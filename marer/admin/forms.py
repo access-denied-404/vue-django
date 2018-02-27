@@ -8,9 +8,6 @@ from marer.forms.widgets import ReadOnlyFileInput
 from marer.models import IssueClarificationMessage, Document, \
     IssueFinanceOrgProposeClarificationMessageDocument
 from marer.models.finance_org import FinanceOrgProductProposeDocument
-from marer.utils.notify import notify_about_user_manager_adds_message, notify_about_user_manager_created_clarification, \
-    notify_about_fo_manager_created_clarification, notify_about_fo_manager_adds_message
-from marer.models.base import FormOwnership
 
 
 class IFOPClarificationAddForm(forms.ModelForm):

@@ -29,7 +29,8 @@ from marer.products import get_finance_products
 from marer.stub import create_stub_issuer
 from marer.utils.notify import notify_user_manager_about_user_created_issue, \
     notify_user_manager_about_user_updated_issue, notify_about_user_created_clarification, \
-    notify_about_user_adds_message,  notify_user_manager_about_user_sign_document
+    notify_about_user_adds_message, notify_user_manager_about_user_sign_document, \
+    notify_managers_about_new_message_in_chat, notify_managers_issue_in_review
 
 
 class IssueView(LoginRequiredMixin, TemplateView):
@@ -521,7 +522,7 @@ class IssueScoringView(IssueView):
         if action == 'send_to_review' and self.get_issue().can_send_for_review:
             self.get_issue().status = consts.ISSUE_STATUS_REVIEW
             self.get_issue().save()
-            notify_user_manager_about_user_updated_issue(self.get_issue())
+            notify_managers_issue_in_review(self.get_issue())
             url = reverse('issue_additional_documents_requests', args=[self.get_issue().id])
             return HttpResponseRedirect(url)
         elif action == 'save':
@@ -584,6 +585,8 @@ class IssueAdditionalDocumentsRequestsView(IssueView):
                         new_clarif_doc_link.name = ffile.name
                         new_clarif_doc_link.document = new_doc
                         new_clarif_doc_link.save()
+
+                notify_managers_about_new_message_in_chat(new_msg)
 
         return self.get(request, *args, **kwargs)
 
