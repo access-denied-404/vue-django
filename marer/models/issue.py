@@ -869,7 +869,7 @@ class Issue(models.Model):
         null=True,
         blank=True,
         related_name='transfer_acceptance_acts_links',
-        verbose_name='Акт'
+        verbose_name='Акт',
     )
     additional_doc = models.ForeignKey(
         Document,
@@ -1798,6 +1798,10 @@ class Issue(models.Model):
         return pdocs
 
     @property
+    def propose_documents_app(self):
+        return self.fill_app_docs()
+
+    @property
     def propose_documents_fin(self):
         return self.propose_docs_by_type(consts.DOCUMENT_TYPE_FINANCE)
 
@@ -1810,26 +1814,25 @@ class Issue(models.Model):
         return self.propose_docs_by_type(consts.DOCUMENT_TYPE_OTHER)
 
     @property
-    def is_leg_doc_filled(self):
-        return self.is_doc_exist(self.propose_documents_leg)
+    def is_leg_docs_listed_for_sign_by_client(self):
+        return self.is_propose_document_list_approved_by_manager(self.propose_documents_leg)
 
     @property
-    def is_fin_doc_filled(self):
-        return self.is_doc_exist(self.propose_documents_fin)
+    def is_fin_docs_listed_for_sign_by_client(self):
+        return self.is_propose_document_list_approved_by_manager(self.propose_documents_fin)
 
     @property
-    def is_oth_doc_filled(self):
-        return self.is_doc_exist(self.propose_documents_oth)
+    def is_oth_docs_listed_for_sign_by_client(self):
+        return self.is_propose_document_list_approved_by_manager(self.propose_documents_oth)
 
+    @property
+    def is_application_docs_listed_for_sign_by_client(self):
+        return self.is_propose_document_list_approved_by_manager(self.propose_documents_app)
 
     @property
     def propose_documents_for_remote_sign(self):
         docs = []
-        if self.application_doc and self.application_doc.file:
-            app_doc = IssueProposeDocument()
-            app_doc.name = 'Заявление на предоставление банковской гарантии'
-            app_doc.document = self.application_doc
-            docs.append(app_doc)
+        docs.extend(self.fill_app_docs())
         if self.status == consts.ISSUE_STATUS_REVIEW:
             pdocs = self.propose_documents_ordered
             docs.extend(pdocs)
@@ -1875,6 +1878,37 @@ class Issue(models.Model):
         if commit:
             self.save()
         application_doc_file.close()
+
+    def fill_app_docs(self):
+        docs = []
+        if self.application_doc:
+            docs.append(self.extend_propose_document(self.application_doc,
+                                                     'Заявление на предоставление банковской гарантии',
+                                                     4))
+        if self.bg_doc:
+            docs.append(self.extend_propose_document(self.bg_doc,
+                                                     'Проект',
+                                                     4))
+        if self.transfer_acceptance_act:
+            docs.append(self.extend_propose_document(self.transfer_acceptance_act,
+                                                     'Акт',
+                                                     4))
+        if self.contract_of_guarantee:
+            docs.append(self.extend_propose_document(self.contract_of_guarantee,
+                                                     'Договор поручительства',
+                                                     4))
+        if self.approval_and_change_sheet:
+            docs.append(self.extend_propose_document(self.approval_and_change_sheet,
+                                                     'Лист согласования и изменения БГ',
+                                                     4))
+        return docs
+
+    def extend_propose_document(self, doc, name, type):
+        new_doc = IssueProposeDocument()
+        new_doc.name = name
+        new_doc.document = doc
+        new_doc.type = type
+        return new_doc
 
     @property
     def is_org_registered_more_than_6_months_ago(self):
@@ -1968,10 +2002,10 @@ class Issue(models.Model):
 
         return categories.get(self.scoring_credit_rating, 7.25)
 
-    def is_doc_exist(self, doc_list):
+    def is_propose_document_list_approved_by_manager(self, doc_list):
         is_exist = False
         for doc in doc_list:
-            if doc.document:
+            if doc.document and doc.is_approved_by_manager:
                 is_exist = True
                 break
         return is_exist
@@ -2148,6 +2182,22 @@ class Issue(models.Model):
             return False
         else:
             return True
+
+    # @property
+    # def zip_app_docs(self):
+    #     return zip_docs(self.propose_documents_app)
+    #
+    # @property
+    # def zip_fin_docs(self):
+    #     return zip_docs(self.propose_documents_fin)
+    #
+    # @property
+    # def zip_leg_docs(self):
+    #     return zip_docs(self.propose_documents_leg)
+    #
+    # @property
+    # def zip_oth_docs(self):
+    #     return zip_docs(self.propose_documents_oth)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None, create_docs=True):
         if not self.bg_start_date:
