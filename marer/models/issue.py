@@ -1779,20 +1779,20 @@ class Issue(models.Model):
         return self.propose_docs_by_type(consts.DOCUMENT_TYPE_OTHER)
 
     @property
-    def is_leg_docs_filled(self):
-        return self.is_doc_exist(self.propose_documents_leg)
+    def is_leg_docs_list(self):
+        return self.is_propose_document_list_approved_by_manager(self.propose_documents_leg)
 
     @property
-    def is_fin_docs_filled(self):
-        return self.is_doc_exist(self.propose_documents_fin)
+    def is_fin_docs_list(self):
+        return self.is_propose_document_list_approved_by_manager(self.propose_documents_fin)
 
     @property
-    def is_oth_docs_filled(self):
-        return self.is_doc_exist(self.propose_documents_oth)
+    def is_oth_docs_list(self):
+        return self.is_propose_document_list_approved_by_manager(self.propose_documents_oth)
 
     @property
-    def is_application_docs_filled(self):
-        return self.is_doc_exist(self.propose_documents_app)
+    def is_application_docs_list(self):
+        return self.is_propose_document_list_approved_by_manager(self.propose_documents_app)
 
     @property
     def propose_documents_for_remote_sign(self):
@@ -1963,7 +1963,7 @@ class Issue(models.Model):
 
         return categories.get(self.scoring_credit_rating, 7.25)
 
-    def is_doc_exist(self, doc_list):
+    def is_propose_document_list_approved_by_manager(self, doc_list):
         is_exist = False
         for doc in doc_list:
             if doc.document and doc.is_approved_by_manager:
