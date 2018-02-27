@@ -1224,7 +1224,7 @@ class Issue(models.Model):
         return self.created_at.strftime('%d.%m.%Y') if self.created_at else ''
 
     @property
-    def humanized_created_at_with_month_as_word(self):
+    def humanized_created_at_with_quotes_and_month_as_word(self):
         months = [
             None,  # month number 0, in dates starts from 1
             'января',
@@ -1240,7 +1240,7 @@ class Issue(models.Model):
             'ноября',
             'декабря',
         ]
-        return self.created_at.strftime('%d {} %Y'.format(months[self.created_at.month])) if self.created_at else ''
+        return self.created_at.strftime('«%d» {} %Y'.format(months[self.created_at.month])) if self.created_at else ''
 
     @property
     def humanized_bg_type(self):
