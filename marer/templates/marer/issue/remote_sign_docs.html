@@ -70,7 +70,7 @@
                                             <tr><h4 style="font-weight: bold;">Документы по заявке</h4></tr>
                                         {% for app_docs in app_list %}
                                             {% for app_doc in app_docs.list %}
-                                                {% if app_doc.document and app_doc.document.file %}
+                                                {% if app_doc.document and app_doc.document.file and app_doc.is_approved_by_manager %}
                                             <tr>
                                             <td class="h6">
                                             <div class="row">
@@ -144,7 +144,7 @@
                                             <tr><h4 style="font-weight: bold;">Финансовые документы</h4></tr>
                                         {% for fin_docs in fin_list %}
                                             {% for fin_doc in fin_docs.list %}
-                                                {% if fin_doc.document and fin_doc.document.file %}
+                                                {% if fin_doc.document and fin_doc.document.file and fin_doc.is_approved_by_manager %}
                                             <tr>
                                             <td class="h6">
                                             <div class="row">
@@ -218,7 +218,7 @@
                                             <tr><h4 style="font-weight: bold;">Юридические документы</h4></tr>
                                         {% for leg_docs in leg_list %}
                                             {% for leg_doc in leg_docs.list %}
-                                                {% if leg_doc.document and leg_doc.document.file %}
+                                                {% if leg_doc.document and leg_doc.document.file and leg_doc.is_approved_by_manager %}
                                             <tr>
                                             <td class="h6">
                                             <div class="row">
@@ -292,7 +292,7 @@
                                             <tr><h4 style="font-weight: bold;">Прочее</h4></tr>
                                         {% for oth_docs in oth_list %}
                                             {% for oth_doc in oth_docs.list %}
-                                                {% if oth_doc.document and oth_doc.document.file %}
+                                                {% if oth_doc.document and oth_doc.document.file and oth_doc.is_approved_by_manager %}
                                             <tr>
                                             <td class="h6">
                                             <div class="row">

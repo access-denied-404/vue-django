@@ -1966,7 +1966,7 @@ class Issue(models.Model):
     def is_doc_exist(self, doc_list):
         is_exist = False
         for doc in doc_list:
-            if doc.document:
+            if doc.document and doc.is_approved_by_manager:
                 is_exist = True
                 break
         return is_exist
@@ -2144,6 +2144,10 @@ class Issue(models.Model):
         else:
             return True
 
+    # @property
+    # def zip_app_docs(self):
+    #     return zip_docs(doc_list=self.propose_documents_app)
+    #
     # @property
     # def zip_fin_docs(self):
     #     return zip_docs(doc_list=self.propose_documents_fin)
