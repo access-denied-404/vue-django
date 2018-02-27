@@ -1885,19 +1885,19 @@ class Issue(models.Model):
             docs.append(self.extend_propose_document(self.application_doc,
                                                      'Заявление на предоставление банковской гарантии',
                                                      4))
-        if self.bg_doc:
+        if self.bg_doc and not self.status == consts.ISSUE_STATUS_REGISTERING:
             docs.append(self.extend_propose_document(self.bg_doc,
                                                      'Проект',
                                                      4))
-        if self.transfer_acceptance_act:
+        if self.transfer_acceptance_act and not self.status == consts.ISSUE_STATUS_REGISTERING:
             docs.append(self.extend_propose_document(self.transfer_acceptance_act,
                                                      'Акт',
                                                      4))
-        if self.contract_of_guarantee:
+        if self.contract_of_guarantee and not self.status == consts.ISSUE_STATUS_REGISTERING:
             docs.append(self.extend_propose_document(self.contract_of_guarantee,
                                                      'Договор поручительства',
                                                      4))
-        if self.approval_and_change_sheet:
+        if self.approval_and_change_sheet and not self.status == consts.ISSUE_STATUS_REGISTERING:
             docs.append(self.extend_propose_document(self.approval_and_change_sheet,
                                                      'Лист согласования и изменения БГ',
                                                      4))
