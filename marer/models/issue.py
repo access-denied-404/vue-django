@@ -25,7 +25,7 @@ from marer.models.issuer import Issuer, IssuerDocument
 from marer.products import get_urgency_hours, get_urgency_days, get_finance_products_as_choices, FinanceProduct, get_finance_products, BankGuaranteeProduct
 from marer.utils import CustomJSONEncoder, kontur
 from marer.utils.issue import calculate_bank_commission, sum2str, generate_bg_number, issue_term_in_months, \
-    calculate_effective_rate, CalculateUnderwritingCriteria, zip_docs
+    calculate_effective_rate, CalculateUnderwritingCriteria
 from marer.utils.morph import MorpherApi
 from marer.utils.other import OKOPF_CATALOG, get_tender_info, are_docx_files_identical
 
@@ -2146,19 +2146,19 @@ class Issue(models.Model):
 
     # @property
     # def zip_app_docs(self):
-    #     return zip_docs(doc_list=self.propose_documents_app)
+    #     return zip_docs(self.propose_documents_app)
     #
     # @property
     # def zip_fin_docs(self):
-    #     return zip_docs(doc_list=self.propose_documents_fin)
+    #     return zip_docs(self.propose_documents_fin)
     #
     # @property
     # def zip_leg_docs(self):
-    #     return zip_docs(doc_list=self.propose_documents_leg)
+    #     return zip_docs(self.propose_documents_leg)
     #
     # @property
     # def zip_oth_docs(self):
-    #     return zip_docs(doc_list=self.propose_documents_oth)
+    #     return zip_docs(self.propose_documents_oth)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None, create_docs=True):
         if not self.bg_start_date:

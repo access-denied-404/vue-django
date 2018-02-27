@@ -65,12 +65,11 @@
                                         <div class="h3">Документы для подписания</div>
 
                                     {% regroup issue.propose_documents_app by get_type_display as app_list %}
-                                        {% if issue.is_application_docs_listed_for_sign_by_client %}
                                         <table class="table table-condensed">
                                             <tr><h4 style="font-weight: bold;">Документы по заявке</h4></tr>
                                         {% for app_docs in app_list %}
                                             {% for app_doc in app_docs.list %}
-                                                {% if app_doc.document and app_doc.document.file and app_doc.is_approved_by_manager %}
+                                                {% if app_doc.document and app_doc.document.file %}
                                             <tr>
                                             <td class="h6">
                                             <div class="row">
@@ -368,20 +367,6 @@
                             </div>
                         </div>
                     </div>
-                {% else %}
-                    <div class="panel panel-info">
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <form method="post" enctype="multipart/form-data">
-                                        {% csrf_token %}
-                                        <div class="h3 text-center">Документы для подписания отсутствуют</div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
 
                 {% if cert_hash != '' %}
                     <script language="javascript" src="{% static '/marer/js/signing/es6-promise.min.js' %}"></script>
