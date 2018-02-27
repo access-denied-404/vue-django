@@ -65,7 +65,7 @@
                                         <div class="h3">Документы для подписания</div>
 
                                     {% regroup issue.propose_documents_app by get_type_display as app_list %}
-                                        {% if issue.is_application_docs_list %}
+                                        {% if issue.is_application_docs_listed_for_sign_by_client %}
                                         <table class="table table-condensed">
                                             <tr><h4 style="font-weight: bold;">Документы по заявке</h4></tr>
                                         {% for app_docs in app_list %}
@@ -139,7 +139,7 @@
 
 
                                     {% regroup issue.propose_documents_fin by get_type_display as fin_list %}
-                                        {% if issue.is_fin_docs_list %}
+                                        {% if issue.is_fin_docs_listed_for_sign_by_client %}
                                         <table class="table table-condensed">
                                             <tr><h4 style="font-weight: bold;">Финансовые документы</h4></tr>
                                         {% for fin_docs in fin_list %}
@@ -213,7 +213,7 @@
 
 
                                     {% regroup issue.propose_documents_leg by get_type_display as leg_list %}
-                                        {% if issue.is_leg_docs_list %}
+                                        {% if issue.is_leg_docs_listed_for_sign_by_client %}
                                         <table class="table table-condensed">
                                             <tr><h4 style="font-weight: bold;">Юридические документы</h4></tr>
                                         {% for leg_docs in leg_list %}
@@ -287,7 +287,7 @@
 
 
                                     {% regroup issue.propose_documents_oth by get_type_display as oth_list %}
-                                        {% if issue.is_oth_docs_list %}
+                                        {% if issue.is_oth_docs_listed_for_sign_by_client %}
                                         <table class="table table-condensed">
                                             <tr><h4 style="font-weight: bold;">Прочее</h4></tr>
                                         {% for oth_docs in oth_list %}

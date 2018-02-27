@@ -1779,19 +1779,19 @@ class Issue(models.Model):
         return self.propose_docs_by_type(consts.DOCUMENT_TYPE_OTHER)
 
     @property
-    def is_leg_docs_list(self):
+    def is_leg_docs_listed_for_sign_by_client(self):
         return self.is_propose_document_list_approved_by_manager(self.propose_documents_leg)
 
     @property
-    def is_fin_docs_list(self):
+    def is_fin_docs_listed_for_sign_by_client(self):
         return self.is_propose_document_list_approved_by_manager(self.propose_documents_fin)
 
     @property
-    def is_oth_docs_list(self):
+    def is_oth_docs_listed_for_sign_by_client(self):
         return self.is_propose_document_list_approved_by_manager(self.propose_documents_oth)
 
     @property
-    def is_application_docs_list(self):
+    def is_application_docs_listed_for_sign_by_client(self):
         return self.is_propose_document_list_approved_by_manager(self.propose_documents_app)
 
     @property
