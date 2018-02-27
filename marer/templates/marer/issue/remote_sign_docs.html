@@ -64,9 +64,82 @@
                                         {% csrf_token %}
                                         <div class="h3">Документы для подписания</div>
 
+                                    {% regroup issue.propose_documents_app by get_type_display as app_list %}
+                                        {% if issue.is_application_docs_filled %}
+                                        <table class="table table-condensed">
+                                            <tr><h4 style="font-weight: bold;">Документы по заявке</h4></tr>
+                                        {% for app_docs in app_list %}
+                                            {% for app_doc in app_docs.list %}
+                                                {% if app_doc.document and app_doc.document.file %}
+                                            <tr>
+                                            <td class="h6">
+                                            <div class="row">
+                                            <div class="col-md-10">
+                                                {% if app_doc.document and app_doc.document.file %}
+                                                    <a href="{{ app_doc.document.file.url }}">
+                                                    {{ app_doc.name }}
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-md-2">
+                                                {% if app_doc.document and app_doc.document.file %}
+                                                {% if cert_hash != '' or app_doc.document.sign_state == consts.DOCUMENT_SIGN_VERIFIED %}
+                                                    <script type="text/javascript">
+                                                        filesB64ForSign[{{ app_doc.document.id }}] = "{{ app_doc.document.base64_content }}";
+                                                    </script>
+                                                    <a
+                                                            href="#" id="btn-sign-file-id{{ app_doc.document.id }}"
+                                                            class="btn btn-primary btn-xs pull-right {% if app_doc.document.sign_state != consts.DOCUMENT_SIGN_NONE %}hidden{% endif %}"
+                                                            onclick="signFile({{ app_doc.document.id }});return false;">
+                                                        <span class="glyphicon glyphicon-certificate"></span>
+                                                        Подписать
+                                                    </a>
+
+                                                    <a
+                                                            href="#" id="btn-signed-file-id{{ app_doc.document.id }}"
+                                                            class="btn btn-xs pull-right btn-success {% if app_doc.document.sign_state != consts.DOCUMENT_SIGN_VERIFIED %}hidden{% endif %}"
+                                                            onclick="return false;">
+                                                        <span class="glyphicon glyphicon-ok-sign"></span>
+                                                        Подписано
+                                                    </a>
+
+                                                    <a
+                                                            href="#" id="btn-signing-file-id{{ app_doc.document.id }}"
+                                                            class="btn btn-xs pull-right btn-warning hidden"
+                                                            onclick="signFile({{ app_doc.document.id }});return false;">
+                                                        <span class="glyphicon glyphicon-time"></span>
+                                                        Подписание...
+                                                    </a>
+
+                                                    <a
+                                                            href="#" id="btn-resign-file-id{{ app_doc.document.id }}"
+                                                            class="btn btn-xs pull-right btn-danger {% if app_doc.document.sign_state != consts.DOCUMENT_SIGN_CORRUPTED %}hidden{% endif %}"
+                                                            onclick="signFile({{ app_doc.document.id }});return false;">
+                                                        <span class="glyphicon glyphicon-exclamation-sign"></span>
+                                                        Переподписать
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                                {% elif app_doc.sample and app_doc.sample.file %}
+                                                    <a
+                                                            href="{{ app_doc.sample.file.url }}"
+                                                            class="btn btn-link btn-xs pull-right">
+                                                        Образец <span class="glyphicon glyphicon-download-alt"></span>
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                                <div class="clearfix"></div>
+                                            </td>
+                                            </tr>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endfor %}
+                                        </table>
+                                        {% endif %}
+
 
                                     {% regroup issue.propose_documents_fin by get_type_display as fin_list %}
-                                        {% if issue.is_fin_doc_filled %}
+                                        {% if issue.is_fin_docs_filled %}
                                         <table class="table table-condensed">
                                             <tr><h4 style="font-weight: bold;">Финансовые документы</h4></tr>
                                         {% for fin_docs in fin_list %}
@@ -140,7 +213,7 @@
 
 
                                     {% regroup issue.propose_documents_leg by get_type_display as leg_list %}
-                                        {% if issue.is_leg_doc_filled %}
+                                        {% if issue.is_leg_docs_filled %}
                                         <table class="table table-condensed">
                                             <tr><h4 style="font-weight: bold;">Юридические документы</h4></tr>
                                         {% for leg_docs in leg_list %}
@@ -214,7 +287,7 @@
 
 
                                     {% regroup issue.propose_documents_oth by get_type_display as oth_list %}
-                                        {% if issue.is_oth_doc_filled %}
+                                        {% if issue.is_oth_docs_filled %}
                                         <table class="table table-condensed">
                                             <tr><h4 style="font-weight: bold;">Прочее</h4></tr>
                                         {% for oth_docs in oth_list %}
