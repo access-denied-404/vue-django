@@ -1224,6 +1224,25 @@ class Issue(models.Model):
         return self.created_at.strftime('%d.%m.%Y') if self.created_at else ''
 
     @property
+    def humanized_created_at_with_month_as_word(self):
+        months = [
+            None,  # month number 0, in dates starts from 1
+            'января',
+            'февраля',
+            'марта',
+            'апреля',
+            'мая',
+            'июня',
+            'июля',
+            'августа',
+            'сентября',
+            'октября',
+            'ноября',
+            'декабря',
+        ]
+        return self.created_at.strftime('%d {} %Y'.format(months[self.created_at.month])) if self.created_at else ''
+
+    @property
     def humanized_bg_type(self):
         return self.get_bg_type_display() or ''
 
@@ -1335,7 +1354,6 @@ class Issue(models.Model):
             'аукцион в электронном виде': 'аукциона в электронном виде',
         }.get(self.tender_placement_type.lower(), self.tender_placement_type)
         issuer_head_fio = '%s %s %s' % (self.issuer_head_last_name, self.issuer_head_first_name, self.issuer_head_middle_name)
-        org_form = MorpherApi.get_response(OKOPF_CATALOG.get(str(self.issuer_okopf), self.issuer_okopf), 'Р')
         if self.issuer_head_first_name and self.issuer_head_middle_name and  self.issuer_head_last_name:
             issuer_head_short_fio = '%s.%s. %s' % (self.issuer_head_first_name[0], self.issuer_head_middle_name[0], self.issuer_head_last_name)
         else:
@@ -1390,11 +1408,14 @@ class Issue(models.Model):
                 'БИК 044525094',
                 'Телефон: (499) 951-49-40',
             ]),
-            'org_form': org_form,
             'issuer_head_short_fio': issuer_head_short_fio,
             'issuer_head_fio_rp': MorpherApi.get_response(issuer_head_fio, 'Р'),
             'issuer_head_post_rp': MorpherApi.get_response(self.issuer_head_org_position_and_permissions, 'Р').lower(),
             'arbitration': 'г. Москвы',
+            'issuer_full_name_tp': MorpherApi.get_response(self.issuer_full_name, 'Т'),
+            'tender_responsible_full_name_tp': MorpherApi.get_response(self.tender_responsible_full_name, 'Т'),
+            'tender_placement_type_rp': MorpherApi.get_response(self.tender_placement_type, 'Р'),
+            'tender_contract_subject_dp': MorpherApi.get_response(self.tender_contract_subject, 'Д'),
         }
         properties.update(sign_by)
         return properties
