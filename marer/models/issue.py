@@ -2182,22 +2182,6 @@ class Issue(models.Model):
         else:
             return True
 
-    # @property
-    # def zip_app_docs(self):
-    #     return zip_docs(self.propose_documents_app)
-    #
-    # @property
-    # def zip_fin_docs(self):
-    #     return zip_docs(self.propose_documents_fin)
-    #
-    # @property
-    # def zip_leg_docs(self):
-    #     return zip_docs(self.propose_documents_leg)
-    #
-    # @property
-    # def zip_oth_docs(self):
-    #     return zip_docs(self.propose_documents_oth)
-
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None, create_docs=True):
         if not self.bg_start_date:
             self.bg_start_date = timezone.now()
