@@ -29,6 +29,7 @@ class BGFinProdRegForm(Form):
     ])
     tender_publish_date = DateField(required=False)
     tender_start_cost = DecimalField(decimal_places=2, required=False, localize=True)
+    tender_final_cost = DecimalField(decimal_places=2, required=False, localize=True)
 
     tender_responsible_full_name = CharField(required=False)
     tender_responsible_legal_address = CharField(required=False)
