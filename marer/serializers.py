@@ -3,7 +3,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.utils import model_meta
 
 from marer import consts
-from marer.models import Issue, User, Document
+from marer.models import Issue, User, IssueClarificationMessage, IssueFinanceOrgProposeClarificationMessageDocument
 from marer.models.base import Document
 from marer.models.issue import IssueOrgManagementCollegial, IssueOrgManagementDirectors, IssueOrgManagementOthers, \
     IssueOrgBeneficiaryOwner, IssueOrgBankAccount, IssueBGProdFounderPhysical, IssueBGProdFounderLegal, \
@@ -192,6 +192,38 @@ class IssueSerializer(ModelSerializer):
         read_only_fields = ('created_at', 'updated_at')
 
 
+class ProfileSerializer(ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ('id', 'first_name', 'last_name', 'email', 'phone',)
+
+
+class IssueMessageDocumentLink(ModelSerializer):
+    document = DocumentSerializer()
+
+    class Meta:
+        model = IssueFinanceOrgProposeClarificationMessageDocument
+        fields = ('id', 'name', 'document')
+
+
+class IssueClarificationMessagesSerializer(ModelSerializer):
+    documents_links = IssueMessageDocumentLink(many=True)
+    user = ProfileSerializer(read_only=True)
+
+    class Meta:
+        model = IssueClarificationMessage
+        fields = ('id', 'message', 'user', 'documents_links', 'created_at')
+
+
+class IssueMessagesSerializer(ModelSerializer):
+    clarification_messages = IssueClarificationMessagesSerializer(many=True)
+
+    class Meta:
+        model = Issue
+        fields = ('id', 'clarification_messages')
+
+
 class IssueSecDepSerializer(ModelSerializer):
     class Meta:
         model = Issue
@@ -210,10 +242,3 @@ class IssueLawyersDepSerializer(ModelSerializer):
             'lawyers_dep_recommendations',
             'is_positive_lawyers_department_conclusion',
         )
-
-
-class ProfileSerializer(ModelSerializer):
-
-    class Meta:
-        model = User
-        fields = ('id', 'first_name', 'last_name', 'email', 'phone',)

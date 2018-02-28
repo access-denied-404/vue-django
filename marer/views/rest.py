@@ -2,12 +2,13 @@ import io
 
 from django.http import HttpResponseNotFound, HttpResponse
 from rest_framework import status
+from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView, View
 
 from marer.models import Issue
 from marer.serializers import ProfileSerializer, IssueListSerializer, IssueSerializer, IssueSecDepSerializer, \
-    IssueLawyersDepSerializer
+    IssueLawyersDepSerializer, IssueMessagesSerializer
 from marer.forms import RestTenderForm, IssueBankCommissionForm
 from marer.utils.issue import calculate_bank_commission, zip_docs
 from marer.utils.other import parse_date_to_frontend_format, get_tender_info
@@ -127,6 +128,11 @@ class IssueSecDepView(IssueBaseAPIView):
 
 class IssueLawyersDepView(IssueBaseAPIView):
     serializer = IssueLawyersDepSerializer
+
+
+class IssueMessagesView(IssueBaseAPIView):
+    parser_classes = (MultiPartParser,)
+    serializer = IssueMessagesSerializer
 
 
 class ProfileView(APIView):

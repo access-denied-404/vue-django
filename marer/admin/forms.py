@@ -8,6 +8,7 @@ from marer.forms.widgets import ReadOnlyFileInput
 from marer.models import IssueClarificationMessage, Document, \
     IssueFinanceOrgProposeClarificationMessageDocument
 from marer.models.finance_org import FinanceOrgProductProposeDocument
+from marer.utils.notify import notify_managers_about_new_message_in_chat
 
 
 class IFOPClarificationAddForm(forms.ModelForm):
@@ -48,17 +49,7 @@ class IFOPClarificationAddForm(forms.ModelForm):
             new_ifopcmd.document = new_ifopcmd_doc
             new_ifopcmd.save()
 
-        # if change:
-        #     if self.user.id == self.instance.propose.issue.user.manager_id:
-        #         notify_about_user_manager_adds_message(new_msg)
-        #     else:
-        #         notify_about_fo_manager_adds_message(new_msg)
-        # else:
-        #     if self.user.id == self.instance.propose.issue.user.manager_id:
-        #         notify_about_user_manager_created_clarification(self.instance)
-        #     else:
-        #         notify_about_fo_manager_created_clarification(self.instance)
-
+        notify_managers_about_new_message_in_chat(new_msg)
         return super().save(commit)
 
 
