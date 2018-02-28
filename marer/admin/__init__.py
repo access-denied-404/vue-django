@@ -88,11 +88,19 @@ class IssueAdmin(ModelAdmin):
         'created_at',
         'updated_at',
     )
-    list_filter = (
-        ('manager', ManagerListFilter),
-        ('user__manager', ManagerListFilter),
-        'status',
-    )
+
+    def get_list_filter(self, request):
+        if request.user.is_ordinary_manager:
+            return (
+                'status',
+            )
+        else:
+            return (
+                ('manager', ManagerListFilter),
+                ('user__manager', ManagerListFilter),
+                'status',
+            )
+
     search_fields = (
         'issuer_short_name',
         'issuer_full_name',
@@ -135,9 +143,9 @@ class IssueAdmin(ModelAdmin):
         return '{} {},<br>{}'.format(
             obj.user.first_name or '',
             obj.user.last_name or '',
-            obj.user.email or '',
+            obj.user.legal_name if obj.user.legal_name and obj.user.legal_name != '' else obj.user.email,
         )
-    shortened_user.short_description = 'пользователь'
+    shortened_user.short_description = 'агент'
     shortened_user.admin_order_field = 'user__first_name'
     shortened_user.allow_tags = True
 
@@ -363,10 +371,10 @@ class IssueAdmin(ModelAdmin):
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        if request.user.has_perm('marer.change_issue'):
+        if request.user.is_ordinary_manager:
+            qs = qs.filter(manager_id=request.user.id)
+        elif request.user.has_perm('marer.change_issue'):
             pass
-        elif request.user.has_perm('marer.can_change_managed_users_issues'):
-            qs = qs.filter(user__manager_id=request.user.id)
         return qs
 
     def get_inline_instances(self, request, obj=None):
@@ -582,7 +590,7 @@ class MarerUserAdmin(UserAdmin):
         'is_staff',
         'is_superuser',
         'is_active',
-        'is_broker',
+        # 'is_broker',
         'groups'
     )
     reset_user_password_template = None
@@ -703,7 +711,7 @@ class MarerUserAdmin(UserAdmin):
         full_fieldsets = (
             (None, {'fields': ('username', 'password', 'manager',)}),
             (_('Personal info'), {'fields': ('first_name', 'middle_name', 'last_name', 'legal_name', 'email', 'phone', 'comment')}),
-            (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'is_broker',
+            (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'is_ordinary_manager',
                                            'groups', 'user_permissions')}),
             (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
             ('ЭЦП', {'fields': ('cert_hash', 'cert_sign',)})

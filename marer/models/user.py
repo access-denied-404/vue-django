@@ -48,6 +48,10 @@ class User(AbstractUser):
     )
     cert_hash = models.CharField(max_length=512, blank=True, null=False, default='')
     cert_sign = models.TextField(blank=True, null=False, default='')
+    is_ordinary_manager = models.BooleanField(
+        'Пользователь является менеджером и видит только свои заявки',
+        default=False
+    )
 
     @classmethod
     def normalize_username(cls, username):
