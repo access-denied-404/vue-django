@@ -8,6 +8,7 @@
     <input type="hidden" name="tender_placement_type" :value="tender_placement_type">
     <input type="hidden" name="tender_publish_date" :value="tender_publish_date">
     <input type="hidden" name="tender_start_cost" :value="tender_start_cost">
+    <input type="hidden" name="tender_final_cost" :value="tender_final_cost">
     <input type="hidden" name="tender_contract_subject" :value="tender_contract_subject"/>
 
     <input type="hidden" name="tender_responsible_full_name" :value="tender_responsible_full_name">
@@ -118,12 +119,11 @@
           </div>
           <div class="col-md-4">
             <bs-input
-              :name="'date_range'"
-              v-model="date_range"
-              label="Срок БГ, месяцев (не более 30)"
+              name="tender_final_cost"
+              v-model="tender_final_cost"
+              label="Итоговая сумма контракта"
               readonly
               required
-              v-bind:class="{'has-error': !date_range_is_appropriate}"
             ></bs-input>
           </div>
         </div>
@@ -138,6 +138,14 @@
           </div>
 
           <div class="col-md-4">
+            <bs-input
+              :name="'date_range'"
+              v-model="date_range"
+              label="Срок БГ, месяцев (не более 30)"
+              readonly
+              required
+              v-bind:class="{'has-error': !date_range_is_appropriate}"
+            ></bs-input>
             <checkbox :name="'bg_is_benefeciary_form'" v-model="bg_is_benefeciary_form" type="primary">БГ по форме Бенефециара</checkbox>
             <checkbox :name="'tender_has_prepayment'" v-model="tender_has_prepayment" type="primary">Наличие аванса</checkbox>
             <checkbox :name="'is_indisputable_charge_off'" v-model="is_indisputable_charge_off" type="primary">Бесспорное списание</checkbox>
@@ -145,6 +153,7 @@
         </div>
       </div>
     </div>
+
 
     <div class="panel panel-info">
       <div class="panel-heading">Бухгалтерская отчетность</div>
@@ -222,6 +231,7 @@
           tender_placement_type: regData.formdata.tender_placement_type,
           tender_publish_date: regData.formdata.tender_publish_date,
           tender_start_cost: regData.formdata.tender_start_cost,
+          tender_final_cost: regData.formdata.tender_final_cost,
 
           tender_application_ensure_cost: regData.formdata.tender_application_ensure_cost,
           tender_contract_execution_ensure_cost: regData.formdata.tender_contract_execution_ensure_cost,
@@ -264,6 +274,7 @@
           tender_placement_type: '',
           tender_publish_date: '',
           tender_start_cost: 0,
+          tender_final_cost: 0,
 
           tender_application_ensure_cost: '',
           tender_contract_execution_ensure_cost: '',
