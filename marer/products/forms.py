@@ -166,9 +166,9 @@ class BGFinProdSurveyOrgCommonForm(Form):
         (consts.TAX_ENVD, 'ЕНВД'),
         (consts.TAX_ESHD, 'ЕСХД'),
     ]))
-    agent_comission = CharField(required=False, max_length=512,
-                                widget=TextInput(attrs={'class': 'form-control input-sm',
-                                                        'placeholder': 'Предложить комиссию(руб)'}))
+    agent_comission = DecimalField(decimal_places=2, required=False,
+                                   widget=TextInput(attrs={'class': 'form-control input-sm',
+                                                           'placeholder': 'Предложить комиссию(руб)'}))
 
 
 class BGFinProdSurveyOrgHeadForm(Form):
