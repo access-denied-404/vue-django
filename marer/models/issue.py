@@ -128,7 +128,7 @@ class Issue(models.Model):
     ])
     tender_publish_date = models.DateField(verbose_name='дата публикации тендера', blank=True, null=True)
     tender_start_cost = models.DecimalField(verbose_name='начальная цена тендера', max_digits=32, decimal_places=2, blank=False, null=False, default=0)
-    tender_final_cost = models.DecimalField(verbose_name='конечная цена тендера', max_digits=32, decimal_places=2, blank=True, null=True)
+    tender_final_cost = models.DecimalField(verbose_name='конечная цена тендера', max_digits=32, decimal_places=2, blank=False, null=False, default=0)
 
     tender_contract_type = models.CharField(verbose_name='вид работ в тендере', max_length=32, blank=True, null=True, choices=[
         (consts.TENDER_CONTRACT_TYPE_SUPPLY_CONTRACT, 'Поставка товара'),
@@ -1004,14 +1004,14 @@ class Issue(models.Model):
 
     @property
     def humanized_custom_tender_contract_sum(self):
-        if self.tender_final_cost:
+        if self.tender_final_cost and self.tender_final_cost > 0:
             return '{} рублей'.format(self.tender_final_cost)
         else:
             return 'тендер не разыгран'
 
     @property
     def tender_cost_reduction(self):
-        if self.tender_start_cost and self.tender_final_cost:
+        if self.tender_start_cost and self.tender_final_cost and self.tender_final_cost > 0:
             return round((1 - self.tender_final_cost / self.tender_start_cost) * 100, 0)
 
     @property

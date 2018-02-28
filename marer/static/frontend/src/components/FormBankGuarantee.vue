@@ -118,13 +118,9 @@
             </div>
           </div>
           <div class="col-md-4">
-            <bs-input
-              name="tender_final_cost"
-              v-model="tender_final_cost"
-              label="Итоговая сумма контракта"
-              readonly
-              required
-            ></bs-input>
+            <label>Итоговая сумма контракта</label>
+            <money type="text" name="tender_final_cost"
+                   v-bind="money_format" v-model="tender_final_cost" class="form-control input"></money>
           </div>
         </div>
 
