@@ -13,9 +13,9 @@
         <div class="well well-sm text-center">
           Ссылка для подписания заявления клиентом:
           <strong>
-          http://sgbmarertest.ru/cabinet/requests/{{issue.id}}/rsd
+          http://sgbgarant.ru/cabinet/requests/{{issue.id}}/rsd
           </strong>
-          <a class="btn btn-link btn-xs" :href="'http://sgbmarertest.ru/cabinet/requests/' + issue.id + '/rsd'" target="_blank">
+          <a class="btn btn-link btn-xs" :href="'http://sgbgarant.ru/cabinet/requests/' + issue.id + '/rsd'" target="_blank">
             <span class="glyphicon glyphicon-new-window"></span>
           </a>
         </div>
