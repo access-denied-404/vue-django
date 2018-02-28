@@ -135,11 +135,10 @@
   import IssueMenu from '@/components/IssueMenu'
   import 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css'
   import {Money} from 'v-money'
-  import axios from 'axios'
+//  import axios from 'axios'
 
   moment.locale = 'ru'
   let datetimeJsonFormat = 'YYYY-MM-DDTHH:mm'
-  let dateformat = 'DD.MM.YYYY'
   let dateTimeFormat = 'DD.MM.YYYY HH:mm'
 
   export default {
