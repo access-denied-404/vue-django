@@ -387,9 +387,9 @@ def zip_docs(doc_list):
         for doc in doc_list:
             if doc.document:
                 path = doc.document.file.name
-                zip.write('media/' + path, arcname=os.path.splitext(path.split('/')[-1])[0])
+                zip.write('media/' + path, arcname=path.split('/')[-1])
                 if doc.document.sign:
                     path_s = doc.document.sign.name
-                    zip.write('media/' + path_s, arcname=os.path.splitext(path_s.split('/')[-1])[0])
+                    zip.write('media/' + path_s, arcname=path_s.split('/')[-1])
         zip.close()
     return zip_io.getvalue()
