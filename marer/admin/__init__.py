@@ -32,10 +32,9 @@ from marer.admin.inline import IssueDocumentInlineAdmin, \
     IssueBGProdFounderLegalInlineAdmin, IssueBGProdFounderPhysicalInlineAdmin, \
     FinanceOrgProductProposeDocumentInlineAdmin, IssueProposeDocumentInlineAdmin, RegionKLADRCodeInlineAdmin
 from marer.models import Issue, User, IssueMessagesProxy
-from marer.models.finance_org import FinanceOrganization, FinanceOrgProductConditions, FinanceOrgProductProposeDocument
+from marer.models.finance_org import FinanceOrgProductProposeDocument
 from marer.utils.notify import notify_user_about_manager_created_issue_for_user, \
-    notify_user_about_manager_updated_issue_for_user, notify_fo_managers_about_issue_proposed_to_banks, \
-    notify_user_about_issue_proposed_to_banks, notify_user_manager_about_issue_proposed_to_banks
+    notify_user_about_manager_updated_issue_for_user
 from marer.models.base import FormOwnership
 
 site.site_title = 'Управление сайтом'
