@@ -744,6 +744,7 @@ class BankGuaranteeProduct(FinanceProduct):
             ('Финансовое положение клиента', dict(classes=('collapse',), fields=(
                 ('balance_code_1600_offset_0', 'balance_code_1600_offset_1',),
                 ('balance_code_1300_offset_0', 'balance_code_1300_offset_1',),
+                'balance_code_1230_offset_0',
                 ('balance_code_2110_offset_0', 'balance_code_2110_offset_1', 'balance_code_2110_offset_2', 'balance_code_2110_analog_offset_0'),
                 ('balance_code_2400_offset_0', 'balance_code_2400_offset_1',),
             ))),
