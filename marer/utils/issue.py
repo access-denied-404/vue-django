@@ -207,7 +207,7 @@ class CalculateUnderwritingCriteria:
 
     def score_1(self, value):
         total = 100
-        if 80 <= value <= 100:
+        if 80 < value <= 100:
             score = 0.25
         elif 100 < value <= 150:
             score = 0.5
@@ -221,7 +221,7 @@ class CalculateUnderwritingCriteria:
 
     def score_2(self, value):
         total = 200
-        if 100 <= value <= 150:
+        if 100 < value <= 150:
             score = 0.5
         elif 150 < value <= 200:
             score = 0.75
@@ -233,7 +233,7 @@ class CalculateUnderwritingCriteria:
 
     def score_3(self, value):
         total = 50
-        if 30 <= value <= 50:
+        if 30 < value <= 50:
             score = 0.25
         elif 50 < value <= 75:
             score = 0.5
@@ -248,7 +248,7 @@ class CalculateUnderwritingCriteria:
 
     def score_51(self, value, bg_sum):
         total = 200
-        if 5000000 <= bg_sum < 10000000:
+        if 5000000 < bg_sum < 10000000:
             if 1.5 <= value <= 2:
                 score = 0.25
             elif 2 < value <= 4:
@@ -260,7 +260,7 @@ class CalculateUnderwritingCriteria:
 
     def score_52(self, value, bg_sum):
         total = 200
-        if 10000000 <= bg_sum <= 18000000:
+        if 10000000 < bg_sum <= 18000000:
             if 1.3 <= value <= 2:
                 score = 0.35
             elif 2 < value <= 3:
@@ -273,7 +273,7 @@ class CalculateUnderwritingCriteria:
     def score_6(self, value):
         total = 125
 
-        if 2 <= value <= 3:
+        if 2 < value <= 3:
             score = 0.5
         elif 3 < value:
             score = 1
@@ -284,7 +284,7 @@ class CalculateUnderwritingCriteria:
     def score_71(self, value, bg_sum):
         total = 125
         if 5000000 <= bg_sum < 10000000:
-            if 1.5 <= value <= 2:
+            if 1.5 < value <= 2:
                 score = 0.25
             elif 2 < value <= 4:
                 score = 0.75
@@ -296,7 +296,7 @@ class CalculateUnderwritingCriteria:
     def score_72(self, value, bg_sum):
         total = 125
         if 10000000 <= bg_sum <= 18000000:
-            if 1.3 <= value <= 2:
+            if 1.3 < value <= 2:
                 score = 0.35
             elif 2 < value <= 3:
                 score = 0.9
