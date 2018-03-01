@@ -46,6 +46,7 @@ urlpatterns = [
     url(r'^rest/issue/(?P<iid>\d+)$', rest.IssueView.as_view(), name='rest_issue'),
     url(r'^rest/issue/(?P<iid>\d+)/sec-dep-mgmt$', rest.IssueSecDepView.as_view(), name='rest_issue_sec_dep_mgmt'),
     url(r'^rest/issue/(?P<iid>\d+)/lawyers-dep-mgmt$', rest.IssueLawyersDepView.as_view(), name='rest_issue_lawyers_dep_mgmt'),
+    url(r'^rest/issue/(?P<iid>\d+)/generate/lawyers-dep-mgmt$', rest.IssueLawyersDepView.as_view(), name='rest_issue_lawyers_dep_mgmt'),
     url(r'^rest/issue/(?P<iid>\d+)/messages$', rest.IssueMessagesView.as_view(), name='rest_issue_messages'),
     url(r'^rest/profile$', rest.ProfileView.as_view(), name='rest_profile'),
 

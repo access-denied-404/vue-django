@@ -116,9 +116,13 @@ class IssueBaseAPIView(APIView):
         ser = self.serializer(issue, data=request.data['body'])
         if ser.is_valid():
             ser.save()
+            self.issue_post_save(request, issue)
             return Response(ser.data)
         else:
             return Response(ser.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def issue_post_save(self, request, issue):
+        pass
 
 
 class IssueView(IssueBaseAPIView):
@@ -131,6 +135,10 @@ class IssueSecDepView(IssueBaseAPIView):
 
 class IssueLawyersDepView(IssueBaseAPIView):
     serializer = IssueLawyersDepSerializer
+
+    def issue_post_save(self, request, issue):
+        if 'generate' in self.request.GET:
+            issue.fill_lawyers_dep_conclusion(commit=True)
 
 
 class IssueMessagesView(IssueBaseAPIView):

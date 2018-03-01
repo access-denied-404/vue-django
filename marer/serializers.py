@@ -163,6 +163,8 @@ class IssueSerializer(ModelSerializer):
     contract_of_guarantee = ContractOfGuaranteeSerializer()
     bank_commission = serializers.CharField(max_length=512)
 
+    lawyers_dep_conclusion_doc = DocumentSerializer()
+
     def update(self, instance, validated_data):
         related_fields = [
             'org_management_collegial', 'org_management_directors', 'org_management_others',
