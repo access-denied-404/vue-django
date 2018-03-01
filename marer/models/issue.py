@@ -900,11 +900,11 @@ class Issue(models.Model):
         related_name='payment_of_fee'
     )
     
-    similar_contract_sum = models.FloatField(blank=True, null=True, default=0)
-    biggest_contract_sum = models.FloatField(blank=True, null=True, default=0)
-    similar_contract_date = models.DateField(blank=True, null=True)
-    has_fines_on_zakupki_gov_ru = models.BooleanField(default=False, help_text='наличие штрафов по контрактом, отраженных на сайте Госзакупок')
-    has_arbitration = models.BooleanField(default=False, help_text='наличие арбитражей по нарушениям выполнения условий гос. контрактов')
+    similar_contract_sum = models.FloatField(verbose_name='Сумма последнего профильного контракта', blank=True, null=True, default=0)
+    biggest_contract_sum = models.FloatField(verbose_name='Сумма максимального профильного контракта', blank=True, null=True, default=0)
+    similar_contract_date = models.DateField(verbose_name='Дата последнего профильного контракта', blank=True, null=True)
+    has_fines_on_zakupki_gov_ru = models.BooleanField(default=False, verbose_name='Наличие штрафов по контрактом, отраженных на сайте Госзакупок')
+    has_arbitration = models.BooleanField(default=False, verbose_name='Наличие арбитражей по нарушениям выполнения условий гос. контрактов')
 
     def get_urgency_for_user(self, user):
         messages = list(self.clarification_messages.all().order_by('-id'))
@@ -2660,7 +2660,6 @@ def pre_save_issue(sender, instance, **kwargs):
         instance.bg_property  # даем возможность выпасть исключению здесь, т.к. в format оно не появится
         generate_acts_for_issue(instance)
 
-
     if instance.status == consts.ISSUE_STATUS_REVIEW:
         from marer.utils.documents import generate_underwriting_criteria
         try:
@@ -2668,7 +2667,7 @@ def pre_save_issue(sender, instance, **kwargs):
             underwriting_criteria_doc, underwriting_criteria_score = generate_underwriting_criteria(instance)
             instance.underwriting_criteria_doc = underwriting_criteria_doc
             instance.underwriting_criteria_score = underwriting_criteria_score
-        except Exception:
+        except Exception as e:
             pass
 
         if not instance.approval_and_change_sheet:

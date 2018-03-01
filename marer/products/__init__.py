@@ -744,7 +744,7 @@ class BankGuaranteeProduct(FinanceProduct):
             ('Финансовое положение клиента', dict(classes=('collapse',), fields=(
                 ('balance_code_1600_offset_0', 'balance_code_1600_offset_1',),
                 ('balance_code_1300_offset_0', 'balance_code_1300_offset_1',),
-                ('balance_code_2110_offset_0', 'balance_code_2110_offset_1', 'balance_code_2110_offset_2',),
+                ('balance_code_2110_offset_0', 'balance_code_2110_offset_1', 'balance_code_2110_offset_2', 'balance_code_2110_analog_offset_0'),
                 ('balance_code_2400_offset_0', 'balance_code_2400_offset_1',),
             ))),
             ('Информация для наполнеиня заключения ПУ', dict(classes=('collapse',), fields=(
@@ -804,12 +804,15 @@ class BankGuaranteeProduct(FinanceProduct):
 
                 'total_bank_liabilities_vol',
             ))),
-
+            ('Информация для генерации критериев андеррайтинга', dict(classes=('collapse',), fields=(
+                'similar_contract_sum',
+                'biggest_contract_sum',
+                'similar_contract_date',
+                'has_fines_on_zakupki_gov_ru',
+                'has_arbitration',
+            ))),
             _admin_issue_fieldset_issuer_part,
             _admin_issue_fieldset_issuer_head_part,
-
-
-
         ]
 
         tender_responsible_fields_part = (
