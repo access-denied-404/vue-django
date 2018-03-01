@@ -153,6 +153,7 @@ class IssueSerializer(ModelSerializer):
     issuer_founders_physical = IssueBGProdFounderPhysicalSerializer(many=True)
     application_doc = DocumentSerializer(read_only=True)
     propose_documents = IssueProposeDocumentSerializer(many=True, read_only=True)
+    propose_documents_app = IssueProposeDocumentSerializer(many=True, read_only=True)
 
     bg_contract_doc = DocumentSerializer()
     bg_doc = DocumentSerializer()

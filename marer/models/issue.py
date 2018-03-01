@@ -1888,6 +1888,10 @@ class Issue(models.Model):
             docs.append(self.extend_propose_document(self.bg_doc,
                                                      'Проект',
                                                      4))
+        if self.payment_of_fee and not self.status == consts.ISSUE_STATUS_REGISTERING:
+            docs.append(self.extend_propose_document(self.payment_of_fee,
+                                                     'Счет',
+                                                     4))
         if self.transfer_acceptance_act and not self.status == consts.ISSUE_STATUS_REGISTERING:
             docs.append(self.extend_propose_document(self.transfer_acceptance_act,
                                                      'Акт',
