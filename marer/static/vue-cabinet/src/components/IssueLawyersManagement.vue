@@ -14,7 +14,15 @@
             <div class="panel panel-info">
               <div class="panel-heading">Заключение правового управления</div>
               <div class="panel-body">
-
+                <div  class="row" style="border-bottom: 1px solid #ccc;padding-bottom: 10px;">
+                  <div class="col-md-3"><b>Заключение ДБ</b></div>
+                  <div class="col-md-1 text-right">
+                    <a v-if="issue.lawyers_dep_conclusion_doc" :href="issue.lawyers_dep_conclusion_doc.file" class="btn btn-primary btn-sm" type="button">Скачать</a>
+                  </div>
+                  <div class="col-md-1 text-right">
+                    <input class="btn btn-primary btn-sm" type="button" @click="generate_lawyers_dep_conclusion_doc" value="Сформировать">
+                  </div>
+                </div>
                 <div class="row">
                   <div class="col-md-12">
                     <bs-input
@@ -93,11 +101,14 @@
       }
     },
     mounted: function () {
-      jQuery.getJSON(this.api_url + this.$route.params.id + '?format=json', (data, status, xhr) => {
+      jQuery.getJSON(this.api_url + this.$route.params.id + '/lawyers-dep-mgmt?format=json', (data, status, xhr) => {
         this.issue = data
       })
     },
     methods: {
+      generate_lawyers_dep_conclusion_doc () {
+
+      },
       save_issue () {
         axios.post(this.api_url + this.$route.params.id + '/lawyers-dep-mgmt?format=json', {
           body: this.issue
