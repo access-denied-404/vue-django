@@ -240,19 +240,19 @@ class IssueTestCase(TestCase):
 
         # SECTION 6
 
-        issue.similar_contract_date = timezone.now() - timezone.timedelta(days=(365*2))
+        issue.similar_contract_date = (timezone.now() - timezone.timedelta(days=(365*2))).date()
         data = CalculateUnderwritingCriteria().calc(issue)
         self.assertEqual(data['score_6'], 125)
 
-        issue.similar_contract_date = timezone.now() - timezone.timedelta(days=(365*2 + 1))
+        issue.similar_contract_date = (timezone.now() - timezone.timedelta(days=(365*2 + 1))).date()
         data = CalculateUnderwritingCriteria().calc(issue)
         self.assertEqual(data['score_6'], 62.5)
 
-        issue.similar_contract_date = timezone.now() - timezone.timedelta(days=(365*3))
+        issue.similar_contract_date = (timezone.now() - timezone.timedelta(days=(365*3))).date()
         data = CalculateUnderwritingCriteria().calc(issue)
         self.assertEqual(data['score_6'], 62.5)
 
-        issue.similar_contract_date = timezone.now() - timezone.timedelta(days=(365*3 + 1))
+        issue.similar_contract_date = (timezone.now() - timezone.timedelta(days=(365*3 + 1))).date()
         data = CalculateUnderwritingCriteria().calc(issue)
         self.assertEqual(data['score_6'], 0)
 
