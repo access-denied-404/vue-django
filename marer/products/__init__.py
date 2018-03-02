@@ -715,6 +715,7 @@ class BankGuaranteeProduct(FinanceProduct):
                 ('bg_start_date', 'bg_end_date',),
                 'bg_deadline_date',
                 ('tender_exec_law', 'bg_type',),
+                ('agent_comission', 'auto_bank_commission',),
                 'application_doc_admin_field',
                 'lawyers_dep_conclusion_doc_admin_field',
                 'doc_ops_mgmt_conclusion_doc_admin_field',
@@ -851,6 +852,7 @@ class BankGuaranteeProduct(FinanceProduct):
 
     def get_admin_issue_read_only_fields(self):
         return [
+            'auto_bank_commission',
             'application_doc_admin_field',
             'bg_contract_doc_admin_field',
             'transfer_acceptance_act_admin_field',
