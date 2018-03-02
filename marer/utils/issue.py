@@ -248,25 +248,33 @@ class CalculateUnderwritingCriteria:
 
     def score_51(self, value, bg_sum):
         total = 200
-        if 5000000 < bg_sum < 10000000:
-            if 1.5 <= value <= 2:
+        if 5000000 < bg_sum <= 10000000:
+            if value == 0:
+                score = 1
+            elif 1.5 < value <= 2:
                 score = 0.25
             elif 2 < value <= 4:
                 score = 0.75
-            else:
+            elif 4 < value:
                 score = 1
+            else:
+                score = 0
             return total - total * score
         return 0
 
     def score_52(self, value, bg_sum):
         total = 200
         if 10000000 < bg_sum <= 18000000:
-            if 1.3 <= value <= 2:
+            if value == 0:
+                score = 1
+            elif 1.3 < value <= 2:
                 score = 0.35
             elif 2 < value <= 3:
                 score = 0.9
-            else:
+            elif 3 < value:
                 score = 1
+            else:
+                score = 0
             return total - total * score
         return 0
 
@@ -283,31 +291,39 @@ class CalculateUnderwritingCriteria:
 
     def score_71(self, value, bg_sum):
         total = 125
-        if 5000000 <= bg_sum < 10000000:
-            if 1.5 < value <= 2:
+        if 5000000 < bg_sum <= 10000000:
+            if value == 0:
+                score = 1
+            elif 1.5 < value <= 2:
                 score = 0.25
             elif 2 < value <= 4:
                 score = 0.75
-            else:
+            elif 4 < value:
                 score = 1
+            else:
+                score = 0
             return total - total * score
         return 0
 
     def score_72(self, value, bg_sum):
         total = 125
-        if 10000000 <= bg_sum <= 18000000:
-            if 1.3 < value <= 2:
+        if 10000000 < bg_sum <= 18000000:
+            if value == 0:
+                score = 1
+            elif 1.3 < value <= 2:
                 score = 0.35
             elif 2 < value <= 3:
                 score = 0.9
-            else:
+            elif 3 < value:
                 score = 1
+            else:
+                score = 0
             return total - total * score
         return 0
 
     def score_8(self, value):
         total = 50
-        return total if not value else 0
+        return total if value else 0
 
     def score_9(self, value):
         total = 25
@@ -319,7 +335,7 @@ class CalculateUnderwritingCriteria:
 
     def score_11(self, value):
         total = 50
-        return total if value > 70 else 0
+        return total if value <= 70 else 0
 
     def calc(self, issue):
         float_bg_sum = float(issue.bg_sum)
@@ -328,12 +344,12 @@ class CalculateUnderwritingCriteria:
 
         value_1 = (bg_sum_thousands / issue.balance_code_1600_offset_0 * 100) if bg_sum_thousands and issue.balance_code_1600_offset_0 else 0
         value_2 = (tender_final_cost_thousands / issue.balance_code_2110_offset_1 * 100) if issue.balance_code_2110_offset_1 and tender_final_cost_thousands else 0
-        value_3 = ((1 - issue.balance_code_2110_offset_1 / issue.balance_code_2110_offset_2) * 100) if issue.balance_code_2110_offset_1 and issue.balance_code_2110_offset_2 else 1
-        value_4 = (issue.balance_code_2110_offset_0 / issue.balance_code_2110_analog_offset_0 * 100) if issue.balance_code_2110_offset_0 and issue.balance_code_2110_analog_offset_0 else 0
-        value_5 = (float(issue.bg_sum) / issue.similar_contract_sum) if issue.bg_sum and issue.similar_contract_sum else 0
+        value_3 = int((1 - issue.balance_code_2110_offset_1 / issue.balance_code_2110_offset_2) * 100) if issue.balance_code_2110_offset_1 and issue.balance_code_2110_offset_2 else 100
+        value_4 = int((1 - issue.balance_code_2110_offset_0 / issue.balance_code_2110_analog_offset_0) * 100) if issue.balance_code_2110_offset_0 and issue.balance_code_2110_analog_offset_0 else 100
+        value_5 = (float(issue.tender_final_cost) / issue.similar_contract_sum) if issue.bg_sum and issue.tender_final_cost and issue.similar_contract_sum and issue.similar_contract_sum > 0 else 0
         value_6 = ((now().date() - issue.similar_contract_date).days / 365) if issue.similar_contract_date else 0
-        value_7 = (float_bg_sum / issue.biggest_contract_sum) if float_bg_sum and issue.biggest_contract_sum else 0
-        value_8 = (float_bg_sum >= issue.tender_final_cost) if float_bg_sum and issue.tender_final_cost else False
+        value_7 = (issue.tender_final_cost / issue.biggest_contract_sum) if float_bg_sum and issue.tender_final_cost and issue.biggest_contract_sum and issue.biggest_contract_sum > 0 else 0
+        value_8 = (float_bg_sum <= issue.tender_final_cost) if float_bg_sum and issue.tender_final_cost else False
         value_11 = (issue.balance_code_1230_offset_0 / issue.balance_code_1600_offset_0 * 100) if issue.balance_code_1230_offset_0 and issue.balance_code_1600_offset_0 else 0
         data = {
             "value_1": '{:0.2f} %'.format(value_1),
