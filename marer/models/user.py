@@ -77,4 +77,8 @@ class User(AbstractUser):
             user_name_list.append(self.first_name)
         if self.last_name != '':
             user_name_list.append(self.last_name)
-        return ' '.join(user_name_list) + ', ' + self.get_username()
+        if self.legal_name and self.legal_name != '':
+            add_name = self.legal_name
+        else:
+            add_name = self.get_username()
+        return ' '.join(user_name_list) + ', ' + add_name
