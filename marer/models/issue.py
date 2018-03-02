@@ -47,10 +47,10 @@ class Issue(models.Model):
         (consts.ISSUE_STATUS_REVIEW, 'Рассмотрение заявки'),
         (consts.ISSUE_STATUS_FINISHED, 'Завершена'),
         (consts.ISSUE_STATUS_CANCELLED, 'Отменена'),
-        (consts.ISSUE_STATUS_CLIENT_REVISION, 'Отправлено клиенту на доработку'),
-        (consts.ISSUE_STATUS_RETURNED_FROM_REVISION, 'Возвращена с доработки'),
-        (consts.ISSUE_STATUS_CLIENT_AGGREEMENT, 'Отправлено на согласование клиенту'),
-        (consts.ISSUE_STATUS_CANCELLED_BY_CLIENT, 'Отменена клиентом'),
+        # (consts.ISSUE_STATUS_CLIENT_REVISION, 'Отправлено клиенту на доработку'),
+        # (consts.ISSUE_STATUS_RETURNED_FROM_REVISION, 'Возвращена с доработки'),
+        # (consts.ISSUE_STATUS_CLIENT_AGGREEMENT, 'Отправлено на согласование клиенту'),
+        # (consts.ISSUE_STATUS_CANCELLED_BY_CLIENT, 'Отменена клиентом'),
     ], default=consts.ISSUE_STATUS_REGISTERING)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='пользователь', on_delete=models.DO_NOTHING, null=False)
     manager = models.ForeignKey(
