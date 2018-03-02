@@ -1346,6 +1346,10 @@ class Issue(models.Model):
         return [obj.__dict__ for obj in self.issuer_affiliates.all()]
 
     @cached_property
+    def issuer_affiliates_with_bank_liabilities(self):
+        return [obj.__dict__ for obj in self.issuer_affiliates.filter(bank_liabilities_vol__gt=0).order_by('name')]
+
+    @cached_property
     def bg_property(self):
         bg_type = {
             'электронный аукцион': 'электронного аукциона',
