@@ -29,6 +29,7 @@ class User(AbstractUser):
             ('can_add_managed_users_issues_proposes_clarifications', 'Can add managed users issues proposes clarifications'),
             ('can_add_managed_users_issues_proposes_clarifications_messages', 'Can add managed users issues proposes clarifications messages'),
         ]
+        ordering = ['first_name']
 
     phone = models.CharField('Контактный телефон', max_length=30, blank=True)
     legal_name = models.CharField('Наименование агента', max_length=512, blank=True, null=False, default='')
