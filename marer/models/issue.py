@@ -900,8 +900,8 @@ class Issue(models.Model):
         related_name='payment_of_fee'
     )
     
-    similar_contract_sum = models.FloatField(verbose_name='Сумма последнего профильного контракта', blank=True, null=True, default=0)
-    biggest_contract_sum = models.FloatField(verbose_name='Сумма максимального профильного контракта', blank=True, null=True, default=0)
+    similar_contract_sum = models.FloatField(verbose_name='Сумма максимального исполненного профильного контракта', blank=True, null=True, default=0)
+    biggest_contract_sum = models.FloatField(verbose_name='Сумма максимального исполненного контракта', blank=True, null=True, default=0)
     similar_contract_date = models.DateField(verbose_name='Дата последнего профильного контракта', blank=True, null=True)
     has_fines_on_zakupki_gov_ru = models.BooleanField(default=False, verbose_name='Наличие штрафов по контрактом, отраженных на сайте Госзакупок')
     has_arbitration = models.BooleanField(default=False, verbose_name='Наличие арбитражей по нарушениям выполнения условий гос. контрактов')
