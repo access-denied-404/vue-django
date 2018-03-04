@@ -294,11 +294,20 @@ class Issue(models.Model):
     is_issuer_last_year_revenue_higher_in_5_times_than_all_bank_bgs = models.NullBooleanField('Выручка Клиента за последний завершенный год не менее, чем в 5 раз превышает сумму запрашиваемой и действующих в Банке гарантий', blank=True, null=True)
     is_issuer_has_garantor_for_advance_related_requirements = models.NullBooleanField('Наличие Поручителя юридического лица удовлетворяющим одному из предыдущих трех условий', blank=True, null=True)
 
-    is_contract_price_reduction_lower_than_50_pct_on_supply_contract = models.NullBooleanField('Снижение цены Контракта менее 50% если предмет контракта «Поставка»', blank=True, null=True)
+    is_contract_price_reduction_lower_than_50_pct_on_supply_contract = models.NullBooleanField(
+        'Снижение цены Контракта менее 50% если предмет контракта «Поставка»',
+        db_column='is_contract_price_reduction_lower_than_50_pct_on_supply_contra',
+        blank=True, null=True)
     is_positive_security_department_conclusion = models.NullBooleanField('Наличие положительного Заключения СБ', blank=True, null=True)
     is_positive_lawyers_department_conclusion = models.NullBooleanField('Наличие положительного Заключения ПУ (в соответствии с Приказом по проверке ПУ)', blank=True, null=True)
-    is_absent_info_about_court_acts_for_more_than_20_pct_of_net_assets = models.NullBooleanField('Отсутствие информации об исполнительных производствах Приницпала его Участников на сумму более 20% чистых активов Клиента', blank=True, null=True)
-    is_absent_info_about_legal_proceedings_as_defendant_for_more_than_30_pct_of_net_assets = models.NullBooleanField('Отсутствие информации о судебных разбирательствах Клиента в качестве ответчика (за исключением закрытых) на сумму более 30% чистых активов Клиента', blank=True, null=True)
+    is_absent_info_about_court_acts_for_more_than_20_pct_of_net_assets = models.NullBooleanField(
+        'Отсутствие информации об исполнительных производствах Приницпала его Участников на сумму более 20% чистых активов Клиента',
+        db_column='is_absent_info_about_court_acts_for_more_than_20_pct_of_net_as',
+        blank=True, null=True)
+    is_absent_info_about_legal_proceedings_as_defendant_for_more_than_30_pct_of_net_assets = models.NullBooleanField(
+        'Отсутствие информации о судебных разбирательствах Клиента в качестве ответчика (за исключением закрытых) на сумму более 30% чистых активов Клиента',
+        db_column='is_absent_info_about_legal_proceedings_as_defendant_for_more_t',
+        blank=True, null=True)
     is_need_to_check_real_of_issuer_activity = models.NullBooleanField('Есть необходимость оценки реальности деятельности', blank=False, null=False, default=False)
     is_real_of_issuer_activity_confirms = models.NullBooleanField('Реальность деятельности подтверждается', blank=True, null=True)
     is_contract_corresponds_issuer_activity = models.IntegerField('Соответствие контракта профилю деятельности клиента', choices=[
@@ -350,13 +359,19 @@ class Issue(models.Model):
     issuer_shareholders_participants_or_self_court_cases_info = models.TextField(verbose_name='Данные о Принципале, его участниках в базе данных исполнительных производств', blank=True, null=False, default='')
     issuer_courts_cases_as_defendant_and_its_acts_info = models.TextField(verbose_name='Информация о судебных разбирательствах Принципала (в качестве ответчика), о находящихся в суде делах и принятых по ним судебным актам', blank=True, null=False, default='')
 
-    is_absent_info_about_court_cases_on_ifns_or_bankrupts_or_contracts_as_defendant = models.NullBooleanField('Отсутствие наличия информации о судебных разбирательствах по искам, ответчиком по которым является Принципал: по судебным разбирательствам с ИФНС, по заявлениям о признании Принципала несостоятельным (банкротом), по искам неисполнения государственных контрактов', blank=True, null=True)
+    is_absent_info_about_court_cases_on_ifns_or_bankrupts_or_contracts_as_defendant = models.NullBooleanField(
+        'Отсутствие наличия информации о судебных разбирательствах по искам, ответчиком по которым является Принципал: по судебным разбирательствам с ИФНС, по заявлениям о признании Принципала несостоятельным (банкротом), по искам неисполнения государственных контрактов',
+        db_column='is_absent_info_about_court_cases_on_ifns_or_bankrupts_or_contr',
+        blank=True, null=True)
 
     @property
     def humanized_is_absent_info_about_court_cases_on_ifns_or_bankrupts_or_contracts_as_defendant(self):
         return 'Да' if self.is_absent_info_about_court_cases_on_ifns_or_bankrupts_or_contracts_as_defendant else 'Нет'
 
-    is_absent_info_about_prev_convictions_on_issuer_head_or_shareholders_or_participants_or_guarantor = models.NullBooleanField('Отсутствие судимостей в отношении физических лиц (генеральный директор, участники юридического лица (c наибольшей долей участия, Поручитель)', blank=True, null=True)
+    is_absent_info_about_prev_convictions_on_issuer_head_or_shareholders_or_participants_or_guarantor = models.NullBooleanField(
+        'Отсутствие судимостей в отношении физических лиц (генеральный директор, участники юридического лица (c наибольшей долей участия, Поручитель)',
+        db_column='is_absent_info_about_prev_convictions_on_issuer_head_or_shareh',
+        blank=True, null=True)
 
     @property
     def humanized_is_absent_info_about_prev_convictions_on_issuer_head_or_shareholders_or_participants_or_guarantor(self):
