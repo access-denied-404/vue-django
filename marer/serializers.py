@@ -228,15 +228,50 @@ class IssueMessagesSerializer(ModelSerializer):
 
 
 class IssueSecDepSerializer(ModelSerializer):
+    sec_dep_conclusion_doc = DocumentSerializer(read_only=True)
+
     class Meta:
         model = Issue
         fields = (
             'id',
             'is_positive_security_department_conclusion',
+            'sec_dep_conclusion_doc',
+        )
+
+
+class IssueDocOpsSerializer(ModelSerializer):
+    doc_ops_mgmt_conclusion_doc = DocumentSerializer(read_only=True)
+
+    class Meta:
+        model = Issue
+        fields = (
+            'id',
+            'bg_sum',
+            'is_issuer_all_bank_liabilities_less_than_max',
+            'is_issuer_executed_contracts_on_44_or_223_or_185_fz',
+            'is_issuer_executed_goverment_contract_for_last_3_years',
+            'is_contract_has_prepayment',
+            'is_issuer_executed_contracts_with_comparable_advances',
+            'is_issuer_executed_gte_5_contracts_on_44_or_223_or_185_fz',
+            'is_issuer_last_year_revenue_higher_in_5_times_than_all_bank_bgs',
+            'is_issuer_has_garantor_for_advance_related_requirements',
+            'is_contract_price_reduction_lower_than_50_pct_on_supply_contract',
+            'is_absent_info_about_court_acts_for_more_than_20_pct_of_net_assets',
+            'is_absent_info_about_legal_proceedings_as_defendant_for_more_than_30_pct_of_net_assets',
+            'is_need_to_check_real_of_issuer_activity',
+            'is_real_of_issuer_activity_confirms',
+            'is_contract_corresponds_issuer_activity',
+            'contract_advance_requirements_fails',
+            'is_issuer_has_bad_credit_history',
+            'is_issuer_has_blocked_bank_account',
+            'total_bank_liabilities_vol',
+            'doc_ops_mgmt_conclusion_doc'
         )
 
 
 class IssueLawyersDepSerializer(ModelSerializer):
+    lawyers_dep_conclusion_doc = DocumentSerializer(read_only=True)
+
     class Meta:
         model = Issue
         fields = (
@@ -244,4 +279,5 @@ class IssueLawyersDepSerializer(ModelSerializer):
             'persons_can_acts_as_issuer_and_perms_term_info',
             'lawyers_dep_recommendations',
             'is_positive_lawyers_department_conclusion',
+            'lawyers_dep_conclusion_doc',
         )

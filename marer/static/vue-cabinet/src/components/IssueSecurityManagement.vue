@@ -15,7 +15,15 @@
             <div class="panel panel-info">
               <div class="panel-heading">Заключение департамента безопасности</div>
               <div class="panel-body">
-
+                <div  class="row" style="border-bottom: 1px solid #ccc;padding-bottom: 10px;">
+                  <div class="col-md-3"><b>Заключение ДБ</b></div>
+                  <div class="col-md-1 text-right">
+                    <a v-if="issue.sec_dep_conclusion_doc" :href="issue.sec_dep_conclusion_doc.file" class="btn btn-primary btn-sm" type="button">Скачать</a>
+                  </div>
+                  <div class="col-md-1 text-right">
+                    <input class="btn btn-primary btn-sm" @click="generate_sec_dep_conclusion_doc" type="button" value="Сформировать">
+                  </div>
+                </div>
                 <div class="row">
                   <div class="col-md-12">
                     <checkbox v-model="issue.is_positive_security_department_conclusion" :type="'primary'">
@@ -69,11 +77,14 @@
       }
     },
     mounted: function () {
-      jQuery.getJSON(this.api_url + this.$route.params.id + '?format=json', (data, status, xhr) => {
+      jQuery.getJSON(this.api_url + this.$route.params.id + '/sec-dep-mgmt?format=json', (data, status, xhr) => {
         this.issue = data
       })
     },
     methods: {
+      generate_sec_dep_conclusion_doc () {
+
+      },
       save_issue () {
         axios.post(this.api_url + this.$route.params.id + '/sec-dep-mgmt?format=json', {
           body: this.issue

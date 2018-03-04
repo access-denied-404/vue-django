@@ -1,5 +1,6 @@
 import io
 
+from django.core.exceptions import ValidationError
 from django.http import HttpResponseNotFound, HttpResponse
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser
@@ -8,7 +9,7 @@ from rest_framework.views import APIView, View
 
 from marer.models import Issue
 from marer.serializers import ProfileSerializer, IssueListSerializer, IssueSerializer, IssueSecDepSerializer, \
-    IssueLawyersDepSerializer, IssueMessagesSerializer
+    IssueLawyersDepSerializer, IssueMessagesSerializer, IssueDocOpsSerializer, DocumentSerializer
 from marer.forms import RestTenderForm, IssueBankCommissionForm
 from marer.utils.issue import calculate_bank_commission, zip_docs
 from marer.utils.other import parse_date_to_frontend_format, get_tender_info
@@ -131,6 +132,27 @@ class IssueView(IssueBaseAPIView):
 
 class IssueSecDepView(IssueBaseAPIView):
     serializer = IssueSecDepSerializer
+
+
+class IssueDocOpsView(IssueBaseAPIView):
+    serializer = IssueDocOpsSerializer
+
+
+class IssueGenerateLawyersDepConclusionDocView(APIView):
+
+    def post(self, request, iid):
+        issue = Issue.objects.get(id=iid)
+        doc = None
+        errors = []
+        try:
+            doc = DocumentSerializer(issue.fill_lawyers_dep_conclusion(user=request.user))
+        except ValidationError as ve:
+            errors = ve.error_list
+
+        if doc:
+            return Response(doc)
+        else:
+            return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class IssueLawyersDepView(IssueBaseAPIView):

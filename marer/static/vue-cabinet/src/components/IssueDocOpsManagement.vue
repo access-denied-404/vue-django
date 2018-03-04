@@ -14,6 +14,15 @@
             <div class="panel panel-info">
               <div class="panel-heading">Заключение управления документарных операций</div>
               <div class="panel-body">
+                <div  class="row" style="border-bottom: 1px solid #ccc;padding-bottom: 10px;">
+                  <div class="col-md-3"><b>Заключение ДБ</b></div>
+                  <div class="col-md-1 text-right">
+                    <a v-if="issue.doc_ops_mgmt_conclusion_doc" :href="issue.doc_ops_mgmt_conclusion_doc.file" class="btn btn-primary btn-sm" type="button">Скачать</a>
+                  </div>
+                  <div class="col-md-1 text-right">
+                    <input class="btn btn-primary btn-sm" @click="generate_doc_ops_mgmt_conclusion_doc" type="button" value="Сформировать">
+                  </div>
+                </div>
 
                 <div class="row">
                   <div class="col-md-12">
@@ -189,7 +198,6 @@
   import axios from 'axios'
 
   moment.locale = 'ru'
-  let dateformat = 'DD.MM.YYYY'
 
   export default {
     name: 'issue',
@@ -211,36 +219,19 @@
       }
     },
     mounted: function () {
-      jQuery.getJSON(this.api_url + this.$route.params.id + '?format=json', (data, status, xhr) => {
+      jQuery.getJSON(this.api_url + this.$route.params.id + '/doc-ops-mgmt?format=json', (data, status, xhr) => {
         this.update_form_data(data)
       })
     },
-    computed: {
-      date_range: {
-        get () {
-          if (this.issue.bg_end_date) {
-            let val
-            let start = moment(this.issue.bg_start_date, dateformat)
-            let end = this.issue.bg_end_date
-            val = 1 + (end.year() - start.year()) * 12 + end.month() - start.month()
-            if (isNaN(val)) {
-              return ''
-            } else {
-              return val
-            }
-          }
-          return ''
-        },
-        set () {
-        }
-      }
-    },
     methods: {
+      generate_doc_ops_mgmt_conclusion_doc () {
+
+      },
       update_form_data (data) {
         this.issue = data
       },
       save_issue () {
-        axios.post(this.api_url + this.$route.params.id, {
+        axios.post(this.api_url + this.$route.params.id + '/doc-ops-mgmt?format=json', {
           body: this.issue
         }).then(response => {
           this.update_form_data(response.data)

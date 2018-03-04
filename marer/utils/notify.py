@@ -118,8 +118,8 @@ def notify_managers_issue_in_review(issue: Issue):
     :param issue:
     """
     # клиент отправил заявку на рассмотрение, уведомить менеджера
-    if issue.current_manager:
-        issue.current_manager.email_user(
+    if issue.manager:
+        issue.manager.email_user(
             subject="Заявка перешла в статус 'рассмотрение'",
             html_template_filename='mail/events_for_send_to_user_manager/issue_in_review.html',
             context=dict(
@@ -378,8 +378,8 @@ def notify_managers_about_new_message_in_chat(message: IssueClarificationMessage
     )
     subject = '%s добавил сообщение по дозапросу к заявке' % author_role
     if message.user == message.issue.user:
-        if message.issue.current_manager:
-            message.issue.current_manager.email_user(
+        if message.issue.manager:
+            message.issue.manager.email_user(
                 subject=subject,
                 html_template_filename='mail/events_for_send_to_user_manager/new_message_in_chat.html',
                 context=context

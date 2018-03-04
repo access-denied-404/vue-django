@@ -62,19 +62,6 @@ class Issue(models.Model):
         related_name='managed_issues'
     )
 
-    @cached_property
-    def current_manager(self):
-        """
-        Возвращает менеджера, работающего в данный момент с заявкой, поле manager в данный момент может быть пустым
-        :return:
-        """
-        from marer.utils.notify import _get_default_manager
-        manager = self.manager or self.user.manager
-        if not manager:
-            warnings.warn('No manager for issue #{issue_id}'.format(issue_id=self.id,))
-            manager = _get_default_manager()
-        return manager
-
     comment = models.TextField(verbose_name='комментарий к заявке', blank=True, null=False, default='')
     private_comment = models.TextField(verbose_name='приватный комментарий к заявке', blank=True, null=False, default='')
     updated_at = models.DateTimeField(verbose_name='время обновления', auto_now=True, null=False)
@@ -1638,6 +1625,9 @@ class Issue(models.Model):
     sec_dep_conclusion_doc_admin_field.short_description = 'файл заключения ДБ'
     sec_dep_conclusion_doc_admin_field.allow_tags = True
 
+    def generate_lawyers_dep_conclusion_doc(self, user):
+        return  self.fill_lawyers_dep_conclusion(user=user)
+
     def lawyers_dep_conclusion_doc_admin_field(self):
         field_parts = []
         if not self.lawyers_dep_conclusion_doc:
@@ -2095,6 +2085,7 @@ class Issue(models.Model):
         if commit:
             self.save()
         lawyers_conclusion_file.close()
+        return self.lawyers_dep_conclusion_doc
 
     def fill_sec_dep_conclusion_doc(self, commit=True, **kwargs):
 
@@ -2672,8 +2663,8 @@ class IssueOrgBankAccount(models.Model):
 class IssueMessagesProxy(Issue):
     class Meta:
         proxy = True
-        verbose_name = 'собощение по заявке'
-        verbose_name_plural = 'собощения по заявке'
+        verbose_name = 'сообщение по заявке'
+        verbose_name_plural = 'сообщения по заявке'
 
 
 @receiver(pre_save, sender=Issue, dispatch_uid="pre_save_issue")
