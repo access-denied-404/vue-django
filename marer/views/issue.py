@@ -558,7 +558,7 @@ class IssueAdditionalDocumentsRequestsView(IssueView):
                 if html_template_filename:
                     msg_tmpl = get_template(html_template_filename)
                     message = msg_tmpl.render(context or {})
-                    send_mail('Документы на согласование', '', request.user.email, client_email, html_message=message)
+                    send_mail('Документы на согласование', '', None, client_email, html_message=message)
         elif action == 'send_msg':
             comment_form = IFOPCMessageForm(request.POST, request.FILES)
 
