@@ -73,7 +73,8 @@
     data () {
       return {
         api_url: window.debug ? 'http://localhost:8000/rest/issue/' : '/rest/issue/',
-        issue: {}
+        issue: {},
+        errors: []
       }
     },
     mounted: function () {
@@ -83,7 +84,14 @@
     },
     methods: {
       generate_sec_dep_conclusion_doc () {
-
+        this.errors = []
+        axios.post(this.api_url + this.$route.params.id + '/generate_sec-dep-mgmt', {
+          body: this.issue
+        }).then(response => {
+          this.update_form_data(response.data)
+        }).catch(error => {
+          this.errors = error.response.data.errors
+        })
       },
       save_issue () {
         axios.post(this.api_url + this.$route.params.id + '/sec-dep-mgmt?format=json', {

@@ -131,22 +131,69 @@ class IssueDocOpsView(IssueBaseAPIView):
     serializer = IssueDocOpsSerializer
 
 
-class IssueGenerateLawyersDepConclusionDocView(APIView):
+class IssueGenerateDocOpsView(IssueBaseAPIView):
+    serializer = IssueDocOpsSerializer
 
     def post(self, request, iid):
         issue = Issue.objects.get(id=iid)
-        doc = None
         errors = []
         try:
-            doc = DocumentSerializer(issue.fill_lawyers_dep_conclusion(user=request.user))
+            issue.fill_doc_ops_mgmt_conclusion(user=request.user)
+            ser = self.serializer(issue, data=request.data['body'])
+            if ser.is_valid():
+                return Response(ser.data)
+            else:
+                errors = ser.errors
+        except ValidationError as ve:
+            if len(ve.error_list) > 0:
+                for err in ve.error_list:
+                    errors.append(err)
+        except (ValueError, TypeError):
+            errors.append('Заключение УРДО заполнить невозможно')
+
+        return Response({
+            'errors': errors
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
+class IssueGenerateLawyersDepConclusionDocView(APIView):
+    serializer = IssueLawyersDepSerializer
+
+    def post(self, request, iid):
+        issue = Issue.objects.get(id=iid)
+        errors = []
+        try:
+            issue.fill_lawyers_dep_conclusion(user=request.user)
+            ser = self.serializer(issue, data=request.data['body'])
+            if ser.is_valid():
+                return Response(ser.data)
+            else:
+                errors = ser.errors
         except ValidationError as ve:
             errors = ve.error_list
+        except (ValueError, TypeError):
+            errors.append('Заключение ПУ заполнить невозможно')
+        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
-        if doc:
-            return Response(doc)
-        else:
-            return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
+class IssueSecDepMgmtView(IssueBaseAPIView):
+    serializer = IssueSecDepSerializer
+
+    def post(self, request, iid):
+        issue = Issue.objects.get(id=iid)
+        errors = []
+        try:
+            issue.fill_sec_dep_conclusion_doc(user=request.user)
+            ser = self.serializer(issue, data=request.data['body'])
+            if ser.is_valid():
+                return Response(ser.data)
+            else:
+                errors = ser.errors
+        except ValidationError as ve:
+            errors = ve.error_list
+        except (ValueError, TypeError):
+            errors.append('Заключение ДБ заполнить невозможно')
+        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
 class IssueLawyersDepView(IssueBaseAPIView):
     serializer = IssueLawyersDepSerializer

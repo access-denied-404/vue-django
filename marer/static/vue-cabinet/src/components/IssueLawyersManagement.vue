@@ -15,7 +15,14 @@
               <div class="panel-heading">Заключение правового управления</div>
               <div class="panel-body">
                 <div  class="row" style="border-bottom: 1px solid #ccc;padding-bottom: 10px;">
-                  <div class="col-md-3"><b>Заключение ДБ</b></div>
+                  <div class="col-md-12">
+                    <div class="alert alert-danger" v-if="this.errors.length > 0">
+                      <p v-for="err in this.errors" class="text-center">
+                        <span class="h2">{{ err }}</span>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="col-md-3"><b>Заключение ПУ</b></div>
                   <div class="col-md-1 text-right">
                     <a v-if="issue.lawyers_dep_conclusion_doc" :href="issue.lawyers_dep_conclusion_doc.file" class="btn btn-primary btn-sm" type="button">Скачать</a>
                   </div>
@@ -97,7 +104,8 @@
     data () {
       return {
         api_url: window.debug ? 'http://localhost:8000/rest/issue/' : '/rest/issue/',
-        issue: {}
+        issue: {},
+        errors: []
       }
     },
     mounted: function () {
@@ -107,7 +115,14 @@
     },
     methods: {
       generate_lawyers_dep_conclusion_doc () {
-
+        this.errors = []
+        axios.post(this.api_url + this.$route.params.id + '/generate_lawyers_dep_conclusion_doc', {
+          body: this.issue
+        }).then(response => {
+          this.update_form_data(response.data)
+        }).catch(error => {
+          this.errors = error.response.data.errors
+        })
       },
       save_issue () {
         axios.post(this.api_url + this.$route.params.id + '/lawyers-dep-mgmt?format=json', {
