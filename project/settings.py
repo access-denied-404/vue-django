@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'mptt',
     'ckeditor',
     'corsheaders',
+    'bakery',
 ]
 
 MIDDLEWARE = [
@@ -158,6 +159,15 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 PIPELINE = {
     'PIPELINE_ENABLED': False,
 }
+
+# django-bakery settings
+# BUILD_DIR = os.path.join(STATIC_ROOT, 'pages')
+BUILD_DIR = os.path.join(BASE_DIR, 'marer', 'templates')
+
+BAKERY_VIEWS = (
+    'marer.views.static.Error404View',
+    'marer.views.static.Error500View',
+)
 
 AUTH_USER_MODEL = 'marer.User'
 LOGIN_URL = 'login'

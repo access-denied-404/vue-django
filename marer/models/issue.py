@@ -47,10 +47,10 @@ class Issue(models.Model):
         (consts.ISSUE_STATUS_REVIEW, 'Рассмотрение заявки'),
         (consts.ISSUE_STATUS_FINISHED, 'Завершена'),
         (consts.ISSUE_STATUS_CANCELLED, 'Отменена'),
-        (consts.ISSUE_STATUS_CLIENT_REVISION, 'Отправлено клиенту на доработку'),
-        (consts.ISSUE_STATUS_RETURNED_FROM_REVISION, 'Возвращена с доработки'),
-        (consts.ISSUE_STATUS_CLIENT_AGGREEMENT, 'Отправлено на согласование клиенту'),
-        (consts.ISSUE_STATUS_CANCELLED_BY_CLIENT, 'Отменена клиентом'),
+        # (consts.ISSUE_STATUS_CLIENT_REVISION, 'Отправлено клиенту на доработку'),
+        # (consts.ISSUE_STATUS_RETURNED_FROM_REVISION, 'Возвращена с доработки'),
+        # (consts.ISSUE_STATUS_CLIENT_AGGREEMENT, 'Отправлено на согласование клиенту'),
+        # (consts.ISSUE_STATUS_CANCELLED_BY_CLIENT, 'Отменена клиентом'),
     ], default=consts.ISSUE_STATUS_REGISTERING)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='пользователь', on_delete=models.DO_NOTHING, null=False)
     manager = models.ForeignKey(
@@ -240,7 +240,7 @@ class Issue(models.Model):
         (consts.TAX_ENVD, 'ЕНВД'),
         (consts.TAX_ESHD, 'ЕСХД'),
     ])
-    agent_comission = models.DecimalField(verbose_name='Комиссия агента', max_digits=32, decimal_places=2, blank=True, null=True)
+    agent_comission = models.DecimalField(verbose_name='Комиссия, предложенная агентом', max_digits=32, decimal_places=2, blank=True, null=True)
 
     deal_has_beneficiary = models.NullBooleanField(verbose_name='наличие бенефициара по сделке', blank=True, null=True)
     issuer_bank_relations_term = models.CharField(verbose_name='срок отношений с Банком', max_length=32, blank=True, null=True, choices=[
@@ -281,11 +281,20 @@ class Issue(models.Model):
     is_issuer_last_year_revenue_higher_in_5_times_than_all_bank_bgs = models.NullBooleanField('Выручка Клиента за последний завершенный год не менее, чем в 5 раз превышает сумму запрашиваемой и действующих в Банке гарантий', blank=True, null=True)
     is_issuer_has_garantor_for_advance_related_requirements = models.NullBooleanField('Наличие Поручителя юридического лица удовлетворяющим одному из предыдущих трех условий', blank=True, null=True)
 
-    is_contract_price_reduction_lower_than_50_pct_on_supply_contract = models.NullBooleanField('Снижение цены Контракта менее 50% если предмет контракта «Поставка»', blank=True, null=True)
+    is_contract_price_reduction_lower_than_50_pct_on_supply_contract = models.NullBooleanField(
+        'Снижение цены Контракта менее 50% если предмет контракта «Поставка»',
+        db_column='is_contract_price_reduction_lower_than_50_pct_on_supply_contra',
+        blank=True, null=True)
     is_positive_security_department_conclusion = models.NullBooleanField('Наличие положительного Заключения СБ', blank=True, null=True)
     is_positive_lawyers_department_conclusion = models.NullBooleanField('Наличие положительного Заключения ПУ (в соответствии с Приказом по проверке ПУ)', blank=True, null=True)
-    is_absent_info_about_court_acts_for_more_than_20_pct_of_net_assets = models.NullBooleanField('Отсутствие информации об исполнительных производствах Приницпала его Участников на сумму более 20% чистых активов Клиента', blank=True, null=True)
-    is_absent_info_about_legal_proceedings_as_defendant_for_more_than_30_pct_of_net_assets = models.NullBooleanField('Отсутствие информации о судебных разбирательствах Клиента в качестве ответчика (за исключением закрытых) на сумму более 30% чистых активов Клиента', blank=True, null=True)
+    is_absent_info_about_court_acts_for_more_than_20_pct_of_net_assets = models.NullBooleanField(
+        'Отсутствие информации об исполнительных производствах Приницпала его Участников на сумму более 20% чистых активов Клиента',
+        db_column='is_absent_info_about_court_acts_for_more_than_20_pct_of_net_as',
+        blank=True, null=True)
+    is_absent_info_about_legal_proceedings_as_defendant_for_more_than_30_pct_of_net_assets = models.NullBooleanField(
+        'Отсутствие информации о судебных разбирательствах Клиента в качестве ответчика (за исключением закрытых) на сумму более 30% чистых активов Клиента',
+        db_column='is_absent_info_about_legal_proceedings_as_defendant_for_more_t',
+        blank=True, null=True)
     is_need_to_check_real_of_issuer_activity = models.NullBooleanField('Есть необходимость оценки реальности деятельности', blank=False, null=False, default=False)
     is_real_of_issuer_activity_confirms = models.NullBooleanField('Реальность деятельности подтверждается', blank=True, null=True)
     is_contract_corresponds_issuer_activity = models.IntegerField('Соответствие контракта профилю деятельности клиента', choices=[
@@ -337,13 +346,19 @@ class Issue(models.Model):
     issuer_shareholders_participants_or_self_court_cases_info = models.TextField(verbose_name='Данные о Принципале, его участниках в базе данных исполнительных производств', blank=True, null=False, default='')
     issuer_courts_cases_as_defendant_and_its_acts_info = models.TextField(verbose_name='Информация о судебных разбирательствах Принципала (в качестве ответчика), о находящихся в суде делах и принятых по ним судебным актам', blank=True, null=False, default='')
 
-    is_absent_info_about_court_cases_on_ifns_or_bankrupts_or_contracts_as_defendant = models.NullBooleanField('Отсутствие наличия информации о судебных разбирательствах по искам, ответчиком по которым является Принципал: по судебным разбирательствам с ИФНС, по заявлениям о признании Принципала несостоятельным (банкротом), по искам неисполнения государственных контрактов', blank=True, null=True)
+    is_absent_info_about_court_cases_on_ifns_or_bankrupts_or_contracts_as_defendant = models.NullBooleanField(
+        'Отсутствие наличия информации о судебных разбирательствах по искам, ответчиком по которым является Принципал: по судебным разбирательствам с ИФНС, по заявлениям о признании Принципала несостоятельным (банкротом), по искам неисполнения государственных контрактов',
+        db_column='is_absent_info_about_court_cases_on_ifns_or_bankrupts_or_contr',
+        blank=True, null=True)
 
     @property
     def humanized_is_absent_info_about_court_cases_on_ifns_or_bankrupts_or_contracts_as_defendant(self):
         return 'Да' if self.is_absent_info_about_court_cases_on_ifns_or_bankrupts_or_contracts_as_defendant else 'Нет'
 
-    is_absent_info_about_prev_convictions_on_issuer_head_or_shareholders_or_participants_or_guarantor = models.NullBooleanField('Отсутствие судимостей в отношении физических лиц (генеральный директор, участники юридического лица (c наибольшей долей участия, Поручитель)', blank=True, null=True)
+    is_absent_info_about_prev_convictions_on_issuer_head_or_shareholders_or_participants_or_guarantor = models.NullBooleanField(
+        'Отсутствие судимостей в отношении физических лиц (генеральный директор, участники юридического лица (c наибольшей долей участия, Поручитель)',
+        db_column='is_absent_info_about_prev_convictions_on_issuer_head_or_shareh',
+        blank=True, null=True)
 
     @property
     def humanized_is_absent_info_about_prev_convictions_on_issuer_head_or_shareholders_or_participants_or_guarantor(self):
@@ -887,8 +902,8 @@ class Issue(models.Model):
         related_name='payment_of_fee'
     )
     
-    similar_contract_sum = models.FloatField(verbose_name='Сумма последнего профильного контракта', blank=True, null=True, default=0)
-    biggest_contract_sum = models.FloatField(verbose_name='Сумма максимального профильного контракта', blank=True, null=True, default=0)
+    similar_contract_sum = models.FloatField(verbose_name='Сумма максимального исполненного профильного контракта', blank=True, null=True, default=0)
+    biggest_contract_sum = models.FloatField(verbose_name='Сумма максимального исполненного контракта', blank=True, null=True, default=0)
     similar_contract_date = models.DateField(verbose_name='Дата последнего профильного контракта', blank=True, null=True)
     has_fines_on_zakupki_gov_ru = models.BooleanField(default=False, verbose_name='Наличие штрафов по контрактом, отраженных на сайте Госзакупок')
     has_arbitration = models.BooleanField(default=False, verbose_name='Наличие арбитражей по нарушениям выполнения условий гос. контрактов')
@@ -957,6 +972,7 @@ class Issue(models.Model):
             self.tender_exec_law,
             self.tender_has_prepayment,
         )
+    auto_bank_commission.__dict__.update(dict(short_description='Комиссия, подсчитанная банком'))
 
     @cached_property
     def agent_effective_rate(self):
@@ -1330,6 +1346,10 @@ class Issue(models.Model):
     @cached_property
     def issuer_affiliates_all(self):
         return [obj.__dict__ for obj in self.issuer_affiliates.all()]
+
+    @cached_property
+    def issuer_affiliates_with_bank_liabilities(self):
+        return [obj.__dict__ for obj in self.issuer_affiliates.filter(bank_liabilities_vol__gt=0).order_by('name')]
 
     @cached_property
     def bg_property(self):
@@ -1877,6 +1897,10 @@ class Issue(models.Model):
         if self.bg_doc and not self.status == consts.ISSUE_STATUS_REGISTERING:
             docs.append(self.extend_propose_document(self.bg_doc,
                                                      'Проект',
+                                                     4))
+        if self.payment_of_fee and not self.status == consts.ISSUE_STATUS_REGISTERING:
+            docs.append(self.extend_propose_document(self.payment_of_fee,
+                                                     'Счет',
                                                      4))
         if self.transfer_acceptance_act and not self.status == consts.ISSUE_STATUS_REGISTERING:
             docs.append(self.extend_propose_document(self.transfer_acceptance_act,

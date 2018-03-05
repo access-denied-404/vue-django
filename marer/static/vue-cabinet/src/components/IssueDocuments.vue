@@ -13,9 +13,9 @@
         <div class="well well-sm text-center">
           Ссылка для подписания заявления клиентом:
           <strong>
-          http://sgbmarertest.ru/cabinet/requests/{{issue.id}}/rsd
+          http://sgbgarant.ru/cabinet/requests/{{issue.id}}/rsd
           </strong>
-          <a class="btn btn-link btn-xs" :href="'http://sgbmarertest.ru/cabinet/requests/' + issue.id + '/rsd'" target="_blank">
+          <a class="btn btn-link btn-xs" :href="'http://sgbgarant.ru/cabinet/requests/' + issue.id + '/rsd'" target="_blank">
             <span class="glyphicon glyphicon-new-window"></span>
           </a>
         </div>
@@ -42,13 +42,42 @@
                       </tr>
                       <tr v-for="(doc, index) in finance_documents">
                           <td :id="'fin-doc-' + doc.id" v-show="doc.visible">
-                            <div class="row">
-                                <div class="form-group">
-                                    <div class="col-md-12">
-                                        <a v-if="doc.document" :href="doc.document.file" v-text="doc.name"></a>
-                                        <div v-else v-text="doc.name"></div>
-                                    </div>
-                                </div>
+                              <div class="row">
+                                  <div class="col-md-9">
+                                      <a v-if="doc.document" :href="doc.document.file" v-text="doc.name"></a>
+                                      <div v-else v-text="doc.name"></div>
+                                  </div>
+
+                                  <div class="col-md-3">
+                                      <div class="row">
+                                          <div v-if="doc.document" class="col-md-8">
+                                              <label :for="'upload_doc_' + doc.id">
+                                                <span class="glyphicon glyphicon-upload text-primary" role="button"> Загрузить</span>
+                                                <input type="file" :id="'upload_doc_' + doc.id" class="hidden"/>
+                                              </label>
+                                          </div>
+                                          <div v-else class="col-md-8">
+                                              <label>
+                                                <span class="glyphicon glyphicon-upload text-primary" role="button"> Загрузить</span>
+                                                <input type="file" class="hidden"/>
+                                              </label>
+                                          </div>
+                                          <div v-if="doc.document && doc.document.sign_state" class="col-md-1">
+                                              <span v-if="doc.document.sign_state == 'verified'"
+                                                    class="glyphicon glyphicon-ok-circle text-success">
+
+                                              </span>
+                                              <span v-else-if="doc.document.sign_state == 'corrupted'"
+                                                    class="glyphicon glyphicon glyphicon-ban-circle text-danger">
+
+                                              </span>
+                                              <span v-else class="glyphicon glyphicon glyphicon-remove-circle"></span>
+                                          </div>
+                                          <div v-if="doc.document" class="col-md-1">
+                                              <a href="#"><span class="glyphicon glyphicon-remove text-danger"></span></a>
+                                          </div>
+                                      </div>
+                                  </div>
                             </div>
                           </td>
                       </tr>
@@ -66,12 +95,41 @@
                       <tr v-for="(doc, index) in legal_documents">
                         <td :id="'jur-doc-' + doc.id" v-show="doc.visible">
                             <div class="row">
-                                <div class="form-group">
-                                    <div class="col-md-12">
-                                        <a v-if="doc.document" :href="doc.document.file" v-text="doc.name"></a>
-                                        <div v-else v-text="doc.name"></div>
-                                    </div>
-                                </div>
+                                  <div class="col-md-9">
+                                      <a v-if="doc.document" :href="doc.document.file" v-text="doc.name"></a>
+                                      <div v-else v-text="doc.name"></div>
+                                  </div>
+
+                                  <div class="col-md-3">
+                                      <div class="row">
+                                          <div v-if="doc.document" class="col-md-8">
+                                              <label :for="'upload_doc_' + doc.id">
+                                                <span class="glyphicon glyphicon-upload text-primary" role="button"> Загрузить</span>
+                                                <input type="file" :id="'upload_doc_' + doc.id" class="hidden"/>
+                                              </label>
+                                          </div>
+                                          <div v-else class="col-md-8">
+                                              <label>
+                                                <span class="glyphicon glyphicon-upload text-primary" role="button"> Загрузить</span>
+                                                <input type="file" class="hidden"/>
+                                              </label>
+                                          </div>
+                                          <div v-if="doc.document && doc.document.sign_state" class="col-md-1">
+                                              <span v-if="doc.document.sign_state == 'verified'"
+                                                    class="glyphicon glyphicon-ok-circle text-success">
+
+                                              </span>
+                                              <span v-else-if="doc.document.sign_state == 'corrupted'"
+                                                    class="glyphicon glyphicon glyphicon-ban-circle text-danger">
+
+                                              </span>
+                                              <span v-else class="glyphicon glyphicon glyphicon-remove-circle"></span>
+                                          </div>
+                                          <div v-if="doc.document" class="col-md-1">
+                                              <a href="#"><span class="glyphicon glyphicon-remove text-danger"></span></a>
+                                          </div>
+                                      </div>
+                                  </div>
                             </div>
                         </td>
                       </tr>
@@ -89,12 +147,41 @@
                       <tr v-for="(doc, index) in other_documents">
                         <td :id="'oth-doc-' + doc.id" v-show="doc.visible">
                             <div class="row">
-                                <div class="form-group">
-                                    <div class="col-md-12">
-                                        <a v-if="doc.document" :href="doc.document.file" v-text="doc.name"></a>
-                                        <div v-else v-text="doc.name"></div>
-                                    </div>
-                                </div>
+                                  <div class="col-md-9">
+                                      <a v-if="doc.document" :href="doc.document.file" v-text="doc.name"></a>
+                                      <div v-else v-text="doc.name"></div>
+                                  </div>
+
+                                  <div class="col-md-3">
+                                      <div class="row">
+                                          <div v-if="doc.document" class="col-md-8">
+                                              <label :for="'upload_doc_' + doc.id">
+                                                <span class="glyphicon glyphicon-upload text-primary" role="button"> Загрузить</span>
+                                                <input type="file" :id="'upload_doc_' + doc.id" class="hidden"/>
+                                              </label>
+                                          </div>
+                                          <div v-else class="col-md-8">
+                                              <label>
+                                                <span class="glyphicon glyphicon-upload text-primary" role="button"> Загрузить</span>
+                                                <input type="file" class="hidden"/>
+                                              </label>
+                                          </div>
+                                          <div v-if="doc.document && doc.document.sign_state" class="col-md-1">
+                                              <span v-if="doc.document.sign_state == 'verified'"
+                                                    class="glyphicon glyphicon-ok-circle text-success">
+
+                                              </span>
+                                              <span v-else-if="doc.document.sign_state == 'corrupted'"
+                                                    class="glyphicon glyphicon glyphicon-ban-circle text-danger">
+
+                                              </span>
+                                              <span v-else class="glyphicon glyphicon glyphicon-remove-circle"></span>
+                                          </div>
+                                          <div v-if="doc.document" class="col-md-1">
+                                              <a href="#"><span class="glyphicon glyphicon-remove text-danger"></span></a>
+                                          </div>
+                                      </div>
+                                  </div>
                             </div>
                         </td>
                       </tr>
@@ -104,43 +191,57 @@
                              target="_blank">Скачать архив
                           </a>
                       </tr>
-                      <tr v-if="issue.bg_contract_doc || issue.bg_doc || issue.transfer_acceptance_act">
-                        <td>
-                          <h4 style="font-weight: bold;">Договора и акты</h4>
+                      <tr v-if="issue.propose_documents_app">
+                          <td>
+                              <h4 style="font-weight: bold">Договора и акты</h4>
+                          </td>
+                      </tr>
+                      <tr v-for="(doc, index) in issue.propose_documents_app">
+                        <td :id="'oth-doc-' + doc.id" v-show="doc.visible">
+                            <div class="row">
+                                  <div class="col-md-9">
+                                      <a v-if="doc.document" :href="doc.document.file" v-text="doc.name"></a>
+                                      <div v-else v-text="doc.name"></div>
+                                  </div>
+
+                                  <div class="col-md-3">
+                                      <div class="row">
+                                          <div v-if="doc.document" class="col-md-8">
+                                              <label :for="'upload_doc_' + doc.id">
+                                                <span class="glyphicon glyphicon-upload text-primary" role="button"> Загрузить</span>
+                                                <input type="file" :id="'upload_doc_' + doc.id" class="hidden"/>
+                                              </label>
+                                          </div>
+                                          <div v-else class="col-md-8">
+                                              <label>
+                                                <span class="glyphicon glyphicon-upload text-primary" role="button"> Загрузить</span>
+                                                <input type="file" class="hidden"/>
+                                              </label>
+                                          </div>
+                                          <div v-if="doc.document && doc.document.sign_state" class="col-md-1">
+                                              <span v-if="doc.document.sign_state == 'verified'"
+                                                    class="glyphicon glyphicon-ok-circle text-success">
+
+                                              </span>
+                                              <span v-else-if="doc.document.sign_state == 'corrupted'"
+                                                    class="glyphicon glyphicon glyphicon-ban-circle text-danger">
+
+                                              </span>
+                                              <span v-else class="glyphicon glyphicon glyphicon-remove-circle"></span>
+                                          </div>
+                                          <div v-if="doc.document" class="col-md-1">
+                                              <a href="#"><span class="glyphicon glyphicon-remove text-danger"></span></a>
+                                          </div>
+                                      </div>
+                                  </div>
+                            </div>
                         </td>
                       </tr>
-                      <tr v-if="issue.bg_contract_doc">
-                        <td>
-                          <a :href="issue.bg_contract_doc.file">Договор</a>
-                        </td>
-                      </tr>
-                      <tr v-if="issue.payment_of_fee">
-                        <td>
-                          <a :href="issue.payment_of_fee.file">Счет</a>
-                        </td>
-                      </tr>
-                      <tr v-if="issue.bg_doc">
-                        <td>
-                          <a :href="issue.bg_doc.file">Проект</a>
-                        </td>
-                      </tr>
-                      <tr v-if="issue.transfer_acceptance_act">
-                        <td>
-                          <a :href="issue.transfer_acceptance_act.file">Акт</a>
-                        </td>
-                      </tr>
-                      <tr v-if="issue.contract_of_guarantee">
-                        <td>
-                            <a :href="issue.contract_of_guarantee.file">Договор поручительства</a>
-                        </td>
-                      </tr>
-                      <tr v-if="issue.approval_and_change_sheet">
-                        <td>
-                            <a :href="issue.approval_and_change_sheet.file"
-                               :download="'Лист_согласования_и_изменения_БГ_'+ issue.id +'.docx'">
-                                Лист согласования и изменения БГ
-                            </a>
-                        </td>
+                      <tr v-if="issue.propose_documents_app">
+                          <a class="btn btn-primary btn-sm pull-right"
+                             :href="'issue/' + issue.id + '/docs-zip?group=4'"
+                             target="_blank">Скачать архив
+                          </a>
                       </tr>
                     </table>
 

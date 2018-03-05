@@ -84,13 +84,16 @@ class DocsZipView(View):
         issue = Issue.objects.get(id=iid)
         if type == '1':
             response = self.calculate_response(issue.propose_documents_leg)
-            response['Content-Disposition'] = 'attachment; filename=leg_docs.zip'
+            response['Content-Disposition'] = 'attachment; filename=leg_docs_for_issue_{}.zip'.format(str(issue.id))
         elif type == '2':
             response = self.calculate_response(issue.propose_documents_fin)
-            response['Content-Disposition'] = 'attachment; filename=fin_docs.zip'
+            response['Content-Disposition'] = 'attachment; filename=fin_docs_for_issue_{}.zip'.format(str(issue.id))
         elif type == '3':
             response = self.calculate_response(issue.propose_documents_oth)
-            response['Content-Disposition'] = 'attachment; filename=oth_docs.zip'
+            response['Content-Disposition'] = 'attachment; filename=oth_docs_for_issue_{}.zip'.format(str(issue.id))
+        elif type == '4':
+            response = self.calculate_response(issue.propose_documents_app)
+            response['Content-Disposition'] = 'attachment; filename=acts_for_issue_{}.zip'.format(str(issue.id))
         else:
             response = HttpResponse('')
         return response
@@ -114,9 +117,13 @@ class IssueBaseAPIView(APIView):
         ser = self.serializer(issue, data=request.data['body'])
         if ser.is_valid():
             ser.save()
+            self.issue_post_save(request, issue)
             return Response(ser.data)
         else:
             return Response(ser.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def issue_post_save(self, request, issue):
+        pass
 
 
 class IssueView(IssueBaseAPIView):
@@ -197,6 +204,10 @@ class IssueSecDepMgmtView(IssueBaseAPIView):
 
 class IssueLawyersDepView(IssueBaseAPIView):
     serializer = IssueLawyersDepSerializer
+
+    def issue_post_save(self, request, issue):
+        if 'generate' in self.request.GET:
+            issue.fill_lawyers_dep_conclusion(commit=True)
 
 
 class IssueMessagesView(IssueBaseAPIView):

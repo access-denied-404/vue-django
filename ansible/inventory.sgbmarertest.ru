@@ -1,5 +1,5 @@
 [all]
-sgbmarertest.ru
+sgbgarant.ru
 
 [all:vars]
 ansible_user=root

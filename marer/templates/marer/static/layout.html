@@ -1,0 +1,20 @@
+{% extends 'marer/layout.html' %}
+
+{% load staticfiles %}
+
+{% block head_additional %}
+    <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
+    <link href="{% static '/marer/css/btn-yellow.css' %}" rel="stylesheet">
+    <link href="{% static '/marer/css/body-bgnd.css' %}" rel="stylesheet">
+    <link href="{% static '/marer/css/suggestions.css' %}" rel="stylesheet">
+    <link href="{% static '/marer/css/helpers.css' %}" rel="stylesheet">
+    <link href="{% static '/marer/css/vertical-center.css' %}" rel="stylesheet">
+    <link href="{% static '/marer/css/no-text-decoration.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+    {% block static_content %}{% endblock %}
+    {% include 'marer/boostrap_js_body_part.html' %}
+
+{% endblock %}

@@ -153,6 +153,7 @@ class IssueSerializer(ModelSerializer):
     issuer_founders_physical = IssueBGProdFounderPhysicalSerializer(many=True)
     application_doc = DocumentSerializer(read_only=True)
     propose_documents = IssueProposeDocumentSerializer(many=True, read_only=True)
+    propose_documents_app = IssueProposeDocumentSerializer(many=True, read_only=True)
 
     bg_contract_doc = DocumentSerializer()
     bg_doc = DocumentSerializer()
@@ -161,6 +162,8 @@ class IssueSerializer(ModelSerializer):
     approval_and_change_sheet = DocumentSerializer()
     contract_of_guarantee = ContractOfGuaranteeSerializer()
     bank_commission = serializers.CharField(max_length=512)
+
+    lawyers_dep_conclusion_doc = DocumentSerializer()
 
     def update(self, instance, validated_data):
         related_fields = [

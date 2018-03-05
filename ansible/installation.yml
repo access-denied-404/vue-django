@@ -20,6 +20,8 @@
         - uwsgi-plugin-python3
         - gettext
         - redis-server
+        - postgresql
+        - python-psycopg2
       become: true
 
     - name: Setting locale
@@ -28,6 +30,21 @@
         - locale-gen ru_RU.UTF-8
         - localectl set-locale LANG=ru_RU.UTF-8
       become: true
+
+    - name: Configure database user
+      postgresql_user:
+        name=marer
+        password=marer
+        state=present
+      become: true
+      become_user: postgres
+
+    - name: Configure database store
+      postgresql_db:
+        name=marer
+        owner=marer
+      become: true
+      become_user: postgres
 
     - name: Install bower to manage static files packages
       npm:

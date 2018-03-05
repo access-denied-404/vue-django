@@ -29,6 +29,7 @@ class User(AbstractUser):
             ('can_add_managed_users_issues_proposes_clarifications', 'Can add managed users issues proposes clarifications'),
             ('can_add_managed_users_issues_proposes_clarifications_messages', 'Can add managed users issues proposes clarifications messages'),
         ]
+        ordering = ['first_name']
 
     phone = models.CharField('Контактный телефон', max_length=30, blank=True)
     legal_name = models.CharField('Наименование агента', max_length=512, blank=True, null=False, default='')
@@ -77,4 +78,8 @@ class User(AbstractUser):
             user_name_list.append(self.first_name)
         if self.last_name != '':
             user_name_list.append(self.last_name)
-        return ' '.join(user_name_list) + ', ' + self.get_username()
+        if self.legal_name and self.legal_name != '':
+            add_name = self.legal_name
+        else:
+            add_name = self.get_username()
+        return ' '.join(user_name_list) + ', ' + add_name
