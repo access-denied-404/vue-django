@@ -22,6 +22,7 @@ from marer.models import Issue, User
 def fill_xlsx_file_with_issue_data(path: str, issue: Issue, user: User = None) -> ContentFile:
     wb = load_workbook(path)
     self_data = issue.__dict__
+    self_data['clean_on_empty'] = ''
     self_data['user'] = user
     self_data['issue'] = issue
     self_data['date_now'] = timezone.localdate(timezone.now(), timezone.get_current_timezone()).strftime('%d.%m.%Y')
@@ -87,6 +88,7 @@ def _fill_docx_paragraph_with_dict(paragraph: Paragraph, data: dict) -> None:
 
 def fill_docx_file_with_issue_data(path: str, issue: Issue, user: User = None) -> ContentFile:
     self_data = issue.__dict__
+    self_data['clean_on_empty'] = ''
     self_data['user'] = user
     self_data['issue'] = issue
     self_data['date_now'] = timezone.localdate(timezone.now(), timezone.get_current_timezone()).strftime('%d.%m.%Y')
@@ -202,6 +204,16 @@ class WordDocumentHelper:
                     "{%s|for}" % data[2]: '',
                     "{%s|endfor}" % data[2]: ''
                 }
+                if data[4] == 0:
+
+                    for row_idx in range(data[0], data[0] + data[3]):
+                        for cell in self.get_cells(table, row_idx):
+                            cell_text = etree.tostring(cell)
+                            if '{clean_on_empty}' in str(cell_text):
+                                for p in cell.p_lst:
+                                    for r in p.r_lst:
+                                        for t in r.t_lst:
+                                            t.text = ''
                 # пробегамся только по отмеченным участкам для замены
                 for row_idx in range(data[0], data[0] + data[3]):
                     index = (row_idx - data[0]) // data[1]  # индекс для вставки
