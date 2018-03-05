@@ -51,30 +51,36 @@
                                   <div class="col-md-3">
                                       <div class="row">
                                           <div v-if="doc.document" class="col-md-8">
-                                              <label :for="'upload_doc_' + doc.id">
+                                              <label>
                                                 <span class="glyphicon glyphicon-upload text-primary" role="button"> Загрузить</span>
-                                                <input type="file" :id="'upload_doc_' + doc.id" class="hidden"/>
+                                                <input type="file"
+                                                       class="hidden"
+                                                       @change="replaceDoc($event, index, finance_documents)"
+                                                />
                                               </label>
                                           </div>
                                           <div v-else class="col-md-8">
                                               <label>
                                                 <span class="glyphicon glyphicon-upload text-primary" role="button"> Загрузить</span>
-                                                <input type="file" class="hidden"/>
+                                                <input type="file"
+                                                       class="hidden"
+                                                       @change="replaceDoc($event, index, finance_documents)"
+                                                />
                                               </label>
                                           </div>
                                           <div v-if="doc.document && doc.document.sign_state" class="col-md-1">
                                               <span v-if="doc.document.sign_state == 'verified'"
                                                     class="glyphicon glyphicon-ok-circle text-success">
-
                                               </span>
                                               <span v-else-if="doc.document.sign_state == 'corrupted'"
                                                     class="glyphicon glyphicon glyphicon-ban-circle text-danger">
-
                                               </span>
                                               <span v-else class="glyphicon glyphicon glyphicon-remove-circle"></span>
                                           </div>
                                           <div v-if="doc.document" class="col-md-1">
-                                              <a href="#"><span class="glyphicon glyphicon-remove text-danger"></span></a>
+                                              <a @click="deleteDoc(index, finance_documents)"
+                                                 role="button"
+                                              ><span class="glyphicon glyphicon-remove text-danger"></span></a>
                                           </div>
                                       </div>
                                   </div>
@@ -103,15 +109,21 @@
                                   <div class="col-md-3">
                                       <div class="row">
                                           <div v-if="doc.document" class="col-md-8">
-                                              <label :for="'upload_doc_' + doc.id">
+                                              <label>
                                                 <span class="glyphicon glyphicon-upload text-primary" role="button"> Загрузить</span>
-                                                <input type="file" :id="'upload_doc_' + doc.id" class="hidden"/>
+                                                <input type="file"
+                                                       class="hidden"
+                                                       @change="replaceDoc($event, index, legal_documents)"
+                                                />
                                               </label>
                                           </div>
                                           <div v-else class="col-md-8">
                                               <label>
                                                 <span class="glyphicon glyphicon-upload text-primary" role="button"> Загрузить</span>
-                                                <input type="file" class="hidden"/>
+                                                <input type="file"
+                                                       class="hidden"
+                                                       @change="replaceDoc($event, index, legal_documents)"
+                                                />
                                               </label>
                                           </div>
                                           <div v-if="doc.document && doc.document.sign_state" class="col-md-1">
@@ -126,7 +138,9 @@
                                               <span v-else class="glyphicon glyphicon glyphicon-remove-circle"></span>
                                           </div>
                                           <div v-if="doc.document" class="col-md-1">
-                                              <a href="#"><span class="glyphicon glyphicon-remove text-danger"></span></a>
+                                              <a @click="deleteDoc(index, legal_documents)"
+                                                 role="button"
+                                              ><span class="glyphicon glyphicon-remove text-danger"></span></a>
                                           </div>
                                       </div>
                                   </div>
@@ -155,15 +169,21 @@
                                   <div class="col-md-3">
                                       <div class="row">
                                           <div v-if="doc.document" class="col-md-8">
-                                              <label :for="'upload_doc_' + doc.id">
+                                              <label>
                                                 <span class="glyphicon glyphicon-upload text-primary" role="button"> Загрузить</span>
-                                                <input type="file" :id="'upload_doc_' + doc.id" class="hidden"/>
+                                                <input type="file"
+                                                       class="hidden"
+                                                       @change="replaceDoc($event, index, other_documents)"
+                                                />
                                               </label>
                                           </div>
                                           <div v-else class="col-md-8">
                                               <label>
                                                 <span class="glyphicon glyphicon-upload text-primary" role="button"> Загрузить</span>
-                                                <input type="file" class="hidden"/>
+                                                <input type="file"
+                                                       class="hidden"
+                                                       @change="replaceDoc($event, index, other_documents)"
+                                                />
                                               </label>
                                           </div>
                                           <div v-if="doc.document && doc.document.sign_state" class="col-md-1">
@@ -178,7 +198,9 @@
                                               <span v-else class="glyphicon glyphicon glyphicon-remove-circle"></span>
                                           </div>
                                           <div v-if="doc.document" class="col-md-1">
-                                              <a href="#"><span class="glyphicon glyphicon-remove text-danger"></span></a>
+                                              <a @click="deleteDoc(index, other_documents)"
+                                                 role="button"
+                                              ><span class="glyphicon glyphicon-remove text-danger"></span></a>
                                           </div>
                                       </div>
                                   </div>
@@ -197,7 +219,7 @@
                           </td>
                       </tr>
                       <tr v-for="(doc, index) in issue.propose_documents_app">
-                        <td :id="'oth-doc-' + doc.id" v-show="doc.visible">
+                        <td :id="'app-doc-' + doc.id" v-show="doc.visible">
                             <div class="row">
                                   <div class="col-md-9">
                                       <a v-if="doc.document" :href="doc.document.file" v-text="doc.name"></a>
@@ -207,15 +229,21 @@
                                   <div class="col-md-3">
                                       <div class="row">
                                           <div v-if="doc.document" class="col-md-8">
-                                              <label :for="'upload_doc_' + doc.id">
+                                              <label>
                                                 <span class="glyphicon glyphicon-upload text-primary" role="button"> Загрузить</span>
-                                                <input type="file" :id="'upload_doc_' + doc.id" class="hidden"/>
+                                                <input type="file"
+                                                       class="hidden"
+                                                       @change="replaceDoc($event, index, issue.propose_documents_app)"
+                                                />
                                               </label>
                                           </div>
                                           <div v-else class="col-md-8">
                                               <label>
                                                 <span class="glyphicon glyphicon-upload text-primary" role="button"> Загрузить</span>
-                                                <input type="file" class="hidden"/>
+                                                <input type="file"
+                                                       class="hidden"
+                                                       @change="replaceDoc($event, index, issue.propose_documents_app)"
+                                                />
                                               </label>
                                           </div>
                                           <div v-if="doc.document && doc.document.sign_state" class="col-md-1">
@@ -230,7 +258,9 @@
                                               <span v-else class="glyphicon glyphicon glyphicon-remove-circle"></span>
                                           </div>
                                           <div v-if="doc.document" class="col-md-1">
-                                              <a href="#"><span class="glyphicon glyphicon-remove text-danger"></span></a>
+                                              <a @click="deleteDoc(index, issue.propose_documents_app)"
+                                                 role="button"
+                                              ><span class="glyphicon glyphicon-remove text-danger"></span></a>
                                           </div>
                                       </div>
                                   </div>
@@ -273,7 +303,7 @@
   import IssueMenu from '@/components/IssueMenu'
   import 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css'
   import {Money} from 'v-money'
-  import axios from 'axios'
+  import axios, { post } from 'axios'
 
   moment.locale = 'ru'
   let dateformat = 'DD.MM.YYYY'
@@ -294,6 +324,8 @@
     data () {
       return {
         api_url: window.debug ? 'http://localhost:8000/rest/issue/' : '/rest/issue/',
+        delete_docs_url: window.debug ? 'http://localhost:8000/delete-docs/issue/' : '/delete-docs/issue/',
+        save_issue_url: window.debug ? 'http://localhost:8000/replace-docs/issue/' : '/replace-docs/issue/',
         issue: {}
       }
     },
@@ -302,27 +334,29 @@
         this.update_form_data(data)
       })
     },
-    computed: {
-      date_range: {
-        get () {
-          if (this.issue.bg_end_date) {
-            let val
-            let start = moment(this.issue.bg_start_date, dateformat)
-            let end = this.issue.bg_end_date
-            val = 1 + (end.year() - start.year()) * 12 + end.month() - start.month()
-            if (isNaN(val)) {
-              return ''
-            } else {
-              return val
-            }
-          }
-          return ''
-        },
-        set () {
-        }
-      }
-    },
     methods: {
+      deleteDoc (index, docList) {
+        docList[index].document = null
+        axios.post(this.delete_docs_url + this.$route.params.id, {
+          body: docList
+        }).then(response => {
+          this.update_form_data(response.data)
+        })
+      },
+      replaceDoc (event, index, docList) {
+        const formData = new FormData()
+        formData.append('file', event.target.files[0])
+        formData.append('id', docList[index].id)
+        formData.append('type', docList[index].type)
+        const config = {
+          headers: {
+            'content-type': 'multipart/form-data'
+          }
+        }
+        return post(this.save_issue_url + this.$route.params.id, formData, config).then(response => {
+          response.data
+        })
+      },
       update_form_data (data) {
         this.issue = data
         this.issue.bg_start_date = moment(data.bg_start_date, dateformat)

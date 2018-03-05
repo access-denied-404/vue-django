@@ -12,3 +12,12 @@ def get_datetime_as_excel_number(date, limit=7):
 
 def get_date_diff_in_days(start_date, end_date):
     return (end_date - start_date).days
+
+def year():
+    return datetime.now().year
+
+def month():
+    return datetime.now().strftime('%m')
+
+def day():
+    return datetime.now().strftime('%d')
