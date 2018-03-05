@@ -1,6 +1,7 @@
 import json
 import warnings
 import os
+from copy import deepcopy
 
 import feedparser
 import requests
@@ -2226,12 +2227,30 @@ class Issue(models.Model):
             if self.issuer_okopf:
                 form_ownership = FormOwnership.objects.filter(okopf_codes__contains=self.issuer_okopf).first()
                 pdocs = pdocs.filter(form_ownership__in=[form_ownership])
+            pdocs_ids = pdocs.values_list('id', flat=True)
+
+            prev_issue = Issue.objects.filter(issuer_inn=self.issuer_inn).exclude(id=self.id).order_by('-id').first()
+            if prev_issue:
+                for old_doc in prev_issue.propose_documents.exclude(created_from__isnull=True).all():
+                    if old_doc.created_from_id in pdocs_ids:
+                        new_doc = deepcopy(old_doc)
+                        new_doc.pk = None
+                        if old_doc.document:
+                            doc_file = deepcopy(old_doc.document)
+                            doc_file.pk = None
+                            doc_file.save()
+                            new_doc.document = doc_file
+
+                        new_doc.issue_id = self.id
+                        new_doc.save()
+
             for pdoc in pdocs:
                 IssueProposeDocument.objects.get_or_create(issue=self, name=pdoc.name, defaults={
                     'code': pdoc.code,
                     'type': pdoc.type,
                     'is_required': pdoc.is_required,
                     'sample': pdoc.sample,
+                    'created_from': pdoc
                 })
 
     def __init__(self, *args, **kwargs):
@@ -2310,6 +2329,7 @@ class IssueProposeDocument(models.Model):
         (True, 'Подтвержден'),
         (False, 'Забракован'),
     ], null=True, blank=True)
+    created_from = models.ForeignKey(FinanceOrgProductProposeDocument, on_delete=models.DO_NOTHING, blank=True, null=True)  # ссылка на документ, от которого был создан
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None, chain_docs_update=False):
         # todo does it has any sense?
