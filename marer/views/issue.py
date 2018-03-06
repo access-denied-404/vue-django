@@ -120,6 +120,7 @@ class IssueRegisteringView(IssueView):
                 if old_issue:
                     new_issue = deepcopy(old_issue)
                     new_issue.pk = None
+                    new_issue.manager = None
                     new_issue.user = request.user
                     new_issue.status = consts.ISSUE_STATUS_REGISTERING
                     new_issue.application_doc = None
