@@ -1904,7 +1904,7 @@ class Issue(models.Model):
         app_doc = Document()
         app_doc.file = application_doc_file
         app_doc.save()
-        if self.application_doc.sign_state == consts.DOCUMENT_SIGN_VERIFIED:
+        if self.application_doc and self.application_doc.sign_state == consts.DOCUMENT_SIGN_VERIFIED:
             self.prev_signed_application_doc = self.application_doc
 
         self.application_doc = app_doc
