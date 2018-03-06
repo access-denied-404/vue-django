@@ -219,7 +219,7 @@
                           </td>
                       </tr>
                       <tr v-for="(doc, index) in issue.propose_documents_app">
-                        <td :id="'app-doc-' + doc.id" v-show="doc.visible">
+                        <td :id="'app-doc-' + doc.name" v-show="doc.visible">
                             <div class="row">
                                   <div class="col-md-9">
                                       <a v-if="doc.document" :href="doc.document.file" v-text="doc.name"></a>
@@ -339,7 +339,7 @@
         docList[index].document = null
         axios.post(this.delete_docs_url + this.$route.params.id, {
           id: docList[index].id,
-          docList: docList
+          index: index
         }).then(response => {
           this.update_form_data(response.data)
         })
@@ -353,6 +353,7 @@
         formData.append('id', docList[index].id)
         formData.append('type', docList[index].type)
         formData.append('name', name)
+        formData.append('index', index)
         const config = {
           headers: {
             'content-type': 'multipart/form-data'
