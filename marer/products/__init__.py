@@ -717,6 +717,7 @@ class BankGuaranteeProduct(FinanceProduct):
                 ('tender_exec_law', 'bg_type',),
                 ('agent_comission', 'auto_bank_commission',),
                 'application_doc_admin_field',
+                'prev_signed_application_doc_admin_field',
                 'lawyers_dep_conclusion_doc_admin_field',
                 'doc_ops_mgmt_conclusion_doc_admin_field',
                 'sec_dep_conclusion_doc_admin_field',
@@ -854,6 +855,7 @@ class BankGuaranteeProduct(FinanceProduct):
         return [
             'auto_bank_commission',
             'application_doc_admin_field',
+            'prev_signed_application_doc_admin_field',
             'bg_contract_doc_admin_field',
             'transfer_acceptance_act_admin_field',
             'contract_of_guarantee_admin_field',

@@ -1,6 +1,7 @@
 import json
 import warnings
 import os
+from copy import deepcopy
 
 import feedparser
 import requests
@@ -818,6 +819,13 @@ class Issue(models.Model):
         blank=True,
         related_name='application_docs_links'
     )
+    prev_signed_application_doc = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='prev_signed_application_doc_links'
+    )
     doc_ops_mgmt_conclusion_doc = models.ForeignKey(
         Document,
         on_delete=models.SET_NULL,
@@ -832,7 +840,6 @@ class Issue(models.Model):
         blank=True,
         related_name='lawyers_dep_conclusion_docs_links'
     )
-
     sec_dep_conclusion_doc = models.ForeignKey(
         Document,
         on_delete=models.SET_NULL,
@@ -1456,6 +1463,20 @@ class Issue(models.Model):
     application_doc_admin_field.short_description = 'файл заявки'
     application_doc_admin_field.allow_tags = True
 
+    def prev_signed_application_doc_admin_field(self):
+        field_parts = []
+        if self.prev_signed_application_doc:
+            if self.prev_signed_application_doc.file:
+                field_parts.append('<b><a href="{}">скачать</a></b>'.format(self.prev_signed_application_doc.file.url))
+            if self.prev_signed_application_doc.sign:
+                field_parts.append('<b><a href="{}">ЭЦП</a></b>'.format(self.prev_signed_application_doc.sign.url))
+        if len(field_parts) > 0:
+            return ', '.join(field_parts)
+        else:
+            return 'отсутствует'
+    prev_signed_application_doc_admin_field.short_description = 'Последнее подписанное заявление'
+    prev_signed_application_doc_admin_field.allow_tags = True
+
     def bg_contract_doc_admin_field(self):
         doc = self.bg_contract_doc
         field_parts = []
@@ -1883,6 +1904,9 @@ class Issue(models.Model):
         app_doc = Document()
         app_doc.file = application_doc_file
         app_doc.save()
+        if self.application_doc.sign_state == consts.DOCUMENT_SIGN_VERIFIED:
+            self.prev_signed_application_doc = self.application_doc
+
         self.application_doc = app_doc
         if commit:
             self.save()
@@ -2226,6 +2250,23 @@ class Issue(models.Model):
             if self.issuer_okopf:
                 form_ownership = FormOwnership.objects.filter(okopf_codes__contains=self.issuer_okopf).first()
                 pdocs = pdocs.filter(form_ownership__in=[form_ownership])
+            pdocs_names = pdocs.values_list('name', flat=True)
+
+            prev_issue = Issue.objects.filter(issuer_inn=self.issuer_inn).exclude(id=self.id).order_by('-id').first()
+            if prev_issue:
+                for old_doc in prev_issue.propose_documents.all():
+                    if old_doc.name in pdocs_names:
+                        new_doc = deepcopy(old_doc)
+                        new_doc.pk = None
+                        if old_doc.document:
+                            doc_file = deepcopy(old_doc.document)
+                            doc_file.pk = None
+                            doc_file.save()
+                            new_doc.document = doc_file
+
+                        new_doc.issue_id = self.id
+                        new_doc.save()
+
             for pdoc in pdocs:
                 IssueProposeDocument.objects.get_or_create(issue=self, name=pdoc.name, defaults={
                     'code': pdoc.code,
