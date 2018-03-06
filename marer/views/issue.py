@@ -27,9 +27,9 @@ from marer.models.issue import IssueClarificationMessage, \
     IssueProposeDocument
 from marer.products import get_finance_products
 from marer.stub import create_stub_issuer
-from marer.utils.notify import notify_user_manager_about_user_created_issue, \
-    notify_user_manager_about_user_updated_issue, notify_about_user_created_clarification, \
-    notify_about_user_adds_message, notify_user_manager_about_user_sign_document, \
+from marer.utils.notify import notify_manager_about_user_created_issue, \
+    notify_manager_about_user_updated_issue, notify_about_user_created_clarification, \
+    notify_about_user_adds_message, notify_manager_about_user_sign_document, \
     notify_managers_about_new_message_in_chat, notify_managers_issue_in_review
 
 
@@ -169,9 +169,9 @@ class IssueRegisteringView(IssueView):
             issue.save()
 
             if need_to_notify_for_issue_create:
-                notify_user_manager_about_user_created_issue(issue)
+                notify_manager_about_user_created_issue(issue)
             else:
-                notify_user_manager_about_user_updated_issue(issue)
+                notify_manager_about_user_updated_issue(issue)
 
             # todo issue process registering form
             product = issue.get_product()
@@ -217,7 +217,7 @@ class IssueSurveyView(IssueView):
         elif action == 'next' and all_ok:
             if self.get_issue().agent_comission and not self.get_issue().agent_commission_passed:
                 return self.get(request, *args, **kwargs)
-            notify_user_manager_about_user_updated_issue(self.get_issue())
+            notify_manager_about_user_updated_issue(self.get_issue())
             url = reverse('issue_scoring', args=[self.get_issue().id])
             return HttpResponseRedirect(url)
         else:
@@ -475,7 +475,7 @@ class IssueRemoteSurveyView(TemplateView, ContextMixin, View):
 
             all_ok = self.get_issue().get_product().process_survey_post_data(request)
             if all_ok:
-                notify_user_manager_about_user_updated_issue(self.get_issue())
+                notify_manager_about_user_updated_issue(self.get_issue())
             if request.POST.get('action', '') == 'fill_application_doc':
                 url = reverse('issue_remote_for_sign', args=[self.get_issue().id])
                 return HttpResponseRedirect(url)
@@ -732,7 +732,7 @@ class IssueAdditionalDocumentSignView(LoginRequiredMixin, ContextMixin, View):
                 doc.sign = final_sign_file
                 doc.save()
                 if pdoc:
-                    notify_user_manager_about_user_sign_document(pdoc)
+                    notify_manager_about_user_sign_document(pdoc)
                 response_dict['sign_state'] = consts.DOCUMENT_SIGN_VERIFIED
             else:
                 response_dict['sign_state'] = consts.DOCUMENT_SIGN_CORRUPTED
@@ -802,7 +802,7 @@ class IssueRemoteDocumentSignView(ContextMixin, View):
                 final_sign_file.name = os.path.basename(doc.file.name) + '.sig'
                 doc.sign = final_sign_file
                 doc.save()
-                notify_user_manager_about_user_sign_document(pdoc)
+                notify_manager_about_user_sign_document(pdoc)
                 response_dict['sign_state'] = consts.DOCUMENT_SIGN_VERIFIED
 
                 if self.get_issue().status == consts.ISSUE_STATUS_REGISTERING \

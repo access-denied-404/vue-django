@@ -12,9 +12,9 @@ def _get_default_manager():
 
 
 def notify_user_about_manager_created_issue_for_user(issue: Issue):
-    user_manager = issue.user.manager
-    if user_manager is None:
-        user_manager = _get_default_manager()
+    manager = issue.manager
+    if manager is None:
+        manager = _get_default_manager()
 
     user = issue.user
     # менеджер создал заявку, уведомить клиента
@@ -22,7 +22,7 @@ def notify_user_about_manager_created_issue_for_user(issue: Issue):
         subject="Ваш менеджер создал Вам новую заявку",
         html_template_filename='mail/events_for_send_to_user/manager_created_new_issue_for_user.html',
         context=dict(
-            manager_full_name=user_manager.__str__(),
+            manager_full_name=manager.__str__(),
             new_issue_id=issue.id,
             new_issue_number=issue.humanized_id,
             finance_product=issue.get_product().humanized_name,
@@ -31,13 +31,13 @@ def notify_user_about_manager_created_issue_for_user(issue: Issue):
     )
 
 
-def notify_user_manager_about_user_created_issue(issue: Issue):
-    user_manager = issue.user.manager
-    if user_manager is None:
-        user_manager = _get_default_manager()
+def notify_manager_about_user_created_issue(issue: Issue):
+    manager = issue.manager
+    if manager is None:
+        manager = _get_default_manager()
 
     # клиент создал заявку, уведомить менеджера
-    user_manager.email_user(
+    manager.email_user(
         subject="Новая заявка от клиента",
         html_template_filename='mail/events_for_send_to_user_manager/user_created_new_issue.html',
         context=dict(
@@ -50,14 +50,14 @@ def notify_user_manager_about_user_created_issue(issue: Issue):
     )
 
 
-def notify_user_manager_about_user_sign_document(document: IssueProposeDocument):
+def notify_manager_about_user_sign_document(document: IssueProposeDocument):
     issue = document.issue
-    user_manager = issue.user.manager
-    if user_manager is None:
-        user_manager = _get_default_manager()
+    manager = issue.manager
+    if manager is None:
+        manager = _get_default_manager()
 
     # клиент создал заявку, уведомить менеджера
-    user_manager.email_user(
+    manager.email_user(
         subject="Клиент подписал документ",
         html_template_filename='mail/events_for_send_to_user_manager/user_sign_document.html',
         context=dict(
@@ -93,13 +93,13 @@ def notify_user_about_manager_updated_issue_for_user(issue: Issue):
     pass
 
 
-def notify_user_manager_about_user_updated_issue(issue: Issue):
-    user_manager = issue.user.manager
-    if user_manager is None:
-        user_manager = _get_default_manager()
+def notify_manager_about_user_updated_issue(issue: Issue):
+    manager = issue.manager
+    if manager is None:
+        manager = _get_default_manager()
 
     # клиент создал заявку, уведомить менеджера
-    user_manager.email_user(
+    manager.email_user(
         subject="Клиент изменил заявку",
         html_template_filename='mail/events_for_send_to_user_manager/user_updated_issue.html',
         context=dict(
