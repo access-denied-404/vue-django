@@ -2643,10 +2643,10 @@ class IssueOrgBeneficiaryOwner(models.Model):
 
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, blank=False, null=False, related_name='org_beneficiary_owners')
     fio = models.CharField(verbose_name='ФИО', max_length=512, blank=False, null=False, default='')
-    legal_address = models.CharField(verbose_name='адрес регистрации', max_length=512, blank=False, null=False, default='')
-    fact_address = models.CharField(verbose_name='адрес фактического пребывания', max_length=512, blank=False, null=False, default='')
-    post_address = models.CharField(verbose_name='почтовый адрес', max_length=512, blank=False, null=False, default='')
-    inn_or_snils = models.CharField(verbose_name='ИНН/СНИЛС (при наличии)', max_length=512, blank=False, null=False, default='')
+    legal_address = models.CharField(verbose_name='адрес регистрации', max_length=512, blank=True, null=False, default='')
+    fact_address = models.CharField(verbose_name='адрес фактического пребывания', max_length=512, blank=True, null=False, default='')
+    post_address = models.CharField(verbose_name='почтовый адрес', max_length=512, blank=True, null=False, default='')
+    inn_or_snils = models.CharField(verbose_name='ИНН/СНИЛС (при наличии)', max_length=512, blank=True, null=False, default='')
     on_belong_to_pub_persons_info = models.CharField(verbose_name='сведения о принадлежности к публичным лицам', max_length=512, blank=False, null=False, default='')
 
 
