@@ -2219,7 +2219,7 @@ class Issue(models.Model):
             pdocs = FinanceOrgProductProposeDocument.objects.filter(
                 Q(Q(tax_system=self.tax_system) | Q(tax_system__isnull=True)),
                 Q(Q(min_bg_sum__lte=self.bg_sum) | Q(min_bg_sum__isnull=True)),
-                Q(Q(max_bg_sum__gte=self.bg_sum) | Q(min_bg_sum__isnull=True)),
+                Q(Q(max_bg_sum__gte=self.bg_sum) | Q(max_bg_sum__isnull=True)),
             )
             if self.finished_contracts_count >= settings.LIMIT_FINISHED_CONTRACTS:
                 pdocs = pdocs.exclude(if_not_finished_contracts=True)
