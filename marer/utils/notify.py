@@ -236,6 +236,6 @@ def notify_managers_about_new_message_in_chat(message: IssueClarificationMessage
     else:
         message.issue.user.email_user(
             subject=subject,
-            html_template_filename='mail/events_for_send_to_user_manager/new_message_in_chat.html',
+            html_template_filename='mail/events_for_send_to_user/new_message_in_chat.html',
             context=context
         )
