@@ -160,8 +160,7 @@ class IssueRegisteringView(IssueView):
                         status=consts.ISSUE_STATUS_REGISTERING,
                         user=request.user,
                     )  # todo set values
-
-                new_issue.fill_from_issuer()
+                    # new_issue.fill_from_issuer()
                 need_to_notify_for_issue_create = True
                 self._issue = new_issue
             issue = self.get_issue()
