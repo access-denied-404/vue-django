@@ -5,12 +5,6 @@ from __future__ import unicode_literals
 from django.db import migrations, models
 import django.db.models.deletion
 
-def set_created_from_values(apps, schema_editor):
-    FinanceOrgProductProposeDocument = apps.get_model('marer', 'FinanceOrgProductProposeDocument')
-    IssueProposeDocument = apps.get_model('marer', 'IssueProposeDocument')
-    for fdoc in FinanceOrgProductProposeDocument.objects.all():
-        IssueProposeDocument.objects.filter(name=fdoc.name).update(created_from_id=fdoc.id)
-
 
 class Migration(migrations.Migration):
 
@@ -26,5 +20,4 @@ class Migration(migrations.Migration):
             preserve_default=False,
 
         ),
-        migrations.RunPython(set_created_from_values, migrations.RunPython.noop)
     ]
