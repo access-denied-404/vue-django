@@ -13,15 +13,27 @@ from marer.utils.datetime_utils import year, day, month
 class IssueDeleteDocument(APIView):
     def post(self, request, iid):
         issue = Issue.objects.get(id=iid)
-        doc_list = request.data.get('body', [])
-        server_doc_list_by_type = get_documents_by_type(issue, doc_list[0].get('type', 0))
-        if server_doc_list_by_type:
-            for doc in doc_list:
-                if not doc.get('document', []):
-                    for propose_doc in server_doc_list_by_type:
-                        if propose_doc.document and propose_doc.id is doc.get('id', 0):
-                            propose_doc.document.delete()
-            issue.save()
+        doc_id = request.data.get('id', None)
+        if doc_id:
+            propose_doc = IssueProposeDocument.objects.get(id=doc_id)
+            propose_doc.document.delete()
+            propose_doc.document_id = None
+            propose_doc.document.save()
+            propose_doc.save()
+        else:
+            if request.data.get('docList', []):
+                doc_list = request.data.get('docList', [])
+                if doc_list[0].get('type', 0) == 4:
+                    for request_doc in doc_list:
+                        for doc in issue.propose_documents_app:
+                            if request_doc.get('name', '') == doc.name and not request_doc.get('document'):
+                                    doc.document.delete()
+                                    doc.document_id = None
+                                    doc.document.save()
+                                    doc.save()
+                else:
+                    return Response(issue)
+        issue.save()
         return Response(issue)
 
 
@@ -37,22 +49,21 @@ class IssueReplaceDocument(APIView):
             doc_id = request.data.get('id', None)
             if doc_id and filename:
                 propose_doc = IssueProposeDocument.objects.get(id=doc_id)
-                propose_doc.document.file = filename
-                propose_doc.document.sign_state = consts.DOCUMENT_SIGN_NONE
-                propose_doc.document.sign = None
-                propose_doc.document.save()
+                if propose_doc.document:
+                    self.fill_document(propose_doc.document, filename)
+                    propose_doc.document.save()
+                    propose_doc.save()
+                else:
+                    propose_doc.document = Document()
+                    self.fill_document(propose_doc.document, filename)
+                    propose_doc.document.save()
+                    propose_doc.document_id = propose_doc.document.id
+                    propose_doc.save()
                 issue.save()
         return Response(issue)
 
-
-def get_documents_by_type(issue, type):
-    document_list_by_type = []
-    if type == 1:
-        document_list_by_type = issue.propose_documents_leg
-    elif type == 2:
-        document_list_by_type = issue.propose_documents_fin
-    elif type == 3:
-        document_list_by_type = issue.propose_documents_oth
-    elif type == 4:
-        document_list_by_type = issue.propose_documents_app
-    return document_list_by_type
+    def fill_document(self, document, filename):
+        document.file = filename
+        document.sign = None
+        document.sign_state = consts.DOCUMENT_SIGN_NONE
+        return document

@@ -338,8 +338,12 @@
       deleteDoc (index, docList) {
         docList[index].document = null
         axios.post(this.delete_docs_url + this.$route.params.id, {
-          body: docList
+          id: docList[index].id,
+          docList: docList
         }).then(response => {
+          this.update_form_data(response.data)
+        })
+        axios.get(this.api_url + this.$route.params.id).then(response => {
           this.update_form_data(response.data)
         })
       },
@@ -347,14 +351,16 @@
         const formData = new FormData()
         formData.append('file', event.target.files[0])
         formData.append('id', docList[index].id)
-        formData.append('type', docList[index].type)
         const config = {
           headers: {
             'content-type': 'multipart/form-data'
           }
         }
-        return post(this.save_issue_url + this.$route.params.id, formData, config).then(response => {
-          response.data
+        post(this.save_issue_url + this.$route.params.id, formData, config).then(response => {
+          this.update_form_data(response.data)
+        })
+        axios.get(this.api_url + this.$route.params.id).then(response => {
+          this.update_form_data(response.data)
         })
       },
       update_form_data (data) {
