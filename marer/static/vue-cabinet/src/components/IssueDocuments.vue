@@ -341,10 +341,10 @@
           id: docList[index].id,
           index: index
         }).then(response => {
-          this.update_form_data(response.data)
-        })
-        axios.get(this.api_url + this.$route.params.id).then(response => {
-          this.update_form_data(response.data)
+          response.data
+          axios.get(this.api_url + this.$route.params.id).then(response => {
+            this.update_form_data(response.data)
+          })
         })
       },
       replaceDoc (event, index, docList) {
@@ -360,10 +360,10 @@
           }
         }
         post(this.save_issue_url + this.$route.params.id, formData, config).then(response => {
-          this.update_form_data(response.data)
-        })
-        axios.get(this.api_url + this.$route.params.id).then(response => {
-          this.update_form_data(response.data)
+          response.data
+          axios.get(this.api_url + this.$route.params.id).then(response => {
+            this.update_form_data(response.data)
+          })
         })
       },
       update_form_data (data) {

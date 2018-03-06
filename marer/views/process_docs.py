@@ -42,9 +42,9 @@ class IssueDeleteDocument(APIView):
                 issue.approval_and_change_sheet.delete()
                 issue.approval_and_change_sheet = None
             else:
-                return Response(issue)
+                return Response('document index out of range')
         issue.save()
-        return Response(issue)
+        return Response('issue {} saved'.format(issue.id))
 
 
 class IssueReplaceDocument(APIView):
@@ -110,9 +110,9 @@ class IssueReplaceDocument(APIView):
                     issue.approval_and_change_sheet.save()
                     issue.approval_and_change_sheet_id = issue.approval_and_change_sheet.id
                 else:
-                    return Response(issue)
+                    return Response('document index out of range')
         issue.save()
-        return Response(issue)
+        return Response('issue {} saved'.format(issue.id))
 
     def fill_document(self, document, filename):
         document.file = filename
