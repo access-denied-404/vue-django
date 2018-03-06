@@ -2541,7 +2541,7 @@ class IssuerLicences(models.Model):
     active = models.BooleanField(verbose_name='активна', default=True)
 
     def is_active(self):
-        return self.active and now().date() < self.date_to
+        return self.active and now().date() < self.date_to if self.date_to else True
 
     def __str__(self):
         return self.number
