@@ -874,11 +874,13 @@ class BankGuaranteeProduct(FinanceProduct):
         from marer.admin import IssueBGProdFounderPhysicalInlineAdmin
         from marer.admin.inline import IssueCreditPledgeInlineAdmin
         from marer.admin.inline import IssueLicencesInlineAdmin
+        from marer.admin.inline import IssueIssueOrgBeneficiaryOwnerInlineAdmin
         inlines = [
             IssueBGProdFounderLegalInlineAdmin,
             IssueBGProdFounderPhysicalInlineAdmin,
             IssueBGProdAffiliateInlineAdmin,
             IssueLicencesInlineAdmin,
+            IssueIssueOrgBeneficiaryOwnerInlineAdmin,
         ]
         if self._issue.tender_exec_law == consts.TENDER_EXEC_LAW_COMMERCIAL:
             inlines.append(IssueCreditPledgeInlineAdmin)

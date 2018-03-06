@@ -14,7 +14,7 @@ from marer.models.finance_org import FinanceOrgProductProposeDocument, FinanceOr
 from marer.models.issue import IssueProposeFormalizeDocument, IssueProposeFinalDocument, \
     IssueBGProdAffiliate, IssueBGProdFounderLegal, IssueBGProdFounderPhysical, IssueCreditPledge, \
     IssueProposeDocument, IssueLeasingProdAsset, IssueLeasingProdSupplier, IssueLeasingProdPayRule, \
-    IssueFactoringBuyer, IssuerLicences
+    IssueFactoringBuyer, IssuerLicences, IssueOrgBeneficiaryOwner
 
 
 class IIFAInlineFormSet(BaseInlineFormSet):
@@ -355,6 +355,12 @@ class IssueCreditPledgeInlineAdmin(TabularInline, IssueInlineFormsetAdmin):
 class IssueLeasingProdAssetInlineAdmin(TabularInline, IssueInlineFormsetAdmin):
     extra = 0
     model = IssueLeasingProdAsset
+    classes = ('collapse',)
+
+
+class IssueIssueOrgBeneficiaryOwnerInlineAdmin(TabularInline, IssueInlineFormsetAdmin):
+    extra = 0
+    model = IssueOrgBeneficiaryOwner
     classes = ('collapse',)
 
 
