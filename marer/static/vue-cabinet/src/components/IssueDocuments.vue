@@ -351,6 +351,8 @@
         const formData = new FormData()
         formData.append('file', event.target.files[0])
         formData.append('id', docList[index].id)
+        formData.append('type', docList[index].type)
+        formData.append('name', name)
         const config = {
           headers: {
             'content-type': 'multipart/form-data'

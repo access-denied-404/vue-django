@@ -45,8 +45,9 @@ class IssueReplaceDocument(APIView):
         filename = file_storage.save('documents/{}/{}/{}/{}/{}'.format(
             year(), month(), day(), uuid.uuid4(), file.name), file)
 
-        if request.data.get('id'):
-            doc_id = request.data.get('id', None)
+        doc_id = request.data.get('id', None)
+        type = request.data.get('type', None)
+        if doc_id and doc_id != 'null' and type != '4':
             if doc_id and filename:
                 propose_doc = IssueProposeDocument.objects.get(id=doc_id)
                 if propose_doc.document:
@@ -59,7 +60,16 @@ class IssueReplaceDocument(APIView):
                     propose_doc.document.save()
                     propose_doc.document_id = propose_doc.document.id
                     propose_doc.save()
-                issue.save()
+        elif type == '4':
+            server_documents_app = issue.propose_documents_app
+            doc_filename = file.name
+            if doc_filename:
+                for server_app_doc in server_documents_app:
+                    if server_app_doc.name != doc_filename:
+                        self.fill_document(server_app_doc.document, filename)
+                        server_app_doc.document.save()
+                        server_app_doc.save()
+        issue.save()
         return Response(issue)
 
     def fill_document(self, document, filename):
