@@ -178,7 +178,7 @@ class IssueAdmin(ModelAdmin):
 
     def get_user_manager(self, obj):
         return obj.user.manager or '—'
-    get_user_manager.short_description = 'Менеджер пользователя'
+    get_user_manager.short_description = 'Менеджер агента'
     get_user_manager.admin_order_field = 'user__manager_id'
 
     def get_issue_manager(self, obj):

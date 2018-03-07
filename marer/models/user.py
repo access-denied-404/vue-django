@@ -36,7 +36,7 @@ class User(AbstractUser):
     middle_name = models.CharField('Отчество', max_length=30, blank=True, null=False, default='')
     manager = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        verbose_name='менеджер пользователя',
+        verbose_name='менеджер агента',
         on_delete=models.DO_NOTHING,
         blank=True,
         null=True
@@ -54,7 +54,7 @@ class User(AbstractUser):
         default=False
     )
     can_view_unassigned_issues_up_to_15m = models.BooleanField(
-        'Пользователь видит заявки до 15 млн.',
+        'Пользователь видит не закрепленные за менеджерами заявки до 1,5 млн.',
         default=False
     )
 
