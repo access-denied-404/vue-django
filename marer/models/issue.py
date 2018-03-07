@@ -915,6 +915,10 @@ class Issue(models.Model):
     has_fines_on_zakupki_gov_ru = models.BooleanField(default=False, verbose_name='Наличие штрафов по контрактом, отраженных на сайте Госзакупок')
     has_arbitration = models.BooleanField(default=False, verbose_name='Наличие арбитражей по нарушениям выполнения условий гос. контрактов')
 
+    @property
+    def clarification_messages_ordered_by_id_desc(self):
+        return self.clarification_messages.all().order_by('-id')
+
     def get_urgency_for_user(self, user):
         messages = list(self.clarification_messages.all().order_by('-id'))
         if messages:

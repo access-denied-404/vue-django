@@ -92,7 +92,7 @@
         </div>
     </form>
 
-    {% for msg in issue.clarification_messages.all reversed %}
+    {% for msg in issue.clarification_messages_ordered_by_id_desc %}
         <div class="panel panel-info">
             <div class="panel-body">
                 <div class="container-fluid">
