@@ -266,10 +266,18 @@ def generate_acts_for_issue(issue: Issue)-> Issue:
     bg_contract_path = {
         (consts.TENDER_EXEC_LAW_44_FZ, consts.BG_TYPE_APPLICATION_ENSURE): 'marer/templates/documents/acts/fz44_participation.docx',
         (consts.TENDER_EXEC_LAW_44_FZ, consts.BG_TYPE_CONTRACT_EXECUTION): 'marer/templates/documents/acts/fz44_execution.docx',
+        (consts.TENDER_EXEC_LAW_44_FZ, consts.BG_TYPE_REFUND_OF_ADVANCE): 'marer/templates/documents/acts/fz44_execution.docx',
+        (consts.TENDER_EXEC_LAW_44_FZ, consts.BG_TYPE_WARRANTY_ENSURE): 'marer/templates/documents/acts/fz44_execution.docx',
+
         (consts.TENDER_EXEC_LAW_223_FZ, consts.BG_TYPE_APPLICATION_ENSURE): 'marer/templates/documents/acts/fz233_participation.docx',
         (consts.TENDER_EXEC_LAW_223_FZ, consts.BG_TYPE_CONTRACT_EXECUTION): 'marer/templates/documents/acts/fz223_execution.docx',
+        (consts.TENDER_EXEC_LAW_223_FZ, consts.BG_TYPE_REFUND_OF_ADVANCE): 'marer/templates/documents/acts/fz223_execution.docx',
+        (consts.TENDER_EXEC_LAW_223_FZ, consts.BG_TYPE_WARRANTY_ENSURE): 'marer/templates/documents/acts/fz223_execution.docx',
+
         (consts.TENDER_EXEC_LAW_185_FZ, consts.BG_TYPE_APPLICATION_ENSURE): 'marer/templates/documents/acts/fz185_participation.docx',
         (consts.TENDER_EXEC_LAW_185_FZ, consts.BG_TYPE_CONTRACT_EXECUTION): 'marer/templates/documents/acts/fz185_execution.docx',
+        (consts.TENDER_EXEC_LAW_185_FZ, consts.BG_TYPE_REFUND_OF_ADVANCE): 'marer/templates/documents/acts/fz185_execution.docx',
+        (consts.TENDER_EXEC_LAW_185_FZ, consts.BG_TYPE_WARRANTY_ENSURE): 'marer/templates/documents/acts/fz185_execution.docx',
     }.get((issue.tender_exec_law, issue.bg_type))
     if bg_contract_path:
         issue.bg_doc = generate_doc(os.path.join(settings.BASE_DIR, bg_contract_path), 'bg.docx', issue)
