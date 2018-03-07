@@ -10,7 +10,7 @@ from django.contrib.admin.utils import unquote
 from django.contrib.auth.admin import UserAdmin
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.exceptions import PermissionDenied
-from django.db.models import TextField, BLANK_CHOICE_DASH
+from django.db.models import TextField, BLANK_CHOICE_DASH, Q
 from django.forms import Textarea
 from django.http import Http404, HttpResponseRedirect
 from django.template.response import TemplateResponse
@@ -372,7 +372,13 @@ class IssueAdmin(ModelAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if request.user.is_ordinary_manager:
-            qs = qs.filter(manager_id=request.user.id)
+            if request.user.can_view_unassigned_issues_up_to_15m:
+                qs = qs.filter(
+                    Q(manager_id=request.user.id)
+                    | Q(manager_id__isnull=True, bg_sum__lte=1500000)
+                )
+            else:
+                qs = qs.filter(manager_id=request.user.id)
         elif request.user.has_perm('marer.change_issue'):
             pass
         return qs
@@ -711,7 +717,7 @@ class MarerUserAdmin(UserAdmin):
         full_fieldsets = (
             (None, {'fields': ('username', 'password', 'manager',)}),
             (_('Personal info'), {'fields': ('first_name', 'middle_name', 'last_name', 'legal_name', 'email', 'phone', 'comment')}),
-            (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'is_ordinary_manager',
+            (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'is_ordinary_manager', 'can_view_unassigned_issues_up_to_15m',
                                            'groups', 'user_permissions')}),
             (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
             ('ЭЦП', {'fields': ('cert_hash', 'cert_sign',)})

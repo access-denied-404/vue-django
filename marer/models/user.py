@@ -53,6 +53,10 @@ class User(AbstractUser):
         'Пользователь является менеджером и видит только свои заявки',
         default=False
     )
+    can_view_unassigned_issues_up_to_15m = models.BooleanField(
+        'Пользователь видит заявки до 15 млн.',
+        default=False
+    )
 
     @classmethod
     def normalize_username(cls, username):

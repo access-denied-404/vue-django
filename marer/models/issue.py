@@ -2237,6 +2237,9 @@ class Issue(models.Model):
                 if identical:
                     self.application_doc = self.old_application_doc
 
+        if not self.manager and not self.manager_id and self.user.manager_id and self.bg_sum > 1500000:
+            self.manager_id = self.user.manager_id
+
         super().save(force_insert, force_update, using, update_fields)
 
         if create_docs and bool(self.propose_documents.exists() is False and self.tax_system):
