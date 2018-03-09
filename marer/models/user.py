@@ -6,6 +6,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.mail import send_mail
 from django.db import models
 from django.template.loader import get_template
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -53,6 +54,10 @@ class User(AbstractUser):
         'Пользователь является менеджером и видит только свои заявки',
         default=False
     )
+
+    @cached_property
+    def has_certificate(self):
+        return self.cert_hash and self.cert_sign
 
     @classmethod
     def normalize_username(cls, username):
