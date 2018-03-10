@@ -92,6 +92,10 @@ class IssueRegisteringView(IssueView):
         kwargs['issue'] = self.get_issue()
         kwargs['products'] = get_finance_products()
         kwargs['dadata_token'] = settings.DADATA_TOKEN
+        if self.get_issue():
+            if self.get_issue().issuer_already_has_an_agent:
+                url = reverse('issue_registering', args=[self.get_issue().id])
+                return HttpResponseRedirect(url)
         return super().get(request, *args, **kwargs)
 
     def return_errors(self, base_form, *args, **kwargs):
@@ -178,6 +182,10 @@ class IssueRegisteringView(IssueView):
             product = issue.get_product()
             product.set_issue(issue)
             processed_valid = product.process_registering_form(request)
+
+            if issue.issuer_already_has_an_agent:
+                url = reverse('issue_registering', args=[issue.id])
+                return HttpResponseRedirect(url)
 
             action = request.POST.get('action', 'save')
             if action == 'save':

@@ -713,7 +713,7 @@ class BankGuaranteeProduct(FinanceProduct):
             ('Сведения об истребуемой гарантии', dict(fields=(
                 ('bg_sum', 'bg_currency',),
                 ('bg_start_date', 'bg_end_date',),
-                'bg_deadline_date',
+                ('bg_deadline_date', 'bg_extradition_date',),
                 ('tender_exec_law', 'bg_type',),
                 'application_doc_admin_field',
                 'lawyers_dep_conclusion_doc_admin_field',

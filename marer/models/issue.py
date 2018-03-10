@@ -27,6 +27,7 @@ from marer.utils.issue import calculate_bank_commission, sum_str_format, generat
     calculate_effective_rate, CalculateUnderwritingCriteria
 from marer.utils.morph import MorpherApi
 from marer.utils.other import OKOPF_CATALOG, get_tender_info, are_docx_files_identical
+from marer.utils.datetime_utils import today, month_difference_from_today
 
 
 __all__ = [
@@ -155,6 +156,7 @@ class Issue(models.Model):
         (consts.CURRENCY_USD, 'Доллар'),
         (consts.CURRENCY_EUR, 'Евро'),
     ])
+    bg_extradition_date = models.DateField(verbose_name='Дата выдачи банковской гарантии', blank=True, null=True)
     bg_start_date = models.DateField(verbose_name='дата начала действия банковской гарантии', blank=True, null=True)
     bg_end_date = models.DateField(verbose_name='дата завершения действия банковской гарантии', blank=True, null=True)
     bg_deadline_date = models.DateField(verbose_name='крайний срок выдачи банковской гарантии', blank=True, null=True)
@@ -589,7 +591,6 @@ class Issue(models.Model):
     @property
     def humanized_is_issuer_not_present_in_terrorists_list(self):
         return 'Да' if not self.is_issuer_present_in_terrorists_list else 'Нет'
-
 
     @property
     def humanized_issuer_presence_in_unfair_suppliers_registry(self):
@@ -1033,6 +1034,21 @@ class Issue(models.Model):
                                     '\nСумма гарантии: {} рублей'
                     return template_text.format(contract_ensure_cost)
         return ' '
+
+    @property
+    def issuer_already_has_an_agent(self):
+        issuer_has_agent = False
+        issuers = Issuer.objects.all().filter(inn=self.issuer_inn)
+        for issuer in issuers:
+            if issuer.user != self.user:
+                issues = Issue.objects.all().filter(issuer_inn=self.issuer_inn)
+                for iss in issues:
+                    if iss.status == consts.ISSUE_STATUS_REVIEW or iss.status == consts.ISSUE_STATUS_REGISTERING \
+                            and iss.application_doc.sign and iss.application_doc.sign_state == consts.DOCUMENT_SIGN_VERIFIED \
+                            or month_difference_from_today(iss.bg_extradition_date) <= 4:
+                        issuer_has_agent = True
+                        break
+        return issuer_has_agent
 
     @property
     def scoring_issuer_profitability(self):
@@ -2167,9 +2183,9 @@ class Issue(models.Model):
                     'Обнаружен стоп-фактор: указан недостоверный адрес исполнителя')
 
             # benefitiar stop factors
-            if self.tender_exec_law in [consts.TENDER_EXEC_LAW_44_FZ, consts.TENDER_EXEC_LAW_223_FZ]:
-                if kontur_benefitiar_analytics_data.get('q4005', 0) <= 0:
-                    ve.error_list.append('Бенефициар не найден в реестре государственных заказчиков')
+            # if self.tender_exec_law in [consts.TENDER_EXEC_LAW_44_FZ, consts.TENDER_EXEC_LAW_223_FZ]:
+            #     if kontur_benefitiar_analytics_data.get('q4005', 0) <= 0:
+            #         ve.error_list.append('Бенефициар не найден в реестре государственных заказчиков')
             for bl_inn_start in ['91', '92']:
                 if self.tender_responsible_inn.startswith(bl_inn_start):
                     ve.error_list.append('Обнаружен стоп-фактор: заказчик находится в необслуживаемом регионе')
@@ -2215,6 +2231,12 @@ class Issue(models.Model):
             self.bg_start_date = timezone.now()
         if not self.product or self.product == '':
             self.product = BankGuaranteeProduct().name
+
+        if self.bg_extradition_date and self.status != consts.ISSUE_STATUS_FINISHED:
+            self.bg_extradition_date = None
+
+        if not self.bg_extradition_date and self.status == consts.ISSUE_STATUS_FINISHED:
+            self.bg_extradition_date = today()
 
         if self.check_all_application_required_fields_filled():
             self.fill_application_doc(commit=False)
@@ -2687,7 +2709,6 @@ def pre_save_issue(sender, instance, **kwargs):
         from marer.utils.documents import generate_acts_for_issue
         instance.bg_property  # даем возможность выпасть исключению здесь, т.к. в format оно не появится
         generate_acts_for_issue(instance)
-
 
     if instance.status == consts.ISSUE_STATUS_REVIEW:
         from marer.utils.documents import generate_underwriting_criteria
