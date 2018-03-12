@@ -7,8 +7,9 @@
         <tbody>
           <tr class="bg-info">
             <th class="h6">Номер</th>
-            <th class="h6">Дата<br/>заведения<br/>заявки</th>
+            <th class="h6">Дата заведения заявки</th>
             <th class="h6">Организация</th>
+            <th class="h6">ИНН принципала</th>
             <th class="h6">Сумма</th>
             <th class="h6">Статус</th>
             <th class="h6">Агент</th>
@@ -22,6 +23,7 @@
             <td><a :href="'#/cabinet/issues/'+issue.id" v-text=issue.id></a></td>
             <td v-text=createdAt(issue.created_at)></td>
             <td v-text=issue.issuer_short_name></td>
+            <td v-text=issue.issuer_inn></td>
             <td v-text=formatSum(issue.bg_sum)></td>
             <td v-if=isRegistering(issue.status)>Оформление заявки</td>
             <td v-if=isCancelled(issue.status)>Отменена</td>
@@ -83,7 +85,8 @@
         var year = createdDate.slice(0, 4)
         var month = createdDate.slice(5, 7)
         var day = createdDate.slice(8, 10)
-        var date = day + '.' + month + '.' + year
+        var time = createdDate.slice(11, 19)
+        var date = day + '.' + month + '.' + year + ' ' + time
         return date
       },
       formatSum: function (sum) {
