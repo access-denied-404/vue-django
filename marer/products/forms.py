@@ -54,7 +54,6 @@ class BGFinProdRegForm(Form):
         (consts.CURRENCY_USD, 'Доллар'),
         (consts.CURRENCY_EUR, 'Евро'),
     ])
-    bg_extradition_date = DateField(required=False)
     bg_start_date = DateField(required=False)
     bg_end_date = DateField(required=False)
     bg_deadline_date = DateField(required=False)
