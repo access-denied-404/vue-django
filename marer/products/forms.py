@@ -1,5 +1,7 @@
+from django.core.exceptions import ValidationError
 from django.forms import Form, CharField, ChoiceField, DateField, DecimalField, BooleanField, TextInput, DateInput, \
     IntegerField, HiddenInput, CheckboxInput, Select, NumberInput, Textarea, Field
+from django.http import QueryDict
 from djangoformsetjs.utils import formset_media_js
 
 from marer.fields import BalanceCodeDecimalField
@@ -194,6 +196,18 @@ class BGFinProdSurveyOrgHeadForm(Form):
     issuer_head_share_in_authorized_capital = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
     issuer_head_industry_work_experience = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
     issuer_prev_org_info = CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+
+    def full_clean(self):
+        if 'issuer_head_passport_issue_date' in self.data:
+            try:
+                fields = {k: v for k, v in self.fields.items()}
+                fields.get('issuer_head_passport_issue_date').clean(self.data['issuer_head_passport_issue_date'])
+            except ValidationError:
+                new_qd = self.data.copy()
+                del new_qd['issuer_head_passport_issue_date']
+                self.data = QueryDict(new_qd.urlencode())
+
+        return super().full_clean()
 
 
 class BGFinProdSurveyOrgManagementForm(Form):
