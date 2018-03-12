@@ -11,7 +11,7 @@
             <th class="h6">Организация</th>
             <th class="h6">Сумма</th>
             <th class="h6">Статус</th>
-            <th class="h6">Последний<br/>комментарий</th>
+            <th class="h6">Агент</th>
             <th></th>
           </tr>
           <tr v-for="issue in issues"
@@ -19,12 +19,15 @@
               'bg-warning': isRegistering(issue.status),
               'bg-danger': isCancelled(issue.status),
               'bg-success': isFinished(issue.status) }">
-            <td><a :href="'#/cabinet/issues/'+issue.id">{{issue.id}}</a></td>
-            <td></td>
-            <td>{{issue.issuer_short_name}}</td>
-            <td>{{issue.bg_sum}}</td>
-            <td></td>
-            <td></td>
+            <td><a :href="'#/cabinet/issues/'+issue.id" v-text=issue.id></a></td>
+            <td v-text=createdAt(issue.created_at)></td>
+            <td v-text=issue.issuer_short_name></td>
+            <td v-text=formatSum(issue.bg_sum)></td>
+            <td v-if=isRegistering(issue.status)>Оформление заявки</td>
+            <td v-if=isCancelled(issue.status)>Отменена</td>
+            <td v-if=isFinished(issue.status)>Завершена</td>
+            <td v-if=isReviewing(issue.status)>Рассмотрение заявки</td>
+            <td v-text=issue.user.legal_name></td>
             <td></td>
           </tr>
         </tbody>
@@ -68,6 +71,50 @@
         } else {
           return false
         }
+      },
+      isReviewing: function (status) {
+        if (status === 'review') {
+          return true
+        } else {
+          return false
+        }
+      },
+      createdAt: function (createdDate) {
+        var year = createdDate.slice(0, 4)
+        var month = createdDate.slice(5, 7)
+        var day = createdDate.slice(8, 10)
+        var date = day + '.' + month + '.' + year
+        return date
+      },
+      formatSum: function (sum) {
+        var res = ''
+
+        if (sum.includes('.')) {
+          var fractionSum = sum.split('.')[1]
+          var integerSum = sum.split('.')[0]
+        } else if (sum.includes(',')) {
+          fractionSum = sum.split(',')[1]
+          integerSum = sum.split(',')[0]
+        } else {
+          integerSum = sum
+          fractionSum = 0
+        }
+        if (fractionSum === '00') {
+          fractionSum = 0
+        }
+        var splittedListOfIntegerSum = integerSum.split('').reverse().join('').match(/.{1,3}/g)
+        for (var group in splittedListOfIntegerSum.reverse()) {
+          res += splittedListOfIntegerSum[group].split('').reverse().join('') + ' '
+        }
+        res = res.trim()
+        if (fractionSum !== 0) {
+          if (fractionSum[1] !== 0) {
+            res += ',' + fractionSum
+          } else {
+            res += ',' + fractionSum[0]
+          }
+        }
+        return res
       }
     }
   }
