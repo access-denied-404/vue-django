@@ -2157,6 +2157,43 @@ class Issue(models.Model):
             self.save()
         sec_dep_conclusion_file.close()
 
+    def check_beneficiar_on_zakupkigov(self, kontur_benefitiar_analytics_data=None):
+        """
+        Проверка бенефициара на предмет наличия его в реестре госзаказчиков
+
+        Ошибки при исполнении запроса можно игнорировать: результат пропускается,
+        и система в таком случае опирается только на Контур.Фокус.
+        :param kontur_benefitiar_analytics_data:
+        :return:
+        """
+        if not kontur_benefitiar_analytics_data:
+            kontur_benefitiar_analytics_data = kontur.analytics(inn=self.tender_responsible_inn, ogrn=self.tender_responsible_ogrn)
+            kontur_benefitiar_analytics_data = kontur_benefitiar_analytics_data.get('analytics', {})
+        found = False
+        # проверка через контур
+        if kontur_benefitiar_analytics_data.get('q4005', 0) > 0:
+            found = False
+
+        if not found:
+            # Запрос на TenderData по госномеру тендера.
+            try:
+                tender_info = get_tender_info(self.tender_gos_number)
+                if isinstance(tender_info, dict) and tender_info:
+                    found = False
+            except:
+                pass
+
+        if not found:
+            # Запрос на zakupki.gov.ru по ИНН бенефициара.
+            try:
+                url = "http://zakupki.gov.ru/epz/organization/quicksearch/rss?searchString=%s&morphology=on&pageNumber=1&sortDirection=true&recordsPerPage=_10&sortBy=PO_NAZVANIYU&fz94=on&fz223=on" % self.tender_responsible_inn
+                data = feedparser.parse(url)
+                if len(data['entries']):
+                    found = True
+            except:
+                pass
+        return found
+
     def validate_stop_factors(self):
         ve = ValidationError(None)
         ve.error_list = []
@@ -2183,7 +2220,7 @@ class Issue(models.Model):
 
             # benefitiar stop factors
             if self.tender_exec_law in [consts.TENDER_EXEC_LAW_44_FZ, consts.TENDER_EXEC_LAW_223_FZ]:
-                if kontur_benefitiar_analytics_data.get('q4005', 0) <= 0:
+                if not self.check_beneficiar_on_zakupkigov(kontur_benefitiar_analytics_data):
                     ve.error_list.append('Бенефициар не найден в реестре государственных заказчиков')
             for bl_inn_start in ['91', '92']:
                 if self.tender_responsible_inn.startswith(bl_inn_start):

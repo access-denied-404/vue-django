@@ -51,9 +51,14 @@
 
             <div class="col-md-5"><div class="form-group"><bs-input :name="'tender_placement_type'" v-model="tender_placement_type" label="Способ определения поставщика"></bs-input></div></div>
             <div class="col-md-3"><label>Дата публикации</label><date-time-picker :name="'tender_publish_date'" v-model="tender_publish_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div>
-            <div class="col-md-4">
-              <label >Начальная цена контракта</label>
-              <money type="text" name="tender_start_cost" class="form-control input" v-model="tender_start_cost" v-bind="money_format"></money>
+            <div class="col-md-4" v-bind:class="{'has-error': validate_tender_start_cost}">
+              <label>Начальная цена контракта</label>
+              <money type="text" name="tender_start_cost"
+                     class="form-control input"
+                     :required="!tender_found"
+                     v-model="tender_start_cost"
+                     v-bind="money_format">
+              </money>
             </div>
           </div>
 
@@ -69,7 +74,15 @@
               <div class="col-md-12"><bs-input :name="'tender_responsible_legal_address'" v-model="tender_responsible_legal_address" label="Юридический адрес"></bs-input></div>
             </div>
             <div class="row">
-              <div class="col-md-4"><bs-input :name="'tender_responsible_inn'" v-model="tender_responsible_inn" label="ИНН"></bs-input></div>
+              <div class="col-md-4">
+                <bs-input :name="'tender_responsible_inn'"
+                          :required="!tender_found"
+                          v-model="tender_responsible_inn"
+                          :class="{'has-error': validate_tender_responsible_inn}"
+                          label="ИНН">
+
+                </bs-input>
+              </div>
               <div class="col-md-4"><bs-input :name="'tender_responsible_kpp'" v-model="tender_responsible_kpp" label="КПП"></bs-input></div>
               <div class="col-md-4"><bs-input :name="'tender_responsible_ogrn'" v-model="tender_responsible_ogrn" label="ОГРН"></bs-input></div>
             </div>
@@ -314,6 +327,7 @@
       let defaultData = {
         is_tender_info_panel_visible: true,
         tender_add_data_visible: false,
+        tender_found: false,
         money_format: {
           decimal: ',',
           thousands: ' ',
@@ -353,6 +367,18 @@
         },
         set () {}
       },
+      validate_tender_start_cost: {
+        get () {
+          return this.tender_start_cost < 1 && !this.tender_found
+        },
+        set () {}
+      },
+      validate_tender_responsible_inn: {
+        get () {
+          return !this.tender_responsible_inn && !this.tender_found
+        },
+        set () {}
+      },
       date_range_is_appropriate: {
         get () {
           return this.date_range > 0 && this.date_range <= 30
@@ -367,22 +393,31 @@
     watch: {
       tender_gos_number: _.debounce(function () {
         jQuery.getJSON('/rest/tender?format=json&gos_number=' + this.tender_gos_number, (data, status, xhr) => {
-          this.tender_exec_law = data.law
-          this.tender_placement_type = data.placement_type
-          this.tender_publish_date = data.publish_date
-          this.tender_collect_start_date = data.collect_start_date
-          this.tender_collect_end_date = data.collect_end_date
-          this.tender_finish_date = data.finish_date
-          this.tender_start_cost = data.start_cost
-          this.tender_responsible_full_name = data.publisher.full_name
-          this.tender_responsible_legal_address = data.publisher.legal_address
-          this.tender_responsible_inn = data.publisher.inn
-          this.tender_responsible_kpp = data.publisher.kpp
-          this.tender_responsible_ogrn = data.publisher.ogrn
-          this.tender_application_ensure_cost = data.application_ensure_cost
-          this.tender_contract_execution_ensure_cost = data.contract_execution_ensure_cost
-          this.tender_contract_subject = data.description
-          this.process_bg_type()
+          if (!this.arrayIsEmpty(data)) {
+            this.tender_found = true
+            this.tender_exec_law = data.law
+            this.tender_placement_type = data.placement_type
+            this.tender_publish_date = data.publish_date
+            this.tender_collect_start_date = data.collect_start_date
+            this.tender_collect_end_date = data.collect_end_date
+            this.tender_finish_date = data.finish_date
+            this.tender_start_cost = data.start_cost
+            this.tender_responsible_full_name = data.publisher.full_name
+            this.tender_responsible_legal_address = data.publisher.legal_address
+            this.tender_responsible_inn = data.publisher.inn
+            this.tender_responsible_kpp = data.publisher.kpp
+            this.tender_responsible_ogrn = data.publisher.ogrn
+            this.tender_application_ensure_cost = data.application_ensure_cost
+            this.tender_contract_execution_ensure_cost = data.contract_execution_ensure_cost
+            this.tender_contract_subject = data.description
+            this.process_bg_type()
+          } else {
+            this.tender_found = false
+            this.tender_add_data_visible = true
+          }
+        }).fail(() => {
+          this.tender_found = false
+          this.tender_add_data_visible = true
         })
       }, 1000),
       tender_exec_law: _.debounce(function () {
@@ -405,6 +440,12 @@
       }),
       bg_sum: _.debounce(function () {
         this.next_btn_enabled_set()
+      }),
+      tender_responsible_inn: _.debounce(function () {
+        this.next_btn_enabled_set()
+      }),
+      tender_start_cost: _.debounce(function () {
+        this.next_btn_enabled_set()
       })
     },
     mounted () {
@@ -412,8 +453,19 @@
       this.next_btn_enabled_set()
     },
     methods: {
+      arrayIsEmpty: function (map) {
+        let empty = true
+        for (let key in map) {
+          if (key) {
+            empty = false
+            break
+          }
+        }
+        return empty
+      },
       next_btn_enabled_set: function () {
         if (this.date_range_is_appropriate &&
+          (this.tender_found || (!this.tender_found && this.tender_start_cost > 1 && this.tender_responsible_inn)) &&
           this.sum_is_appropriate &&
           !this.is_negative(this.balance_code_2400_offset_0) &&
           !this.is_negative(this.balance_code_2400_offset_1)) {
