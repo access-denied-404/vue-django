@@ -40,11 +40,18 @@ class TenderSerializer(ReadOnlySerializer):
     publisher = TenderPublisherSerializer(many=False)
 
 
+class UserSerializer(ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ['legal_name']
+
 class IssueListSerializer(ModelSerializer):
+    user = UserSerializer()
 
     class Meta:
         model = Issue
-        fields = ('id', 'product', 'bg_sum', 'issuer_short_name', 'issuer_inn', 'status')
+        fields = ('id', 'product', 'bg_sum', 'issuer_short_name', 'issuer_inn', 'status', 'created_at', 'user')
 
 
 class ContractOfGuaranteeSerializer(ModelSerializer):

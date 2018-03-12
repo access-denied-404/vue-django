@@ -28,6 +28,7 @@ from marer.utils.issue import calculate_bank_commission, sum_str_format, generat
     calculate_effective_rate, CalculateUnderwritingCriteria
 from marer.utils.morph import MorpherApi
 from marer.utils.other import OKOPF_CATALOG, get_tender_info, are_docx_files_identical
+from marer.utils.datetime_utils import today, month_difference_from_today
 
 
 __all__ = [
@@ -143,6 +144,7 @@ class Issue(models.Model):
         (consts.CURRENCY_USD, 'Доллар'),
         (consts.CURRENCY_EUR, 'Евро'),
     ])
+    bg_extradition_date = models.DateField(verbose_name='Дата выдачи банковской гарантии', blank=True, null=True)
     bg_start_date = models.DateField(verbose_name='дата начала действия банковской гарантии', blank=True, null=True)
     bg_end_date = models.DateField(verbose_name='дата завершения действия банковской гарантии', blank=True, null=True)
     bg_deadline_date = models.DateField(verbose_name='крайний срок выдачи банковской гарантии', blank=True, null=True)
@@ -592,7 +594,6 @@ class Issue(models.Model):
     @property
     def humanized_is_issuer_not_present_in_terrorists_list(self):
         return 'Да' if not self.is_issuer_present_in_terrorists_list else 'Нет'
-
 
     @property
     def humanized_issuer_presence_in_unfair_suppliers_registry(self):
@@ -1047,6 +1048,21 @@ class Issue(models.Model):
                                     '\nСумма гарантии: {} рублей'
                     return template_text.format(contract_ensure_cost)
         return ' '
+
+    @property
+    def issuer_already_has_an_agent(self):
+        issuer_has_agent = False
+        issuers = Issuer.objects.all().filter(inn=self.issuer_inn)
+        for issuer in issuers:
+            if issuer.user != self.user:
+                issues = Issue.objects.all().filter(issuer_inn=self.issuer_inn)
+                for iss in issues:
+                    if iss.status == consts.ISSUE_STATUS_REVIEW or iss.status == consts.ISSUE_STATUS_REGISTERING \
+                            and iss.application_doc.sign and iss.application_doc.sign_state == consts.DOCUMENT_SIGN_VERIFIED \
+                            or month_difference_from_today(iss.bg_extradition_date) <= 4:
+                        issuer_has_agent = True
+                        break
+        return issuer_has_agent
 
     @property
     def scoring_issuer_profitability(self):
@@ -1922,24 +1938,48 @@ class Issue(models.Model):
             docs.append(self.extend_propose_document(self.application_doc,
                                                      'Заявление на предоставление банковской гарантии',
                                                      4))
+        else:
+            docs.append(self.extend_propose_document(None,
+                                                     'Заявление на предоставление банковской гарантии',
+                                                     4))
         if self.bg_doc and not self.status == consts.ISSUE_STATUS_REGISTERING:
             docs.append(self.extend_propose_document(self.bg_doc,
+                                                     'Проект',
+                                                     4))
+        else:
+            docs.append(self.extend_propose_document(None,
                                                      'Проект',
                                                      4))
         if self.payment_of_fee and not self.status == consts.ISSUE_STATUS_REGISTERING:
             docs.append(self.extend_propose_document(self.payment_of_fee,
                                                      'Счет',
                                                      4))
+        else:
+            docs.append(self.extend_propose_document(None,
+                                                     'Счет',
+                                                     4))
         if self.transfer_acceptance_act and not self.status == consts.ISSUE_STATUS_REGISTERING:
             docs.append(self.extend_propose_document(self.transfer_acceptance_act,
+                                                     'Акт',
+                                                     4))
+        else:
+            docs.append(self.extend_propose_document(None,
                                                      'Акт',
                                                      4))
         if self.contract_of_guarantee and not self.status == consts.ISSUE_STATUS_REGISTERING:
             docs.append(self.extend_propose_document(self.contract_of_guarantee,
                                                      'Договор поручительства',
                                                      4))
+        else:
+            docs.append(self.extend_propose_document(None,
+                                                     'Договор поручительства',
+                                                     4))
         if self.approval_and_change_sheet and not self.status == consts.ISSUE_STATUS_REGISTERING:
             docs.append(self.extend_propose_document(self.approval_and_change_sheet,
+                                                     'Лист согласования и изменения БГ',
+                                                     4))
+        else:
+            docs.append(self.extend_propose_document(None,
                                                      'Лист согласования и изменения БГ',
                                                      4))
         return docs
@@ -2267,6 +2307,12 @@ class Issue(models.Model):
             self.bg_start_date = timezone.now()
         if not self.product or self.product == '':
             self.product = BankGuaranteeProduct().name
+
+        if self.bg_extradition_date and self.status != consts.ISSUE_STATUS_FINISHED:
+            self.bg_extradition_date = None
+
+        if not self.bg_extradition_date and self.status == consts.ISSUE_STATUS_FINISHED:
+            self.bg_extradition_date = today()
 
         if self.check_all_application_required_fields_filled():
             self.fill_application_doc(commit=False)

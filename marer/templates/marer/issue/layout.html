@@ -12,6 +12,11 @@
         {% else %}
             <h1 class="text-center">Новая заявка</h1>
         {% endif %}
+        {% if issue and issue.id and issue.issuer_already_has_an_agent %}
+            <div class="alert text-center h1 bg-danger">
+                Клиент закреплен за другим агентом
+            </div>
+        {% endif %}
     </div>
     <div class="row">
         <div class="col-md-3">

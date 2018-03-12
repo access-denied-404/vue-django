@@ -7,6 +7,7 @@ from marer.views import auth
 from marer.views import cabinet
 from marer.views import issue
 from marer.views import rest
+from marer.views import process_docs
 
 urlpatterns = [
     url(r'^$', auth.LoginView.as_view(), name='index'),
@@ -54,5 +55,8 @@ urlpatterns = [
     url(r'^rest/profile$', rest.ProfileView.as_view(), name='rest_profile'),
 
     url(r'^issue/(?P<iid>\d+)/docs-zip/', rest.DocsZipView.as_view(), name='docs_zip'),
+    url(r'^delete-docs/issue/(?P<iid>\d+)$', process_docs.IssueDeleteDocument.as_view(), name='delete_document'),
+    url(r'^replace-docs/issue/(?P<iid>\d+)$', process_docs.IssueReplaceDocument.as_view(), name='replace_document'),
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
