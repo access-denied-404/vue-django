@@ -51,7 +51,7 @@
 
             <div class="col-md-5"><div class="form-group"><bs-input :name="'tender_placement_type'" v-model="tender_placement_type" label="Способ определения поставщика"></bs-input></div></div>
             <div class="col-md-3"><label>Дата публикации</label><date-time-picker :name="'tender_publish_date'" v-model="tender_publish_date" :config="{'format':'L','locale':'ru'}"></date-time-picker></div>
-            <div class="col-md-4" v-bind:class="{'has-error': validate_tender_start_cost}">
+            <div class="col-md-4">
               <label>Начальная цена контракта</label>
               <money type="text" name="tender_start_cost"
                      class="form-control input"
@@ -78,7 +78,6 @@
                 <bs-input :name="'tender_responsible_inn'"
                           :required="!tender_found"
                           v-model="tender_responsible_inn"
-                          :class="{'has-error': validate_tender_responsible_inn}"
                           label="ИНН">
 
                 </bs-input>
@@ -364,18 +363,6 @@
           } else {
             return 'Подробнее'
           }
-        },
-        set () {}
-      },
-      validate_tender_start_cost: {
-        get () {
-          return this.tender_start_cost < 1 && !this.tender_found
-        },
-        set () {}
-      },
-      validate_tender_responsible_inn: {
-        get () {
-          return !this.tender_responsible_inn && !this.tender_found
         },
         set () {}
       },
