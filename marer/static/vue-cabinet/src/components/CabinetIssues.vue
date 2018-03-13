@@ -92,10 +92,10 @@
       formatSum: function (sum) {
         var res = ''
 
-        if (sum.includes('.')) {
+        if (sum.indexOf('.') > -1) {
           var fractionSum = sum.split('.')[1]
           var integerSum = sum.split('.')[0]
-        } else if (sum.includes(',')) {
+        } else if (sum.indexOf(',') > -1) {
           fractionSum = sum.split(',')[1]
           integerSum = sum.split(',')[0]
         } else {
