@@ -1919,7 +1919,7 @@ class Issue(models.Model):
 
         from marer.utils.documents import fill_docx_file_with_issue_data
         application_doc_file = fill_docx_file_with_issue_data(template_path, self)
-        application_doc_file.name = 'application.docx'
+        application_doc_file.name = 'Заявление_на_предоставление_БГ.docx'
 
         app_doc = Document()
         app_doc.file = application_doc_file
@@ -2819,4 +2819,4 @@ def pre_save_issue(sender, instance, **kwargs):
         if not instance.approval_and_change_sheet:
             instance.approval_and_change_sheet = generate_doc(
                 os.path.join(settings.BASE_DIR, 'marer/templates/documents/acts/approval_and_change_sheet.docx'),
-                'approval_and_change_sheet_%s.docx' % instance.id, instance)
+                'Лист_согласования_и_изменения_БГ_%s.docx' % instance.id, instance)
