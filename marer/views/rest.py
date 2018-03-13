@@ -84,16 +84,16 @@ class DocsZipView(View):
         issue = Issue.objects.get(id=iid)
         if type == '1':
             response = self.calculate_response(issue.propose_documents_leg)
-            response['Content-Disposition'] = 'attachment; filename=leg_docs_for_issue_{}.zip'.format(str(issue.id))
+            response['Content-Disposition'] = 'attachment; filename=%D1%8E%D1%80%D0%B8%D0%B4%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5%20%D0%B4%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B_{}.zip'.format(str(issue.id))
         elif type == '2':
             response = self.calculate_response(issue.propose_documents_fin)
-            response['Content-Disposition'] = 'attachment; filename=fin_docs_for_issue_{}.zip'.format(str(issue.id))
+            response['Content-Disposition'] = 'attachment; filename=%D1%84%D0%B8%D0%BD%D0%B0%D0%BD%D1%81%D0%BE%D0%B2%D1%8B%D0%B5%20%D0%B4%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B_{}.zip'.format(str(issue.id))
         elif type == '3':
             response = self.calculate_response(issue.propose_documents_oth)
-            response['Content-Disposition'] = 'attachment; filename=oth_docs_for_issue_{}.zip'.format(str(issue.id))
+            response['Content-Disposition'] = 'attachment; filename=%D0%BF%D1%80%D0%BE%D1%87%D0%B8%D0%B5%20%D0%B4%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B_{}.zip'.format(str(issue.id))
         elif type == '4':
             response = self.calculate_response(issue.propose_documents_app)
-            response['Content-Disposition'] = 'attachment; filename=acts_for_issue_{}.zip'.format(str(issue.id))
+            response['Content-Disposition'] = 'attachment; filename=%D0%B4%D0%BE%D0%B3%D0%BE%D0%B2%D0%BE%D1%80%D0%B0%20%D0%B8%20%D0%B0%D0%BA%D1%82%D1%8B_{}.zip'.format(str(issue.id))
         else:
             response = HttpResponse('')
         return response
