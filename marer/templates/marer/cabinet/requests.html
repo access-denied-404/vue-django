@@ -2,19 +2,19 @@
 {% load marer_cabinet %}
 {% load staticfiles %}
 {% block cabinet_dashboard_content %}
-<a style="display: inline-block"
-           class="btn"
-           href="{% static 'instructions/for_client.pdf'%}"
-           download="Инструкция_по_sgbgarant_для_клиента.pdf">
-            Инструкция для клиента
-        </a>
-        {% if not user.has_certificate %}
-        <a style="display: inline-block"
-           class="btn"
-           href="{% static 'instructions/for_agent.pdf'%}"
-           download="Инструкция_по_sgbgarant_для_агента.pdf">
-            Инструкция для агента
-        </a>
+    <a style="display: inline-block"
+       class="btn"
+       href="{% static 'instructions/for_client.pdf'%}"
+       download="Инструкция_по_sgbgarant_для_клиента.pdf">
+        Инструкция для клиента
+    </a>
+    {% if not user.has_certificate %}
+    <a style="display: inline-block"
+       class="btn"
+       href="{% static 'instructions/for_agent.pdf'%}"
+       download="Инструкция_по_sgbgarant_для_агента.pdf">
+        Инструкция для агента
+    </a>
     <div class="pull-right">
         &nbsp;
         &nbsp;
