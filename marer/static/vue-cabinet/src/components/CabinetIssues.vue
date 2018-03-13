@@ -24,7 +24,8 @@
             <td v-text=createdAt(issue.created_at)></td>
             <td v-text=issue.issuer_short_name></td>
             <td v-text=issue.issuer_inn></td>
-            <td v-text=formatSum(issue.bg_sum)></td>
+            <td v-if=issue.bg_sum v-text=formatSum(issue.bg_sum)></td>
+            <td v-else></td>
             <td v-if=isRegistering(issue.status)>Оформление заявки</td>
             <td v-if=isCancelled(issue.status)>Отменена</td>
             <td v-if=isFinished(issue.status)>Завершена</td>
