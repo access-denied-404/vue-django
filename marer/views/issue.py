@@ -161,15 +161,15 @@ class IssueRegisteringView(IssueView):
             issue.product = base_form.cleaned_data['product']
             issue.save()
 
-            if need_to_notify_for_issue_create:
-                notify_manager_about_user_created_issue(issue)
-            else:
-                notify_manager_about_user_updated_issue(issue)
-
             # todo issue process registering form
             product = issue.get_product()
             product.set_issue(issue)
             processed_valid = product.process_registering_form(request)
+
+            if need_to_notify_for_issue_create:
+                notify_manager_about_user_created_issue(issue)
+            else:
+                notify_manager_about_user_updated_issue(issue)
 
             if issue.issuer_already_has_an_agent:
                 url = reverse('issue_registering', args=[issue.id])
