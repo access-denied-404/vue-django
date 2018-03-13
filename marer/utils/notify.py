@@ -11,10 +11,18 @@ def _get_default_manager():
     return User.objects.get(id=settings.DEFAULT_MANAGER_ID)
 
 
+def _get_default_low_cost_manager():
+    return User.objects.get(id=settings.LOW_COST_ISSUES_DEFAULT_MANAGER_ID)
+
+
 def notify_user_about_manager_created_issue_for_user(issue: Issue):
     manager = issue.manager
+
     if manager is None:
-        manager = _get_default_manager()
+        if issue.bg_sum > 1500000:
+            manager = _get_default_manager()
+        else:
+            manager = _get_default_low_cost_manager()
 
     user = issue.user
     # менеджер создал заявку, уведомить клиента
@@ -34,7 +42,10 @@ def notify_user_about_manager_created_issue_for_user(issue: Issue):
 def notify_manager_about_user_created_issue(issue: Issue):
     manager = issue.manager
     if manager is None:
-        manager = _get_default_manager()
+        if issue.bg_sum > 1500000:
+            manager = _get_default_manager()
+        else:
+            manager = _get_default_low_cost_manager()
 
     # клиент создал заявку, уведомить менеджера
     manager.email_user(
@@ -54,7 +65,10 @@ def notify_manager_about_user_sign_document(document: IssueProposeDocument):
     issue = document.issue
     manager = issue.manager
     if manager is None:
-        manager = _get_default_manager()
+        if issue.bg_sum > 1500000:
+            manager = _get_default_manager()
+        else:
+            manager = _get_default_low_cost_manager()
 
     # клиент создал заявку, уведомить менеджера
     manager.email_user(
@@ -96,7 +110,10 @@ def notify_user_about_manager_updated_issue_for_user(issue: Issue):
 def notify_manager_about_user_updated_issue(issue: Issue):
     manager = issue.manager
     if manager is None:
-        manager = _get_default_manager()
+        if issue.bg_sum > 1500000:
+            manager = _get_default_manager()
+        else:
+            manager = _get_default_low_cost_manager()
 
     # клиент создал заявку, уведомить менеджера
     manager.email_user(
