@@ -397,10 +397,12 @@ class IssueAdmin(ModelAdmin):
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         if request.user.has_perm('marer.change_issue'):
-            pass
+            ufield = form.base_fields['manager']
+            ufield._queryset = ufield._queryset.filter(is_staff=True)
         elif request.user.has_perm('marer.can_change_managed_users_issues'):
             ufield = form.base_fields['user']
             ufield._queryset = ufield._queryset.filter(manager=request.user)
+            pass
         elif request.user.has_perm('marer.can_view_managed_finance_org_proposes_issues'):
             for fname in form.base_fields:
                 fld = form.base_fields[fname]
@@ -771,6 +773,15 @@ class MarerUserAdmin(UserAdmin):
         elif request.user.has_perm('marer.can_change_managed_users'):
             qs = qs.filter(manager_id=request.user.id)
         return qs
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if request.user.has_perm('marer.change_issue'):
+            ufield = form.base_fields['manager']
+            ufield._queryset = ufield._queryset.filter(is_staff=True)
+
+        return form
+
 
     def save_model(self, request, obj, form, change):
         if not change:
