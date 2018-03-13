@@ -84,10 +84,10 @@ class DocsZipView(View):
         issue = Issue.objects.get(id=iid)
         if type == '1':
             response = self.calculate_response(issue.propose_documents_leg)
-            response['Content-Disposition'] = 'attachment; filename=юридические_документы{}.zip'.format(str(issue.id))
+            response['Content-Disposition'] = 'attachment; filename=юридические_документы_{}.zip'.format(str(issue.id))
         elif type == '2':
             response = self.calculate_response(issue.propose_documents_fin)
-            response['Content-Disposition'] = 'attachment; filename=финансовые_документы{}.zip'.format(str(issue.id))
+            response['Content-Disposition'] = 'attachment; filename=финансовые_документы_{}.zip'.format(str(issue.id))
         elif type == '3':
             response = self.calculate_response(issue.propose_documents_oth)
             response['Content-Disposition'] = 'attachment; filename=прочие_документы_{}.zip'.format(str(issue.id))
