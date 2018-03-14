@@ -53,7 +53,8 @@ class IssueListSerializer(ModelSerializer):
 
     class Meta:
         model = Issue
-        fields = ('id', 'product', 'bg_sum', 'issuer_short_name', 'issuer_inn', 'status', 'created_at', 'user', 'manager')
+        fields = ('id', 'product', 'bg_sum', 'issuer_short_name', 'issuer_inn', 'status', 'created_at', 'user',
+                  'manager')
 
 
 class ContractOfGuaranteeSerializer(ModelSerializer):
