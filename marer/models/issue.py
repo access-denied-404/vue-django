@@ -1778,6 +1778,8 @@ class Issue(models.Model):
         reg_form.full_clean()
         if not self.passed_prescoring and not reg_form.errors:
             reg_form.add_error('stop_factors', 'Не в рамках продукта')
+        if self.issuer_already_has_an_agent:
+            reg_form.add_error('issuer_already_has_an_agent', 'Клиент закреплен за другим агентом')
         json_data = json.dumps(dict(
             formdata=reg_form.cleaned_data,
             errors=reg_form.errors,

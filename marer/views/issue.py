@@ -64,8 +64,8 @@ class IssueChatView(IssueView):
 
     def post(self, request, *args, **kwargs):
 
-        if self.get_issue() and 'issue_chat' not in self.get_issue().editable_dashboard_views():
-            return self.get(request, *args, **kwargs)
+        # if self.get_issue() and 'issue_chat' not in self.get_issue().editable_dashboard_views():
+        #     return self.get(request, *args, **kwargs)
 
         action = request.POST.get('action', False)
 
@@ -92,6 +92,12 @@ class IssueChatView(IssueView):
                         new_clarif_doc_link.name = ffile.name
                         new_clarif_doc_link.document = new_doc
                         new_clarif_doc_link.save()
+
+                        new_other_propose_doc = IssueProposeDocument()
+                        new_other_propose_doc.name = ffile.name
+                        new_other_propose_doc.document = new_doc
+                        new_other_propose_doc.type = consts.DOCUMENT_TYPE_OTHER
+                        new_other_propose_doc.save()
 
                 notify_managers_about_new_message_in_chat(new_msg)
 
@@ -137,10 +143,6 @@ class IssueRegisteringView(IssueView):
         kwargs['issue'] = self.get_issue()
         kwargs['products'] = get_finance_products()
         kwargs['dadata_token'] = settings.DADATA_TOKEN
-        if self.get_issue():
-            if self.get_issue().issuer_already_has_an_agent:
-                url = reverse('issue_registering', args=[self.get_issue().id])
-                return HttpResponseRedirect(url)
         return super().get(request, *args, **kwargs)
 
     def return_errors(self, base_form, *args, **kwargs):
@@ -248,6 +250,9 @@ class IssueRegisteringView(IssueView):
                     return HttpResponseRedirect(url)
 
                 if processed_valid:
+                    if issue.issuer_already_has_an_agent:
+                        url = reverse('issue_registering', args=[issue.id])
+                        return HttpResponseRedirect(url)
                     url = reverse('issue_survey', args=[issue.id])
                     return HttpResponseRedirect(url)
 
