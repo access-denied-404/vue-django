@@ -1057,9 +1057,14 @@ class Issue(models.Model):
             if issuer.user != self.user:
                 issues = Issue.objects.all().filter(issuer_inn=self.issuer_inn)
                 for iss in issues:
-                    if iss.status == consts.ISSUE_STATUS_REVIEW or iss.status == consts.ISSUE_STATUS_REGISTERING \
-                            and iss.application_doc.sign and iss.application_doc.sign_state == consts.DOCUMENT_SIGN_VERIFIED \
-                            or month_difference_from_today(iss.bg_extradition_date) <= 4:
+                    if iss.status == consts.ISSUE_STATUS_REVIEW:
+                        issuer_has_agent = True
+                        break
+                    if iss.application_doc and iss.application_doc.sign:
+                        if iss.status == consts.ISSUE_STATUS_REGISTERING and iss.application_doc.sign and iss.application_doc.sign_state == consts.DOCUMENT_SIGN_VERIFIED:
+                            issuer_has_agent = True
+                            break
+                    if iss.bg_extradition_date and month_difference_from_today(iss.bg_extradition_date) <= 4:
                         issuer_has_agent = True
                         break
         return issuer_has_agent
@@ -1779,6 +1784,8 @@ class Issue(models.Model):
         reg_form.full_clean()
         if not self.passed_prescoring and not reg_form.errors:
             reg_form.add_error('stop_factors', 'Не в рамках продукта')
+        if self.issuer_already_has_an_agent:
+            reg_form.add_error('already_has_an_agent', 'Клиент закреплен за другим агентом')
         json_data = json.dumps(dict(
             formdata=reg_form.cleaned_data,
             errors=reg_form.errors,
@@ -1791,12 +1798,12 @@ class Issue(models.Model):
 
         reg_form_class = self.get_product().get_registering_form_class()
         reg_form = reg_form_class(self.__dict__)
-        if reg_form.is_valid() and self.check_stop_factors_validity:
+        if reg_form.is_valid() and self.check_stop_factors_validity and not self.issuer_already_has_an_agent:
             available_views.append('issue_survey')
         else:
             return available_views
 
-        if self.application_doc_id is not None and self.check_all_application_required_fields_filled():
+        if self.application_doc_id is not None and self.check_all_application_required_fields_filled() and not self.issuer_already_has_an_agent:
             available_views.append('issue_scoring')
 
         if not self.status == consts.ISSUE_STATUS_REGISTERING:

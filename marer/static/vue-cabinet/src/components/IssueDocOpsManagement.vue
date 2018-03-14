@@ -172,7 +172,7 @@
 
                 <div class="row">
                   <div class="col-md-4 col-md-push-4">
-                    <bs-input type="number" :label="'Объем обязательств банка'" class="pull-right" v-model="issue.total_bank_liabilities_vol"></bs-input>
+                    <bs-input type="number" :label="'Объем обязательств перед банком'" class="pull-right" v-model="issue.total_bank_liabilities_vol"></bs-input>
                   </div>
                 </div>
 

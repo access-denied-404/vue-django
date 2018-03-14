@@ -13,6 +13,7 @@
             <th class="h6">Сумма</th>
             <th class="h6">Статус</th>
             <th class="h6">Агент</th>
+            <th class="h6">Менеджер</th>
             <th></th>
           </tr>
           <tr v-for="issue in issues"
@@ -31,6 +32,8 @@
             <td v-if=isFinished(issue.status)>Завершена</td>
             <td v-if=isReviewing(issue.status)>Рассмотрение заявки</td>
             <td v-text=issue.user.legal_name></td>
+            <td v-if=issue.manager v-text=issue.manager.legal_name></td>
+            <td v-else></td>
             <td></td>
           </tr>
         </tbody>

@@ -39,6 +39,7 @@ urlpatterns = [
     url(r'^cabinet/requests/(?P<iid>\d+)/adr/sign-file$', issue.IssueAdditionalDocumentSignView.as_view(), name='issue_adr_file_sign'),
     url(r'^cabinet/requests/(?P<iid>\d+)/finished$', issue.IssueFinishedView.as_view(), name='issue_finished'),
     url(r'^cabinet/requests/(?P<iid>\d+)/cancelled$', issue.IssueCancelledView.as_view(), name='issue_cancelled'),
+    url(r'^cabinet/requests/(?P<iid>\d+)/chat', issue.IssueChatView.as_view(), name='issue_chat'),
 
     url(r'^rest/tender$', rest.TenderDataView.as_view(), name='rest_tender'),
     url(r'^rest/bank_commission$', csrf_exempt(rest.IssueBankCommissionView.as_view()), name='rest_bank_commission'),

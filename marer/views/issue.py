@@ -53,6 +53,54 @@ class IssueView(LoginRequiredMixin, TemplateView):
         return super().get_context_data(**kwargs)
 
 
+class IssueChatView(IssueView):
+    template_name = 'marer/issue/chat.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs['consts'] = consts
+        if 'comment_form' not in kwargs:
+            kwargs['comment_form'] = IFOPCMessageForm()
+        return super().get_context_data(**kwargs)
+
+    def post(self, request, *args, **kwargs):
+
+        action = request.POST.get('action', False)
+
+        if action == 'send_msg':
+            comment_form = IFOPCMessageForm(request.POST, request.FILES)
+
+            if comment_form.is_valid():
+
+                new_msg = IssueClarificationMessage()
+                new_msg.issue = self.get_issue()
+                new_msg.message = comment_form.cleaned_data['message']
+                new_msg.user = request.user
+                new_msg.save()
+
+                for ffield in ['doc%s' % dnum for dnum in range(1, 9)]:
+                    ffile = comment_form.cleaned_data[ffield]
+                    if ffile:
+                        new_doc = Document()
+                        new_doc.file = ffile
+                        new_doc.save()
+
+                        new_clarif_doc_link = IssueFinanceOrgProposeClarificationMessageDocument()
+                        new_clarif_doc_link.clarification_message = new_msg
+                        new_clarif_doc_link.name = ffile.name
+                        new_clarif_doc_link.document = new_doc
+                        new_clarif_doc_link.save()
+
+                        new_other_propose_doc = IssueProposeDocument()
+                        new_other_propose_doc.name = ffile.name
+                        new_other_propose_doc.document = new_doc
+                        new_other_propose_doc.type = consts.DOCUMENT_TYPE_OTHER
+                        new_other_propose_doc.save()
+
+                notify_managers_about_new_message_in_chat(new_msg)
+
+        return self.get(request, *args, **kwargs)
+
+
 class IssueRedirectView(LoginRequiredMixin, RedirectView):
     permanent = False
 
@@ -92,15 +140,23 @@ class IssueRegisteringView(IssueView):
         kwargs['issue'] = self.get_issue()
         kwargs['products'] = get_finance_products()
         kwargs['dadata_token'] = settings.DADATA_TOKEN
-        if self.get_issue():
-            if self.get_issue().issuer_already_has_an_agent:
-                url = reverse('issue_registering', args=[self.get_issue().id])
-                return HttpResponseRedirect(url)
         return super().get(request, *args, **kwargs)
 
     def return_errors(self, base_form, *args, **kwargs):
         kwargs.update(dict(base_form=base_form))
         return self.get(self.request, *args, **kwargs)
+
+    def create_issuer(self, user_owner, inn, kpp, ogrn, full_name, short_name):
+        issuer = Issuer(
+            user=user_owner,
+            inn=inn,
+            kpp=kpp,
+            ogrn=ogrn,
+            full_name=full_name,
+            short_name=short_name,
+        )
+        issuer.save()
+        return issuer
 
     def post(self, request, *args, **kwargs):
 
@@ -112,9 +168,13 @@ class IssueRegisteringView(IssueView):
             # todo go to next stage if we can
             need_to_notify_for_issue_create = False
             if not self.get_issue():
-                issuer = create_stub_issuer(
+                issuer = self.create_issuer(
                     user_owner=request.user,
-                    issuer_name=base_form.cleaned_data['org_search_name'],
+                    inn=request.POST.get('issuer_inn'),
+                    kpp=request.POST.get('issuer_kpp'),
+                    ogrn=request.POST.get('issuer_ogrn'),
+                    full_name=request.POST.get('issuer_full_name'),
+                    short_name=request.POST.get('issuer_short_name')
                 )
                 issuer_inn = request.POST.get('issuer_inn')
                 if issuer_inn:
