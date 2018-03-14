@@ -715,6 +715,7 @@ class BankGuaranteeProduct(FinanceProduct):
                 ('bg_start_date', 'bg_end_date',),
                 ('bg_deadline_date', 'bg_extradition_date',),
                 ('tender_exec_law', 'bg_type',),
+                ('is_indisputable_charge_off', 'bg_is_benefeciary_form',),
                 ('agent_comission', 'auto_bank_commission',),
                 'application_doc_admin_field',
                 'prev_signed_application_doc_admin_field',
