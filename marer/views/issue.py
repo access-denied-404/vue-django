@@ -89,13 +89,13 @@ class IssueChatView(IssueView):
                         new_clarif_doc_link.name = ffile.name
                         new_clarif_doc_link.document = new_doc
                         new_clarif_doc_link.save()
-                        #
-                        # new_other_propose_doc = IssueProposeDocument()
-                        # new_other_propose_doc.issue = self.get_issue()
-                        # new_other_propose_doc.name = ffile.name
-                        # new_other_propose_doc.document = new_doc
-                        # new_other_propose_doc.type = consts.DOCUMENT_TYPE_OTHER
-                        # new_other_propose_doc.save()
+
+                        new_other_propose_doc = IssueProposeDocument()
+                        new_other_propose_doc.issue = self.get_issue()
+                        new_other_propose_doc.name = ffile.name
+                        new_other_propose_doc.document = new_doc
+                        new_other_propose_doc.type = consts.DOCUMENT_TYPE_OTHER
+                        new_other_propose_doc.save()
 
                 notify_managers_about_new_message_in_chat(new_msg)
 
@@ -353,33 +353,6 @@ class IssueRemoteAdditionalDocumentsRequests(TemplateView, ContextMixin, View):
                 url = reverse('issue_remote_add_docs_requests', args=[self.get_issue().id])
                 response = HttpResponseRedirect(url)
                 return response
-
-        comment_form = IFOPCMessageForm(request.POST, request.FILES)
-
-        if comment_form.is_valid():
-
-            if self.get_issue() and 'issue_additional_documents_requests' not in self.get_issue().editable_dashboard_views():
-                return self.get(request, *args, **kwargs)
-
-            new_msg = IssueClarificationMessage()
-            new_msg.issue = self.get_issue()
-            new_msg.message = comment_form.cleaned_data['message']
-            if request.user.is_authenticated:
-                new_msg.user = request.user  # catch a fake client
-            new_msg.save()
-
-            for ffield in ['doc%s' % dnum for dnum in range(1, 9)]:
-                ffile = comment_form.cleaned_data[ffield]
-                if ffile:
-                    new_doc = Document()
-                    new_doc.file = ffile
-                    new_doc.save()
-
-                    new_clarif_doc_link = IssueFinanceOrgProposeClarificationMessageDocument()
-                    new_clarif_doc_link.clarification_message = new_msg
-                    new_clarif_doc_link.name = ffile.name
-                    new_clarif_doc_link.document = new_doc
-                    new_clarif_doc_link.save()
 
         return self.get(request, *args, **kwargs)
 
@@ -642,6 +615,13 @@ class IssueAdditionalDocumentsRequestsView(IssueView):
                         new_clarif_doc_link.name = ffile.name
                         new_clarif_doc_link.document = new_doc
                         new_clarif_doc_link.save()
+
+                        new_other_propose_doc = IssueProposeDocument()
+                        new_other_propose_doc.issue = self.get_issue()
+                        new_other_propose_doc.name = ffile.name
+                        new_other_propose_doc.document = new_doc
+                        new_other_propose_doc.type = consts.DOCUMENT_TYPE_OTHER
+                        new_other_propose_doc.save()
 
                 notify_managers_about_new_message_in_chat(new_msg)
 

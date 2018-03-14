@@ -44,7 +44,7 @@ class UserSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['legal_name']
+        fields = ['legal_name', 'first_name', 'last_name']
 
 
 class IssueListSerializer(ModelSerializer):

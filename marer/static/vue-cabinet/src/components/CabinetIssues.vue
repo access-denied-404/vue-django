@@ -32,7 +32,7 @@
             <td v-if=isFinished(issue.status)>Завершена</td>
             <td v-if=isReviewing(issue.status)>Рассмотрение заявки</td>
             <td v-text=issue.user.legal_name></td>
-            <td v-if=issue.manager v-text=issue.manager.legal_name></td>
+            <td v-if=issue.manager>{{ issue.manager.first_name }} {{ issue.manager.last_name }}</td>
             <td v-else></td>
             <td></td>
           </tr>
