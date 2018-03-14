@@ -8,6 +8,12 @@
         </p>
       </div>
 
+      <div class="alert alert-danger" v-if="errors.already_has_an_agent">
+        <p v-for="err in errors.already_has_an_agent" class="text-center">
+          <span class="h2">{{ err }}</span>
+        </p>
+      </div>
+
       <div class="alert alert-danger" v-if="errors.__all__">
         <ul>
           <li v-for="err in errors.__all__">{{ err }}</li>

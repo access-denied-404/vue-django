@@ -64,9 +64,6 @@ class IssueChatView(IssueView):
 
     def post(self, request, *args, **kwargs):
 
-        # if self.get_issue() and 'issue_chat' not in self.get_issue().editable_dashboard_views():
-        #     return self.get(request, *args, **kwargs)
-
         action = request.POST.get('action', False)
 
         if action == 'send_msg':
