@@ -1446,6 +1446,7 @@ class Issue(models.Model):
             'issuer_head_post_rp': MorpherApi.get_response(self.issuer_head_org_position_and_permissions, 'Р').lower(),
             'arbitration': 'г. Москвы',
             'issuer_full_name_tp': MorpherApi.get_response(self.issuer_full_name, 'Т'),
+            'tender_responsible_full_name_rp': MorpherApi.get_response(self.tender_responsible_full_name, 'Р'),
             'tender_responsible_full_name_tp': MorpherApi.get_response(self.tender_responsible_full_name, 'Т'),
             'tender_placement_type_rp': MorpherApi.get_response(self.tender_placement_type, 'Р'),
             'tender_contract_subject_dp': MorpherApi.get_response(self.tender_contract_subject, 'Д'),
