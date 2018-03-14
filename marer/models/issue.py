@@ -1059,7 +1059,7 @@ class Issue(models.Model):
                 for iss in issues:
                     if iss.status == consts.ISSUE_STATUS_REVIEW or iss.status == consts.ISSUE_STATUS_REGISTERING \
                             and iss.application_doc.sign and iss.application_doc.sign_state == consts.DOCUMENT_SIGN_VERIFIED \
-                            or month_difference_from_today(iss.bg_extradition_date) <= 4:
+                            or (iss.bg_extradition_date and month_difference_from_today(iss.bg_extradition_date)) <= 4:
                         issuer_has_agent = True
                         break
         return issuer_has_agent
