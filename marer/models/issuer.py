@@ -8,12 +8,19 @@ __all__ = ['Issuer', 'IssuerDocument']
 
 
 class Issuer(models.Model):
-    inn = models.CharField(max_length=32, blank=False, null=False)
-    kpp = models.CharField(max_length=32, blank=False, null=False)
-    ogrn = models.CharField(max_length=32, blank=False, null=False)
-    full_name = models.CharField(max_length=512, blank=False, null=False)
-    short_name = models.CharField(max_length=512, blank=False, null=False)
-    user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
+    class Meta:
+        verbose_name = 'принципал'
+        verbose_name_plural = 'принципалы'
+
+    inn = models.CharField('ИНН', max_length=32, blank=False, null=False)
+    kpp = models.CharField('КПП', max_length=32, blank=False, null=False)
+    ogrn = models.CharField('ОГРН', max_length=32, blank=False, null=False)
+    full_name = models.CharField('полное наименование', max_length=512, blank=False, null=False)
+    short_name = models.CharField('краткое наименование', max_length=512, blank=False, null=False)
+    user = models.ForeignKey(verbose_name='закрепленный агент', to=settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
+
+    def __str__(self):
+        return '{}, ИНН {}'.format(self.short_name, self.inn)
 
 
 class IssuerDocument(models.Model):
