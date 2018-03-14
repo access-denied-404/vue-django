@@ -590,6 +590,7 @@ class IssuerAdmin(ModelAdmin):
     list_display = (
         'inn',
         'ogrn',
+        'short_name',
         'user',
     )
 
