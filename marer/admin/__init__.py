@@ -399,7 +399,7 @@ class IssueAdmin(ModelAdmin):
         if request.user.has_perm('marer.change_issue'):
             if 'manager' in form.base_fields:
                 ufield = form.base_fields['manager']
-                ufield._queryset = ufield._queryset.filter(is_staff=True)
+                ufield._queryset = ufield._queryset.filter(is_staff=True).order_by('first_name')
         elif request.user.has_perm('marer.can_change_managed_users_issues'):
             ufield = form.base_fields['user']
             ufield._queryset = ufield._queryset.filter(manager=request.user)
@@ -780,7 +780,7 @@ class MarerUserAdmin(UserAdmin):
         if request.user.has_perm('marer.change_issue'):
             if 'manager' in form.base_fields:
                 ufield = form.base_fields['manager']
-                ufield._queryset = ufield._queryset.filter(is_staff=True)
+                ufield._queryset = ufield._queryset.filter(is_staff=True).order_by('first_name')
 
         return form
 
