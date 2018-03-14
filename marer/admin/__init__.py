@@ -584,6 +584,16 @@ class IssueMessagesProxyAdmin(ModelAdmin):
         return qs
 
 
+@register(models.Issuer)
+class IssuerAdmin(ModelAdmin):
+
+    list_display = (
+        'inn',
+        'ogrn',
+        'user',
+    )
+
+
 @register(models.User)
 class MarerUserAdmin(UserAdmin):
     list_display = (
