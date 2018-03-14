@@ -4,7 +4,10 @@
 <div class="container">
     <div class="row">
         {% if issue and issue.id %}
-            <h1 class="text-center">Заявка №{{ issue.humanized_id }}</h1>
+            <h1 class="text-center">
+                Заявка №{{ issue.humanized_id }}
+                <span class="pull-right"><a href="{% url 'issue_chat' issue.id %}">Чат</a></span>
+            </h1>
             <div class="h4 text-center"><b>{{ issue.get_product.humanized_name }}</b>
                 {% if issue.issuer_short_name %}для <b>{{ issue.get_issuer_name }}</b>{% endif %}
                 {% if issue.bg_sum %}на сумму <b>{{ issue.humanized_sum }}</b>{% endif %}

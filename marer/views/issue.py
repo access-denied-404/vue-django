@@ -53,6 +53,51 @@ class IssueView(LoginRequiredMixin, TemplateView):
         return super().get_context_data(**kwargs)
 
 
+class IssueChatView(IssueView):
+    template_name = 'marer/issue/chat.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs['consts'] = consts
+        if 'comment_form' not in kwargs:
+            kwargs['comment_form'] = IFOPCMessageForm()
+        return super().get_context_data(**kwargs)
+
+    def post(self, request, *args, **kwargs):
+
+        if self.get_issue() and 'issue_chat' not in self.get_issue().editable_dashboard_views():
+            return self.get(request, *args, **kwargs)
+
+        action = request.POST.get('action', False)
+
+        if action == 'send_msg':
+            comment_form = IFOPCMessageForm(request.POST, request.FILES)
+
+            if comment_form.is_valid():
+
+                new_msg = IssueClarificationMessage()
+                new_msg.issue = self.get_issue()
+                new_msg.message = comment_form.cleaned_data['message']
+                new_msg.user = request.user
+                new_msg.save()
+
+                for ffield in ['doc%s' % dnum for dnum in range(1, 9)]:
+                    ffile = comment_form.cleaned_data[ffield]
+                    if ffile:
+                        new_doc = Document()
+                        new_doc.file = ffile
+                        new_doc.save()
+
+                        new_clarif_doc_link = IssueFinanceOrgProposeClarificationMessageDocument()
+                        new_clarif_doc_link.clarification_message = new_msg
+                        new_clarif_doc_link.name = ffile.name
+                        new_clarif_doc_link.document = new_doc
+                        new_clarif_doc_link.save()
+
+                notify_managers_about_new_message_in_chat(new_msg)
+
+        return self.get(request, *args, **kwargs)
+
+
 class IssueRedirectView(LoginRequiredMixin, RedirectView):
     permanent = False
 
