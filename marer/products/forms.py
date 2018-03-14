@@ -81,6 +81,7 @@ class BGFinProdRegForm(Form):
     tender_contract_subject = CharField(widget=Textarea(), required=False)
     stop_factors = Field(required=False)
     tender_has_prepayment = BooleanField(required=False)
+    already_has_an_agent = Field(required=False)
 
     def clean(self):
         bg_sum_min = BankMinimalCommission.objects.order_by('sum_min').first().sum_min

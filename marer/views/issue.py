@@ -250,9 +250,6 @@ class IssueRegisteringView(IssueView):
                     return HttpResponseRedirect(url)
 
                 if processed_valid:
-                    if issue.issuer_already_has_an_agent:
-                        url = reverse('issue_registering', args=[issue.id])
-                        return HttpResponseRedirect(url)
                     url = reverse('issue_survey', args=[issue.id])
                     return HttpResponseRedirect(url)
 

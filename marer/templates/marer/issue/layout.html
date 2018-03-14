@@ -4,14 +4,27 @@
 <div class="container">
     <div class="row">
         {% if issue and issue.id %}
-            <h1 class="text-center">
-                Заявка №{{ issue.humanized_id }}
-                <span class="pull-right"><a href="{% url 'issue_chat' issue.id %}">Чат</a></span>
-            </h1>
-            <div class="h4 text-center"><b>{{ issue.get_product.humanized_name }}</b>
-                {% if issue.issuer_short_name %}для <b>{{ issue.get_issuer_name }}</b>{% endif %}
-                {% if issue.bg_sum %}на сумму <b>{{ issue.humanized_sum }}</b>{% endif %}
+            <div class="col-md-6 col-md-offset-3">
+
+                <h1 class="text-center">
+                    Заявка №{{ issue.humanized_id }}
+                </h1>
+                <div class="h4 text-center"><b>{{ issue.get_product.humanized_name }}</b>
+                    {% if issue.issuer_short_name %}для <b>{{ issue.get_issuer_name }}</b>{% endif %}
+                    {% if issue.bg_sum %}на сумму <b>{{ issue.humanized_sum }}</b>{% endif %}
+                </div>
             </div>
+            <div class="col-md-3">
+                <div class="h1">
+
+                    <a class="btn btn-primary pull-right" href="{% url 'issue_chat' issue.id %}">
+                        <span class="glyphicon glyphicon-comment"></span>
+                        Чат c менеджером
+                    </a>
+                </div>
+
+            </div>
+
         {% else %}
             <h1 class="text-center">Новая заявка</h1>
         {% endif %}
