@@ -102,6 +102,18 @@ class IssueRegisteringView(IssueView):
         kwargs.update(dict(base_form=base_form))
         return self.get(self.request, *args, **kwargs)
 
+    def create_issuer(self, user_owner, inn, kpp, ogrn, full_name, short_name):
+        issuer = Issuer(
+            user=user_owner,
+            inn=inn,
+            kpp=kpp,
+            ogrn=ogrn,
+            full_name=full_name,
+            short_name=short_name,
+        )
+        issuer.save()
+        return issuer
+
     def post(self, request, *args, **kwargs):
 
         if self.get_issue() and 'issue_registering' not in self.get_issue().editable_dashboard_views():
@@ -112,12 +124,13 @@ class IssueRegisteringView(IssueView):
             # todo go to next stage if we can
             need_to_notify_for_issue_create = False
             if not self.get_issue():
-                issuer = create_stub_issuer(
+                issuer = self.create_issuer(
                     user_owner=request.user,
-                    issuer_name=base_form.cleaned_data['org_search_name'],
-                    issuer_inn=request.POST.get('issuer_inn'),
-                    issuer_kpp=request.POST.get('issuer_kpp'),
-                    issuer_ogrn=request.POST.get('issuer_ogrn'),
+                    inn=request.POST.get('issuer_inn'),
+                    kpp=request.POST.get('issuer_kpp'),
+                    ogrn=request.POST.get('issuer_ogrn'),
+                    full_name=request.POST.get('issuer_full_name'),
+                    short_name=request.POST.get('issuer_short_name')
                 )
                 issuer_inn = request.POST.get('issuer_inn')
                 if issuer_inn:
