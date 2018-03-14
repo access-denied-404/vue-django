@@ -9,13 +9,13 @@ from marer.models import Issuer
 from marer.serializers import TenderPublisherSerializer, TenderSerializer
 
 
-def create_stub_issuer(user_owner, issuer_name):
+def create_stub_issuer(user_owner, issuer_name, issuer_inn, issuer_kpp, issuer_ogrn):
     issuer = Issuer(
         full_name=issuer_name,
         short_name=issuer_name,
-        inn='0000000000',
-        kpp='000000000',
-        ogrn='0000000000000',
+        inn=issuer_inn,
+        kpp=issuer_kpp,
+        ogrn=issuer_ogrn,
         user=user_owner,
     )
     issuer.save()

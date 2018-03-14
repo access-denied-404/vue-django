@@ -115,6 +115,9 @@ class IssueRegisteringView(IssueView):
                 issuer = create_stub_issuer(
                     user_owner=request.user,
                     issuer_name=base_form.cleaned_data['org_search_name'],
+                    issuer_inn=request.POST.get('issuer_inn'),
+                    issuer_kpp=request.POST.get('issuer_kpp'),
+                    issuer_ogrn=request.POST.get('issuer_ogrn'),
                 )
                 issuer_inn = request.POST.get('issuer_inn')
                 if issuer_inn:
