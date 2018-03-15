@@ -183,7 +183,7 @@ class IssueGenerateLawyersDepConclusionDocView(APIView):
         return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class IssueSecDepMgmtView(IssueBaseAPIView):
+class IssueGenerateSecDepMgmtView(IssueBaseAPIView):
     serializer = IssueSecDepSerializer
 
     def post(self, request, iid):

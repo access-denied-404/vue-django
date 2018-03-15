@@ -124,6 +124,10 @@
           this.errors = error.response.data.errors
         })
       },
+      update_form_data (data) {
+        this.issue = data
+        this.errors = []
+      },
       save_issue () {
         axios.post(this.api_url + this.$route.params.id + '/lawyers-dep-mgmt?format=json', {
           body: this.issue

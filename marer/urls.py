@@ -49,9 +49,9 @@ urlpatterns = [
     url(r'^rest/issue/(?P<iid>\d+)/sec-dep-mgmt$', rest.IssueSecDepView.as_view(), name='rest_issue_sec_dep_mgmt'),
     url(r'^rest/issue/(?P<iid>\d+)/doc-ops-mgmt$', rest.IssueDocOpsView.as_view(), name='rest_issue_doc_ops_mgmt'),
     url(r'^rest/issue/(?P<iid>\d+)/lawyers-dep-mgmt$', rest.IssueLawyersDepView.as_view(), name='rest_issue_lawyers_dep_mgmt'),
-    url(r'^rest/issue/(?P<iid>\d+)/generate_doc_ops_mgmt_conclusion_doc$', rest.IssueLawyersDepView.as_view(), name='rest_generate_doc_ops_mgmt_conclusion_doc'),
-    url(r'^rest/issue/(?P<iid>\d+)/generate_lawyers_dep_conclusion_doc$', rest.IssueLawyersDepView.as_view(), name='rest_generate_lawyers_dep_conclusion_doc'),
-    url(r'^rest/issue/(?P<iid>\d+)/generate_sec-dep-mgmt$', rest.IssueSecDepMgmtView.as_view(), name='rest_generate_sec-dep-mgmt'),
+    url(r'^rest/issue/(?P<iid>\d+)/generate_doc_ops_mgmt_conclusion_doc$', rest.IssueGenerateDocOpsView.as_view(), name='rest_generate_doc_ops_mgmt_conclusion_doc'),
+    url(r'^rest/issue/(?P<iid>\d+)/generate_lawyers_dep_conclusion_doc$', rest.IssueGenerateLawyersDepConclusionDocView.as_view(), name='rest_generate_lawyers_dep_conclusion_doc'),
+    url(r'^rest/issue/(?P<iid>\d+)/generate_sec-dep-mgmt$', rest.IssueGenerateSecDepMgmtView.as_view(), name='rest_generate_sec-dep-mgmt'),
     url(r'^rest/issue/(?P<iid>\d+)/messages$', rest.IssueMessagesView.as_view(), name='rest_issue_messages'),
     url(r'^rest/profile$', rest.ProfileView.as_view(), name='rest_profile'),
 
