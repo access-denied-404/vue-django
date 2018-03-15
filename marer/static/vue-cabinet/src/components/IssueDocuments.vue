@@ -272,13 +272,13 @@
                           <div class="col-md-6">
                           <a class="btn btn-primary btn-sm pull-right"
                              @click="reformDoc('project')"
-                             target="_blank">Обновить проект
+                             target="_blank">Переформировать проект
                           </a>
                           </div>
                           <div class="col-md-6">
                           <a class="btn btn-primary btn-sm pull-right"
                              @click="reformDoc('payment-of-fee')"
-                             target="_blank">Обновить счет
+                             target="_blank">Переформировать счет
                           </a>
                           </div>
                           </div>

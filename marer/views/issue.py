@@ -99,7 +99,8 @@ class IssueChatView(IssueView):
 
                 notify_managers_about_new_message_in_chat(new_msg)
 
-        return self.get(request, *args, **kwargs)
+        url = reverse('issue_chat', args=[self._issue.id])
+        return HttpResponseRedirect(url)
 
 
 class IssueRedirectView(LoginRequiredMixin, RedirectView):
@@ -625,7 +626,8 @@ class IssueAdditionalDocumentsRequestsView(IssueView):
 
                 notify_managers_about_new_message_in_chat(new_msg)
 
-        return self.get(request, *args, **kwargs)
+        url = reverse('issue_chat', args=[self._issue.id])
+        return HttpResponseRedirect(url)
 
 
 class IssueAdditionalDocumentsRequestView(IssueView):
