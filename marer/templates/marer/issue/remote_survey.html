@@ -97,6 +97,16 @@
                 update_send_button_is_available();
             });
 
+            $('.tr-crt').on('click', function () {
+                update_send_button_is_available();
+            });
+
+            $('body').on('keyup', function (evt) {
+                update_send_button_is_available();
+            });
+
+            update_send_button_is_available();
+
             function update_send_button_is_available() {
                 var requiredFields = $('.req');
                 var requiredFieldsFilled = true;
