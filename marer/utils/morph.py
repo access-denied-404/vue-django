@@ -16,4 +16,4 @@ class MorpherApi:
         except Exception:
             pass
 
-        return response_form or '_' * len(text)
+        return response_form or text
