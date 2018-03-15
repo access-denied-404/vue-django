@@ -1,13 +1,16 @@
 import uuid
+import os
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.core.files.storage import FileSystemStorage
+from django.conf import settings
 from marer import consts
 
 from marer.models.issue import Issue, IssueProposeDocument
 from marer.models.base import Document
 from marer.utils.datetime_utils import year, day, month
+from marer.utils.documents import generate_doc
 
 
 class IssueDeleteDocument(APIView):
@@ -119,3 +122,46 @@ class IssueReplaceDocument(APIView):
         document.sign = None
         document.sign_state = consts.DOCUMENT_SIGN_NONE
 
+
+class IssueReformDocument(APIView):
+    def post(self, request, iid):
+        issue = Issue.objects.get(id=iid)
+        if request.data.get('action', '') == 'payment-of-fee':
+            generate_doc(generate_doc(os.path.join(settings.BASE_DIR,
+                                                   'marer/templates/documents/acts/contract_of_guarantee.docx'),
+                                      'Договор_поручительства.docx',
+                                      issue))
+        if request.data.get('action', '') == 'project':
+            bg_contract_path = {
+                (consts.TENDER_EXEC_LAW_44_FZ,
+                 consts.BG_TYPE_APPLICATION_ENSURE): 'marer/templates/documents/acts/fz44_participation.docx',
+                (consts.TENDER_EXEC_LAW_44_FZ,
+                 consts.BG_TYPE_CONTRACT_EXECUTION): 'marer/templates/documents/acts/fz44_execution.docx',
+                (consts.TENDER_EXEC_LAW_44_FZ,
+                 consts.BG_TYPE_REFUND_OF_ADVANCE): 'marer/templates/documents/acts/fz44_execution.docx',
+                (consts.TENDER_EXEC_LAW_44_FZ,
+                 consts.BG_TYPE_WARRANTY_ENSURE): 'marer/templates/documents/acts/fz44_execution.docx',
+
+                (consts.TENDER_EXEC_LAW_223_FZ,
+                 consts.BG_TYPE_APPLICATION_ENSURE): 'marer/templates/documents/acts/fz233_participation.docx',
+                (consts.TENDER_EXEC_LAW_223_FZ,
+                 consts.BG_TYPE_CONTRACT_EXECUTION): 'marer/templates/documents/acts/fz223_execution.docx',
+                (consts.TENDER_EXEC_LAW_223_FZ,
+                 consts.BG_TYPE_REFUND_OF_ADVANCE): 'marer/templates/documents/acts/fz223_execution.docx',
+                (consts.TENDER_EXEC_LAW_223_FZ,
+                 consts.BG_TYPE_WARRANTY_ENSURE): 'marer/templates/documents/acts/fz223_execution.docx',
+
+                (consts.TENDER_EXEC_LAW_185_FZ,
+                 consts.BG_TYPE_APPLICATION_ENSURE): 'marer/templates/documents/acts/fz185_participation.docx',
+                (consts.TENDER_EXEC_LAW_185_FZ,
+                 consts.BG_TYPE_CONTRACT_EXECUTION): 'marer/templates/documents/acts/fz185_execution.docx',
+                (consts.TENDER_EXEC_LAW_185_FZ,
+                 consts.BG_TYPE_REFUND_OF_ADVANCE): 'marer/templates/documents/acts/fz185_execution.docx',
+                (consts.TENDER_EXEC_LAW_185_FZ,
+                 consts.BG_TYPE_WARRANTY_ENSURE): 'marer/templates/documents/acts/fz185_execution.docx',
+            }.get((issue.tender_exec_law, issue.bg_type))
+            if bg_contract_path:
+                issue.bg_doc = generate_doc(os.path.join(settings.BASE_DIR, bg_contract_path),
+                                            'Проект.docx',
+                                            issue)
+        return Response('document for issue number ' + iid + 'reformed')

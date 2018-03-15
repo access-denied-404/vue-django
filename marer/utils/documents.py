@@ -238,7 +238,7 @@ class WordDocumentHelper:
         return doc
 
 
-def generate_doc(path:str, new_name:str, data: Issue):
+def generate_doc(path: str, new_name: str, data: Issue):
     from marer.models import Document
     doc_file = fill_docx_file_with_issue_data(path, data)
     doc_file.name = new_name

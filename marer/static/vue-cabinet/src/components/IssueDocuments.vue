@@ -268,6 +268,20 @@
                         </td>
                       </tr>
                       <tr v-if="issue.propose_documents_app">
+                          <div class="col-md-4 col-md-offset-6">
+                          <div class="col-md-6">
+                          <a class="btn btn-primary btn-sm pull-right"
+                             @click="reformDoc('project')"
+                             target="_blank">Обновить проект
+                          </a>
+                          </div>
+                          <div class="col-md-6">
+                          <a class="btn btn-primary btn-sm pull-right"
+                             @click="reformDoc('payment-of-fee')"
+                             target="_blank">Обновить счет
+                          </a>
+                          </div>
+                          </div>
                           <a class="btn btn-primary btn-sm pull-right"
                              :href="'issue/' + issue.id + '/docs-zip?group=4'"
                              target="_blank">Скачать архив
@@ -326,6 +340,7 @@
         api_url: window.debug ? 'http://localhost:8000/rest/issue/' : '/rest/issue/',
         delete_docs_url: window.debug ? 'http://localhost:8000/delete-docs/issue/' : '/delete-docs/issue/',
         save_issue_url: window.debug ? 'http://localhost:8000/replace-docs/issue/' : '/replace-docs/issue/',
+        reform_doc_url: window.debug ? 'http://localhost:8000/reform-docs/issue/' : '/reform-docs/issue/',
         issue: {}
       }
     },
@@ -360,6 +375,19 @@
           }
         }
         post(this.save_issue_url + this.$route.params.id, formData, config).then(response => {
+          response.data
+          axios.get(this.api_url + this.$route.params.id).then(response => {
+            this.update_form_data(response.data)
+          })
+        })
+      },
+      reformDoc (doc) {
+        if (doc === 'payment-of-fee') {
+          var act = doc
+        } else if (doc === 'project') {
+          act = doc
+        }
+        axios.post(this.reform_doc_url + this.$route.params.id, {action: act}).then(response => {
           response.data
           axios.get(this.api_url + this.$route.params.id).then(response => {
             this.update_form_data(response.data)

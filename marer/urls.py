@@ -58,6 +58,7 @@ urlpatterns = [
     url(r'^issue/(?P<iid>\d+)/docs-zip/', rest.DocsZipView.as_view(), name='docs_zip'),
     url(r'^delete-docs/issue/(?P<iid>\d+)$', process_docs.IssueDeleteDocument.as_view(), name='delete_document'),
     url(r'^replace-docs/issue/(?P<iid>\d+)$', process_docs.IssueReplaceDocument.as_view(), name='replace_document'),
+    url(r'^reform-docs/issue/(?P<iid>\d+)$', process_docs.IssueReformDocument.as_view(), name='reform_document'),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
