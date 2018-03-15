@@ -744,9 +744,9 @@ class Issue(models.Model):
             # 6 Величина чистых активов за последний завершенный квартал больше уставного капитала (только для организаций, предоставивших отчетность по форме № 1 и №2).
             strong_checks.append(self.last_account_period_net_assets_great_than_authorized_capital)
             # 7 Деятельность Клиента в течение Последнего завершенного года являлась прибыльной.
-            strong_checks.append(self.balance_code_2400_offset_1 > 0)
+            strong_checks.append(self.balance_code_2400_offset_1 >= 0)
             # 8 Деятельность Клиента за последний отчетный период  является прибыльной.
-            strong_checks.append(self.balance_code_2400_offset_0 > 0)
+            strong_checks.append(self.balance_code_2400_offset_0 >= 0)
             # 9 Снижение цены Контракта менее 50% если предмет контракта «Поставка»
             strong_checks.append(self.is_contract_price_reduction_lower_than_50_pct_on_supply_contract)
             # 10 Финансовое положение хорошое (Расчет производится согласно Положения о предоставлении банковских гарантий ПАО «БАНК СГБ» в рамках продукта «Экспресс - гарантии).
@@ -2021,15 +2021,15 @@ class Issue(models.Model):
 
     @property
     def humanuzed_is_org_activity_for_last_year_was_profilable(self):
-        return 'Да' if self.balance_code_2400_offset_1 > 0 else 'Нет'
+        return 'Да' if self.balance_code_2400_offset_1 >= 0 else 'Нет'
 
     @property
     def humanized_is_org_activity_for_last_year_was_not_profitable(self):
-        return 'Да' if not self.balance_code_2400_offset_1 > 0 else 'Нет'
+        return 'Да' if not self.balance_code_2400_offset_1 >= 0 else 'Нет'
 
     @property
     def humanuzed_is_org_activity_for_last_period_was_profilable(self):
-        return 'Да' if self.balance_code_2400_offset_0 > 0 else 'Нет'
+        return 'Да' if self.balance_code_2400_offset_0 >= 0 else 'Нет'
 
     @property
     def is_issuer_in_blacklisted_region(self):
