@@ -249,6 +249,22 @@ class CalculateUnderwritingCriteria:
 
     def score_51(self, value, bg_sum):
         total = 200
+        if 1500000 < bg_sum <= 5000000:
+            if value == 0:
+                score = 1
+            elif 2 < value <= 3:
+                score = 0.25
+            elif 3 < value <= 5:
+                score = 0.75
+            elif 5 < value:
+                score = 1
+            else:
+                score = 0
+            return total - total * score
+        return 0
+
+    def score_52(self, value, bg_sum):
+        total = 200
         if 5000000 < bg_sum <= 10000000:
             if value == 0:
                 score = 1
@@ -263,7 +279,7 @@ class CalculateUnderwritingCriteria:
             return total - total * score
         return 0
 
-    def score_52(self, value, bg_sum):
+    def score_53(self, value, bg_sum):
         total = 200
         if 10000000 < bg_sum <= 18000000:
             if value == 0:
@@ -292,6 +308,22 @@ class CalculateUnderwritingCriteria:
 
     def score_71(self, value, bg_sum):
         total = 125
+        if 1500000 < bg_sum <= 5000000:
+            if value == 0:
+                score = 1
+            elif 2 < value <= 3:
+                score = 0.25
+            elif 3 < value <= 5:
+                score = 0.75
+            elif 5 < value:
+                score = 1
+            else:
+                score = 0
+            return total - total * score
+        return 0
+
+    def score_72(self, value, bg_sum):
+        total = 125
         if 5000000 < bg_sum <= 10000000:
             if value == 0:
                 score = 1
@@ -306,7 +338,7 @@ class CalculateUnderwritingCriteria:
             return total - total * score
         return 0
 
-    def score_72(self, value, bg_sum):
+    def score_73(self, value, bg_sum):
         total = 125
         if 10000000 < bg_sum <= 18000000:
             if value == 0:
@@ -368,6 +400,7 @@ class CalculateUnderwritingCriteria:
             "value_5": '{:0.1f}'.format(value_5),
             "score_51": self.score_51(value_5, issue.bg_sum),
             "score_52": self.score_52(value_5, issue.bg_sum),
+            "score_53": self.score_53(value_5, issue.bg_sum),
 
             "value_6": '{:0.1f}'.format(value_6),
             "score_6": self.score_6(value_6),
@@ -375,6 +408,7 @@ class CalculateUnderwritingCriteria:
             "value_7": '{:0.1f}'.format(value_7),
             "score_71": self.score_71(value_7, issue.bg_sum),
             "score_72": self.score_72(value_7, issue.bg_sum),
+            "score_73": self.score_73(value_7, issue.bg_sum),
 
             "value_8": 'ДА' if value_8 else 'НЕТ',
             "score_8": self.score_8(value_8),

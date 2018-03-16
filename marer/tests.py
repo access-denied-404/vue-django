@@ -208,13 +208,71 @@ class IssueTestCase(TestCase):
 
         # SECTION 5.1
 
+        issue.bg_sum = 5000000
+        issue.tender_final_cost = 200
+        issue.similar_contract_sum = 100
+        issue.save()
+        issue.refresh_from_db()
+        data = CalculateUnderwritingCriteria().calc(issue)
+        self.assertEqual(data['score_51'] + data['score_52'] + data['score_53'], 200)
+
+        issue.bg_sum = 5000000
+        issue.tender_final_cost = 200.01
+        issue.similar_contract_sum = 100
+        issue.save()
+        issue.refresh_from_db()
+        data = CalculateUnderwritingCriteria().calc(issue)
+        self.assertEqual(data['score_51'] + data['score_52'] + data['score_53'], 150)
+
+        issue.bg_sum = 5000000
+        issue.tender_final_cost = 300
+        issue.similar_contract_sum = 100
+        issue.save()
+        issue.refresh_from_db()
+        data = CalculateUnderwritingCriteria().calc(issue)
+        self.assertEqual(data['score_51'] + data['score_52'] + data['score_53'], 150)
+
+        issue.bg_sum = 5000000
+        issue.tender_final_cost = 300.01
+        issue.similar_contract_sum = 100
+        issue.save()
+        issue.refresh_from_db()
+        data = CalculateUnderwritingCriteria().calc(issue)
+        self.assertEqual(data['score_51'] + data['score_52'] + data['score_53'], 50)
+
+        issue.bg_sum = 5000000
+        issue.tender_final_cost = 500
+        issue.similar_contract_sum = 100
+        issue.save()
+        issue.refresh_from_db()
+        data = CalculateUnderwritingCriteria().calc(issue)
+        self.assertEqual(data['score_51'] + data['score_52'] + data['score_53'], 50)
+
+        issue.bg_sum = 5000000
+        issue.tender_final_cost = 500.01
+        issue.similar_contract_sum = 100
+        issue.save()
+        issue.refresh_from_db()
+        data = CalculateUnderwritingCriteria().calc(issue)
+        self.assertEqual(data['score_51'] + data['score_52'] + data['score_53'], 0)
+
+        issue.bg_sum = 5000000
+        issue.tender_final_cost = 0
+        issue.similar_contract_sum = 100
+        issue.save()
+        issue.refresh_from_db()
+        data = CalculateUnderwritingCriteria().calc(issue)
+        self.assertEqual(data['score_51'] + data['score_52'] + data['score_53'], 0)
+
+        # SECTION 5.2
+
         issue.bg_sum = 10000000
         issue.tender_final_cost = 150
         issue.similar_contract_sum = 100
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_51'] + data['score_52'], 200)
+        self.assertEqual(data['score_51'] + data['score_52'] + data['score_53'], 200)
 
         issue.bg_sum = 10000000
         issue.tender_final_cost = 150.01
@@ -222,7 +280,7 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_51'] + data['score_52'], 150)
+        self.assertEqual(data['score_51'] + data['score_52'] + data['score_53'], 150)
 
         issue.bg_sum = 10000000
         issue.tender_final_cost = 200
@@ -230,7 +288,7 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_51'] + data['score_52'], 150)
+        self.assertEqual(data['score_51'] + data['score_52'] + data['score_53'], 150)
 
         issue.bg_sum = 10000000
         issue.tender_final_cost = 200.01
@@ -238,7 +296,7 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_51'] + data['score_52'], 50)
+        self.assertEqual(data['score_51'] + data['score_52'] + data['score_53'], 50)
 
         issue.bg_sum = 10000000
         issue.tender_final_cost = 400
@@ -246,7 +304,7 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_51'] + data['score_52'], 50)
+        self.assertEqual(data['score_51'] + data['score_52'] + data['score_53'], 50)
 
         issue.bg_sum = 10000000
         issue.tender_final_cost = 400.01
@@ -254,7 +312,7 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_51'] + data['score_52'], 0)
+        self.assertEqual(data['score_51'] + data['score_52'] + data['score_53'], 0)
 
         issue.bg_sum = 10000000
         issue.tender_final_cost = 0
@@ -262,9 +320,9 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_51'] + data['score_52'], 0)
+        self.assertEqual(data['score_51'] + data['score_52'] + data['score_53'], 0)
 
-        # SECTION 5.2
+        # SECTION 5.3
 
         issue.bg_sum = 18000000
         issue.tender_final_cost = 130
@@ -272,7 +330,7 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_51'] + data['score_52'], 200)
+        self.assertEqual(data['score_51'] + data['score_52'] + data['score_53'], 200)
 
         issue.bg_sum = 18000000
         issue.tender_final_cost = 130.01
@@ -280,7 +338,7 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_51'] + data['score_52'], 130)
+        self.assertEqual(data['score_51'] + data['score_52'] + data['score_53'], 130)
 
         issue.bg_sum = 18000000
         issue.tender_final_cost = 200
@@ -288,7 +346,7 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_51'] + data['score_52'], 130)
+        self.assertEqual(data['score_51'] + data['score_52'] + data['score_53'], 130)
 
         issue.bg_sum = 18000000
         issue.tender_final_cost = 200.01
@@ -296,7 +354,7 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_51'] + data['score_52'], 20)
+        self.assertEqual(data['score_51'] + data['score_52'] + data['score_53'], 20)
 
         issue.bg_sum = 18000000
         issue.tender_final_cost = 300
@@ -304,7 +362,7 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_51'] + data['score_52'], 20)
+        self.assertEqual(data['score_51'] + data['score_52'] + data['score_53'], 20)
 
         issue.bg_sum = 18000000
         issue.tender_final_cost = 300.01
@@ -312,7 +370,7 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_51'] + data['score_52'], 0)
+        self.assertEqual(data['score_51'] + data['score_52'] + data['score_53'], 0)
 
         issue.bg_sum = 18000000
         issue.tender_final_cost = 0
@@ -320,7 +378,7 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_51'] + data['score_52'], 0)
+        self.assertEqual(data['score_51'] + data['score_52'] + data['score_53'], 0)
 
         # SECTION 6
 
@@ -350,13 +408,71 @@ class IssueTestCase(TestCase):
 
         # SECTION 7.1
 
+        issue.bg_sum = 5000000
+        issue.tender_final_cost = 200
+        issue.biggest_contract_sum = 100
+        issue.save()
+        issue.refresh_from_db()
+        data = CalculateUnderwritingCriteria().calc(issue)
+        self.assertEqual(data['score_71'] + data['score_72'] + data['score_73'], 125)
+
+        issue.bg_sum = 5000000
+        issue.tender_final_cost = 200.01
+        issue.biggest_contract_sum = 100
+        issue.save()
+        issue.refresh_from_db()
+        data = CalculateUnderwritingCriteria().calc(issue)
+        self.assertEqual(data['score_71'] + data['score_72'] + data['score_73'], 93.75)
+
+        issue.bg_sum = 5000000
+        issue.tender_final_cost = 300
+        issue.biggest_contract_sum = 100
+        issue.save()
+        issue.refresh_from_db()
+        data = CalculateUnderwritingCriteria().calc(issue)
+        self.assertEqual(data['score_71'] + data['score_72'] + data['score_73'], 93.75)
+
+        issue.bg_sum = 5000000
+        issue.tender_final_cost = 300.01
+        issue.biggest_contract_sum = 100
+        issue.save()
+        issue.refresh_from_db()
+        data = CalculateUnderwritingCriteria().calc(issue)
+        self.assertEqual(data['score_71'] + data['score_72'] + data['score_73'], 31.25)
+
+        issue.bg_sum = 5000000
+        issue.tender_final_cost = 500
+        issue.biggest_contract_sum = 100
+        issue.save()
+        issue.refresh_from_db()
+        data = CalculateUnderwritingCriteria().calc(issue)
+        self.assertEqual(data['score_71'] + data['score_72'] + data['score_73'], 31.25)
+
+        issue.bg_sum = 5000000
+        issue.tender_final_cost = 500.01
+        issue.biggest_contract_sum = 100
+        issue.save()
+        issue.refresh_from_db()
+        data = CalculateUnderwritingCriteria().calc(issue)
+        self.assertEqual(data['score_71'] + data['score_72'] + data['score_73'], 0)
+
+        issue.bg_sum = 5000000
+        issue.tender_final_cost = 0
+        issue.biggest_contract_sum = 100
+        issue.save()
+        issue.refresh_from_db()
+        data = CalculateUnderwritingCriteria().calc(issue)
+        self.assertEqual(data['score_71'] + data['score_72'] + data['score_73'], 0)
+
+        # SECTION 7.2
+
         issue.bg_sum = 10000000
         issue.tender_final_cost = 150
         issue.biggest_contract_sum = 100
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_71'] + data['score_72'], 125)
+        self.assertEqual(data['score_71'] + data['score_72'] + data['score_73'], 125)
 
         issue.bg_sum = 10000000
         issue.tender_final_cost = 150.01
@@ -364,7 +480,7 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_71'] + data['score_72'], 93.75)
+        self.assertEqual(data['score_71'] + data['score_72'] + data['score_73'], 93.75)
 
         issue.bg_sum = 10000000
         issue.tender_final_cost = 200
@@ -372,7 +488,7 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_71'] + data['score_72'], 93.75)
+        self.assertEqual(data['score_71'] + data['score_72'] + data['score_73'], 93.75)
 
         issue.bg_sum = 10000000
         issue.tender_final_cost = 200.01
@@ -380,7 +496,7 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_71'] + data['score_72'], 31.25)
+        self.assertEqual(data['score_71'] + data['score_72'] + data['score_73'], 31.25)
 
         issue.bg_sum = 10000000
         issue.tender_final_cost = 400
@@ -388,7 +504,7 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_71'] + data['score_72'], 31.25)
+        self.assertEqual(data['score_71'] + data['score_72'] + data['score_73'], 31.25)
 
         issue.bg_sum = 10000000
         issue.tender_final_cost = 400.01
@@ -396,7 +512,7 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_71'] + data['score_72'], 0)
+        self.assertEqual(data['score_71'] + data['score_72'] + data['score_73'], 0)
 
         issue.bg_sum = 10000000
         issue.tender_final_cost = 0
@@ -404,9 +520,9 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_71'] + data['score_72'], 0)
+        self.assertEqual(data['score_71'] + data['score_72'] + data['score_73'], 0)
 
-        # SECTION 7.2
+        # SECTION 7.3
 
         issue.bg_sum = 18000000
         issue.tender_final_cost = 130
@@ -414,7 +530,7 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_71'] + data['score_72'], 125)
+        self.assertEqual(data['score_71'] + data['score_72'] + data['score_73'], 125)
 
         issue.bg_sum = 18000000
         issue.tender_final_cost = 130.01
@@ -422,7 +538,7 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_71'] + data['score_72'], 81.25)
+        self.assertEqual(data['score_71'] + data['score_72'] + data['score_73'], 81.25)
 
         issue.bg_sum = 18000000
         issue.tender_final_cost = 200
@@ -430,7 +546,7 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_71'] + data['score_72'], 81.25)
+        self.assertEqual(data['score_71'] + data['score_72'] + data['score_73'], 81.25)
 
         issue.bg_sum = 18000000
         issue.tender_final_cost = 200.01
@@ -438,7 +554,7 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_71'] + data['score_72'], 12.5)
+        self.assertEqual(data['score_71'] + data['score_72'] + data['score_73'], 12.5)
 
         issue.bg_sum = 18000000
         issue.tender_final_cost = 300
@@ -446,7 +562,7 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_71'] + data['score_72'], 12.5)
+        self.assertEqual(data['score_71'] + data['score_72'] + data['score_73'], 12.5)
 
         issue.bg_sum = 18000000
         issue.tender_final_cost = 300.01
@@ -454,7 +570,7 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_71'] + data['score_72'], 0)
+        self.assertEqual(data['score_71'] + data['score_72'] + data['score_73'], 0)
 
         issue.bg_sum = 18000000
         issue.tender_final_cost = 0
@@ -462,7 +578,7 @@ class IssueTestCase(TestCase):
         issue.save()
         issue.refresh_from_db()
         data = CalculateUnderwritingCriteria().calc(issue)
-        self.assertEqual(data['score_71'] + data['score_72'], 0)
+        self.assertEqual(data['score_71'] + data['score_72'] + data['score_73'], 0)
 
         # SECTION 8
 
