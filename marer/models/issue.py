@@ -1943,53 +1943,65 @@ class Issue(models.Model):
     def fill_app_docs(self):
         docs = []
         if self.application_doc:
-            docs.append(self.extend_propose_document(self.application_doc,
-                                                     'Заявление на предоставление банковской гарантии',
-                                                     4))
+            docs.append(self.extend_propose_document(
+                self.application_doc,
+                'Заявление на предоставление банковской гарантии',
+                4))
         else:
-            docs.append(self.extend_propose_document(None,
-                                                     'Заявление на предоставление банковской гарантии',
-                                                     4))
-        if self.bg_doc and not self.status == consts.ISSUE_STATUS_REGISTERING:
-            docs.append(self.extend_propose_document(self.bg_doc,
-                                                     'Проект',
-                                                     4))
-        else:
-            docs.append(self.extend_propose_document(None,
-                                                     'Проект',
-                                                     4))
-        if self.payment_of_fee and not self.status == consts.ISSUE_STATUS_REGISTERING:
-            docs.append(self.extend_propose_document(self.payment_of_fee,
-                                                     'Счет',
-                                                     4))
-        else:
-            docs.append(self.extend_propose_document(None,
-                                                     'Счет',
-                                                     4))
-        if self.transfer_acceptance_act and not self.status == consts.ISSUE_STATUS_REGISTERING:
-            docs.append(self.extend_propose_document(self.transfer_acceptance_act,
-                                                     'Акт',
-                                                     4))
-        else:
-            docs.append(self.extend_propose_document(None,
-                                                     'Акт',
-                                                     4))
-        if self.contract_of_guarantee and not self.status == consts.ISSUE_STATUS_REGISTERING:
-            docs.append(self.extend_propose_document(self.contract_of_guarantee,
-                                                     'Договор поручительства',
-                                                     4))
-        else:
-            docs.append(self.extend_propose_document(None,
-                                                     'Договор поручительства',
-                                                     4))
-        if self.approval_and_change_sheet and not self.status == consts.ISSUE_STATUS_REGISTERING:
-            docs.append(self.extend_propose_document(self.approval_and_change_sheet,
-                                                     'Лист согласования и изменения БГ',
-                                                     4))
-        else:
-            docs.append(self.extend_propose_document(None,
-                                                     'Лист согласования и изменения БГ',
-                                                     4))
+            docs.append(self.extend_propose_document(
+                None,
+                'Заявление на предоставление банковской гарантии',
+                4))
+        # if self.bg_doc and not self.status == consts.ISSUE_STATUS_REGISTERING:
+        #     docs.append(self.extend_propose_document(
+        #         self.bg_doc,
+        #         'Проект',
+        #         4))
+        # else:
+        #     docs.append(self.extend_propose_document(
+        #         None,
+        #         'Проект',
+        #         4))
+        # if self.payment_of_fee and not self.status == consts.ISSUE_STATUS_REGISTERING:
+        #     docs.append(self.extend_propose_document(
+        #         self.payment_of_fee,
+        #         'Счет',
+        #         4))
+        # else:
+        #     docs.append(self.extend_propose_document(
+        #         None,
+        #         'Счет',
+        #         4))
+        # if self.transfer_acceptance_act and not self.status == consts.ISSUE_STATUS_REGISTERING:
+        #     docs.append(self.extend_propose_document(
+        #         self.transfer_acceptance_act,
+        #         'Акт',
+        #         4))
+        # else:
+        #     docs.append(self.extend_propose_document(
+        #         None,
+        #         'Акт',
+        #         4))
+        # if self.contract_of_guarantee and not self.status == consts.ISSUE_STATUS_REGISTERING:
+        #     docs.append(self.extend_propose_document(
+        #         self.contract_of_guarantee,
+        #         'Договор поручительства',
+        #         4))
+        # else:
+        #     docs.append(self.extend_propose_document(
+        #         None,
+        #         'Договор поручительства',
+        #         4))
+        # if self.approval_and_change_sheet and not self.status == consts.ISSUE_STATUS_REGISTERING:
+        #     docs.append(self.extend_propose_document(
+        #         self.approval_and_change_sheet,
+        #         'Лист согласования и изменения БГ',
+        #         4))
+        # else:
+        #     docs.append(self.extend_propose_document(
+        #         None,
+        #         'Лист согласования и изменения БГ',
+        #         4))
         return docs
 
     def extend_propose_document(self, doc, name, type):
