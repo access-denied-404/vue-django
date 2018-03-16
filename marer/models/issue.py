@@ -1039,14 +1039,17 @@ class Issue(models.Model):
     @property
     def humanized_custom_if_need_additionally_contract_guarantee_issue_with_cost(self):
         if self.bg_type == consts.BG_TYPE_APPLICATION_ENSURE and self.tender_gos_number:
-            tender_info = get_tender_info(self.tender_gos_number)
-            if tender_info and type(tender_info) == dict:
-                contract_ensure_cost = tender_info['contract_execution_ensure_cost']
-                if contract_ensure_cost and contract_ensure_cost > 0:
-                    template_text = 'Одновременно принимается решение о выдачи гарантии ' \
-                                    'исполнения обязательств по контракту:' \
-                                    '\nСумма гарантии: {} рублей'
-                    return template_text.format(contract_ensure_cost)
+            try:
+                tender_info = get_tender_info(self.tender_gos_number)
+                if tender_info and type(tender_info) == dict:
+                    contract_ensure_cost = tender_info['contract_execution_ensure_cost']
+                    if contract_ensure_cost and contract_ensure_cost > 0:
+                        template_text = 'Одновременно принимается решение о выдачи гарантии ' \
+                                        'исполнения обязательств по контракту:' \
+                                        '\nСумма гарантии: {} рублей'
+                        return template_text.format(contract_ensure_cost)
+            except:
+                pass
         return ' '
 
     @property
