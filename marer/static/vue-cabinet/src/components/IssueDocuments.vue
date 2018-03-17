@@ -268,14 +268,14 @@
                         </td>
                       </tr>
                       <tr v-if="issue.propose_documents_app">
-                          <div class="col-md-4 col-md-offset-6">
-                          <div class="col-md-6">
+                          <div class="col-md-8 col-offset-4">
+                          <div class="col-md-5">
                           <a class="btn btn-primary btn-sm pull-right"
                              @click="reformDoc('project')"
                              target="_blank">Переформировать проект
                           </a>
                           </div>
-                          <div class="col-md-6">
+                          <div class="col-md-5">
                           <a class="btn btn-primary btn-sm pull-right"
                              @click="reformDoc('payment-of-fee')"
                              target="_blank">Переформировать счет
