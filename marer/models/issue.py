@@ -773,7 +773,7 @@ class Issue(models.Model):
             strong_checks = []
 
             # 1 Дата регистрации Клиента менее 6 мес.
-            strong_checks.append(self.is_org_registered_more_than_6_months_ago)
+            # strong_checks.append(self.is_org_registered_more_than_6_months_ago)
             # 2 Клиент не исполнял контракты, заключенный с организацией, заключающей контракты в рамках законов № 94-ФЗ, 44-ФЗ, 223-ФЗ, 185-ФЗ.
             strong_checks.append(self.is_issuer_executed_contracts_on_44_or_223_or_185_fz)
             # 3 Отрицательная величина чистых активов за последний завершенный квартал (только для организаций, предоставивших отчетность по форме № 1 и №2).
@@ -2108,8 +2108,8 @@ class Issue(models.Model):
 
         ve = ValidationError(None)
         ve.error_list = []
-        if not self.is_org_registered_more_than_6_months_ago:
-            ve.error_list.append('Обнаружен стоп-фактор: организация зарегистрирована менее 6 месецев назад')
+        # if not self.is_org_registered_more_than_6_months_ago:
+        #     ve.error_list.append('Обнаружен стоп-фактор: организация зарегистрирована менее 6 месецев назад')
 
         # if self.sec_dep_conclusion_doc is None or self.sec_dep_conclusion_doc.file is None:
         #     ve.error_list.append('Отсутствует заключение ДБ')
@@ -2171,8 +2171,8 @@ class Issue(models.Model):
             timezone.localdate(timezone.now(), timezone.get_current_timezone()),
             self.issuer_registration_date,
         )
-        if not self.is_org_registered_more_than_6_months_ago:
-            ve.error_list.append('Обнаружен стоп-фактор: организация зарегистрирована менее 6 месецев назад')
+        # if not self.is_org_registered_more_than_6_months_ago:
+        #     ve.error_list.append('Обнаружен стоп-фактор: организация зарегистрирована менее 6 месецев назад')
 
         if len(ve.error_list) > 0:
             raise ve
@@ -2258,8 +2258,8 @@ class Issue(models.Model):
                     'Исполнитель найден в реестре недобросоветных поставщиков. '
                     'Рассмотрение заявки невозможно до устранения стоп-фактора.'
                 )
-            if kontur_principal_analytics_data.get('m7003', False):
-                ve.error_list.append('Обнаружен стоп-фактор: организация зарегистрирована менее 6 месецев назад')
+            # if kontur_principal_analytics_data.get('m7003', False):
+            #     ve.error_list.append('Обнаружен стоп-фактор: организация зарегистрирована менее 6 месецев назад')
             if self.is_issuer_in_blacklisted_region:
                 ve.error_list.append('Обнаружен стоп-фактор: исполнитель находится в необслуживаемом регионе')
             if kontur_principal_analytics_data.get('m5006', False):
