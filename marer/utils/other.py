@@ -21,7 +21,7 @@ def get_tender_info(gos_number):
 
     try:
         if len(gos_number) == 19:
-            req = requests.get('http://tender.marer.ru:8090/tender44?gosNumber=' + gos_number)
+            req = requests.get('http://tender.marer.ru:8090/tender44?gosNumber=' + gos_number, timeout=3)
             if req and req.status_code != 200:
                 return None
             if req.text:
@@ -54,7 +54,7 @@ def get_tender_info(gos_number):
                 publisher = dict()
                 beneficiary_reg_number = cust_req_data.get('customer', {}).get('regNum')
 
-            req = requests.get('http://tender.marer.ru:8090/tender44org?regNumber=' + beneficiary_reg_number)
+            req = requests.get('http://tender.marer.ru:8090/tender44org?regNumber=' + beneficiary_reg_number, timeout=3)
             if req and req.status_code != 200:
                 pass
             if req.text:
@@ -90,7 +90,7 @@ def get_tender_info(gos_number):
             )
 
         elif len(gos_number) == 11:
-            req = requests.get('http://tender.marer.ru:8090/tender223?gosNumber=' + gos_number)
+            req = requests.get('http://tender.marer.ru:8090/tender223?gosNumber=' + gos_number, timeout=3)
             if req and req.status_code != 200:
                 return None
             if req.text:
