@@ -21,8 +21,8 @@
                         <br/>
                     </div>
                     <ul class="nav nav-tabs nav-justified">
-                        <li class="{% if request.resolver_match.url_name == 'login' %}active bg-primary{% endif %}"><a href="{% url 'login' %}">Имя и пароль</a></li>
-                        <li class="{% if request.resolver_match.url_name == 'login_sign' %}active bg-primary{% endif %}"><a href="{% url 'login_sign' %}">Цифровая подпись</a></li>
+                        <li class="{% if request.resolver_match.url_name == 'login' %}active bg-primary{% endif %}"><a href="{% url 'login' %}">Вход для агента</a></li>
+                        <li class="{% if request.resolver_match.url_name == 'login_sign' %}active bg-primary{% endif %}"><a href="{% url 'login_sign' %}">Вход для клиента</a></li>
                     </ul>
                     <div class="panel panel-primary">
                         <div class="panel-body">
@@ -41,6 +41,11 @@
                                 <button type="submit" id="btn-login" class="btn btn-primary center-block">Войти</button>
                             </form>
                         </div>
+                    </div>
+                    <div>
+                        <strong class="text-center " style="display: block;">При возникновении проблем или для регистрации обращайтесь по телефону:</strong>
+                        <strong class="text-center" style="display: block;">8 (499) 951-54-40 (3018), Левиков Илья</strong>
+                        <span class="text-center" style="font-style: italic;display: block;">Или на почту: <a href="tomail:vsziminov@severgazbank.ru">vsziminov@severgazbank.ru</a>, Зиминов Владислав</span>
                     </div>
 {#                    <a class="btn btn-link pull-right" href="{% url 'password_reset_request' %}" role="button">Восстановить пароль</a>#}
                 </div>
