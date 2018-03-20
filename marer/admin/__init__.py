@@ -425,8 +425,8 @@ class IssueAdmin(ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
-        if issue.manager != issue.old_manager and issue.manager_id != issue.old_manager_id:
-            notify_manager_about_new_issue(issue)
+        if obj.manager != obj.old_manager and obj.manager_id != obj.old_manager_id:
+            notify_manager_about_new_issue(obj)
         if change:
             notify_user_about_manager_updated_issue_for_user(obj)
         else:
