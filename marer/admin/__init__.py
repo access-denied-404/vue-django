@@ -34,7 +34,7 @@ from marer.admin.inline import IssueDocumentInlineAdmin, \
 from marer.models import Issue, User, IssueMessagesProxy
 from marer.models.finance_org import FinanceOrgProductProposeDocument
 from marer.utils.notify import notify_user_about_manager_created_issue_for_user, \
-    notify_user_about_manager_updated_issue_for_user
+    notify_user_about_manager_updated_issue_for_user, notify_manager_about_new_issue
 from marer.models.base import FormOwnership
 
 site.site_title = 'Управление сайтом'
@@ -425,6 +425,8 @@ class IssueAdmin(ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
+        if obj.manager != obj.old_manager and obj.manager_id != obj.old_manager_id:
+            notify_manager_about_new_issue(obj)
         if change:
             notify_user_about_manager_updated_issue_for_user(obj)
         else:
