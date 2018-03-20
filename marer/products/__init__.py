@@ -601,7 +601,7 @@ class BankGuaranteeProduct(FinanceProduct):
         # processing org management others
         formset_org_management_others = formset_factory(OrgManagementOthersForm, extra=0)
         formset_org_management_others = formset_org_management_others(request.POST,
-                                                                            prefix='org_management_others')
+                                                                      prefix='org_management_others')
         from marer.models.issue import IssueOrgManagementOthers
         if formset_org_management_others.is_valid():
             for omodata in formset_org_management_others.cleaned_data:

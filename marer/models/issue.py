@@ -2377,6 +2377,8 @@ class Issue(models.Model):
         super(Issue, self).__init__(*args, **kwargs)
         self.old_status = self.status
         self.old_application_doc = self.application_doc
+        self.old_manager = self.manager
+        self.old_manager_id = self.manager_id
 
 
 class IssueDocument(models.Model):

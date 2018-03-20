@@ -129,6 +129,26 @@ def notify_manager_about_user_updated_issue(issue: Issue):
     )
 
 
+def notify_manager_about_new_issue(issue: Issue):
+    manager = issue.manager
+    if manager is None:
+        if issue.bg_sum > 1500000:
+            manager = _get_default_manager()
+        else:
+            manager = _get_default_low_cost_manager()
+
+    manager.email_user(
+        subject='Новая заявка',
+        html_template_filename='mail/events_for_send_to_fo_manager/new_issue.html',
+        context=dict(
+            issue_number=issue.humanized_id,
+            issue_id=issue.id,
+            finance_product=issue.get_product().humanized_name,
+            issuer_short_name=issue.issuer_short_name
+        )
+    )
+
+
 def notify_managers_issue_in_review(issue: Issue):
     """
     Заявка перешла в статус рассмотрение
