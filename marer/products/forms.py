@@ -91,7 +91,10 @@ class BGFinProdRegForm(Form):
 
         bg_start = self.cleaned_data['bg_start_date']
         bg_end = self.cleaned_data['bg_end_date']
-        bg_months_diff = 1 + (bg_end.year - bg_start.year) * 12 + bg_end.month - bg_start.month
+        if bg_end and bg_start:
+            bg_months_diff = 1 + (bg_end.year - bg_start.year) * 12 + bg_end.month - bg_start.month
+        else:
+            bg_months_diff = 0
         if not bg_start or not bg_end or not 0 < bg_months_diff < 30:
             self.add_error(None, 'Неверный срок действия запрашиваемой гарантии')
 

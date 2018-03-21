@@ -22,7 +22,10 @@ def issue_term_in_months(start_date, end_date):
     def _month(datetime):
         return datetime.month
 
-    months = 1 + (_year(end_date) - _year(start_date)) * 12 + _month(end_date) - _month(start_date)
+    if start_date and end_date:
+        months = 1 + (_year(end_date) - _year(start_date)) * 12 + _month(end_date) - _month(start_date)
+    else:
+        months = 0
     return months
 
 
